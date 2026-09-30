@@ -224,6 +224,7 @@ export function HeroPowerButton({ game, player }: { game: GameState; player: Pla
   return (
     <Tip title={`${power.name} (${power.cost})`} body={power.description}>
       <button
+        data-tutorial={player === HUMAN ? 'sigil' : undefined}
         className={`hero-power ${usable ? 'is-usable' : ''} ${used ? 'is-used' : ''} ${selected ? 'is-selected' : ''}`}
         onClick={player === HUMAN ? click : undefined}
         disabled={player !== HUMAN}

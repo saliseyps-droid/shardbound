@@ -14,7 +14,7 @@ export function tutorialSetup(playerName: string, avatar: string): MatchSetup {
     firstPlayer: 0,
     skipMulligan: true,
     players: [
-      { name: playerName, avatar, deck: playerDeck, keepDeckOrder: true, heroPowerId: null },
+      { name: playerName, avatar, deck: playerDeck, keepDeckOrder: true, heroPowerId: 'hp_ember' },
       { name: TUTORIAL_OPPONENT.name, avatar: TUTORIAL_OPPONENT.avatar, deck: oppDeck, keepDeckOrder: true, heroHealth: 12, heroPowerId: null },
     ],
   };
@@ -33,7 +33,7 @@ export function tutorialOpponentAction(state: GameState): GameAction {
   return { type: 'END_TURN', player: 1 };
 }
 
-export type TutorialHighlight = 'hand' | 'end-turn' | 'energy' | 'enemy-hero' | 'my-board' | 'enemy-board' | null;
+export type TutorialHighlight = 'hand' | 'end-turn' | 'energy' | 'enemy-hero' | 'my-board' | 'enemy-board' | 'sigil' | null;
 
 export interface TutorialStep {
   id: string;
@@ -54,5 +54,6 @@ export const TUTORIAL_STEPS: TutorialStep[] = [
   { id: 'attack', title: 'Attack', text: 'Your Squire is ready. Click it (or drag from it) and choose the enemy Scrap Goblin. Both units deal damage to each other at the same time.', highlight: 'enemy-board', done: (ev) => ev.some((e) => e.type === 'UNIT_ATTACKED' && e.player === 0) },
   { id: 'spell', title: 'Cast a spell and target', text: 'Spark Bolt deals 2 damage. Play it and pick a target — try the enemy Warden.', highlight: 'hand', done: (ev) => ev.some((e) => e.type === 'SPELL_CAST' && e.player === 0) },
   { id: 'end-turn-2', title: 'Keep the pressure on', text: 'Play more units if you can, then end your turn.', highlight: 'end-turn', done: (ev) => ev.some((e) => e.type === 'TURN_ENDED' && e.player === 0) },
+  { id: 'sigil', title: 'Your Warden Sigil', text: 'Every Warden has a Sigil: a power you can use once per turn. Yours is Cinder Bolt — 2 energy, 1 damage to an enemy. Click the crystal next to your portrait (hover it to read what it does), then pick a target.', highlight: 'sigil', done: (ev) => ev.some((e) => e.type === 'HERO_POWER_USED' && e.player === 0) },
   { id: 'win', title: 'Finish the fight', text: 'Units with Guard must be attacked first — hover the shield icon to learn more. Attack with your units and bring the enemy Warden to 0 Health.', highlight: 'enemy-hero', done: (ev) => ev.some((e) => e.type === 'GAME_ENDED') },
 ];
