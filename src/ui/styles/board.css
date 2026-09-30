@@ -475,3 +475,30 @@
   text-shadow: 0 1px 2px #000, 0 0 6px rgba(0, 0, 0, 0.85);
 }
 .deck-pile { color: var(--parchment); }
+
+/* ------------------------------------------------------------------ */
+/* Thin gold frame around the Warden, the Warden Sigil and relic /     */
+/* location hexagons. Clipped shapes can't take a CSS border, so the   */
+/* element paints the gold and its content sits 2px inside.            */
+/* ------------------------------------------------------------------ */
+:root { --gold-frame: linear-gradient(160deg, #ffe7a3, var(--gold) 45%, var(--gold-deep)); }
+
+.hero { background: var(--gold-frame); }
+.hero::after { inset: 2px; background: linear-gradient(160deg, #4d4278, #221c3d); }
+.hero .warden-portrait-fill { --wp-inset: 4px; }
+
+.hero-power { background: var(--gold-frame); }
+.hero-power::before {
+  content: ''; position: absolute; inset: 2px; clip-path: inherit;
+  background: linear-gradient(160deg, #3d3564, #1d1933);
+}
+.hero-power.is-usable::before { background: linear-gradient(160deg, #6b5a1f, #2b2210); }
+.hero-power.is-usable { background: var(--gold-frame); }
+.hero-power > svg, .hero-power > .hero-power-cost { position: relative; z-index: 1; }
+.hero-power > .hero-power-cost { position: absolute; }
+
+.permanent { background: var(--gold-frame); box-shadow: none; }
+.permanent img { position: absolute; inset: 2px; width: calc(100% - 4px); height: calc(100% - 4px); clip-path: inherit; }
+.permanent .perm-count { z-index: 1; }
+/* Charge / duration counter centred at the bottom so the hexagon's slanted edges don't clip it. */
+.permanent .perm-count { right: auto; left: 50%; bottom: 3px; transform: translateX(-50%); line-height: 1; }
