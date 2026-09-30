@@ -15,9 +15,12 @@
     'field sidebar'
     'self sidebar';
   overflow: hidden;
+  /* Table: the menu artwork at 30% opacity under a 70% veil that keeps the lighter centre / darker rim. */
   background:
     radial-gradient(ellipse 70% 50% at 45% 50%, rgba(114, 223, 230, 0.07), transparent 70%),
-    radial-gradient(ellipse 90% 60% at 45% 50%, #2b2450, #17142b 75%);
+    radial-gradient(ellipse 90% 60% at 45% 50%, rgba(43, 36, 80, 0.7), rgba(23, 20, 43, 0.7) 75%),
+    url('../../assets/menu-background.webp') center / cover no-repeat,
+    #17142b;
   user-select: none;
   touch-action: none;
 }
