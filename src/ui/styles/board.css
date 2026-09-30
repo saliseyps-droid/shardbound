@@ -52,11 +52,19 @@
 .battlefield { grid-area: field; display: grid; grid-template-rows: 1fr auto 1fr; align-items: center; min-height: 0; padding: 0 var(--space-4); }
 
 /* Heroes ------------------------------------------------------------- */
-.hero-area { display: flex; align-items: center; gap: var(--space-4); }
-.hero-enemy-area { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -22%); }
-.hero-self-area { position: absolute; left: var(--space-4); bottom: var(--space-4); flex-direction: column; align-items: flex-start; gap: var(--space-2); z-index: 5; }
-.hero-self-area .hero-side-info { flex-direction: row; }
-.hero-side-info { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+/* Both Wardens: [relics/location | Warden | sigil, energy, deck], the Warden exactly centred on the battlefield and mirrored. */
+.hero-area {
+  position: absolute; left: 50%; transform: translateX(-50%); z-index: 5;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--space-4);
+  width: min(620px, 80%);
+}
+.hero-col-left { justify-self: end; }
+.hero-area > .hero-side-info { justify-self: start; }
+.hero-enemy-area { bottom: 4px; }
+/* Sits right above the visible part of the hand. */
+.hero-self-area { bottom: calc(var(--card-w) * 1.32 + 10px); }
+/* Name sits on the outer side of each Warden (above the enemy, below you). */
+.hero-side-info { display: flex; flex-direction: row; gap: 10px; align-items: center; }
 
 .hero {
   position: relative;

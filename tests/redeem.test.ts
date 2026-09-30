@@ -1,17 +1,20 @@
 import 'fake-indexeddb/auto';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { GameService } from '@/services/gameService';
 import { IndexedDbStore } from '@/persistence/storage';
 import { REDEEM_CODES } from '@/config/redeemCodes';
 import { sha256Hex } from '@/domain/redeem';
 
-const CODE = 'sqRssfHBskASZWeQs';
+// Tests use their own throwaway code so no real code ever appears in the (public) repository.
+const CODE = 'Test-Only-Code-42';
 
 describe('redeem codes', () => {
-  it('the source only contains the hash, not the code', async () => {
-    expect(JSON.stringify(REDEEM_CODES)).not.toContain(CODE);
-    expect(REDEEM_CODES.some((c) => c.sha256 === '43adb0a56a8bd5f68b568c45eaf4c3feeff594a68ae56229052e9083be41ac73')).toBe(true);
-    expect(await sha256Hex(CODE)).toBe('43adb0a56a8bd5f68b568c45eaf4c3feeff594a68ae56229052e9083be41ac73');
+  beforeAll(async () => {
+    REDEEM_CODES.push({ id: 'test-code', sha256: await sha256Hex(CODE), label: 'Test: 1000 Gold', reward: { gold: 1000 } });
+  });
+
+  it('codes are stored only as SHA-256 hashes', () => {
+    for (const c of REDEEM_CODES) expect(c.sha256).toMatch(/^[0-9a-f]{64}$/);
   });
 
   it('grants 1000 Gold once per account, persisted across reloads', async () => {
@@ -36,7 +39,7 @@ describe('redeem codes', () => {
     const svc = new GameService(new IndexedDbStore('test_redeem_bad'));
     await svc.init();
     await svc.createProfile('R', 'a');
-    expect((await svc.redeemCode('sqrssfhbskaszweqs')).ok).toBe(false);
+    expect((await svc.redeemCode(CODE.toLowerCase())).ok).toBe(false);
     expect((await svc.redeemCode('nope')).ok).toBe(false);
     expect((await svc.redeemCode('')).ok).toBe(false);
   });

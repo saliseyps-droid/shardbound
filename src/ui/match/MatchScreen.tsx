@@ -255,6 +255,10 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const arrowTo = drag?.active && drag.kind === 'attack' ? { x: drag.x, y: drag.y } : pointer;
   const sourceRect = arrowSource?.getBoundingClientRect();
 
+  // The drop hint only appears while a unit card is being dragged.
+  const draggedCard = drag?.active && drag.kind === 'card' ? me.hand.find((c) => c.uid === drag.uid) : undefined;
+  const draggingUnit = !!draggedCard && getCardSafe(draggedCard.cardId).cardType === 'UNIT';
+
   const renderRow = (player: 0 | 1) => {
     const p = game.players[player];
     const units = [...p.board];
@@ -282,7 +286,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         data-tutorial={player === HUMAN ? 'my-board' : 'enemy-board'}
         aria-label={player === HUMAN ? 'Your battlefield' : 'Enemy battlefield'}
       >
-        {items.length === 0 && <span className="board-empty faint">{player === HUMAN ? (myTurn ? t('match.dragHere') : '') : ''}</span>}
+        {player === HUMAN && draggingUnit && items.length < 7 && <span className="board-empty faint">{t('match.dragHere')}</span>}
         {items.map((i) => (
           <div key={i.key} className="unit-slot">
             {i.node}
@@ -323,7 +327,9 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           ))}
         </div>
         <div className="hero-area hero-enemy-area">
-          <PermanentsRow game={game} player={AI} onHover={setHoverCard} />
+          <div className="hero-col-left">
+            <PermanentsRow game={game} player={AI} onHover={setHoverCard} />
+          </div>
           <div data-tutorial="enemy-hero">
             <HeroPanel game={game} player={AI} targetable={targets.includes('h:1')} onClick={() => store.getState().clickHero(AI)} />
           </div>
@@ -345,8 +351,11 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       </section>
 
       {/* ---- Player side ---- */}
-      <section className="side self-side" aria-label="You">
+      <section className="side self-side" aria-label="You" style={{ '--card-w': `${cardW}px` } as CSSProperties}>
         <div className="hero-area hero-self-area">
+          <div className="hero-col-left">
+            <PermanentsRow game={game} player={HUMAN} onHover={setHoverCard} />
+          </div>
           <div data-tutorial="my-hero">
             <HeroPanel game={game} player={HUMAN} targetable={targets.includes('h:0')} onClick={() => store.getState().clickHero(HUMAN)} />
           </div>
@@ -356,7 +365,6 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
             <DeckPile count={me.deck.length} label="your deck" />
             <EmpowerBadge game={game} player={HUMAN} />
           </div>
-          <PermanentsRow game={game} player={HUMAN} onHover={setHoverCard} />
         </div>
         <div className="hand" data-tutorial="hand" style={{ '--card-w': `${cardW}px`, '--n': handCount } as CSSProperties} aria-label="Your hand">
           {me.hand.map((c, i) => {
