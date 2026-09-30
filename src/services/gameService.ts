@@ -13,6 +13,7 @@ import type { PackCard } from '@/domain/packs';
 import { grantXp, type LevelUp } from '@/domain/progression';
 import { applyQuestProgress, claimQuest, refreshQuests, rerollQuest } from '@/domain/quests';
 import { emptyVariants, type GameSave } from '@/domain/save';
+import { applyRedeem, findCode } from '@/domain/redeem';
 import { migrateSave } from '@/persistence/migrations';
 import { SaveGateway } from '@/persistence/repositories';
 import { IndexedDbStore, MemoryStore, type KeyValueStore } from '@/persistence/storage';
@@ -293,6 +294,18 @@ export class GameService {
     const res = claimDaily(this.require(), this.now(), createRng(randomSeed()));
     if (res.ok) this.commit(res.value.save);
     return res.ok ? ok({ reward: res.value.reward, cardId: res.value.cardId }) : res;
+  }
+
+  // -------------------------------------------------------------------------
+  // Redeem codes
+  // -------------------------------------------------------------------------
+
+  async redeemCode(code: string): Promise<Result<{ label: string; gold: number; essence: number }>> {
+    const def = await findCode(code);
+    const res = applyRedeem(this.require(), def, this.now());
+    if (!res.ok) return res;
+    this.commit(res.value.save);
+    return ok({ label: res.value.def.label, gold: res.value.def.reward.gold ?? 0, essence: res.value.def.reward.essence ?? 0 });
   }
 
   // -------------------------------------------------------------------------

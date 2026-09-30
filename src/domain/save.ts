@@ -3,7 +3,7 @@ import type { QuestType } from '@/config/quests';
 import type { PlayableFaction, SetId, Variant } from '@/game/types';
 import type { Deck } from './decks';
 
-export const CURRENT_SAVE_VERSION = 3;
+export const CURRENT_SAVE_VERSION = 4;
 
 export interface PlayerProfile {
   id: string;
@@ -129,6 +129,8 @@ export interface GameSave {
   pve: PveState;
   matchHistory: MatchRecord[];
   recentRewards: RewardEntry[];
+  /** Ids of redeem codes already used by this account. */
+  redeemedCodes: string[];
 }
 
 export const MATCH_HISTORY_LIMIT = 100;

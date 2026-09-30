@@ -59,5 +59,6 @@ export function createNewSave(username: string, avatar: string, now: number, id:
     pve: { completed: {} },
     matchHistory: [],
     recentRewards: [],
+    redeemedCodes: [],
   };
 }

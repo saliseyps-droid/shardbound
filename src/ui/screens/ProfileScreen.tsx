@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { gameService, useAccount } from '@/state/accountStore';
 import { toast } from '@/state/uiStore';
+import { audio } from '@/audio/audioService';
 import { collectibleCards } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import { MAX_LEVEL } from '@/config/progression';
@@ -126,6 +127,7 @@ export default function ProfileScreen() {
               <DeckBox deck={fav} save={save} compact />
             </div>
           )}
+          <RedeemCode />
         </section>
 
         <section className="panel">
@@ -214,5 +216,44 @@ export default function ProfileScreen() {
         </section>
       </div>
     </div>
+  );
+}
+
+/** Redeem code form: each code works once per account. */
+function RedeemCode() {
+  const [code, setCode] = useState('');
+  const [busy, setBusy] = useState(false);
+  const submit = async () => {
+    if (!code.trim() || busy) return;
+    setBusy(true);
+    const res = await gameService.redeemCode(code);
+    setBusy(false);
+    if (res.ok) {
+      audio.play('coin');
+      toast(`Code redeemed: ${res.value.label}`, 'reward');
+      setCode('');
+    } else {
+      audio.play('error');
+      toast(res.error, 'error');
+    }
+  };
+  return (
+    <form
+      className="redeem-form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        void submit();
+      }}
+    >
+      <label className="faint" htmlFor="redeem-code">
+        Redeem code
+      </label>
+      <div className="redeem-row">
+        <input id="redeem-code" className="input" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Enter a code" autoComplete="off" spellCheck={false} maxLength={64} />
+        <button className="btn btn-cyan" type="submit" disabled={!code.trim() || busy}>
+          {busy ? 'Checking…' : 'Redeem'}
+        </button>
+      </div>
+    </form>
   );
 }

@@ -322,3 +322,8 @@ label.toggle-row { cursor: pointer; }
 .event-log .ev-damage_dealt { color: var(--damage); }
 .event-log .ev-healed { color: var(--heal); }
 .event-log .ev-unit_died { color: var(--essence); }
+
+/* Redeem code */
+.redeem-form { display: grid; gap: 6px; margin-top: var(--space-4); width: 100%; }
+.redeem-row { display: flex; gap: var(--space-2); }
+.redeem-row .input { flex: 1; min-width: 0; }

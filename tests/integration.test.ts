@@ -4,7 +4,7 @@ import { GameService } from '@/services/gameService';
 import { IndexedDbStore, MemoryStore } from '@/persistence/storage';
 import { SaveGateway } from '@/persistence/repositories';
 import { migrateSave } from '@/persistence/migrations';
-import { ownedCopies } from '@/domain/save';
+import { CURRENT_SAVE_VERSION, ownedCopies } from '@/domain/save';
 import { deckSize, validateDeck, deckToList } from '@/domain/decks';
 import { applyAction, createGame } from '@/engine';
 import type { GameState, PlayerId } from '@/engine';
@@ -51,7 +51,7 @@ describe('persistence', () => {
       collection: { cards: { emb_kindling_imp: 2, not_a_card: 5 } },
       decks: [{ id: 'd1', name: 'Legacy', heroFaction: 'EMBER', cards: { emb_kindling_imp: 2, gone: 1 } }],
     });
-    expect(report.save.saveVersion).toBe(3);
+    expect(report.save.saveVersion).toBe(CURRENT_SAVE_VERSION);
     expect(report.save.collection.cards.emb_kindling_imp).toEqual({ NORMAL: 2, FOIL: 0, PRISMATIC: 0 });
     expect(report.save.collection.cards.not_a_card).toBeUndefined();
     expect(report.save.profile.gold).toBe(0);

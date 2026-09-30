@@ -25,6 +25,7 @@ export interface ProgressData {
   daily: DailyState;
   pve: PveState;
   recentRewards: RewardEntry[];
+  redeemedCodes?: string[];
 }
 export interface ProgressRepository {
   load(): Promise<ProgressData | undefined>;
@@ -87,8 +88,8 @@ export class SaveGateway {
     if (changed('collection')) entries.push([KEYS.collection, next.collection]);
     if (changed('decks')) entries.push([KEYS.decks, next.decks]);
     if (changed('matchHistory')) entries.push([KEYS.matches, next.matchHistory]);
-    if (changed('economy') || changed('quests') || changed('daily') || changed('pve') || changed('recentRewards')) {
-      entries.push([KEYS.progress, { economy: next.economy, quests: next.quests, daily: next.daily, pve: next.pve, recentRewards: next.recentRewards } satisfies ProgressData]);
+    if (changed('economy') || changed('quests') || changed('daily') || changed('pve') || changed('recentRewards') || changed('redeemedCodes')) {
+      entries.push([KEYS.progress, { economy: next.economy, quests: next.quests, daily: next.daily, pve: next.pve, recentRewards: next.recentRewards, redeemedCodes: next.redeemedCodes } satisfies ProgressData]);
     }
     await this.store.setMany(entries);
   }

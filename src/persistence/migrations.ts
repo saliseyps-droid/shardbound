@@ -34,6 +34,8 @@ const MIGRATIONS: ((raw: Raw, notes: string[]) => Raw)[] = [
     daily: { nextIndex: 0, lastClaimDay: null, lastClaimAt: 0, totalClaims: 0, ...(raw.daily ?? {}) },
     saveVersion: 3,
   }),
+  // v3 -> v4: redeem codes.
+  (raw) => ({ ...raw, redeemedCodes: Array.isArray(raw.redeemedCodes) ? raw.redeemedCodes : [], saveVersion: 4 }),
 ];
 
 const num = (v: unknown, fallback: number, min = 0) => (typeof v === 'number' && Number.isFinite(v) ? Math.max(min, v) : fallback);
@@ -121,6 +123,7 @@ export function migrateSave(input: Raw): MigrationReport {
     pve: { completed: { ...(raw.pve?.completed ?? {}) } },
     matchHistory: Array.isArray(raw.matchHistory) ? raw.matchHistory.slice(0, 100) : [],
     recentRewards: Array.isArray(raw.recentRewards) ? raw.recentRewards.slice(0, 20) : [],
+    redeemedCodes: Array.isArray(raw.redeemedCodes) ? raw.redeemedCodes.filter((c: unknown) => typeof c === 'string') : [],
   };
   for (const [k, v] of Object.entries(save.economy.packs)) save.economy.packs[k as keyof typeof save.economy.packs] = Math.floor(num(v, 0));
   return { save, fromVersion, notes };
