@@ -9,6 +9,7 @@ import { PLAYABLE_FACTIONS, type PlayableFaction } from '@/game/types';
 import { TUTORIAL_OPPONENT } from '@/ui/match/tutorialData';
 import { ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
+import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { DeckPicker, DIFFICULTY_INFO, factionStyle, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
 import '@/ui/styles/meta.css';
@@ -46,7 +47,7 @@ export default function PlayScreen() {
               return (
                 <button key={f} type="button" role="radio" aria-checked={sel} className={`opponent-tile ${sel ? 'selected' : ''}`} style={factionStyle(f)} onClick={() => (audio.play('click'), setFaction(f))}>
                   <span className="opp-sigil" aria-hidden>
-                    <Glyph name={FACTIONS[f].sigil} size={30} />
+                    <WardenPortrait faction={f} size={48} />
                   </span>
                   <strong>{o.name}</strong>
                   <span className="faint">{FACTIONS[f].name}</span>

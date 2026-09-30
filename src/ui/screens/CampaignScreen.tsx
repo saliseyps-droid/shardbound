@@ -8,6 +8,7 @@ import { SET_INFO } from '@/config/economy';
 import { getCardSafe } from '@/data/cards';
 import { ProgressBar, ScreenHeader, Essence, Gold } from '@/ui/components/common';
 import { Glyph, PackIcon } from '@/ui/components/Icons';
+import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { DeckPicker, DIFFICULTY_INFO, factionStyle, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { campaignProgress, isCleared, isUnlocked, nextEncounter } from '@/ui/components/meta/campaign';
 import { audio } from '@/audio/audioService';
@@ -92,7 +93,7 @@ export default function CampaignScreen() {
                           aria-pressed={selectedId === e.id}
                           aria-label={`${e.name}${e.boss ? ', boss' : ''}, ${state === 'done' ? 'cleared' : state === 'open' ? 'available' : 'locked'}`}
                         >
-                          <Glyph name={state === 'locked' ? 'shield' : e.avatar} size={e.boss ? 30 : 24} />
+                          {state === 'locked' ? <Glyph name="shield" size={e.boss ? 30 : 24} /> : <WardenPortrait faction={e.faction} fill />}
                           {done && <span className="enc-check" aria-hidden>✓</span>}
                         </button>
                         <span className="enc-name">{e.name}</span>
@@ -110,7 +111,7 @@ export default function CampaignScreen() {
           <aside className={`panel enc-detail ${enc.boss ? 'boss' : ''}`} style={factionStyle(enc.faction)} aria-live="polite">
             <div className="enc-detail-head">
               <span className="enc-portrait" aria-hidden>
-                <Glyph name={enc.avatar} size={48} />
+                <WardenPortrait faction={enc.faction} fill />
               </span>
               <div>
                 <span className="faint">{sel?.chapter.name}</span>

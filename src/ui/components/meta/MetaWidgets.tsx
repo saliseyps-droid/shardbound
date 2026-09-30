@@ -12,6 +12,7 @@ import { audio } from '@/audio/audioService';
 import { getCardSafe } from '@/data/cards';
 import { Essence, Gold, ProgressBar } from '../common';
 import { EssenceIcon, Glyph, GoldIcon, PackIcon } from '../Icons';
+import { WardenPortrait } from '../WardenPortrait';
 
 export function factionStyle(faction: keyof typeof FACTIONS): CSSProperties {
   const f = FACTIONS[faction];
@@ -30,7 +31,7 @@ export function DeckBox({ deck, save, selected, onSelect, compact }: { deck: Dec
   const content = (
     <>
       <span className="deckbox-sigil" aria-hidden>
-        <Glyph name={f.sigil} size={compact ? 22 : 30} />
+        <WardenPortrait faction={deck.heroFaction} size={compact ? 34 : 46} />
       </span>
       <span className="deckbox-text">
         <strong>

@@ -202,6 +202,7 @@
 
 /* Warden Sigil summary under the Warden faction picker */
 .sigil-info {
+  align-items: center !important;
   display: flex; align-items: flex-start; gap: var(--space-3);
   padding: var(--space-3); margin-top: calc(var(--space-2) * -1);
   background: rgba(0, 0, 0, 0.22);

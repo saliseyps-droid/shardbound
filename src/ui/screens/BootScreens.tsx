@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { gameService, useAccount } from '@/state/accountStore';
-import { WORLD_LORE, FACTIONS } from '@/data/factions';
-import { PLAYABLE_FACTIONS } from '@/game/types';
-import { Glyph } from '@/ui/components/Icons';
+import { WORLD_LORE } from '@/data/factions';
 import { Spinner } from '@/ui/components/common';
 import { audio } from '@/audio/audioService';
 
@@ -19,11 +17,9 @@ export function BootScreen() {
   );
 }
 
-const AVATARS = PLAYABLE_FACTIONS.map((f) => FACTIONS[f].sigil);
 
 export function WelcomeScreen() {
   const [name, setName] = useState('');
-  const [avatar, setAvatar] = useState(AVATARS[0]);
   const [busy, setBusy] = useState(false);
   const valid = name.trim().length >= 2;
   const create = async () => {
@@ -31,7 +27,8 @@ export function WelcomeScreen() {
     setBusy(true);
     audio.unlock();
     audio.play('levelUp');
-    await gameService.createProfile(name, avatar);
+    // The portrait follows the Warden of the deck you play, so no avatar choice is needed.
+    await gameService.createProfile(name, 'compass');
     // Keep an invite link (#/join/CODE) so a new player lands in the match lobby.
     if (!location.hash.startsWith('#/join/')) location.hash = '#/';
   };
@@ -57,16 +54,6 @@ export function WelcomeScreen() {
           <span>Warden name</span>
           <input className="input" autoFocus value={name} maxLength={20} onChange={(e) => setName(e.target.value)} placeholder="e.g. Ysolde Ashveil" />
         </label>
-        <fieldset className="field">
-          <legend>Sigil</legend>
-          <div className="avatar-picker">
-            {AVATARS.map((a) => (
-              <button type="button" key={a} className={`avatar-option ${a === avatar ? 'selected' : ''}`} aria-pressed={a === avatar} onClick={() => setAvatar(a)} aria-label={`Sigil ${a}`}>
-                <Glyph name={a} size={28} />
-              </button>
-            ))}
-          </div>
-        </fieldset>
         <p className="muted">You will receive 500 Gold, 2 booster packs, a starter collection of every faction and three ready-to-play decks.</p>
         <button className="btn btn-primary btn-lg" type="submit" disabled={!valid || busy}>
           {busy ? 'Binding shards…' : 'Begin'}

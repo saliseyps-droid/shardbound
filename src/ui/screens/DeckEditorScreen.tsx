@@ -13,6 +13,7 @@ import { audio } from '@/audio/audioService';
 import { CardView } from '@/ui/components/CardView';
 import { confirmDialog, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
+import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { VirtualCardGrid } from '@/ui/components/collection/VirtualCardGrid';
 import { CardFilterBar } from '@/ui/components/collection/CardFilterBar';
 import { DEFAULT_FILTERS, filterCards, type CardFilterState } from '@/ui/components/collection/cardFilters';
@@ -352,6 +353,7 @@ function WardenSigilInfo({ faction }: { faction: PlayableFaction }) {
   if (!power) return null;
   return (
     <div className="sigil-info" style={{ '--f1': FACTIONS[faction].colors.primary } as CSSProperties}>
+      <WardenPortrait faction={faction} size={52} />
       <span className="sigil-gem" aria-hidden>
         <Glyph name="crystal" size={18} />
         <span className="sigil-cost num">{power.cost}</span>

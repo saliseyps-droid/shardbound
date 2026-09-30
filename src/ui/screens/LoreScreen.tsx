@@ -1,8 +1,9 @@
 import { FACTIONS, WORLD_LORE } from '@/data/factions';
 import { KEYWORD_LIST } from '@/data/keywords';
-import { ALL_FACTIONS } from '@/game/types';
+import { ALL_FACTIONS, type Faction } from '@/game/types';
 import { ScreenHeader } from '@/ui/components/common';
-import { Glyph } from '@/ui/components/Icons';
+
+import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { factionStyle } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
 
@@ -25,7 +26,7 @@ export default function LoreScreen() {
             <article key={id} className="panel codex-entry" style={factionStyle(id)} aria-labelledby={`fx-${id}`}>
               <header>
                 <span className="codex-sigil" aria-hidden>
-                  <Glyph name={f.sigil} size={40} />
+                  <WardenPortrait faction={id as Faction} size={64} fallbackGlyph={f.sigil} />
                 </span>
                 <div>
                   <h3 id={`fx-${id}`}>{f.name}</h3>

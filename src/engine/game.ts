@@ -45,7 +45,7 @@ function createPlayer(id: PlayerId, side: SideSetup): PlayerState {
   const health = side.heroHealth ?? GAME_RULES.heroStartingHealth;
   return {
     id,
-    hero: { name: side.name, avatar: side.avatar, health, maxHealth: health, armor: 0, heroPowerId: side.heroPowerId ?? null, heroPowerUses: 0 },
+    hero: { name: side.name, avatar: side.avatar, faction: side.faction ?? null, health, maxHealth: health, armor: 0, heroPowerId: side.heroPowerId ?? null, heroPowerUses: 0 },
     energy: 0,
     maxEnergy: GAME_RULES.startingMaxEnergy + (side.bonusStartingEnergy ?? 0),
     deck: [],

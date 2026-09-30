@@ -7,6 +7,8 @@ import type { GameState, PlayerId, UnitInstance } from '@/engine/types';
 import { canAttack, canUseHeroPower, currentHealth, empower, hasKeyword, maxHealth, unitAttack } from '@/engine/queries';
 import { cardArtUri } from '@/ui/components/cardArt';
 import { Glyph } from '@/ui/components/Icons';
+import { WardenPortrait, portraitUrl } from '@/ui/components/WardenPortrait';
+import type { Faction } from '@/game/types';
 import { Tip } from '@/ui/components/Tooltip';
 import type { StaticKeyword } from '@/game/types';
 import { useMatch, HUMAN, type Fx } from '@/state/matchStore';
@@ -178,9 +180,13 @@ export function HeroPanel({
       onClick={onClick}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onClick())}
     >
-      <div className="hero-portrait">
-        <Glyph name={p.hero.avatar} size={44} />
-      </div>
+      {portraitUrl(p.hero.faction as Faction) ? (
+        <WardenPortrait faction={p.hero.faction as Faction} fill inset={4} />
+      ) : (
+        <div className="hero-portrait">
+          <Glyph name={p.hero.avatar} size={44} />
+        </div>
+      )}
       <div className="hero-health num" title="Health">
         {p.hero.health}
       </div>

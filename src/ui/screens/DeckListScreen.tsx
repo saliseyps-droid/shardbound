@@ -10,6 +10,7 @@ import { toast } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
 import { confirmDialog, Modal, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
+import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import '@/ui/styles/decks.css';
 
 function FactionPicker({ value, onChange }: { value: PlayableFaction; onChange: (f: PlayableFaction) => void }) {
@@ -27,7 +28,7 @@ function FactionPicker({ value, onChange }: { value: PlayableFaction; onChange: 
             style={{ '--fc': info.colors.primary, '--fd': info.colors.dark } as CSSProperties}
             onClick={() => onChange(f)}
           >
-            <Glyph name={info.sigil} size={26} />
+            <WardenPortrait faction={f} size={40} />
             <span className="fc-name">{info.name}</span>
             <span className="fc-identity">{info.identity}</span>
           </button>
@@ -115,7 +116,7 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
     >
       <button className="deck-box-face" onClick={() => navigate(`/decks/${deck.id}`)} aria-label={`Edit ${deck.name}`}>
         <span className="deck-sigil" aria-hidden>
-          <Glyph name={hero.sigil} size={44} />
+          <WardenPortrait faction={deck.heroFaction} fill />
           {second && <Glyph name={FACTIONS[second].sigil} size={22} className="deck-sigil-second" />}
         </span>
         <span className="deck-name">{deck.name}</span>

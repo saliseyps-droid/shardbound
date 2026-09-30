@@ -23,6 +23,7 @@ export function opponentSide(opponent: OpponentDef): SideSetup {
   return {
     name: opponent.name,
     avatar: opponent.avatar,
+    faction: opponent.faction,
     deck: buildOpponentDeck(opponent),
     heroPowerId: s?.heroPowerId ?? FACTION_HERO_POWER[opponent.faction],
     heroHealth: s?.heroHealth,
@@ -34,7 +35,7 @@ export function opponentSide(opponent: OpponentDef): SideSetup {
 }
 
 export function playerSide(name: string, avatar: string, deck: Deck): SideSetup {
-  return { name, avatar, deck: deckToList(deck), heroPowerId: FACTION_HERO_POWER[deck.heroFaction] };
+  return { name, avatar, faction: deck.heroFaction, deck: deckToList(deck), heroPowerId: FACTION_HERO_POWER[deck.heroFaction] };
 }
 
 export function buildMatchSetup(player: SideSetup, opponent: SideSetup, seed: number): MatchSetup {

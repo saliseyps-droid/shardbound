@@ -33,5 +33,6 @@ export function validateRemoteSide(side: SideSetup): string | null {
   // Bosses' special rules are not allowed in PvP.
   if (side.heroHealth || side.bonusStartingEnergy || side.startingBoard?.length || side.startingRelics?.length || side.startingLocation) return 'Invalid match setup.';
   if (side.heroPowerId !== FACTION_HERO_POWER[faction]) return 'Invalid Warden Sigil.';
+  if (side.faction != null && !(side.faction in FACTION_HERO_POWER)) return 'Invalid Warden.';
   return null;
 }

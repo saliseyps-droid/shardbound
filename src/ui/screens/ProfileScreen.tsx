@@ -11,10 +11,10 @@ import { ownedCopies } from '@/domain/save';
 import { PLAYABLE_FACTIONS, RARITIES } from '@/game/types';
 import { Essence, Gold, ProgressBar, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
+import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { DeckBox, factionStyle } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
 
-const SIGILS = PLAYABLE_FACTIONS.map((f) => FACTIONS[f].sigil).concat(['crown', 'compass']);
 
 export default function ProfileScreen() {
   const save = useAccount((s) => s.save);
@@ -29,6 +29,8 @@ export default function ProfileScreen() {
   const totalCopies = Object.values(save.collection.cards).reduce((a, v) => a + v.NORMAL + v.FOIL + v.PRISMATIC, 0);
   const cosmetic = Object.values(save.collection.cards).reduce((a, v) => a + v.FOIL + v.PRISMATIC, 0);
   const fav = save.decks.find((d) => d.id === p.favoriteDeckId);
+  // The portrait follows the Warden of the deck you play (selected, else favourite, else first).
+  const playingFaction = (save.decks.find((d) => d.id === p.selectedDeckId) ?? fav ?? save.decks[0])?.heroFaction;
   const need = xpToNext(p.level);
 
   const saveName = () => {
@@ -57,8 +59,8 @@ export default function ProfileScreen() {
       <div className="profile-layout">
         <section className="panel profile-card">
           <div className="profile-id">
-            <span className="warden-sigil large" aria-hidden>
-              <Glyph name={p.avatar} size={56} />
+            <span className="warden-sigil large" aria-hidden title="The Warden of the deck you play">
+              <WardenPortrait faction={playingFaction} fill />
             </span>
             <div>
               {editing ? (
@@ -91,16 +93,7 @@ export default function ProfileScreen() {
               <span className="muted">Warden since {new Date(p.createdAt).toLocaleDateString()}</span>
             </div>
           </div>
-          <fieldset className="field">
-            <legend>Sigil</legend>
-            <div className="avatar-picker">
-              {SIGILS.map((s) => (
-                <button key={s} type="button" className={`avatar-option ${s === p.avatar ? 'selected' : ''}`} aria-pressed={s === p.avatar} aria-label={`Sigil ${s}`} onClick={() => gameService.updateProfile({ avatar: s })}>
-                  <Glyph name={s} size={24} />
-                </button>
-              ))}
-            </div>
-          </fieldset>
+          <p className="faint">Your portrait is the Warden of the deck you play{playingFaction ? `: ${FACTIONS[playingFaction].name}` : ''}.</p>
           <label className="field">
             <span>Title</span>
             <select className="select" value={p.title ?? ''} onChange={(e) => gameService.updateProfile({ title: e.target.value || null })} disabled={p.titles.length === 0}>

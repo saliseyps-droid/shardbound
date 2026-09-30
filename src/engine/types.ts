@@ -65,6 +65,8 @@ export interface LocationInstance {
 export interface HeroState {
   name: string;
   avatar: string;
+  /** Warden faction (drives the portrait); null for special encounters without one. */
+  faction: string | null;
   health: number;
   maxHealth: number;
   armor: number;
@@ -190,6 +192,7 @@ export type NewGameEvent = DistributiveOmit<GameEvent, 'seq'>;
 export interface SideSetup {
   name: string;
   avatar: string;
+  faction?: string | null;
   /** Card ids; order is shuffled by the engine unless `keepDeckOrder`. */
   deck: string[];
   heroPowerId?: string | null;
