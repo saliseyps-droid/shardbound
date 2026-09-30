@@ -2,6 +2,7 @@ import { createRng, hashString, nextFloat, nextInt } from '@/core/rng';
 import { FACTIONS } from '@/data/factions';
 import type { CardDefinition } from '@/game/types';
 import { GLYPHS } from './Icons';
+import { figureSvg } from './unitFigures';
 
 /**
  * Procedural, deterministic card artwork. Each faction has a distinct palette,
@@ -123,8 +124,10 @@ export function cardArtUri(card: CardDefinition): string {
     stars.push(`<circle cx="${nextInt(rng, 0, 200)}" cy="${nextInt(rng, 0, 90)}" r="${(0.4 + nextFloat(rng) * 1.3).toFixed(1)}" fill="${glow}" opacity="${(0.3 + nextFloat(rng) * 0.6).toFixed(2)}"/>`);
   }
   const glyph = GLYPHS[glyphFor(card)] ?? GLYPHS.crystal;
-  const gx = 100 + nextInt(rng, -14, 14);
-  const gy = 58 + nextInt(rng, -6, 6);
+  // Units show a character figure; other types keep the central emblem.
+  const figure = card.cardType === 'UNIT' ? figureSvg(card, rng, { dark, glow, secondary }, id) : null;
+  const gx = figure ? 100 : 100 + nextInt(rng, -14, 14);
+  const gy = figure ? figure.headY : 58 + nextInt(rng, -6, 6);
   const scale = card.rarity === 'LEGENDARY' ? 3.3 : card.cardType === 'UNIT' ? 2.9 : 2.6;
   const rot = nextInt(rng, -10, 10);
   const ringR = 30 + nextInt(rng, 0, 8);
@@ -143,6 +146,7 @@ export function cardArtUri(card: CardDefinition): string {
 <linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${dark}"/><stop offset="0.65" stop-color="${primary}" stop-opacity="0.55"/><stop offset="1" stop-color="${dark}"/></linearGradient>
 <radialGradient id="${id}g" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="${glow}" stop-opacity="0.85"/><stop offset="1" stop-color="${glow}" stop-opacity="0"/></radialGradient>
 <filter id="${id}b" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
+${figure?.defs ?? ''}
 </defs>
 <rect width="200" height="140" fill="url(#${id}s)"/>
 ${stars.join('')}
@@ -151,10 +155,14 @@ ${shards.join('')}
 <circle cx="${gx}" cy="${gy}" r="${ringR + 16}" fill="url(#${id}g)" opacity="0.55"/>
 <circle cx="${gx}" cy="${gy}" r="${ringR}" fill="none" stroke="${secondary}" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="${nextInt(rng, 2, 8)} ${nextInt(rng, 2, 6)}"/>
 ${landscape(FACTION_LANDSCAPE[card.faction] ?? 'road', rng, dark, '#07060f')}
-<g transform="translate(${gx - 12 * scale} ${gy - 12 * scale}) scale(${scale}) rotate(${rot} 12 12)">
+${
+    figure
+      ? figure.body
+      : `<g transform="translate(${gx - 12 * scale} ${gy - 12 * scale}) scale(${scale}) rotate(${rot} 12 12)">
 <path d="${glyph}" fill="${glow}" filter="url(#${id}b)" opacity="0.9"/>
 <path d="${glyph}" fill="${secondary}" stroke="${dark}" stroke-width="0.35"/>
-</g>
+</g>`
+  }
 </svg>`;
   const uri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   cache.set(card.id, uri);
