@@ -17,10 +17,10 @@ export interface ShopOffer {
 
 export const SHOP_OFFERS: ShopOffer[] = [
   { id: 'core_1', setId: 'CORE', packs: 1, price: 100, label: '1 Pack' },
-  { id: 'core_5', setId: 'CORE', packs: 5, price: 500, label: '5 Packs' },
+  { id: 'core_5', setId: 'CORE', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
   { id: 'core_10', setId: 'CORE', packs: 10, price: 1000, label: '10 Packs', badge: '+1 Bonus Pack' },
   { id: 'deep_1', setId: 'DEEP', packs: 1, price: 100, label: '1 Pack' },
-  { id: 'deep_5', setId: 'DEEP', packs: 5, price: 500, label: '5 Packs' },
+  { id: 'deep_5', setId: 'DEEP', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
   { id: 'deep_10', setId: 'DEEP', packs: 10, price: 1000, label: '10 Packs', badge: '+1 Bonus Pack' },
 ];
 
