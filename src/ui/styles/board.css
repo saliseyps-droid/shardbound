@@ -8,26 +8,34 @@
   position: relative;
   height: 100vh;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(200px, 15vw, 280px);
+  --sidebar-w: clamp(200px, 15vw, 280px);
+  grid-template-columns: minmax(0, 1fr) var(--sidebar-w);
   grid-template-rows: minmax(120px, 17vh) minmax(0, 1fr) minmax(210px, 31vh);
   grid-template-areas:
     'enemy sidebar'
     'field sidebar'
     'self sidebar';
   overflow: hidden;
-  /* Table: a random play-mat (set per match in --board-bg) shown at 50% opacity under an even veil. */
-  background:
-    linear-gradient(rgba(23, 20, 43, 0.5), rgba(23, 20, 43, 0.5)),
-    var(--board-bg, none) center / cover no-repeat,
-    #17142b;
+  background: #17142b;
+  isolation: isolate;
   user-select: none;
   touch-action: none;
+}
+/* Play-mat: a random board (--board-bg, set per match) at 50% opacity, covering and centred on the play area only. */
+.board-mat {
+  position: absolute;
+  inset: 0 var(--sidebar-w) 0 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(23, 20, 43, 0.5), rgba(23, 20, 43, 0.5)),
+    var(--board-bg, none) center / cover no-repeat;
 }
 .match::before {
   /* engraved runic ring on the table */
   content: '';
   position: absolute;
-  left: calc((100% - clamp(200px, 15vw, 280px)) / 2);
+  left: calc((100% - var(--sidebar-w)) / 2);
   top: 50%;
   width: min(62vw, 980px);
   aspect-ratio: 2.4;
@@ -146,7 +154,12 @@
 /* Battlefield rows --------------------------------------------------- */
 .board-row {
   display: flex; justify-content: center; align-items: center; gap: clamp(6px, 0.8vw, 14px);
+  /* Fill its half of the table vertically; only as wide as a full row of 7 units. */
+  align-self: stretch;
+  width: min(100%, calc(var(--unit-w) * 7 + clamp(6px, 0.8vw, 14px) * 6 + 48px));
+  justify-self: center;
   min-height: calc(var(--unit-h) + 16px);
+  margin: 6px 0;
   padding: 8px; border-radius: 12px;
   transition: background 0.2s, box-shadow 0.2s;
 }
@@ -378,7 +391,7 @@
 }
 
 .turn-banner {
-  position: absolute; left: calc((100% - clamp(200px, 15vw, 280px)) / 2); top: 50%; z-index: 150;
+  position: absolute; left: calc((100% - var(--sidebar-w)) / 2); top: 50%; z-index: 150;
   transform: translate(-50%, -50%); pointer-events: none;
   animation: banner 1.3s var(--ease-out) forwards;
 }
@@ -399,7 +412,7 @@
   position: absolute; z-index: 140; left: 16%; top: 50%; transform: translateY(-50%);
   pointer-events: none; animation: cast-in 0.35s var(--ease-spring);
 }
-.cast-preview.from-self { left: auto; right: calc(clamp(200px, 15vw, 280px) + 40px); }
+.cast-preview.from-self { left: auto; right: calc(var(--sidebar-w) + 40px); }
 @keyframes cast-in { from { transform: translateY(-50%) scale(0.5); opacity: 0; } }
 
 .target-arrow { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 400; }

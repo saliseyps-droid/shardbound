@@ -312,6 +312,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         if (cardId) useUi.getState().inspectCard(cardId);
       }}
     >
+      <div className="board-mat" aria-hidden />
       {/* ---- Enemy side ---- */}
       <section className="side enemy-side" aria-label="Opponent">
         <div className="enemy-hand" aria-label={`Opponent has ${opp.hand.length} cards`}>
