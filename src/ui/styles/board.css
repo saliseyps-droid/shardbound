@@ -164,7 +164,7 @@
   display: flex; justify-content: center; align-items: center; gap: clamp(6px, 0.8vw, 14px);
   /* Fill its half of the table vertically; only as wide as a full row of 7 units. */
   align-self: stretch;
-  width: min(100%, calc(var(--unit-w) * 7 + clamp(6px, 0.8vw, 14px) * 6 + 48px));
+  width: min(100%, calc(var(--unit-w) * 7 + clamp(6px, 0.8vw, 14px) * 6 + 96px));
   justify-self: center;
   min-height: calc(var(--unit-h) + 16px);
   margin: 6px 0;

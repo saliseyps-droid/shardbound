@@ -236,7 +236,7 @@ export function HeroPowerButton({ game, player }: { game: GameState; player: Pla
         disabled={player !== HUMAN}
         aria-label={`Warden Sigil: ${power.name}, costs ${power.cost}. ${power.description}${used ? ' Already used this turn.' : ''}`}
       >
-        <Glyph name="crystal" size={22} />
+        <Glyph name={(p.hero.faction && FACTIONS[p.hero.faction as Faction]?.sigil) || 'crystal'} size={22} />
         <span className="hero-power-cost num">{power.cost}</span>
       </button>
     </Tip>
