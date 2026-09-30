@@ -75,9 +75,8 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
   const xpBefore = save.profile.xp;
 
   const winsToday = save.profile.winsTodayDay === today ? save.profile.winsToday : 0;
-  // Player-vs-player matches are recorded but give no rewards (prevents self-farming with two windows).
-  const pvp = summary.mode === 'PVP';
-  const eligible = !pvp && (summary.result === 'WIN' || summary.turns >= MATCH_REWARDS.minTurnsForRewards);
+  // Online (PvP) matches reward and progress quests exactly like normal matches.
+  const eligible = summary.result === 'WIN' || summary.turns >= MATCH_REWARDS.minTurnsForRewards;
   const xpMult = MATCH_REWARDS.difficultyXpMultiplier[summary.difficulty] ?? 1;
 
   let s: GameSave = save;
@@ -152,8 +151,8 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
       wins: p.wins + (summary.result === 'WIN' && summary.mode !== 'TUTORIAL' ? 1 : 0),
       losses: p.losses + (summary.result === 'LOSS' && summary.mode !== 'TUTORIAL' ? 1 : 0),
       draws: p.draws + (summary.result === 'DRAW' ? 1 : 0),
-      firstWinDay: summary.result === 'WIN' && summary.mode !== 'TUTORIAL' && !pvp ? today : p.firstWinDay,
-      winsToday: summary.result === 'WIN' && !pvp ? winsToday + 1 : winsToday,
+      firstWinDay: summary.result === 'WIN' && summary.mode !== 'TUTORIAL' ? today : p.firstWinDay,
+      winsToday: summary.result === 'WIN' ? winsToday + 1 : winsToday,
       winsTodayDay: today,
       factionWins,
     },

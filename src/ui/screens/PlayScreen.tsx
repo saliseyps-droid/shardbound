@@ -99,7 +99,7 @@ export default function PlayScreen() {
             <Glyph name="person" size={28} />
             <div>
               <strong>Play a friend online</strong>
-              <span className="muted">Create a match link, send it, and your friend joins from their browser.</span>
+              <span className="muted">Create a match, send your friend the room code, and they join from their browser.</span>
             </div>
             <Link className="btn btn-sm btn-cyan" to="/online">
               Play online

@@ -94,7 +94,7 @@ export const CAMPAIGN: Chapter[] = [
     encounters: [
       { id: 'c2_e1', name: 'Harpooner Quell', title: 'Icebreaker Captain', avatar: 'wave', faction: 'TIDE', archetype: 'Undertow', difficulty: 'NORMAL', personality: 'BALANCED', rarities: NORMAL_POOL, intro: 'The sea gives back what it takes. Eventually.', firstWinReward: { gold: 150, xp: 150 } },
       { id: 'c2_e2', name: 'Lumen Scribe Aurel', title: 'Conclave Cartographer', avatar: 'star', faction: 'ASTRAL', archetype: 'Spellweave', difficulty: 'NORMAL', personality: 'CONTROL', rarities: NORMAL_POOL, intro: 'Your path is already charted. It ends here.', firstWinReward: { gold: 150, xp: 150, packs: { setId: 'DEEP', amount: 1 } } },
-      { id: 'c2_e3', name: 'The Thornwidow', title: 'Blighted Druid', avatar: 'leaf', faction: 'VERDANT', secondFaction: 'VOID', archetype: 'Wellspring', difficulty: 'HARD', personality: 'BALANCED', rarities: HARD_POOL, intro: 'Rot is only another kind of growth.', firstWinReward: { gold: 150, xp: 150 } },
+      { id: 'c2_e3', name: 'The Thornwidow', title: 'Blighted Druid', avatar: 'leaf', faction: 'VERDANT', archetype: 'Wellspring', difficulty: 'HARD', personality: 'BALANCED', rarities: HARD_POOL, intro: 'Rot is only another kind of growth.', firstWinReward: { gold: 150, xp: 150 } },
       { id: 'c2_e4', name: 'Commander Ignis Rael', title: 'Legion Drake-Rider', avatar: 'flame', faction: 'EMBER', archetype: 'Blitz', difficulty: 'HARD', personality: 'AGGRESSIVE', rarities: HARD_POOL, intro: 'From the sky, the Legion sees all.', firstWinReward: { gold: 150, xp: 150, packs: { setId: 'CORE', amount: 1 } } },
       {
         id: 'c2_boss', name: 'Maw of the Deep', title: 'Leviathan of the Drowned Court', avatar: 'wave', faction: 'TIDE', archetype: 'Deep Freeze', difficulty: 'HARD', personality: 'CONTROL', rarities: HARD_POOL, boss: true,
@@ -116,13 +116,13 @@ export const CAMPAIGN: Chapter[] = [
         firstWinReward: { gold: 300, xp: 300, essence: 200 },
       },
       {
-        id: 'c3_b2', name: 'The Endless Choir', title: 'Voice of the Hollow', avatar: 'eye', faction: 'VOID', secondFaction: 'ASTRAL', archetype: 'Requiem', difficulty: 'EXPERT', personality: 'BALANCED', rarities: ALL, boss: true,
+        id: 'c3_b2', name: 'The Endless Choir', title: 'Voice of the Hollow', avatar: 'eye', faction: 'VOID', archetype: 'Requiem', difficulty: 'EXPERT', personality: 'BALANCED', rarities: ALL, boss: true,
         intro: 'We are many. We were you, once.',
         special: { heroHealth: 40, heroPowerId: 'hp_boss_choir', startingBoard: ['token_hollow_wisp', 'token_hollow_wisp', 'token_hollow_wisp'], description: ['The Choir has 40 Health.', 'Starts with three Hollow Wisps.', 'Warden Sigil: Requiem Chorus.'] },
         firstWinReward: { gold: 350, xp: 300, packs: { setId: 'DEEP', amount: 2 } },
       },
       {
-        id: 'c3_final', name: 'The Shattered Sovereign', title: 'Echo of the Crown', avatar: 'crown', faction: 'ASTRAL', secondFaction: 'IRON', archetype: 'Starlit Control', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
+        id: 'c3_final', name: 'The Shattered Sovereign', title: 'Echo of the Crown', avatar: 'crown', faction: 'ASTRAL', archetype: 'Starlit Control', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
         intro: 'You would rebuild my Crown? Then kneel before what it was.',
         special: { heroHealth: 45, bonusStartingEnergy: 1, heroPowerId: 'hp_boss_sovereign', description: ['The Sovereign has 45 Health.', 'Starts with 1 extra energy crystal.', 'Warden Sigil: Crown Fragment.'] },
         firstWinReward: { gold: 500, xp: 500, essence: 400, packs: { setId: 'CORE', amount: 3 } },

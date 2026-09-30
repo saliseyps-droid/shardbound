@@ -9,6 +9,7 @@ import { xpToNext } from '@/domain/progression';
 import { CardView } from '@/ui/components/CardView';
 import { Essence, Gold, ProgressBar, Spinner } from '@/ui/components/common';
 import { TUTORIAL_STEPS } from './tutorial';
+import { GAME_RULES } from '@/config/gameRules';
 
 export function MulliganOverlay({ game }: { game: GameState }) {
   const picks = useMatch((s) => s.mulliganPicks);
@@ -86,11 +87,12 @@ export function TurnTimer() {
   }, [now, deadline, endTurn]);
   if (!deadline) return null;
   const left = Math.max(0, Math.ceil((deadline - now) / 1000));
-  if (left > 20) return null;
+  const warn = GAME_RULES.turnTimerWarningSeconds;
+  if (left > warn) return null;
   return (
     <div className={`turn-timer ${left <= 10 ? 'urgent' : ''}`} role="timer" aria-live="polite">
       <span className="num">{left}s</span>
-      <span className="turn-timer-rope" style={{ width: `${(left / 20) * 100}%` }} />
+      <span className="turn-timer-rope" style={{ width: `${(left / warn) * 100}%` }} />
     </div>
   );
 }
@@ -212,7 +214,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
         <div className="panel results-rewards">
           <h4>Rewards</h4>
           {!rewards && <p className="muted">Recording result…</p>}
-          {rewards && rewards.lines.length === 0 && <p className="muted">{config?.online ? 'Online matches don’t award Gold or XP.' : 'No rewards — matches shorter than 3 turns don’t count.'}</p>}
+          {rewards && rewards.lines.length === 0 && <p className="muted">No rewards — matches shorter than 3 turns don’t count.</p>}
           {rewards?.lines.map((l) => (
             <div key={l.label} className="reward-line">
               <span>{l.label}</span>

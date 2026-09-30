@@ -36,7 +36,7 @@ The collection holds 164 collectible cards: 23 per faction plus 26 neutral, acro
 - Energy gains +1 per turn up to 10 and refills each turn. Every Warden also has a once-per-turn Warden Sigil (hero power).
 - Limits: hand 10 (overdrawn cards burn), board 7, relics 3, one location per side.
 - Drawing from an empty deck causes escalating fatigue damage. There is a turn timer abstraction and a concede action.
-- Decks are exactly 30 cards, with at most 2 copies of a card (1 for Legendaries). A deck may use the Warden faction, one ally faction, and Neutral.
+- Decks are exactly 30 cards, with at most 2 copies of a card (1 for Legendaries). A deck may only contain cards of its Warden faction plus Neutral cards.
 
 ## Architecture
 
@@ -125,7 +125,7 @@ Play → *Play a friend online* creates a match link (`#/join/CODE`). The friend
 
 - Peer-to-peer over WebRTC (PeerJS public signalling); no game server needed.
 - The host is authoritative: it runs the engine, validates the guest's deck and every action, and sends the guest a *mirrored, redacted* view (`src/net/view.ts`) — the guest never receives the host's hand, either deck order or the RNG seed.
-- Heartbeat-based disconnect detection; the remaining player wins. Online matches are recorded in history but grant no Gold/XP.
+- Heartbeat-based disconnect detection; the remaining player wins. Online matches give the same Gold, XP and quest progress as normal matches.
 - Limitation: collection ownership of the guest can't be verified without a server, and the host's own browser technically holds full state.
 
 ## Deployment

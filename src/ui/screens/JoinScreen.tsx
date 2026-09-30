@@ -49,7 +49,7 @@ export default function JoinScreen() {
           <div className="panel-title">Room {code.toUpperCase()}</div>
           {deck && (
             <p className="muted">
-              You’ll play <strong style={{ color: FACTIONS[deck.heroFaction].colors.primary }}>{deck.name}</strong>. Online matches don’t award Gold or XP.
+              You’ll play <strong style={{ color: FACTIONS[deck.heroFaction].colors.primary }}>{deck.name}</strong>. Online matches give the same rewards and quest progress as normal matches.
             </p>
           )}
           <button className="btn btn-primary btn-lg" disabled={!valid || busy} onClick={() => void join()}>

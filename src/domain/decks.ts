@@ -1,4 +1,5 @@
 import { DECK_RULES } from '@/config/gameRules';
+import { FACTIONS } from '@/data/factions';
 import { collectibleCards, getCard } from '@/data/cards';
 import type { CardDefinition, Faction, PlayableFaction } from '@/game/types';
 import { PLAYABLE_FACTIONS } from '@/game/types';
@@ -83,11 +84,10 @@ export function validateDeck(deck: Pick<Deck, 'cards' | 'heroFaction' | 'name'>,
     }
   }
 
-  const factions = deckFactions(deck);
-  if (factions.length > DECK_RULES.maxFactions) {
-    issues.push({ code: 'FACTIONS', message: `Invalid faction: decks may use at most ${DECK_RULES.maxFactions} factions plus Neutral (found ${factions.length}).` });
-  } else if (factions.length === DECK_RULES.maxFactions && !factions.includes(deck.heroFaction)) {
-    issues.push({ code: 'HERO_FACTION', message: 'Invalid faction: one of the deck’s factions must be the Warden faction.' });
+  // Only the Warden faction and Neutral cards are allowed.
+  const foreign = deckFactions(deck).filter((f) => f !== deck.heroFaction);
+  if (foreign.length > 0) {
+    issues.push({ code: 'FACTIONS', message: `Invalid faction: only ${FACTIONS[deck.heroFaction].name} and Neutral cards are allowed (remove ${foreign.map((f) => FACTIONS[f].name).join(', ')} cards).` });
   }
   return issues;
 }
@@ -110,13 +110,7 @@ export function canAddCard(deck: Deck, cardId: string, ownedCopies: number | nul
   const inDeck = deck.cards[cardId] ?? 0;
   if (inDeck >= maxCopiesFor(card)) return card.rarity === 'LEGENDARY' ? 'Legendary limit reached' : `Max ${DECK_RULES.maxCopies} copies`;
   if (ownedCopies !== null && inDeck >= ownedCopies) return 'Not enough copies owned';
-  if (card.faction !== 'NEUTRAL') {
-    const factions = deckFactions(deck);
-    if (!factions.includes(card.faction)) {
-      const others = factions.filter((f) => f !== deck.heroFaction);
-      if (card.faction !== deck.heroFaction && others.length >= DECK_RULES.maxFactions - 1) return 'Too many factions';
-    }
-  }
+  if (card.faction !== 'NEUTRAL' && card.faction !== deck.heroFaction) return `Only ${FACTIONS[deck.heroFaction].name} and Neutral cards`;
   return null;
 }
 

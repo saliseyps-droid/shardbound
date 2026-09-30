@@ -172,18 +172,40 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   }, [selection, drag]);
 
   // Drag handling ---------------------------------------------------------------
-  useEffect(() => {
-    if (!drag) return;
-    const move = (e: PointerEvent) => {
-      setDrag((d) => {
-        if (!d) return d;
-        const dist = Math.hypot(e.clientX - d.startX, e.clientY - d.startY);
-        return { ...d, x: e.clientX, y: e.clientY, active: d.active || dist > DRAG_THRESHOLD };
-      });
-    };
-    const up = (e: PointerEvent) => {
-      const d = drag;
+  // Listeners are attached synchronously on press (not in an effect), so even a very
+  // quick release is never missed; cancel/blur/escape always end the drag cleanly.
+  const dragRef = useRef<Drag | null>(null);
+  const endDrag = useRef<(() => void) | null>(null);
+  useEffect(() => () => endDrag.current?.(), []);
+
+  const beginDrag = (initial: Drag) => {
+    endDrag.current?.();
+    dragRef.current = initial;
+    setDrag(initial);
+    const cleanup = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', cancel);
+      window.removeEventListener('blur', cancel);
+      window.removeEventListener('keydown', onKey);
+      dragRef.current = null;
+      endDrag.current = null;
       setDrag(null);
+    };
+    const move = (e: PointerEvent) => {
+      const d = dragRef.current;
+      if (!d) return;
+      const dist = Math.hypot(e.clientX - d.startX, e.clientY - d.startY);
+      const next = { ...d, x: e.clientX, y: e.clientY, active: d.active || dist > DRAG_THRESHOLD };
+      dragRef.current = next;
+      setDrag(next);
+    };
+    const cancel = () => cleanup();
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && cleanup();
+    const up = (e: PointerEvent) => {
+      const d = dragRef.current;
+      cleanup();
+      if (!d) return;
       const s = store.getState();
       const moved = d.active || Math.hypot(e.clientX - d.startX, e.clientY - d.startY) > DRAG_THRESHOLD;
       if (!moved) {
@@ -194,6 +216,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       const el = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
       const entity = el?.closest('[data-entity]')?.getAttribute('data-entity');
       if (d.kind === 'card') {
+        // A valid target plays the card; the battlefield plays it (or asks for a target);
+        // anywhere else the card simply returns to the hand.
         if (entity) s.dropCard(d.uid, parseEntity(entity));
         else if (el?.closest('[data-dropzone="board"]')) s.dropCard(d.uid, null, dropPosition(e.clientX));
       } else if (entity) {
@@ -202,13 +226,12 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       }
     };
     window.addEventListener('pointermove', move);
-    window.addEventListener('pointerup', up, { once: true });
-    return () => {
-      window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerup', up);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [drag?.uid, drag?.kind, drag?.startX]);
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', cancel);
+    window.addEventListener('blur', cancel);
+    window.addEventListener('keydown', onKey);
+    endDrag.current = cleanup;
+  };
 
   const dropPosition = (x: number): number => {
     const units = [...(boardRef.current?.querySelectorAll('.board-row.self [data-entity^="u:"]') ?? [])];
@@ -226,7 +249,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       if (!myTurn) toast('Wait for your turn.', 'info');
       return;
     }
-    setDrag({ kind: 'card', uid, startX: e.clientX, startY: e.clientY, x: e.clientX, y: e.clientY, active: false });
+    e.preventDefault();
+    beginDrag({ kind: 'card', uid, startX: e.clientX, startY: e.clientY, x: e.clientX, y: e.clientY, active: false });
   };
   const startUnitDrag = (e: RPointerEvent, uid: number) => {
     if (e.button !== 0 || !interactive) return;
@@ -241,7 +265,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       s.clickUnit(uid);
       return;
     }
-    setDrag({ kind: 'attack', uid, startX: e.clientX, startY: e.clientY, x: e.clientX, y: e.clientY, active: false });
+    e.preventDefault();
+    beginDrag({ kind: 'attack', uid, startX: e.clientX, startY: e.clientY, x: e.clientX, y: e.clientY, active: false });
   };
 
   // Arrow source for targeting / attack drag.

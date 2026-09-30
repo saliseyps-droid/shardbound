@@ -30,18 +30,13 @@ describe('deck validation', () => {
     expect(issues.some((i) => i.code === 'LEGENDARY_COPIES')).toBe(true);
   });
 
-  it('rejects more than two factions', () => {
+  it('allows only the Warden faction and Neutral cards', () => {
     const e = cardsBy({ faction: 'EMBER' })[0].id;
+    const n = cardsBy({ faction: 'NEUTRAL' })[0].id;
     const v = cardsBy({ faction: 'VERDANT' })[0].id;
-    const t = cardsBy({ faction: 'TIDE' })[0].id;
-    const issues = validateDeck(deck({ [e]: 1, [v]: 1, [t]: 1 }));
-    expect(issues.some((i) => i.code === 'FACTIONS')).toBe(true);
-  });
-
-  it('requires the Warden faction when two factions are used', () => {
-    const v = cardsBy({ faction: 'VERDANT' })[0].id;
-    const t = cardsBy({ faction: 'TIDE' })[0].id;
-    expect(validateDeck(deck({ [v]: 1, [t]: 1 }, 'EMBER')).some((i) => i.code === 'HERO_FACTION')).toBe(true);
+    expect(validateDeck(deck({ [e]: 1, [n]: 1 })).some((i) => i.code === 'FACTIONS')).toBe(false);
+    const issues = validateDeck(deck({ [e]: 1, [v]: 1 }));
+    expect(issues.find((i) => i.code === 'FACTIONS')?.message).toMatch(/only Cinder Legion and Neutral/);
   });
 
   it('flags cards not owned', () => {
@@ -54,8 +49,8 @@ describe('deck validation', () => {
     expect(canAddCard(d, 'emb_kindling_imp', 5)).toMatch(/Max/);
     expect(canAddCard(d, 'emb_flame_jolt', 0)).toBe('Not enough copies owned');
     expect(canAddCard(d, 'emb_flame_jolt', 2)).toBeNull();
-    const withTwo = deck({ emb_kindling_imp: 1, [cardsBy({ faction: 'VERDANT' })[0].id]: 1 });
-    expect(canAddCard(withTwo, cardsBy({ faction: 'TIDE' })[0].id, 2)).toBe('Too many factions');
+    expect(canAddCard(d, cardsBy({ faction: 'TIDE' })[0].id, 2)).toBe('Only Cinder Legion and Neutral cards');
+    expect(canAddCard(d, cardsBy({ faction: 'NEUTRAL' })[0].id, 2)).toBeNull();
   });
 
   it('auto-builds valid decks for every faction', () => {

@@ -66,7 +66,8 @@ export default function DeckEditorScreen() {
   const second = draft ? deckFactions(draft).find((f) => f !== draft.heroFaction) ?? null : null;
   const allowed: Faction[] = useMemo(() => {
     if (!draft) return [];
-    return second ? [draft.heroFaction, second, 'NEUTRAL'] : [...PLAYABLE_FACTIONS, 'NEUTRAL'];
+    // Only the Warden faction and Neutral cards can go into a deck.
+    return [draft.heroFaction, 'NEUTRAL'];
   }, [draft?.heroFaction, second]); // eslint-disable-line react-hooks/exhaustive-deps
   const pool = useMemo(() => filterCards(collectibleCards(), filters, owned, allowed), [filters, owned, allowed]);
   const issues = useMemo(() => (draft ? validateDeck(draft, owned) : []), [draft, owned]);
@@ -144,7 +145,7 @@ export default function DeckEditorScreen() {
 
   const autoComplete = () => {
     if (size >= DECK_RULES.deckSize) return toast('The deck is already full.');
-    const cards = autoBuildDeck({ heroFaction: draft.heroFaction, secondFaction: second, owned, base: draft.cards, seed: Date.now() >>> 0 });
+    const cards = autoBuildDeck({ heroFaction: draft.heroFaction, owned, base: draft.cards, seed: Date.now() >>> 0 });
     const added = deckSize({ cards }) - size;
     setDraft({ ...draft, cards });
     audio.play('buff');

@@ -148,3 +148,15 @@ describe('match rewards', () => {
     expect(s2.rewards.gold).toBe(0);
   });
 });
+
+describe('online matches', () => {
+  it('reward and progress quests like a normal match', () => {
+    const save = fresh();
+    const normal = applyMatchResult(save, summary(), T0);
+    const pvp = applyMatchResult(save, summary({ mode: 'PVP' }), T0);
+    expect(pvp.rewards.gold).toBe(normal.rewards.gold);
+    expect(pvp.rewards.xp).toBe(normal.rewards.xp);
+    expect(pvp.save.quests.active.map((q) => q.progress)).toEqual(normal.save.quests.active.map((q) => q.progress));
+    expect(pvp.save.matchHistory[0].mode).toBe('PVP');
+  });
+});

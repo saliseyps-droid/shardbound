@@ -19,15 +19,17 @@ export const GAME_RULES = {
   maxTriggerResolutionsPerAction: 250,
   maxTriggerDepth: 30,
   /** Seconds per turn for the human player; 0 disables. */
-  turnTimerSeconds: 90,
+  turnTimerSeconds: 120,
+  /** The countdown becomes visible for the last N seconds of the turn. */
+  turnTimerWarningSeconds: 30,
 } as const;
 
 export const DECK_RULES = {
   deckSize: 30,
   maxCopies: 2,
   maxLegendaryCopies: 1,
-  /** Non-neutral factions allowed in a deck (hero faction + one ally faction). */
-  maxFactions: 2,
+  /** Decks may only contain cards of the Warden faction plus Neutral cards. */
+  maxFactions: 1,
   maxDecks: 18,
   maxDeckNameLength: 28,
 } as const;

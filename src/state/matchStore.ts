@@ -690,7 +690,9 @@ export const useMatch = create<MatchStore>((set, get) => {
       const targets = targetsFor(game, { kind: 'card', uid });
       if (targets.length > 0) {
         if (target && targets.includes(entityKey(target))) void dispatch({ type: 'PLAY_CARD', player: HUMAN, cardUid: uid, target, position });
-        // Dropped on the board without a target: ask for one.
+        // Dropped on something that isn't a valid target: the card goes back to the hand.
+        else if (target) toast('Not a valid target.', 'info');
+        // Dropped on the battlefield without a target: ask for one.
         else set({ selection: { kind: 'card', uid }, targets });
         return;
       }

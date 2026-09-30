@@ -63,7 +63,7 @@ function NameModal({ title, initial, confirmLabel, withFaction, onSubmit, onClos
         </label>
         {withFaction && (
           <fieldset className="field">
-            <legend>Warden faction. Decks may add one ally faction plus Neutral cards.</legend>
+            <legend>Warden faction. Decks use cards of this faction plus Neutral cards.</legend>
             <FactionPicker value={faction} onChange={setFaction} />
           </fieldset>
         )}
@@ -187,7 +187,7 @@ export default function DeckListScreen() {
     <div className="screen deck-list-screen">
       <ScreenHeader
         title="Decks"
-        subtitle={`${decks.length} / ${DECK_RULES.maxDecks} decks. Decks hold ${DECK_RULES.deckSize} cards from your Warden faction, one ally faction and Neutral.`}
+        subtitle={`${decks.length} / ${DECK_RULES.maxDecks} decks. Decks hold ${DECK_RULES.deckSize} cards from your Warden faction and Neutral.`}
         actions={
           <button className="btn btn-primary" disabled={full} onClick={() => setCreating(true)} title={full ? 'Deck limit reached' : undefined}>
             New deck
