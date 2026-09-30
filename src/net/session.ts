@@ -10,7 +10,7 @@ import type { GameAction, GameEvent, GameState, SideSetup } from '@/engine/types
  */
 
 export const PROTOCOL_VERSION = 1;
-const ID_PREFIX = 'shardbound-v1-';
+export const ID_PREFIX = 'shardbound-v1-';
 const HEARTBEAT_MS = 4000;
 const TIMEOUT_MS = 15000;
 
@@ -22,8 +22,8 @@ export const CONTENT_HASH = hashString(
 );
 
 export type NetMessage =
-  | { t: 'hello'; protocol: number; content: number; side: SideSetup; deckName: string }
-  | { t: 'welcome'; hostName: string; hostAvatar: string }
+  | { t: 'hello'; protocol: number; content: number; side: SideSetup; deckName: string; meta?: Record<string, unknown> }
+  | { t: 'welcome'; hostName: string; hostAvatar: string; meta?: Record<string, unknown> }
   | { t: 'reject'; reason: string }
   | { t: 'state'; state: GameState; events: GameEvent[]; initial?: boolean }
   /** Sent by the guest in its own (mirrored) coordinates; the host converts it. */
@@ -59,6 +59,8 @@ class NetSession {
   remoteDeckName = '';
   remoteName = '';
   remoteAvatar = 'compass';
+  /** Extra data exchanged on connect (e.g. ranked rating). */
+  remoteMeta: Record<string, unknown> = {};
   private peer: Peer | null = null;
   private conn: DataConnection | null = null;
   private listeners = new Set<Listener>();
@@ -149,17 +151,24 @@ class NetSession {
   }
 
   /** Host: opens a room and resolves when a valid guest has said hello. */
-  async host(hostName: string, hostAvatar: string, validate: (msg: Extract<NetMessage, { t: 'hello' }>) => string | null): Promise<string> {
+  async host(
+    hostName: string,
+    hostAvatar: string,
+    validate: (msg: Extract<NetMessage, { t: 'hello' }>) => string | null,
+    opts: { code?: string; meta?: Record<string, unknown> } = {},
+  ): Promise<string> {
     this.close();
     this.role = 'host';
     this.setStatus('opening');
     let peer: Peer | null = null;
-    for (let attempt = 0; attempt < 3 && !peer; attempt++) {
-      this.code = makeRoomCode();
+    // A fixed code (matchmaking slots, tournament rooms) gets exactly one attempt.
+    const attempts = opts.code ? 1 : 3;
+    for (let attempt = 0; attempt < attempts && !peer; attempt++) {
+      this.code = opts.code ?? makeRoomCode();
       try {
         peer = await this.createPeer(ID_PREFIX + this.code);
       } catch (e) {
-        if (attempt === 2 || !(e as Error).message.includes('taken')) throw e;
+        if (attempt === attempts - 1 || !(e as Error).message.includes('taken')) throw e;
       }
     }
     this.peer = peer!;
@@ -188,8 +197,9 @@ class NetSession {
           this.remoteDeckName = msg.deckName;
           this.remoteName = msg.side.name;
           this.remoteAvatar = msg.side.avatar;
+          this.remoteMeta = msg.meta ?? {};
           this.attach(conn);
-          conn.send({ t: 'welcome', hostName, hostAvatar } satisfies NetMessage);
+          conn.send({ t: 'welcome', hostName, hostAvatar, meta: opts.meta } satisfies NetMessage);
           this.setStatus('connected');
         };
         conn.on('data', onHello);
@@ -199,17 +209,25 @@ class NetSession {
   }
 
   /** Guest: connects to a room code and sends its deck. Resolves on welcome. */
-  async join(code: string, side: SideSetup, deckName: string): Promise<void> {
+  async join(code: string, side: SideSetup, deckName: string, opts: { meta?: Record<string, unknown>; timeoutMs?: number } = {}): Promise<void> {
     this.close();
     this.role = 'guest';
     this.code = code.toUpperCase();
     this.setStatus('connecting');
     this.peer = await this.createPeer();
-    const conn = this.peer.connect(ID_PREFIX + this.code, { reliable: true });
+    const peer = this.peer;
+    const conn = peer.connect(ID_PREFIX + this.code, { reliable: true });
     await new Promise<void>((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('Your friend’s game did not answer. Make sure they are still on the waiting screen.')), 20000);
+      const timer = setTimeout(() => reject(new Error('Your friend’s game did not answer. Make sure they are still on the waiting screen.')), opts.timeoutMs ?? 20000);
+      // Nobody in that room: fail fast instead of waiting for the timeout.
+      peer.on('error', (e: Error & { type?: string }) => {
+        if (e.type === 'peer-unavailable') {
+          clearTimeout(timer);
+          reject(Object.assign(new Error('This room is empty.'), { type: 'peer-unavailable' }));
+        }
+      });
       conn.on('open', () => {
-        conn.send({ t: 'hello', protocol: PROTOCOL_VERSION, content: CONTENT_HASH, side, deckName } satisfies NetMessage);
+        conn.send({ t: 'hello', protocol: PROTOCOL_VERSION, content: CONTENT_HASH, side, deckName, meta: opts.meta } satisfies NetMessage);
       });
       conn.on('data', (raw) => {
         const msg = raw as NetMessage;
@@ -217,12 +235,13 @@ class NetSession {
           clearTimeout(timer);
           this.remoteName = msg.hostName;
           this.remoteAvatar = msg.hostAvatar;
+          this.remoteMeta = msg.meta ?? {};
           this.attach(conn);
           this.setStatus('connected');
           resolve();
         } else if (msg?.t === 'reject') {
           clearTimeout(timer);
-          reject(new Error(msg.reason));
+          reject(Object.assign(new Error(msg.reason), { type: 'rejected' }));
         }
       });
       conn.on('error', (e) => {
@@ -250,8 +269,12 @@ class NetSession {
     this.peer = null;
     this.conn = null;
     this.remoteSide = null;
+    this.remoteMeta = {};
     if (this.status !== 'idle') this.setStatus('idle');
   }
 }
 
 export const netSession = new NetSession();
+
+/** Peer id for a room code (used by matchmaking/tournament helpers). */
+export const roomPeerId = (code: string) => ID_PREFIX + code;

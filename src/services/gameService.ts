@@ -12,7 +12,7 @@ import { createNewSave } from '@/domain/newAccount';
 import type { PackCard } from '@/domain/packs';
 import { grantXp, type LevelUp } from '@/domain/progression';
 import { applyQuestProgress, claimQuest, refreshQuests, rerollQuest } from '@/domain/quests';
-import { emptyVariants, type GameSave } from '@/domain/save';
+import { emptyVariants, pushReward, type GameSave } from '@/domain/save';
 import { applyRedeem, findCode } from '@/domain/redeem';
 import { migrateSave } from '@/persistence/migrations';
 import { SaveGateway } from '@/persistence/repositories';
@@ -294,6 +294,12 @@ export class GameService {
     const res = claimDaily(this.require(), this.now(), createRng(randomSeed()));
     if (res.ok) this.commit(res.value.save);
     return res.ok ? ok({ reward: res.value.reward, cardId: res.value.cardId }) : res;
+  }
+
+  /** Tournament placement prize (awarded once per finished tournament by the tournament store). */
+  grantTournamentPrize(gold: number, source: string) {
+    const save = this.require();
+    this.commit(pushReward({ ...save, profile: { ...save.profile, gold: save.profile.gold + gold } }, { source, gold }, this.now()));
   }
 
   // -------------------------------------------------------------------------

@@ -98,6 +98,11 @@ let matchGen = 0;
 let recordedGen = -1;
 /** Initial online state received by the guest before its board mounted. */
 let pendingInitial: GameState | null = null;
+/** Set by the tournament store: called once when a tournament match finishes. */
+let onTournamentMatchEnd: ((matchId: string, won: boolean) => void) | null = null;
+export function setTournamentMatchHandler(fn: ((matchId: string, won: boolean) => void) | null) {
+  onTournamentMatchEnd = fn;
+}
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -445,6 +450,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     try {
       const rewards = gameService.recordMatch({
         mode: cfg.mode === 'ONLINE' ? 'PVP' : cfg.mode,
+        ranked: cfg.mode === 'RANKED' && cfg.opponentRating !== undefined ? { opponentRating: cfg.opponentRating } : undefined,
         opponentId: cfg.opponent.id,
         opponentName: cfg.opponent.name,
         difficulty: cfg.opponent.difficulty,
@@ -460,6 +466,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         firstWinReward: cfg.mode === 'PVE' ? cfg.opponent.firstWinReward : undefined,
       });
       set({ rewards });
+      if (cfg.mode === 'TOURNAMENT' && cfg.tournamentMatchId) onTournamentMatchEnd?.(cfg.tournamentMatchId, result === 'WIN');
       if (rewards.levelUps.length) setTimeout(() => audio.play('levelUp'), 1200);
     } catch (e) {
       console.error('[match] failed to record result', e);

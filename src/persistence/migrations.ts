@@ -4,6 +4,7 @@ import { PLAYABLE_FACTIONS, VARIANTS } from '@/game/types';
 import type { Deck } from '@/domain/decks';
 import { CURRENT_SAVE_VERSION, emptyVariants, type GameSave } from '@/domain/save';
 import { createNewSave } from '@/domain/newAccount';
+import { newRanked } from '@/domain/ranked';
 
 export interface MigrationReport {
   save: GameSave;
@@ -36,6 +37,13 @@ const MIGRATIONS: ((raw: Raw, notes: string[]) => Raw)[] = [
   }),
   // v3 -> v4: redeem codes.
   (raw) => ({ ...raw, redeemedCodes: Array.isArray(raw.redeemedCodes) ? raw.redeemedCodes : [], saveVersion: 4 }),
+  // v4 -> v5: ranked ladder.
+  (raw) => ({
+    ...raw,
+    // Only a real profile object is upgraded; anything else stays invalid and is reported as corrupted.
+    profile: raw.profile && typeof raw.profile === 'object' ? { ...raw.profile, ranked: raw.profile.ranked ?? newRanked() } : raw.profile,
+    saveVersion: 5,
+  }),
 ];
 
 const num = (v: unknown, fallback: number, min = 0) => (typeof v === 'number' && Number.isFinite(v) ? Math.max(min, v) : fallback);
@@ -62,6 +70,8 @@ export function migrateSave(input: Raw): MigrationReport {
     p[k] = fixed;
   }
   if (!Array.isArray(p.titles)) p.titles = [];
+  const r = p.ranked && typeof p.ranked === 'object' ? p.ranked : newRanked();
+  p.ranked = { rating: num(r.rating, 1000, 100), peak: num(r.peak, 1000, 100), wins: Math.floor(num(r.wins, 0)), losses: Math.floor(num(r.losses, 0)) };
 
   // Collection: drop unknown cards and invalid counts.
   const cards: GameSave['collection']['cards'] = {};

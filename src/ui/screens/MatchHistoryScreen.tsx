@@ -8,7 +8,7 @@ import { DIFFICULTY_INFO } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
 
 type Filter = 'ALL' | 'WIN' | 'LOSS' | 'DRAW';
-const MODE_LABEL = { PRACTICE: 'Practice', PVE: 'Campaign', TUTORIAL: 'Tutorial', PVP: 'Online' } as const;
+const MODE_LABEL = { PRACTICE: 'Practice', PVE: 'Campaign', TUTORIAL: 'Tutorial', PVP: 'Online', RANKED: 'Ranked', TOURNAMENT: 'Tournament' } as const;
 
 function duration(ms: number) {
   if (!ms || ms < 0) return '—';

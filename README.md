@@ -128,6 +128,14 @@ Play → *Play a friend online* creates a match link (`#/join/CODE`). The friend
 - Heartbeat-based disconnect detection; the remaining player wins. Online matches give the same Gold, XP and quest progress as normal matches.
 - Limitation: collection ownership of the guest can't be verified without a server, and the host's own browser technically holds full state.
 
+### Ranked
+
+Play → *Ranked* → *Find match*. Without a server, searching players meet through a fixed pool of public matchmaking slots (`src/net/matchmaking.ts`): a searcher joins anyone already waiting, otherwise claims a free slot and waits, then rescans. Ratings are Elo (K = 32, start 1000) with tiers Bronze → Crown (`src/domain/ranked.ts`), stored on the account.
+
+### Tournament
+
+Play → *Tournament*: one player creates a tournament and shares the code; 2–4 humans join and bots fill the empty seats of a 4-player knockout (semi-finals → final). The organizer's browser keeps the bracket (`src/domain/tournament.ts`, `src/state/tournamentStore.ts`); human-vs-human matches run over their own 1v1 connection, human-vs-bot matches locally, bot-vs-bot matches are simulated with the real engine. Champion +250 Gold, runner-up +100 Gold, plus normal match rewards.
+
 ## Deployment
 
 Pushing to `main` runs `.github/workflows/deploy.yml`: install → tests → build → GitHub Pages.

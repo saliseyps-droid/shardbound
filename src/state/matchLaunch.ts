@@ -2,7 +2,11 @@ import { create } from 'zustand';
 import type { OpponentDef } from '@/data/opponents';
 
 export interface MatchConfig {
-  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE';
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE' | 'RANKED' | 'TOURNAMENT';
+  /** Ranked: the opponent's rating when the match was found. */
+  opponentRating?: number;
+  /** Tournament: which bracket match this is. */
+  tournamentMatchId?: string;
   /** Online role: the host runs the authoritative engine. */
   online?: 'host' | 'guest';
   deckId: string | null;

@@ -190,7 +190,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
     <div className={`match-overlay results ${win ? 'is-win' : draw ? 'is-draw' : 'is-loss'}`} role="dialog" aria-label={win ? 'Victory' : draw ? 'Draw' : 'Defeat'}>
       <h1 className="results-title">{win ? 'Victory' : draw ? 'Draw' : 'Defeat'}</h1>
       <p className="muted">
-        {config?.online ? `Online match against ${config.opponent.name}` : `Against ${config?.opponent.name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`}
+        {config?.mode === 'TOURNAMENT' ? `Tournament match against ${config.opponent.name}` : config?.mode === 'RANKED' ? `Ranked match against ${config.opponent.name}` : config?.online ? `Online match against ${config.opponent.name}` : `Against ${config?.opponent.name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`}
         {game.endReason === 'CONCEDE' ? ', by concession' : ''}
       </p>
       <div className="results-grid">
@@ -245,6 +245,11 @@ export function ResultsOverlay({ game }: { game: GameState }) {
             </div>
           )}
           {rewards?.firstClear && <p className="gold-text">Encounter cleared for the first time!</p>}
+          {rewards?.ratingChange !== undefined && (
+            <p className="rating-change">
+              Ranked rating <strong className={rewards.ratingChange >= 0 ? 'up' : 'down'}>{rewards.ratingChange >= 0 ? '+' : ''}{rewards.ratingChange}</strong> → {rewards.ratingAfter}
+            </p>
+          )}
         </div>
         {config?.mode !== 'TUTORIAL' && quests.length > 0 && (
           <div className="panel results-quests">
@@ -270,15 +275,15 @@ export function ResultsOverlay({ game }: { game: GameState }) {
           </button>
         ) : (
           <>
-            <button className="btn btn-ghost" onClick={() => exit(config?.mode === 'PVE' ? '/campaign' : config?.online ? '/online' : '/play')}>
-              {config?.mode === 'PVE' ? 'Back to campaign' : config?.online ? 'New online match' : 'Choose opponent'}
+            <button className="btn btn-ghost" onClick={() => exit(config?.mode === 'PVE' ? '/campaign' : config?.mode === 'TOURNAMENT' ? '/tournament' : config?.mode === 'RANKED' ? '/ranked' : config?.online ? '/online' : '/play')}>
+              {config?.mode === 'PVE' ? 'Back to campaign' : config?.mode === 'TOURNAMENT' ? 'Back to bracket' : config?.mode === 'RANKED' ? 'Ranked' : config?.online ? 'New online match' : 'Choose opponent'}
             </button>
-            {!config?.online && (
+            {!config?.online && config?.mode !== 'TOURNAMENT' && (
               <button className="btn" onClick={rematch}>
                 Rematch
               </button>
             )}
-            <button className="btn btn-primary btn-lg" onClick={() => exit('/')} autoFocus>
+            <button className="btn btn-primary btn-lg" onClick={() => exit(config?.mode === 'TOURNAMENT' ? '/tournament' : '/')} autoFocus>
               Continue
             </button>
           </>

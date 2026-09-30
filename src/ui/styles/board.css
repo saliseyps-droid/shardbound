@@ -502,3 +502,6 @@
 .permanent .perm-count { z-index: 1; }
 /* Charge / duration counter centred at the bottom so the hexagon's slanted edges don't clip it. */
 .permanent .perm-count { right: auto; left: 50%; bottom: 3px; transform: translateX(-50%); line-height: 1; }
+.rating-change { font-weight: 600; }
+.rating-change .up { color: var(--heal); }
+.rating-change .down { color: var(--damage); }

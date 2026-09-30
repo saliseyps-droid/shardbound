@@ -2,6 +2,7 @@ import { STARTING_CURRENCY } from '@/config/economy';
 import { STARTER_DECKS, starterCardIds, starterDeckCards } from '@/data/starterDecks';
 import { PLAYABLE_FACTIONS } from '@/game/types';
 import type { Deck } from './decks';
+import { newRanked } from './ranked';
 import { CURRENT_SAVE_VERSION, emptyVariants, type GameSave } from './save';
 
 /** Copies of each starter card granted to new accounts. */
@@ -50,6 +51,7 @@ export function createNewSave(username: string, avatar: string, now: number, id:
       winsToday: 0,
       winsTodayDay: null,
       factionWins: {},
+      ranked: newRanked(),
     },
     collection: { cards, unseen: [] },
     decks,

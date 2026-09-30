@@ -4,6 +4,7 @@ import type { MatchStats } from '@/engine/types';
 import type { OpponentReward } from '@/data/opponents';
 import type { PlayableFaction, SetId } from '@/game/types';
 import { grantXp, type LevelUp } from './progression';
+import { applyRanked } from './ranked';
 import { applyQuestProgress, type QuestProgressEvent } from './quests';
 import { addCards, MATCH_HISTORY_LIMIT, pushReward, type GameSave, type MatchRecord, type Quest } from './save';
 
@@ -23,6 +24,8 @@ export interface MatchSummary {
   /** PvE encounter first-clear reward (applied only on first win). */
   pveEncounterId?: string;
   firstWinReward?: OpponentReward;
+  /** Ranked online match: the opponent's rating at match start. */
+  ranked?: { opponentRating: number };
 }
 
 export interface RewardLine {
@@ -44,6 +47,9 @@ export interface MatchRewards {
   firstClear: boolean;
   levelBefore: number;
   xpBefore: number;
+  /** Ranked rating change (ranked matches only). */
+  ratingChange?: number;
+  ratingAfter?: number;
 }
 
 export function questEventsFromMatch(summary: MatchSummary): QuestProgressEvent[] {
@@ -166,6 +172,13 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
     questsCompleted = q.completed;
   }
 
+  let ratingChange: number | undefined;
+  if (summary.ranked && summary.mode === 'RANKED') {
+    const r = applyRanked(s.profile.ranked, summary.ranked.opponentRating, summary.result);
+    ratingChange = r.delta;
+    s = { ...s, profile: { ...s.profile, ranked: r.state } };
+  }
+
   const xpResult = grantXp(s, xp, now);
   s = xpResult.save;
 
@@ -188,11 +201,12 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
     goldEarned: gold,
     xpEarned: xp,
     conceded: summary.conceded,
+    ratingChange,
   };
   s = { ...s, matchHistory: [record, ...s.matchHistory].slice(0, MATCH_HISTORY_LIMIT) };
   if (gold || xp || essence) {
     s = pushReward(s, { source: `${summary.result === 'WIN' ? 'Victory' : summary.result === 'DRAW' ? 'Draw' : 'Defeat'} vs ${summary.opponentName}`, gold: gold || undefined, xp: xp || undefined, essence: essence || undefined }, now);
   }
 
-  return { save: s, rewards: { gold, xp, essence, lines, levelUps: xpResult.levelUps, questsCompleted, firstClear, levelBefore, xpBefore } };
+  return { save: s, rewards: { gold, xp, essence, lines, levelUps: xpResult.levelUps, questsCompleted, firstClear, levelBefore, xpBefore, ratingChange, ratingAfter: ratingChange !== undefined ? s.profile.ranked.rating : undefined } };
 }

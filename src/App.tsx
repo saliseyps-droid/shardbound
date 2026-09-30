@@ -26,6 +26,8 @@ const SettingsScreen = lazy(() => import('@/ui/screens/SettingsScreen'));
 const LoreScreen = lazy(() => import('@/ui/screens/LoreScreen'));
 const OnlineScreen = lazy(() => import('@/ui/screens/OnlineScreen'));
 const JoinScreen = lazy(() => import('@/ui/screens/JoinScreen'));
+const RankedScreen = lazy(() => import('@/ui/screens/RankedScreen'));
+const TournamentScreen = lazy(() => import('@/ui/screens/TournamentScreen'));
 const DebugScreen = import.meta.env.DEV ? lazy(() => import('@/ui/screens/DebugScreen')) : null;
 
 function Shell() {
@@ -54,6 +56,8 @@ function Shell() {
               <Route path="/lore" element={<LoreScreen />} />
               <Route path="/online" element={<OnlineScreen />} />
               <Route path="/join/:code" element={<JoinScreen />} />
+              <Route path="/ranked" element={<RankedScreen />} />
+              <Route path="/tournament" element={<TournamentScreen />} />
               {DebugScreen && <Route path="/debug" element={<DebugScreen />} />}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
@@ -105,7 +109,7 @@ export default function App() {
 
 // Dev-only hooks for automated UI checks (never included in production builds).
 if (import.meta.env.DEV && typeof window !== 'undefined') {
-  void Promise.all([import('@/state/matchLaunch'), import('@/data/opponents'), import('@/state/matchStore'), import('@/net/session')]).then(([launch, opponents, match, net]) => {
-    Object.assign(window as unknown as Record<string, unknown>, { __tcg: { gameService, useAccount, launch, opponents, match, net } });
+  void Promise.all([import('@/state/matchLaunch'), import('@/data/opponents'), import('@/state/matchStore'), import('@/net/session'), import('@/state/tournamentStore')]).then(([launch, opponents, match, net, tour]) => {
+    Object.assign(window as unknown as Record<string, unknown>, { __tcg: { gameService, useAccount, launch, opponents, match, net, tour: tour.useTournament } });
   });
 }

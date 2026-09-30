@@ -2,8 +2,9 @@ import type { Difficulty } from '@/config/progression';
 import type { QuestType } from '@/config/quests';
 import type { PlayableFaction, SetId, Variant } from '@/game/types';
 import type { Deck } from './decks';
+import type { RankedState } from './ranked';
 
-export const CURRENT_SAVE_VERSION = 4;
+export const CURRENT_SAVE_VERSION = 5;
 
 export interface PlayerProfile {
   id: string;
@@ -33,6 +34,8 @@ export interface PlayerProfile {
   winsToday: number;
   winsTodayDay: string | null;
   factionWins: Partial<Record<PlayableFaction, number>>;
+  /** Ranked online ladder. */
+  ranked: RankedState;
 }
 
 export type VariantCounts = Record<Variant, number>;
@@ -89,7 +92,9 @@ export interface MatchRecord {
   id: string;
   date: number;
   durationMs: number;
-  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'PVP';
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'PVP' | 'RANKED' | 'TOURNAMENT';
+  /** Ranked rating change, when ranked. */
+  ratingChange?: number;
   opponentId: string;
   opponentName: string;
   difficulty: Difficulty;

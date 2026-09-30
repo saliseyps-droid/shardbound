@@ -96,6 +96,28 @@ export default function PlayScreen() {
           {!validDeck && <p className="deckbox-issue">Choose a valid 30-card deck to play.</p>}
 
           <div className="tutorial-card online-card">
+            <Glyph name="trophy" size={28} />
+            <div>
+              <strong>Ranked</strong>
+              <span className="muted">Get matched against a random player who is searching right now and climb the ladder.</span>
+            </div>
+            <Link className="btn btn-sm btn-cyan" to="/ranked">
+              Find match
+            </Link>
+          </div>
+
+          <div className="tutorial-card online-card">
+            <Glyph name="crown" size={28} />
+            <div>
+              <strong>Tournament</strong>
+              <span className="muted">A 4-player knockout for 2–4 friends; bots fill the empty seats.</span>
+            </div>
+            <Link className="btn btn-sm btn-cyan" to="/tournament">
+              Open
+            </Link>
+          </div>
+
+          <div className="tutorial-card online-card">
             <Glyph name="person" size={28} />
             <div>
               <strong>Play a friend online</strong>
