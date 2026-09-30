@@ -27,6 +27,7 @@ const LoreScreen = lazy(() => import('@/ui/screens/LoreScreen'));
 const OnlineScreen = lazy(() => import('@/ui/screens/OnlineScreen'));
 const JoinScreen = lazy(() => import('@/ui/screens/JoinScreen'));
 const RankedScreen = lazy(() => import('@/ui/screens/RankedScreen'));
+const PatchNotesScreen = lazy(() => import('@/ui/screens/PatchNotesScreen'));
 const TournamentScreen = lazy(() => import('@/ui/screens/TournamentScreen'));
 const DebugScreen = import.meta.env.DEV ? lazy(() => import('@/ui/screens/DebugScreen')) : null;
 
@@ -57,6 +58,7 @@ function Shell() {
               <Route path="/online" element={<OnlineScreen />} />
               <Route path="/join/:code" element={<JoinScreen />} />
               <Route path="/ranked" element={<RankedScreen />} />
+              <Route path="/patch-notes" element={<PatchNotesScreen />} />
               <Route path="/tournament" element={<TournamentScreen />} />
               {DebugScreen && <Route path="/debug" element={<DebugScreen />} />}
               <Route path="*" element={<Navigate to="/" replace />} />

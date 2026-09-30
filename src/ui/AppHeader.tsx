@@ -6,6 +6,7 @@ import { Essence, Gold, Packs, ProgressBar } from './components/common';
 import { Glyph } from './components/Icons';
 import { audio } from '@/audio/audioService';
 import { useT, type MessageKey } from '@/i18n';
+import { usePatchNotesSeen } from './patchNotesSeen';
 
 const NAV: { to: string; label: MessageKey; icon: string }[] = [
   { to: '/', label: 'nav.home', icon: 'home' },
@@ -17,6 +18,7 @@ const NAV: { to: string; label: MessageKey; icon: string }[] = [
   { to: '/shop', label: 'nav.shop', icon: 'coin' },
   { to: '/quests', label: 'nav.quests', icon: 'scroll2' },
   { to: '/profile', label: 'nav.profile', icon: 'person' },
+  { to: '/patch-notes', label: 'nav.patchNotes', icon: 'scroll' },
 ];
 
 export function AppHeader() {
@@ -24,6 +26,7 @@ export function AppHeader() {
   const packs = useAccount((s) => Object.values(s.save?.economy.packs ?? {}).reduce((a, b) => a + (b ?? 0), 0));
   const claimable = useAccount((s) => s.save?.quests.active.filter((q) => q.completed && !q.claimed).length ?? 0);
   const t = useT();
+  const patchSeen = usePatchNotesSeen((s) => s.seen);
   if (!profile) return null;
   const need = xpToNext(profile.level);
   return (
@@ -39,6 +42,7 @@ export function AppHeader() {
             <span>{t(n.label)}</span>
             {n.to === '/quests' && claimable > 0 && <span className="nav-dot" aria-label={`${claimable} rewards to claim`} />}
             {n.to === '/packs' && packs > 0 && <span className="nav-count">{packs}</span>}
+            {n.to === '/patch-notes' && !patchSeen && <span className="nav-dot" aria-label="New patch notes" />}
           </NavLink>
         ))}
       </nav>

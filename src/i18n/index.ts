@@ -15,6 +15,7 @@ const en = {
   'nav.shop': 'Shop',
   'nav.quests': 'Quests',
   'nav.profile': 'Profile',
+  'nav.patchNotes': 'Patch notes',
   'match.endTurn': 'End turn',
   'match.enemyTurn': 'Enemy turn',
   'match.thinking': 'Thinking…',
