@@ -64,7 +64,7 @@ export default function CampaignScreen() {
         }
       />
       <div className="campaign-layout">
-        <div className="chapters">
+        <div className="chapters panel">
           {CAMPAIGN.map((ch, ci) => {
             const chCleared = ch.encounters.filter((e) => isCleared(save, e.id)).length;
             const chLocked = !isUnlocked(save, ch.encounters[0].id);

@@ -327,3 +327,8 @@ label.toggle-row { cursor: pointer; }
 .redeem-form { display: grid; gap: 6px; margin-top: var(--space-4); width: 100%; }
 .redeem-row { display: flex; gap: var(--space-2); }
 .redeem-row .input { flex: 1; min-width: 0; }
+
+/* Home: large Warden portrait next to the player's name. */
+.home-hero-warden .warden-sigil { width: clamp(120px, 9.5vw, 170px); height: calc(clamp(120px, 9.5vw, 170px) * 1.14); }
+/* Containers that host a filled Warden portrait must be positioning parents. */
+.enc-portrait, .enc-sigil { position: relative; }
