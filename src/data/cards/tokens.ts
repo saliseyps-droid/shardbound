@@ -1,0 +1,53 @@
+import type { CardDefinition } from '@/game/types';
+
+/** Non-collectible cards created by effects. */
+export const TOKEN_CARDS: CardDefinition[] = [
+  {
+    id: 'token_aether_shard',
+    name: 'Aether Shard',
+    cardType: 'SPELL',
+    faction: 'NEUTRAL',
+    rarity: 'COMMON',
+    manaCost: 0,
+    set: 'CORE',
+    collectible: false,
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'GAIN_ENERGY', amount: 1 }] }],
+    flavorText: 'A sliver of the Crown, humming with borrowed time.',
+  },
+  {
+    id: 'token_mote_insight',
+    name: 'Mote of Insight',
+    cardType: 'SPELL',
+    faction: 'ASTRAL',
+    rarity: 'COMMON',
+    manaCost: 1,
+    set: 'CORE',
+    collectible: false,
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY' }, { type: 'DRAW_CARDS', amount: 1, condition: { kind: 'SPELLS_CAST_THIS_TURN_GTE', n: 2 } }] }],
+  },
+  { id: 'token_hollow_wisp', name: 'Hollow Wisp', cardType: 'UNIT', faction: 'VOID', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, set: 'CORE', collectible: false, tags: ['Wraith'] },
+  { id: 'token_ember_imp', name: 'Ember Imp', cardType: 'UNIT', faction: 'EMBER', rarity: 'COMMON', manaCost: 1, attack: 2, health: 1, set: 'CORE', collectible: false, tags: ['Elemental'] },
+  { id: 'token_sapling', name: 'Sapling', cardType: 'UNIT', faction: 'VERDANT', rarity: 'COMMON', manaCost: 1, attack: 1, health: 2, set: 'CORE', collectible: false, tags: ['Treant'] },
+  { id: 'token_treant', name: 'Elder Treant', cardType: 'UNIT', faction: 'VERDANT', rarity: 'COMMON', manaCost: 4, attack: 3, health: 4, keywords: ['GUARD'], set: 'CORE', collectible: false, tags: ['Treant'] },
+  { id: 'token_wolf', name: 'Thornpelt Wolf', cardType: 'UNIT', faction: 'VERDANT', rarity: 'COMMON', manaCost: 2, attack: 2, health: 2, keywords: ['RUSH'], set: 'CORE', collectible: false, tags: ['Beast'] },
+  { id: 'token_scrapbot', name: 'Scrapbot', cardType: 'UNIT', faction: 'IRON', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, set: 'CORE', collectible: false, tags: ['Construct'] },
+  { id: 'token_sentry', name: 'Brass Sentry', cardType: 'UNIT', faction: 'IRON', rarity: 'COMMON', manaCost: 2, attack: 2, health: 3, keywords: ['GUARD'], set: 'CORE', collectible: false, tags: ['Construct'] },
+  { id: 'token_star_fragment', name: 'Star Fragment', cardType: 'UNIT', faction: 'ASTRAL', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, keywords: ['EMPOWER'], keywordValues: { EMPOWER: 1 }, set: 'CORE', collectible: false, tags: ['Spirit'] },
+  { id: 'token_skeleton', name: 'Risen Bones', cardType: 'UNIT', faction: 'VOID', rarity: 'COMMON', manaCost: 2, attack: 2, health: 2, set: 'CORE', collectible: false, tags: ['Undead'] },
+  { id: 'token_horror', name: 'Hollow Horror', cardType: 'UNIT', faction: 'VOID', rarity: 'COMMON', manaCost: 5, attack: 5, health: 5, set: 'CORE', collectible: false, tags: ['Wraith'] },
+  { id: 'token_ice_shard', name: 'Rime Shard', cardType: 'SPELL', faction: 'TIDE', rarity: 'COMMON', manaCost: 1, set: 'CORE', collectible: false, target: { kind: 'ENEMY_UNIT' }, abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'TARGET' }, { type: 'APPLY_STATUS', status: 'FROZEN', target: 'TARGET' }] }] },
+  { id: 'token_tidepup', name: 'Tidepup', cardType: 'UNIT', faction: 'TIDE', rarity: 'COMMON', manaCost: 1, attack: 1, health: 2, set: 'CORE', collectible: false, tags: ['Leviathan'] },
+  { id: 'token_frog', name: 'Bog Toad', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'COMMON', manaCost: 0, attack: 0, health: 1, set: 'CORE', collectible: false, tags: ['Beast'] },
+  { id: 'token_recruit', name: 'Caravan Recruit', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, set: 'CORE', collectible: false },
+  { id: 'token_drakeling', name: 'Cinder Drakeling', cardType: 'UNIT', faction: 'EMBER', rarity: 'COMMON', manaCost: 2, attack: 2, health: 2, keywords: ['SWIFT'], set: 'CORE', collectible: false, tags: ['Drake'] },
+  { id: 'token_golem', name: 'Siege Golem', cardType: 'UNIT', faction: 'IRON', rarity: 'COMMON', manaCost: 6, attack: 6, health: 6, keywords: ['GUARD'], set: 'CORE', collectible: false, tags: ['Construct'] },
+  { id: 'token_kraken_tentacle', name: 'Grasping Tentacle', cardType: 'UNIT', faction: 'TIDE', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, keywords: ['GUARD'], set: 'DEEP', collectible: false, tags: ['Leviathan'] },
+  // Placeholder the AI substitutes for hidden cards (never appears in real games).
+  { id: 'token_unknown', name: 'Unknown Card', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'COMMON', manaCost: 3, attack: 3, health: 3, set: 'CORE', collectible: false },
+  // Tutorial-only units
+  { id: 'tut_squire', name: 'Shard Squire', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'COMMON', manaCost: 1, attack: 1, health: 2, set: 'CORE', collectible: false },
+  { id: 'tut_knight', name: 'Crownguard Knight', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'COMMON', manaCost: 2, attack: 3, health: 2, set: 'CORE', collectible: false },
+  { id: 'tut_bolt', name: 'Spark Bolt', cardType: 'SPELL', faction: 'NEUTRAL', rarity: 'COMMON', manaCost: 1, set: 'CORE', collectible: false, target: { kind: 'ANY' }, abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'TARGET' }] }] },
+  { id: 'tut_dummy', name: 'Training Dummy', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'COMMON', manaCost: 1, attack: 0, health: 2, set: 'CORE', collectible: false, keywords: ['GUARD'] },
+  { id: 'tut_goblin', name: 'Scrap Goblin', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, set: 'CORE', collectible: false },
+];

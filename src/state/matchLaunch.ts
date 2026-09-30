@@ -1,0 +1,29 @@
+import { create } from 'zustand';
+import type { OpponentDef } from '@/data/opponents';
+
+export interface MatchConfig {
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE';
+  /** Online role: the host runs the authoritative engine. */
+  online?: 'host' | 'guest';
+  deckId: string | null;
+  opponent: OpponentDef;
+  encounterId?: string;
+  /** Debug: force a seed. */
+  seed?: number;
+}
+
+interface LaunchStore {
+  config: MatchConfig | null;
+  setConfig: (c: MatchConfig | null) => void;
+}
+
+export const useMatchLaunch = create<LaunchStore>((set) => ({
+  config: null,
+  setConfig: (config) => set({ config }),
+}));
+
+/** Queue a match and navigate to the board. */
+export function launchMatch(config: MatchConfig, navigate: (path: string) => void) {
+  useMatchLaunch.getState().setConfig(config);
+  navigate('/match');
+}

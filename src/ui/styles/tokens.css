@@ -1,0 +1,80 @@
+/* Design tokens — Shardbound.
+   Motif: faceted crystal shards (chamfered corners) over twilight ink. */
+:root {
+  --ink-0: #14122a;
+  --ink-1: #1d1a33;
+  --ink-2: #2a2547;
+  --ink-3: #383159;
+  --ink-4: #4a4270;
+  --line: rgba(239, 228, 200, 0.14);
+  --line-strong: rgba(239, 228, 200, 0.3);
+
+  --parchment: #efe4c8;
+  --parchment-dim: #b9ae95;
+  --parchment-faint: #857c6c;
+
+  --gold: #e8b04b;
+  --gold-bright: #ffd27a;
+  --gold-deep: #9a6a1c;
+  --cyan: #72dfe6;
+  --cyan-deep: #2c8b93;
+  --damage: #ff6b5a;
+  --heal: #7ef29a;
+  --buff: #ffd27a;
+  --essence: #c59bff;
+
+  --rarity-common: #c9c3b6;
+  --rarity-rare: #58a8ff;
+  --rarity-epic: #b565ff;
+  --rarity-legendary: #ffa931;
+
+  --f-ember: #ff6a3d;
+  --f-verdant: #5fcf6a;
+  --f-iron: #d8a24a;
+  --f-astral: #7ea6ff;
+  --f-void: #b061ff;
+  --f-tide: #3fd3d3;
+  --f-neutral: #b9b3a8;
+
+  --font-display: 'Almendra', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  --font-body: 'Alegreya Sans', 'Segoe UI', 'Trebuchet MS', system-ui, sans-serif;
+  --font-num: 'Alegreya Sans SC', 'Alegreya Sans', 'Segoe UI', sans-serif;
+
+  /* Type scale (1.25 minor third-ish) */
+  --t-xs: 0.78rem;
+  --t-sm: 0.88rem;
+  --t-md: 1rem;
+  --t-lg: 1.25rem;
+  --t-xl: 1.6rem;
+  --t-2xl: 2.1rem;
+  --t-3xl: 3rem;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Facet size for chamfered shapes */
+  --facet: 10px;
+  --facet-lg: 18px;
+
+  --shadow-deep: 0 18px 40px -12px rgba(5, 3, 20, 0.75);
+  --shadow-lift: 0 10px 24px -8px rgba(5, 3, 20, 0.7);
+  --glow-gold: 0 0 0 2px var(--gold), 0 0 18px rgba(232, 176, 75, 0.55);
+  --glow-cyan: 0 0 0 2px var(--cyan), 0 0 16px rgba(114, 223, 230, 0.6);
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --anim-scale: 1;
+
+  --header-h: 60px;
+  color-scheme: dark;
+}
+
+/* Chamfered facet clip — the recurring shard silhouette. */
+.facet {
+  clip-path: polygon(var(--facet) 0, calc(100% - var(--facet)) 0, 100% var(--facet), 100% calc(100% - var(--facet)), calc(100% - var(--facet)) 100%, var(--facet) 100%, 0 calc(100% - var(--facet)), 0 var(--facet));
+}

@@ -1,0 +1,11 @@
+.online-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 460px); gap: var(--space-5); align-items: start; }
+.online-host { display: grid; gap: var(--space-3); justify-items: start; }
+.online-host .spinner { justify-self: center; }
+.invite-row { display: flex; gap: var(--space-2); width: 100%; }
+.invite-row .input { flex: 1; min-width: 0; }
+.invite-link { font-size: var(--t-sm); }
+.room-code { font: 800 var(--t-xl) var(--font-body); letter-spacing: 0.12em; color: var(--cyan); }
+.online-warning { color: var(--gold-bright); border-left: 3px solid var(--gold); padding-left: var(--space-3); }
+.online-error { color: var(--damage); border-left: 3px solid var(--damage); padding-left: var(--space-3); }
+.online-card { border-left-color: var(--cyan); }
+@media (max-width: 1000px) { .online-grid { grid-template-columns: 1fr; } }

@@ -1,0 +1,66 @@
+/* Shop */
+.shop-wallet { padding: 6px 16px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--line); border-radius: 999px; }
+.shop-sets { display: grid; grid-template-columns: repeat(auto-fit, minmax(520px, 1fr)); gap: var(--space-5); margin-bottom: var(--space-5); }
+@media (max-width: 1150px) { .shop-sets { grid-template-columns: 1fr; } }
+
+.shop-set { display: grid; grid-template-columns: auto 1fr; gap: var(--space-5); align-items: center; overflow: hidden; }
+.shop-set::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.35;
+  background: radial-gradient(420px 260px at 12% 50%, var(--set-glow), transparent 70%);
+}
+.set-core { --set-glow: rgba(232, 176, 75, 0.45); }
+.set-deep { --set-glow: rgba(111, 224, 212, 0.4); }
+.shop-set-art { position: relative; padding: var(--space-3); }
+.shop-set-body { position: relative; min-width: 0; }
+.shop-set-body h3 { margin-bottom: var(--space-1); }
+
+.booster { position: relative; aspect-ratio: 2 / 3; filter: drop-shadow(0 16px 22px rgba(4, 2, 16, 0.7)); }
+.booster svg { display: block; }
+.booster .booster-sheen { animation: booster-sheen 4.5s ease-in-out infinite; }
+@keyframes booster-sheen {
+  0%, 55% { transform: skewX(-18deg) translateX(0); }
+  100% { transform: skewX(-18deg) translateX(560px); }
+}
+.shop-pack { transition: transform 0.35s var(--ease-spring); transform: rotate(-4deg); }
+.shop-set:hover .shop-pack { transform: rotate(0deg) translateY(-6px) scale(1.03); }
+.shop-set.just-bought .shop-pack { animation: pack-bought 0.8s var(--ease-spring); }
+@keyframes pack-bought {
+  0% { transform: rotate(-4deg) scale(1); }
+  35% { transform: rotate(3deg) scale(1.1); filter: drop-shadow(0 0 30px var(--gold)); }
+  100% { transform: rotate(-4deg) scale(1); }
+}
+.shop-owned {
+  position: absolute; top: 2px; right: 0;
+  min-width: 36px; height: 40px; display: grid; place-items: center; padding: 0 6px;
+  font-weight: 800; font-size: var(--t-lg); color: var(--ink-0);
+  background: linear-gradient(160deg, #c9fbff, var(--cyan));
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+
+.offers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); margin: var(--space-4) 0; }
+@media (max-width: 700px) { .offers { grid-template-columns: 1fr; } .shop-set { grid-template-columns: 1fr; justify-items: center; } }
+.offer {
+  display: grid; gap: 6px; align-content: start;
+  padding: var(--space-3);
+  background: rgba(10, 8, 26, 0.45);
+  box-shadow: inset 0 0 0 1px var(--line);
+  clip-path: polygon(var(--facet) 0, 100% 0, 100% calc(100% - var(--facet)), calc(100% - var(--facet)) 100%, 0 100%, 0 var(--facet));
+}
+.offer-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
+.offer-label { font-family: var(--font-display); font-size: var(--t-lg); }
+.offer-badge { font: 700 var(--t-xs) var(--font-body); color: var(--ink-0); background: var(--cyan); padding: 1px 8px; border-radius: 999px; }
+.offer-per { font-size: var(--t-xs); }
+.offer-buy { width: 100%; padding: 0 var(--space-3); }
+.offer-reason { font-size: var(--t-xs); color: var(--damage); }
+.offer-locked .offer-label { color: var(--parchment-dim); }
+
+.shop-set-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+
+.odds summary { cursor: pointer; font-family: var(--font-display); font-size: var(--t-lg); }
+.odds-body { display: grid; grid-template-columns: minmax(260px, 380px) 1fr; gap: var(--space-5); margin-top: var(--space-4); }
+@media (max-width: 900px) { .odds-body { grid-template-columns: 1fr; } }
+.odds-table { width: 100%; border-collapse: collapse; }
+.odds-table th, .odds-table td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+.odds-table thead th { color: var(--parchment-faint); font-weight: 600; font-size: var(--t-sm); }
+.odds-notes { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; color: var(--parchment-dim); }
+.shop-hint { margin-top: var(--space-4); }

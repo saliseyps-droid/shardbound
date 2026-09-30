@@ -1,0 +1,159 @@
+import type { Difficulty } from '@/config/progression';
+import type { QuestType } from '@/config/quests';
+import type { PlayableFaction, SetId, Variant } from '@/game/types';
+import type { Deck } from './decks';
+
+export const CURRENT_SAVE_VERSION = 3;
+
+export interface PlayerProfile {
+  id: string;
+  username: string;
+  avatar: string;
+  level: number;
+  /** XP accumulated toward the next level. */
+  xp: number;
+  totalXp: number;
+  gold: number;
+  essence: number;
+  wins: number;
+  losses: number;
+  draws: number;
+  packsOpened: number;
+  cardsCrafted: number;
+  cardsRecycled: number;
+  favoriteDeckId: string | null;
+  selectedDeckId: string | null;
+  createdAt: number;
+  lastSeenAt: number;
+  title: string | null;
+  titles: string[];
+  tutorialCompleted: boolean;
+  /** Day key of the last first-win bonus. */
+  firstWinDay: string | null;
+  winsToday: number;
+  winsTodayDay: string | null;
+  factionWins: Partial<Record<PlayableFaction, number>>;
+}
+
+export type VariantCounts = Record<Variant, number>;
+
+export interface CollectionState {
+  cards: Record<string, VariantCounts>;
+  /** Card ids obtained but not yet viewed (for "NEW" badges). */
+  unseen: string[];
+}
+
+export interface EconomyState {
+  packs: Partial<Record<SetId, number>>;
+  /** Packs opened since last Epic / Legendary, per set. */
+  pity: Partial<Record<SetId, { EPIC: number; LEGENDARY: number }>>;
+}
+
+export interface Quest {
+  id: string;
+  templateId: string;
+  type: QuestType;
+  name: string;
+  description: string;
+  target: number;
+  progress: number;
+  gold: number;
+  xp: number;
+  faction?: PlayableFaction;
+  completed: boolean;
+  claimed: boolean;
+  createdAt: number;
+}
+
+export interface QuestState {
+  active: Quest[];
+  lastRefreshDay: string | null;
+  rerollDay: string | null;
+  rerollsUsed: number;
+  totalCompleted: number;
+}
+
+export interface DailyState {
+  /** Index (0-6) of the next reward in the 7-day cycle. */
+  nextIndex: number;
+  lastClaimDay: string | null;
+  lastClaimAt: number;
+  totalClaims: number;
+}
+
+export interface PveState {
+  completed: Record<string, { firstClearAt: number; wins: number }>;
+}
+
+export interface MatchRecord {
+  id: string;
+  date: number;
+  durationMs: number;
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'PVP';
+  opponentId: string;
+  opponentName: string;
+  difficulty: Difficulty;
+  deckId: string;
+  deckName: string;
+  deckFaction: PlayableFaction;
+  result: 'WIN' | 'LOSS' | 'DRAW';
+  turns: number;
+  damageDealt: number;
+  cardsPlayed: number;
+  unitsDestroyed: number;
+  goldEarned: number;
+  xpEarned: number;
+  conceded: boolean;
+}
+
+export type RewardEntry = {
+  id: string;
+  at: number;
+  source: string;
+  gold?: number;
+  essence?: number;
+  xp?: number;
+  packs?: { setId: SetId; amount: number };
+  cards?: { cardId: string; variant: Variant }[];
+  title?: string;
+};
+
+export interface GameSave {
+  saveVersion: number;
+  profile: PlayerProfile;
+  collection: CollectionState;
+  decks: Deck[];
+  economy: EconomyState;
+  quests: QuestState;
+  daily: DailyState;
+  pve: PveState;
+  matchHistory: MatchRecord[];
+  recentRewards: RewardEntry[];
+}
+
+export const MATCH_HISTORY_LIMIT = 100;
+export const RECENT_REWARDS_LIMIT = 20;
+
+export function emptyVariants(): VariantCounts {
+  return { NORMAL: 0, FOIL: 0, PRISMATIC: 0 };
+}
+
+export function ownedCopies(collection: CollectionState, cardId: string): number {
+  const v = collection.cards[cardId];
+  return v ? v.NORMAL + v.FOIL + v.PRISMATIC : 0;
+}
+
+export function addCards(collection: CollectionState, cards: { cardId: string; variant: Variant }[]): CollectionState {
+  const next: CollectionState = { cards: { ...collection.cards }, unseen: [...collection.unseen] };
+  for (const { cardId, variant } of cards) {
+    const prev = next.cards[cardId] ?? emptyVariants();
+    if (ownedCopies(collection, cardId) === 0 && !next.unseen.includes(cardId)) next.unseen.push(cardId);
+    next.cards[cardId] = { ...prev, [variant]: prev[variant] + 1 };
+  }
+  return next;
+}
+
+export function pushReward(save: GameSave, reward: Omit<RewardEntry, 'id' | 'at'>, now: number): GameSave {
+  const entry: RewardEntry = { ...reward, id: `r_${now}_${save.recentRewards.length}_${Math.floor(Math.random() * 1e6)}`, at: now };
+  return { ...save, recentRewards: [entry, ...save.recentRewards].slice(0, RECENT_REWARDS_LIMIT) };
+}
