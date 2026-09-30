@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { getCardSafe } from '@/data/cards';
 import { effectiveCost, canPlayCard } from '@/engine/queries';
@@ -13,6 +13,7 @@ import { audio } from '@/audio/audioService';
 import { DeckPile, EmpowerBadge, EnergyBar, HeroPanel, HeroPowerButton, PermanentsRow, UnitView } from './BoardParts';
 import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
 import { useT } from '@/i18n';
+import { pickBoardBackground } from './boardBackgrounds';
 import '@/ui/styles/board.css';
 
 interface Drag {
@@ -108,6 +109,9 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const confirmEnd = useSettings((s) => s.confirmEndTurn);
   const cardW = useViewportCardWidth();
   const t = useT();
+  const startedAt = useMatch((s) => s.startedAt);
+  // A new random play-mat for every match (rematches included).
+  const boardBg = useMemo(() => pickBoardBackground(), [startedAt]);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [hoverCard, setHoverCard] = useState<string | null>(null);
@@ -294,6 +298,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   return (
     <div
       className={`match ${myTurn ? 'my-turn' : 'their-turn'} ${selection ? 'is-targeting' : ''}`}
+      style={boardBg ? ({ '--board-bg': `url(${boardBg})` } as CSSProperties) : undefined}
       ref={boardRef}
       onContextMenu={(e) => {
         e.preventDefault();

@@ -15,11 +15,10 @@
     'field sidebar'
     'self sidebar';
   overflow: hidden;
-  /* Table: the menu artwork at 30% opacity under a 70% veil that keeps the lighter centre / darker rim. */
+  /* Table: a random play-mat (set per match in --board-bg) shown at 50% opacity under an even veil. */
   background:
-    radial-gradient(ellipse 70% 50% at 45% 50%, rgba(114, 223, 230, 0.07), transparent 70%),
-    radial-gradient(ellipse 90% 60% at 45% 50%, rgba(43, 36, 80, 0.7), rgba(23, 20, 43, 0.7) 75%),
-    url('../../assets/menu-background.webp') center / cover no-repeat,
+    linear-gradient(rgba(23, 20, 43, 0.5), rgba(23, 20, 43, 0.5)),
+    var(--board-bg, none) center / cover no-repeat,
     #17142b;
   user-select: none;
   touch-action: none;
@@ -449,3 +448,9 @@
   .match { grid-template-rows: minmax(100px, 16vh) minmax(0, 1fr) minmax(190px, 30vh); }
   .hero { width: 80px; }
 }
+
+/* Labels that sit directly on the play-mat stay legible on light boards. */
+.energy-count, .deck-pile, .hero-name, .board-empty, .turn-timer, .empower-chip {
+  text-shadow: 0 1px 2px #000, 0 0 6px rgba(0, 0, 0, 0.85);
+}
+.deck-pile { color: var(--parchment); }
