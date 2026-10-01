@@ -19,6 +19,17 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.6.2',
+    date: '2026-10-01',
+    title: 'Shinier shines',
+    summary: 'Foil and Prismatic cards sparkle smoothly, in full color.',
+    sections: [
+      { kind: 'improved', items: ['Foil cards now have a soft rainbow sheen.', 'Prismatic cards get a stronger rainbow sheen and a rainbow frame that keeps turning.'] },
+      { kind: 'fixed', items: ['The Foil and Prismatic shine no longer stutters while it loops.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.6.1',
     date: '2026-10-01',
     title: 'Balance update',

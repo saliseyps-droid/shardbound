@@ -100,6 +100,8 @@ export const CardView = memo(function CardView(props: CardViewProps) {
       onKeyDown={props.onClick ? (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), props.onClick?.(e as unknown as MouseEvent)) : undefined}
     >
       <div className="card-inner">
+        {variant !== 'NORMAL' && <div className="card-shine" aria-hidden />}
+        {variant === 'PRISMATIC' && <div className="card-prism-frame" aria-hidden />}
         <div className="card-art-wrap">
           <CardArtImage card={card} />
         </div>
