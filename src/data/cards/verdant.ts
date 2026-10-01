@@ -69,7 +69,7 @@ export const VERDANT_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'ver_bramble_boar', name: 'Bramble Boar', cardType: 'UNIT', rarity: 'COMMON', set: 'DEEP',
-    manaCost: 3, attack: 3, health: 3, keywords: ['RUSH'], tags: ['Beast'], archetypes: ['Overgrowth'],
+    manaCost: 3, attack: 4, health: 2, keywords: ['RUSH'], tags: ['Beast'], archetypes: ['Overgrowth'],
     flavorText: 'It does not go around the hedge. It becomes a hole in the hedge.',
   },
 

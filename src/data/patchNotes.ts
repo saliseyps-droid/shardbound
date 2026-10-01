@@ -19,6 +19,26 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.6.1',
+    date: '2026-10-01',
+    title: 'Balance update',
+    summary: 'The Cinder Legion hits harder and the Bramble Boar charges in sharper.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Kindling Imp now has Swift.',
+          'Flame Jolt now deals 3 damage (was 2).',
+          'Pyre Hound is now 4/1 (was 3/2).',
+          'Ashfang Raider is now 3/1 and no longer has Swift (was 2/1 Swift).',
+          'Blazing Barrage now fires 6 bolts (was 4).',
+          'Bramble Boar is now 4/2 (was 3/3).',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.6.0',
     date: '2026-10-01',
     title: 'Captain Abandoneer',
@@ -27,7 +47,7 @@ export const PATCH_NOTES: PatchNote[] = [
       {
         kind: 'new',
         items: [
-          'New Neutral Legendary: Captain Abandoneer (6 mana, 5/4, Rush). On Deploy she steals a random card from your opponent's hand. Last Breath: two 1/1 Deckhands jump ship onto your board.',
+          'New Neutral Legendary: Captain Abandoneer (6 mana, 5/4, Rush). On Deploy she steals a random card from the enemy hand. Last Breath: two 1/1 Deckhands jump ship onto your board.',
         ],
       },
     ],
@@ -39,14 +59,6 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Prismatic shine',
     summary: 'Prismatic cards now shimmer.',
     sections: [{ kind: 'improved', items: ['Prismatic cards now have a moving rainbow sheen across the whole card, like the shine on Foil cards but in full color.'] }],
-    commits: [],
-  },
-  {
-    version: '0.5.1',
-    date: '2026-10-01',
-    title: 'A new gift code',
-    summary: 'A new one-time gift code is out there.',
-    sections: [{ kind: 'new', items: ['New gift code worth 1000 Essence. Redeem it in your Profile; each code works once per account.'] }],
     commits: [],
   },
   {
@@ -117,7 +129,6 @@ export const PATCH_NOTES: PatchNote[] = [
         items: [
           'Warden portraits for all six factions: on the battlefield, on your decks, in the campaign and on your profile. Your portrait follows the Warden of the deck you play.',
           'Seven play-mats: every match is played on a randomly chosen table.',
-          'Redeem codes on the Profile screen.',
           'The tutorial now also teaches your Warden Sigil.',
         ],
       },

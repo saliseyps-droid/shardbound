@@ -104,7 +104,7 @@ describe('playing cards', () => {
     const uid = giveCard(s, 0, 'emb_flame_jolt');
     expect(tryAct(s, { type: 'PLAY_CARD', player: 0, cardUid: uid }).error).toBe('A target is required');
     s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: uid, target: hero(1) });
-    expect(s.players[1].hero.health).toBe(28);
+    expect(s.players[1].hero.health).toBe(27);
   });
 
   it('On Deploy effects resolve when the unit is played', () => {
@@ -138,7 +138,7 @@ describe('playing cards', () => {
     let s = newGame({ board0: ['emb_scorch_adept'] });
     const uid = giveCard(s, 0, 'emb_flame_jolt');
     s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: uid, target: hero(1) });
-    expect(s.players[1].hero.health).toBe(27);
+    expect(s.players[1].hero.health).toBe(26);
   });
 
   it('Echo adds a Fleeting copy (without Echo) that expires at end of turn', () => {
@@ -320,8 +320,8 @@ describe('triggers and death resolution', () => {
     let s = newGame({ board0: ['emb_ignivar'] });
     const jolt = giveCard(s, 0, 'emb_flame_jolt');
     s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: jolt, target: hero(1) });
-    // 2 + Empower 2 = 4 from the spell, +2 from Ignivar trigger
-    expect(s.players[1].hero.health).toBe(24);
+    // 3 + Empower 2 = 5 from the spell, +2 from Ignivar trigger
+    expect(s.players[1].hero.health).toBe(23);
   });
 
   it('turn start triggers resolve for locations and expire them', () => {
@@ -350,7 +350,7 @@ describe('triggers and death resolution', () => {
       s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: j, target: hero(1) });
     }
     expect(s.players[0].relics.length).toBe(0);
-    expect(s.players[1].hero.health).toBe(30 - 4 * 3);
+    expect(s.players[1].hero.health).toBe(30 - 4 * 4);
   });
 
   it('never leaves units with non-positive health on the board', () => {
@@ -367,7 +367,7 @@ describe('triggers and death resolution', () => {
     s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: b });
     const toUnit = s.log.filter((e) => e.type === 'DAMAGE_DEALT' && e.target.type === 'unit');
     expect(toUnit.length).toBeLessThanOrEqual(1);
-    expect(s.players[1].hero.health).toBe(30 - (4 - toUnit.length));
+    expect(s.players[1].hero.health).toBe(30 - (6 - toUnit.length));
   });
 });
 

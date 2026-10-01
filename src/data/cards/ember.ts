@@ -10,18 +10,18 @@ export const EMBER_CARDS: CardDefinition[] = [
   // ----- Commons -----
   {
     ...base, id: 'emb_kindling_imp', name: 'Kindling Imp', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 1, attack: 2, health: 1, tags: ['Elemental'], archetypes: ['Blitz'],
+    manaCost: 1, attack: 2, health: 1, keywords: ['SWIFT'], tags: ['Elemental'], archetypes: ['Blitz'],
     flavorText: 'Small, hungry, and entirely flammable.',
   },
   {
     ...base, id: 'emb_ashfang_raider', name: 'Ashfang Raider', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 2, attack: 2, health: 1, keywords: ['SWIFT'], archetypes: ['Blitz'],
+    manaCost: 2, attack: 3, health: 1, archetypes: ['Blitz'],
     flavorText: 'Raiders of the Legion never learned the word "retreat". It burned with the rest of the dictionary.',
   },
   {
     ...base, id: 'emb_flame_jolt', name: 'Flame Jolt', cardType: 'SPELL', rarity: 'COMMON', set: 'CORE', starter: true,
     manaCost: 1, target: { kind: 'ANY' }, archetypes: ['Pyromancy', 'Blitz'],
-    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'TARGET' }] }],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'TARGET' }] }],
     flavorText: 'The first spell every pyromancer learns. The last one many enemies see.',
   },
   {
@@ -31,7 +31,7 @@ export const EMBER_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'emb_pyre_hound', name: 'Pyre Hound', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE',
-    manaCost: 3, attack: 3, health: 2, keywords: ['SWIFT'], tags: ['Beast'], archetypes: ['Blitz'],
+    manaCost: 3, attack: 4, health: 1, keywords: ['SWIFT'], tags: ['Beast'], archetypes: ['Blitz'],
     flavorText: 'Fetch? It prefers "ignite".',
   },
   {
@@ -75,8 +75,8 @@ export const EMBER_CARDS: CardDefinition[] = [
   {
     ...base, id: 'emb_blazing_barrage', name: 'Blazing Barrage', cardType: 'SPELL', rarity: 'RARE', set: 'CORE',
     manaCost: 3, archetypes: ['Pyromancy'],
-    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY', repeat: 4 }] }],
-    flavorText: 'Four bolts. One very bad day.',
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY', repeat: 6 }] }],
+    flavorText: 'Six bolts. One very bad day.',
   },
   {
     ...base, id: 'emb_legion_banneret', name: 'Legion Banneret', cardType: 'UNIT', rarity: 'RARE', set: 'CORE',
