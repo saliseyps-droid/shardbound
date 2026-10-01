@@ -205,4 +205,4 @@ input[type='checkbox'] { accent-color: var(--gold); width: 18px; height: 18px; }
   transition-duration: 0.001ms !important;
 }
 .performance-mode * { backdrop-filter: none !important; }
-.performance-mode .card-foil::after, .performance-mode .card-prismatic::before { animation: none !important; }
+.performance-mode .card-foil::after, .performance-mode .card-prismatic::before, .performance-mode .card-prismatic::after { animation: none !important; }

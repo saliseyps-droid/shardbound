@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.5.2',
+    date: '2026-10-01',
+    title: 'Prismatic shine',
+    summary: 'Prismatic cards now shimmer.',
+    sections: [{ kind: 'improved', items: ['Prismatic cards now have a moving rainbow sheen across the whole card, like the shine on Foil cards but in full color.'] }],
+    commits: [],
+  },
+  {
     version: '0.5.1',
     date: '2026-10-01',
     title: 'A new gift code',
