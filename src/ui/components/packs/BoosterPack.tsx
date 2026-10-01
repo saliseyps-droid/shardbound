@@ -40,13 +40,27 @@ export function BoosterPack({ setId, width = 180, className = '', style }: { set
           <path d="M0 60 L200 20 L200 120 L0 170 Z" fill="#fff" opacity="0.06" />
           <path d="M0 210 L200 160 L200 230 L0 280 Z" fill="#000" opacity="0.12" />
           <circle cx="100" cy="135" r="80" fill={`url(#${id}-glow)`} opacity="0.55" />
-          {/* crystal emblem */}
-          <g transform="translate(100 135)">
-            <path d="M0 -62 L34 -20 L14 58 L-14 58 L-34 -20 Z" fill={t.c} stroke={t.emblem} strokeWidth="3" />
-            <path d="M0 -62 L12 -20 L0 58 L-12 -20 Z" fill={t.emblem} opacity="0.75" />
-            <path d="M-34 -20 H34" stroke={t.emblem} strokeWidth="2" opacity="0.7" />
-            {setId === 'DEEP' && <path d="M-46 30 Q-23 18 0 30 T46 30" fill="none" stroke={t.emblem} strokeWidth="3" opacity="0.8" />}
-          </g>
+          {setId === 'DEEP' ? (
+            /* trident rising from the waves */
+            <g transform="translate(100 132) scale(1.18)">
+              <path d="M-48 34 Q-36 24 -24 34 T0 34 T24 34 T48 34" fill="none" stroke={t.emblem} strokeWidth="3" strokeLinecap="round" opacity="0.55" />
+              <path d="M-40 48 Q-30 40 -20 48 T0 48 T20 48 T40 48" fill="none" stroke={t.emblem} strokeWidth="2.5" strokeLinecap="round" opacity="0.4" />
+              <path d="M-4.5 -18 H4.5 V50 L0 58 L-4.5 50 Z" fill={t.c} stroke={t.emblem} strokeWidth="2.5" strokeLinejoin="round" />
+              <path d="M0 -66 L9 -42 H4.5 V-18 H-4.5 V-42 H-9 Z" fill={t.c} stroke={t.emblem} strokeWidth="2.5" strokeLinejoin="round" />
+              <path d="M-32 -56 L-25 -38 H-28 Q-28 -26 -4.5 -26 V-16 Q-38 -16 -38 -38 H-41 Z" fill={t.c} stroke={t.emblem} strokeWidth="2.5" strokeLinejoin="round" />
+              <path d="M32 -56 L25 -38 H28 Q28 -26 4.5 -26 V-16 Q38 -16 38 -38 H41 Z" fill={t.c} stroke={t.emblem} strokeWidth="2.5" strokeLinejoin="round" />
+              <path d="M0 -60 L4 -44 H-4 Z" fill={t.emblem} opacity="0.8" />
+              <circle cy="-5" r="7" fill={t.emblem} opacity="0.9" />
+              <circle cx="-2" cy="-7" r="2.2" fill="#fff" opacity="0.8" />
+            </g>
+          ) : (
+            /* crystal emblem */
+            <g transform="translate(100 135)">
+              <path d="M0 -62 L34 -20 L14 58 L-14 58 L-34 -20 Z" fill={t.c} stroke={t.emblem} strokeWidth="3" />
+              <path d="M0 -62 L12 -20 L0 58 L-12 -20 Z" fill={t.emblem} opacity="0.75" />
+              <path d="M-34 -20 H34" stroke={t.emblem} strokeWidth="2" opacity="0.7" />
+            </g>
+          )}
           {/* crimp strips */}
           <rect y="0" width="200" height="16" fill="#000" opacity="0.28" />
           <rect y="284" width="200" height="16" fill="#000" opacity="0.28" />

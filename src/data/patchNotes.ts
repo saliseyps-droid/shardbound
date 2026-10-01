@@ -24,7 +24,7 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Clearer odds',
     summary: 'See your Foil and Prismatic chances at a glance, and every card now has its own art.',
     sections: [
-      { kind: 'improved', items: ['Shop: Odds and guarantees now has a table with the Foil and Prismatic chances, per card and per pack.'] },
+      { kind: 'improved', items: ['Tides of the Hollow Deep packs now carry a trident rising from the waves instead of the crystal.', 'Shop: Odds and guarantees now has a table with the Foil and Prismatic chances, per card and per pack.'] },
       { kind: 'fixed', items: ['Shop: the Buy buttons of 1, 5 and 10 packs now line up at the same height.', 'Every card now has its own artwork. Bog Toad, Aether Shard, Spark Bolt, Star Fragment and Icebound Oracle got new art.'] },
     ],
     commits: [],
