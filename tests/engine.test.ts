@@ -367,7 +367,7 @@ describe('triggers and death resolution', () => {
     s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: b });
     const toUnit = s.log.filter((e) => e.type === 'DAMAGE_DEALT' && e.target.type === 'unit');
     expect(toUnit.length).toBeLessThanOrEqual(1);
-    expect(s.players[1].hero.health).toBe(30 - (6 - toUnit.length));
+    expect(s.players[1].hero.health).toBe(30 - (5 - toUnit.length));
   });
 });
 

@@ -19,6 +19,29 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.7.0',
+    date: '2026-10-01',
+    title: 'Faction balance',
+    summary: 'The Cinder Legion cools down a little and the Lumen Conclave gets the help it needed.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Vulkara, Mother of Drakes: her On Deploy now deals 1 damage to all enemies (was 2).',
+          'Blazing Barrage: 5 bolts (was 6).',
+          'Ashfang Raider: now 3/2 (was 3/1).',
+          'Chart the Heavens: costs 1 (was 2).',
+          'Prismwarden: now 2/6 (was 2/5).',
+          'Moonlit Librarian: now 2/4 (was 2/3).',
+          'Comet Scholar: costs 3 (was 4).',
+          'Collapse of Heaven: costs 4 (was 5).',
+          'Blood Pact: deals 4 damage to your Warden (was 3).',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.6.3',
     date: '2026-10-01',
     title: 'Clearer odds',

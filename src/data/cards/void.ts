@@ -103,8 +103,8 @@ export const VOID_CARDS: CardDefinition[] = [
   {
     ...base, id: 'vod_blood_pact', name: 'Blood Pact', cardType: 'SPELL', rarity: 'RARE', set: 'DEEP',
     manaCost: 1, archetypes: ['Offering'],
-    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DRAW_CARDS', amount: 2 }, { type: 'DEAL_DAMAGE', amount: 3, target: 'ALLY_HERO' }] }],
-    description: 'Draw 2 cards. Deal 3 damage to your Warden.',
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DRAW_CARDS', amount: 2 }, { type: 'DEAL_DAMAGE', amount: 4, target: 'ALLY_HERO' }] }],
+    description: 'Draw 2 cards. Deal 4 damage to your Warden.',
     flavorText: 'Signed in red. Paid in full. Eventually.',
   },
   {

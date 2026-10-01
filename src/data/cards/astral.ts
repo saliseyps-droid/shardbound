@@ -34,12 +34,12 @@ export const ASTRAL_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'ast_prismwarden', name: 'Prismwarden', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 3, attack: 2, health: 5, keywords: ['GUARD'], tags: ['Construct'], archetypes: ['Starlit Control'],
+    manaCost: 3, attack: 2, health: 6, keywords: ['GUARD'], tags: ['Construct'], archetypes: ['Starlit Control'],
     flavorText: 'Light bends around it. So do the blades of anyone foolish enough to charge.',
   },
   {
     ...base, id: 'ast_comet_scholar', name: 'Comet Scholar', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 4, attack: 3, health: 4, tags: ['Mage'], target: { kind: 'ENEMY_UNIT' }, archetypes: ['Starlit Control'],
+    manaCost: 3, attack: 3, health: 4, tags: ['Mage'], target: { kind: 'ENEMY_UNIT' }, archetypes: ['Starlit Control'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'TARGET' }] }],
     flavorText: 'She predicted the comet\'s landing site to the inch. Her rival did not move in time.',
   },
@@ -50,7 +50,7 @@ export const ASTRAL_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'ast_chart_the_heavens', name: 'Chart the Heavens', cardType: 'SPELL', rarity: 'COMMON', set: 'CORE',
-    manaCost: 2, archetypes: ['Starlit Control'],
+    manaCost: 1, archetypes: ['Starlit Control'],
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DRAW_CARDS', amount: 2 }] }],
     flavorText: 'Every constellation is a sentence. Every sentence is a secret.',
   },
@@ -68,7 +68,7 @@ export const ASTRAL_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'ast_moonlit_librarian', name: 'Moonlit Librarian', cardType: 'UNIT', rarity: 'COMMON', set: 'DEEP',
-    manaCost: 3, attack: 2, health: 3, tags: ['Mage'], archetypes: ['Spellweave', 'Starlit Control'],
+    manaCost: 3, attack: 2, health: 4, tags: ['Mage'], archetypes: ['Spellweave', 'Starlit Control'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DRAW_CARDS', amount: 1, filter: { cardType: 'SPELL' } }] }],
     flavorText: 'She shelves books by the phase of the moon. Nobody else can find anything.',
   },
@@ -125,7 +125,7 @@ export const ASTRAL_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'ast_collapse_of_heaven', name: 'Collapse of Heaven', cardType: 'SPELL', rarity: 'EPIC', set: 'CORE',
-    manaCost: 5, archetypes: ['Starlit Control'],
+    manaCost: 4, archetypes: ['Starlit Control'],
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 4, target: 'ALL_UNITS' }] }],
     flavorText: 'The astromancers call it "rewriting the chart". Everyone else calls it the end.',
   },

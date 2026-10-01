@@ -15,7 +15,7 @@ export const EMBER_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'emb_ashfang_raider', name: 'Ashfang Raider', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 2, attack: 3, health: 1, archetypes: ['Blitz'],
+    manaCost: 2, attack: 3, health: 2, archetypes: ['Blitz'],
     flavorText: 'Raiders of the Legion never learned the word "retreat". It burned with the rest of the dictionary.',
   },
   {
@@ -75,8 +75,8 @@ export const EMBER_CARDS: CardDefinition[] = [
   {
     ...base, id: 'emb_blazing_barrage', name: 'Blazing Barrage', cardType: 'SPELL', rarity: 'RARE', set: 'CORE',
     manaCost: 3, archetypes: ['Pyromancy'],
-    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY', repeat: 6 }] }],
-    flavorText: 'Six bolts. One very bad day.',
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY', repeat: 5 }] }],
+    flavorText: 'Five bolts. One very bad day.',
   },
   {
     ...base, id: 'emb_legion_banneret', name: 'Legion Banneret', cardType: 'UNIT', rarity: 'RARE', set: 'CORE',
@@ -142,7 +142,7 @@ export const EMBER_CARDS: CardDefinition[] = [
   {
     ...base, id: 'emb_vulkara', name: 'Vulkara, Mother of Drakes', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'CORE',
     manaCost: 8, attack: 6, health: 6, keywords: ['SWIFT'], tags: ['Drake'], archetypes: ['Blitz'],
-    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ALL_ENEMIES' }, { type: 'SUMMON', cardId: 'token_drakeling', count: 2 }] }],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ALL_ENEMIES' }, { type: 'SUMMON', cardId: 'token_drakeling', count: 2 }] }],
     flavorText: 'Every drake in the caldera answers to one voice.',
   },
   {
