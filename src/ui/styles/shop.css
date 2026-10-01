@@ -64,3 +64,6 @@
 .odds-table thead th { color: var(--parchment-faint); font-weight: 600; font-size: var(--t-sm); }
 .odds-notes { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; color: var(--parchment-dim); }
 .shop-hint { margin-top: var(--space-4); }
+.odds-table + .odds-table { margin-top: 12px; }
+.odds-table .v-foil { color: var(--gold-bright); font-weight: 700; }
+.odds-table .v-prismatic { font-weight: 700; background: linear-gradient(90deg, #ff9a8a, #ffd27a, #7ef29a, #72dfe6, #c59bff); -webkit-background-clip: text; background-clip: text; color: transparent; }

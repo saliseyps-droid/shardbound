@@ -20,6 +20,13 @@ function pct(weights: Record<string, number>, key: string) {
   return `${v < 1 ? v.toFixed(1) : v.toFixed(v % 1 ? 1 : 0)}%`;
 }
 
+/** Chance that a pack holds at least one card of this variant. */
+function perPackPct(v: Variant): string {
+  const total = Object.values(PACK_CONFIG.variantWeights).reduce((a, b) => a + b, 0);
+  const p = 1 - (1 - PACK_CONFIG.variantWeights[v] / total) ** PACK_CONFIG.cardsPerPack;
+  return `${(p * 100).toFixed(1)}%`;
+}
+
 function OddsTable() {
   const rarities: Rarity[] = ['COMMON', 'RARE', 'EPIC', 'LEGENDARY'];
   return (
@@ -47,21 +54,33 @@ function OddsTable() {
             ))}
           </tbody>
         </table>
+        <table className="odds-table">
+          <caption className="sr-only">Foil and Prismatic chances</caption>
+          <thead>
+            <tr>
+              <th scope="col">Variant</th>
+              <th scope="col">Each card</th>
+              <th scope="col">At least one per pack</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(['FOIL', 'PRISMATIC'] as Variant[]).map((v) => (
+              <tr key={v}>
+                <th scope="row" className={`variant-name v-${v.toLowerCase()}`}>
+                  {VARIANT_LABEL[v]}
+                </th>
+                <td className="num">{pct(PACK_CONFIG.variantWeights, v)}</td>
+                <td className="num">{perPackPct(v)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         <ul className="odds-notes">
           <li>Every pack holds at least one Rare or better card.</li>
           {PACK_CONFIG.pity.EPIC && <li>An Epic or better is guaranteed at least once every {PACK_CONFIG.pity.EPIC} packs.</li>}
           {PACK_CONFIG.pity.LEGENDARY && <li>A Legendary is guaranteed at least once every {PACK_CONFIG.pity.LEGENDARY} packs.</li>}
           <li>Rare, Epic and Legendary cards favour ones you don’t own a full playset of yet.</li>
-          <li>
-            Cosmetic variants per card:{' '}
-            {(['FOIL', 'PRISMATIC'] as Variant[]).map((v, i) => (
-              <span key={v}>
-                {i > 0 && ', '}
-                {VARIANT_LABEL[v]} {pct(PACK_CONFIG.variantWeights, v)}
-              </span>
-            ))}
-            . Variants never change how a card plays.
-          </li>
+          <li>Foil and Prismatic are cosmetic: they never change how a card plays.</li>
         </ul>
       </div>
     </details>

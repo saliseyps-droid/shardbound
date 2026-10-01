@@ -19,6 +19,17 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.6.3',
+    date: '2026-10-01',
+    title: 'Clearer odds',
+    summary: 'See your Foil and Prismatic chances at a glance, and every card now has its own art.',
+    sections: [
+      { kind: 'improved', items: ['Shop: Odds and guarantees now has a table with the Foil and Prismatic chances, per card and per pack.'] },
+      { kind: 'fixed', items: ['Every card now has its own artwork. Bog Toad, Aether Shard, Spark Bolt, Star Fragment and Icebound Oracle got new art.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.6.2',
     date: '2026-10-01',
     title: 'Shinier shines',
