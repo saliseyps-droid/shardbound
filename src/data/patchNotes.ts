@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.5.0',
+    date: '2026-10-01',
+    title: 'Painted cards',
+    summary: 'Every card now has hand-painted artwork.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'All cards got painted art: fiery knights and drakes for the Cinder Legion, war-mechs for Iron, living trees and beasts for Verdant, star mages for Astral, skeletons and vampires for the Void, sea knights and pirates for the Tide.',
+          'Spells, relics and locations show glowing sigils and elemental flames in their faction colors.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.4.0',
     date: '2026-09-30',
     title: 'Patch notes',

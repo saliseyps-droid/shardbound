@@ -2,7 +2,20 @@ import { createRng, hashString, nextFloat, nextInt } from '@/core/rng';
 import { FACTIONS } from '@/data/factions';
 import type { CardDefinition } from '@/game/types';
 import { GLYPHS } from './Icons';
+import { CARD_ART_FOCUS } from './cardArtFocus';
 import { figureSvg } from './unitFigures';
+
+/** Painted artwork, one per card id: src/assets/cards/<id>.webp (4:5 portrait). */
+const PAINTED = import.meta.glob('../../assets/cards/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+
+export function paintedArtUrl(card: CardDefinition): string | undefined {
+  return PAINTED[`../../assets/cards/${card.id}.webp`];
+}
+
+/** object-position for painted art shown in a frame wider than the 4:5 source. */
+export function cardArtPosition(card: CardDefinition): string {
+  return `50% ${CARD_ART_FOCUS[card.id] ?? 40}%`;
+}
 
 /**
  * Procedural, deterministic card artwork. Each faction has a distinct palette,
@@ -104,6 +117,10 @@ function landscape(kind: string, rng: ReturnType<typeof createRng>, fill: string
 const cache = new Map<string, string>();
 
 export function cardArtUri(card: CardDefinition): string {
+  return paintedArtUrl(card) ?? proceduralArtUri(card);
+}
+
+function proceduralArtUri(card: CardDefinition): string {
   const cached = cache.get(card.id);
   if (cached) return cached;
   const f = FACTIONS[card.faction] ?? FACTIONS.NEUTRAL;

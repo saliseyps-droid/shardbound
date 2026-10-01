@@ -2,7 +2,7 @@ import { memo, useState, type CSSProperties, type MouseEvent, type PointerEvent 
 import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import type { CardDefinition, Variant } from '@/game/types';
-import { cardArtUri } from './cardArt';
+import { cardArtPosition, cardArtUri } from './cardArt';
 import { Glyph } from './Icons';
 import { KeywordText } from './Tooltip';
 
@@ -50,7 +50,7 @@ function CardArtImage({ card }: { card: CardDefinition }) {
   const external = card.artwork && /^(\/|https?:|data:)/.test(card.artwork) ? card.artwork : null;
   const [failed, setFailed] = useState(false);
   const src = external && !failed ? external : cardArtUri(card);
-  return <img className="card-art" src={src} alt="" loading="lazy" decoding="async" draggable={false} onError={() => setFailed(true)} />;
+  return <img className="card-art" src={src} style={external ? undefined : { objectPosition: cardArtPosition(card) }} alt="" loading="lazy" decoding="async" draggable={false} onError={() => setFailed(true)} />;
 }
 
 export const CardView = memo(function CardView(props: CardViewProps) {
