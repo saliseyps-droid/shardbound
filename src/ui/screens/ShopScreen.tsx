@@ -107,7 +107,7 @@ function OfferButton({ offer, gold, busy, onBuy }: { offer: ShopOffer; gold: num
         <GoldIcon size={18} />
         <span className="num">{offer.price.toLocaleString()}</span>
       </button>
-      {!affordable && <span className="offer-reason">Need {(offer.price - gold).toLocaleString()} more Gold</span>}
+      <span className="offer-reason">{!affordable && `Need ${(offer.price - gold).toLocaleString()} more Gold`}</span>
     </div>
   );
 }
