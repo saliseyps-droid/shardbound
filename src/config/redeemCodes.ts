@@ -17,4 +17,5 @@ export interface RedeemCodeDef {
 
 export const REDEEM_CODES: RedeemCodeDef[] = [
   { id: 'gift-1000-gold', sha256: '43adb0a56a8bd5f68b568c45eaf4c3feeff594a68ae56229052e9083be41ac73', label: 'Gift: 1000 Gold', reward: { gold: 1000 } },
+  { id: 'gift-1000-essence', sha256: 'b662b889a409094a02c82ca00325056c2f6a5c02098ef64b667a16ea4b14a729', label: 'Gift: 1000 Essence', reward: { essence: 1000 } },
 ];

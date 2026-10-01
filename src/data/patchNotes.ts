@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.5.1',
+    date: '2026-10-01',
+    title: 'A new gift code',
+    summary: 'A new one-time gift code is out there.',
+    sections: [{ kind: 'new', items: ['New gift code worth 1000 Essence. Redeem it in your Profile; each code works once per account.'] }],
+    commits: [],
+  },
+  {
     version: '0.5.0',
     date: '2026-10-01',
     title: 'Painted cards',
