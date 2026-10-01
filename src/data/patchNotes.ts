@@ -19,6 +19,21 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.6.0',
+    date: '2026-10-01',
+    title: 'Captain Abandoneer',
+    summary: 'A new Neutral Legendary joins the crew.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'New Neutral Legendary: Captain Abandoneer (6 mana, 5/4, Rush). On Deploy she steals a random card from your opponent's hand. Last Breath: two 1/1 Deckhands jump ship onto your board.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.5.2',
     date: '2026-10-01',
     title: 'Prismatic shine',

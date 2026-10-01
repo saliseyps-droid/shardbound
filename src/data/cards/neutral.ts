@@ -167,4 +167,13 @@ export const NEUTRAL_CARDS: CardDefinition[] = [
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DESTROY', target: 'ALL_OTHER_UNITS' }] }],
     flavorText: 'It walked out of the Crown on the day it shattered, and it has been ending things ever since.',
   },
+  {
+    ...base, id: 'neu_captain_abandoneer', name: 'Captain Abandoneer', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'CORE',
+    manaCost: 6, attack: 5, health: 4, keywords: ['RUSH'], tags: ['Pirate'],
+    abilities: [
+      { trigger: 'ON_DEPLOY', effects: [{ type: 'STEAL_CARD', from: 'HAND', amount: 1 }] },
+      { trigger: 'LAST_BREATH', effects: [{ type: 'SUMMON', cardId: 'token_deckhand', count: 2 }] },
+    ],
+    flavorText: 'She has abandoned three ships, two crews and one kingdom. Never the treasure.',
+  },
 ];
