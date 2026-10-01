@@ -25,7 +25,7 @@ export const PATCH_NOTES: PatchNote[] = [
     summary: 'Foil and Prismatic cards sparkle smoothly, in full color.',
     sections: [
       { kind: 'improved', items: ['Foil cards now have a soft rainbow sheen.', 'Prismatic cards get a stronger rainbow sheen and a rainbow frame that keeps turning.'] },
-      { kind: 'fixed', items: ['The Foil and Prismatic shine no longer stutters while it loops.'] },
+      { kind: 'fixed', items: ['The Foil and Prismatic shine no longer stutters while it loops: it now glides fully off the card and back in.'] },
     ],
     commits: [],
   },

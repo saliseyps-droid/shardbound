@@ -203,16 +203,17 @@
   pointer-events: none;
   mix-blend-mode: screen;
   will-change: transform;
-  animation: card-shine 3.2s linear infinite;
+  animation: card-shine 5s linear infinite;
   background: linear-gradient(105deg, transparent 40%, rgba(255, 110, 120, 0.22) 44%, rgba(255, 214, 120, 0.26) 47%, rgba(255, 255, 255, 0.34) 50%, rgba(126, 242, 154, 0.26) 53%, rgba(114, 200, 255, 0.24) 56%, rgba(190, 120, 255, 0.2) 59%, transparent 63%);
 }
 .card-prismatic .card-shine {
-  animation-duration: 2.6s;
+  animation-duration: 4.2s;
   background: linear-gradient(105deg, transparent 36%, rgba(255, 80, 100, 0.42) 41%, rgba(255, 200, 90, 0.45) 45%, rgba(126, 242, 154, 0.45) 49%, rgba(90, 220, 255, 0.45) 53%, rgba(180, 100, 255, 0.42) 57%, rgba(255, 90, 200, 0.32) 61%, transparent 66%);
 }
+/* Starts and ends fully off the card (band + its slant), so the loop restart is invisible. */
 @keyframes card-shine {
-  from { transform: translateX(-27%); }
-  to { transform: translateX(27%); }
+  from { transform: translateX(-45%); }
+  to { transform: translateX(45%); }
 }
 
 /* Prismatic frame: a rotating rainbow behind the body plate, so it shows on the frame. */
