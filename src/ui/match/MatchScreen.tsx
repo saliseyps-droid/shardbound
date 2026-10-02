@@ -26,6 +26,8 @@ interface Drag {
   x: number;
   y: number;
   active: boolean;
+  /** Touch: a tap first enlarges the card (peek) instead of playing it. */
+  touch?: boolean;
 }
 
 const DRAG_THRESHOLD = 8;
@@ -124,6 +126,10 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const prevHand = useRef<number[]>([]);
   const boardRef = useRef<HTMLDivElement>(null);
   const longPress = useRef<{ timer?: number }>({});
+  /** Touch: the hand card shown enlarged above the hand (tap it again to play it). */
+  const [peek, setPeek] = useState<number | null>(null);
+  const peekRef = useRef<number | null>(null);
+  peekRef.current = peek;
 
   const me = game.players[HUMAN];
   const opp = game.players[AI];
@@ -233,10 +239,16 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       const s = store.getState();
       const moved = d.active || Math.hypot(e.clientX - d.startX, e.clientY - d.startY) > DRAG_THRESHOLD;
       if (!moved) {
+        if (d.kind === 'card' && d.touch && peekRef.current !== d.uid) {
+          setPeek(d.uid);
+          return;
+        }
+        setPeek(null);
         if (d.kind === 'card') s.clickHandCard(d.uid);
         else s.clickUnit(d.uid);
         return;
       }
+      setPeek(null);
       const el = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
       const entity = el?.closest('[data-entity]')?.getAttribute('data-entity');
       if (d.kind === 'card') {
@@ -269,12 +281,18 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
 
   const startCardDrag = (e: RPointerEvent, uid: number) => {
     if (e.button !== 0) return;
+    // Touch: cards can always be enlarged to read them, even on the opponent's turn.
+    if (e.pointerType === 'touch' && !interactive) {
+      e.preventDefault();
+      setPeek(peekRef.current === uid ? null : uid);
+      return;
+    }
     if (!interactive) {
       if (!myTurn) toast('Wait for your turn.', 'info');
       return;
     }
     e.preventDefault();
-    beginDrag({ kind: 'card', uid, startX: e.clientX, startY: e.clientY, x: e.clientX, y: e.clientY, active: false });
+    beginDrag({ kind: 'card', uid, startX: e.clientX, startY: e.clientY, x: e.clientX, y: e.clientY, active: false, touch: e.pointerType === 'touch' });
   };
   const startUnitDrag = (e: RPointerEvent, uid: number) => {
     if (e.button !== 0 || !interactive) return;
@@ -347,6 +365,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
 
   const handCount = me.hand.length;
   const draggingCard = drag?.active && drag.kind === 'card' ? me.hand.find((c) => c.uid === drag.uid) : undefined;
+  const peekCard = peek !== null && !drag?.active ? me.hand.find((c) => c.uid === peek) : undefined;
+  const peekW = Math.round(Math.min(220, window.innerHeight * 0.44));
 
   /** Opens the inspector for the hand card or unit under `el`; true when there was one. */
   const inspectAt = (el: HTMLElement): boolean => {
@@ -373,6 +393,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         // Touch: press and hold a card or unit to inspect it (phones have no right click).
         if (e.pointerType !== 'touch') return;
         const el = e.target as HTMLElement;
+        if (peekRef.current !== null && !el.closest('[data-hand-uid], .hand-peek')) setPeek(null);
         const x0 = e.clientX;
         const y0 = e.clientY;
         clearTimeout(longPress.current.timer);
@@ -457,7 +478,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
             return (
               <div
                 key={c.uid}
-                className={`hand-card ${newCards.has(c.uid) ? 'is-new' : ''} ${selected ? 'is-selected' : ''} ${drag?.active && drag.uid === c.uid ? 'is-dragging' : ''} ${c.fleeting ? 'is-fleeting' : ''}`}
+                className={`hand-card ${newCards.has(c.uid) ? 'is-new' : ''} ${selected ? 'is-selected' : ''} ${drag?.active && drag.uid === c.uid ? 'is-dragging' : ''} ${c.fleeting ? 'is-fleeting' : ''} ${peek === c.uid ? 'is-peek' : ''}`}
                 data-hand-uid={c.uid}
                 style={{ '--o': offset } as CSSProperties}
               >
@@ -526,6 +547,23 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         </div>
       )}
 
+      {peekCard && (
+        <div className="hand-peek" style={{ '--peek-w': `${peekW}px` } as CSSProperties}>
+          <CardView
+            card={peekCard.cardId}
+            width={peekW}
+            cost={effectiveCost(game, HUMAN, peekCard)}
+            playable={interactive && canPlayCard(game, HUMAN, peekCard).ok}
+            onClick={() => {
+              setPeek(null);
+              if (interactive) store.getState().clickHandCard(peekCard.uid);
+              else toast('Wait for your turn.', 'info');
+            }}
+            ariaLabel={`${getCardSafe(peekCard.cardId).name}. Tap to play.`}
+          />
+          <span className="hand-peek-hint">{interactive ? (canPlayCard(game, HUMAN, peekCard).ok ? 'Tap the card to play it' : 'Not enough energy') : 'Opponent’s turn'}</span>
+        </div>
+      )}
       <div className="rotate-hint" role="alert">
         <Glyph name="deck" size={48} />
         <strong>Turn your phone sideways</strong>
