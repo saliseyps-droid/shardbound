@@ -38,8 +38,7 @@
   position: absolute;
   inset: 3cqw;
   clip-path: inherit;
-  /* The text area under the name carries a soft tint of the card's frame colour. */
-  background: linear-gradient(180deg, #221d3a 0 50%, color-mix(in srgb, var(--f1) 24%, #1e1934) 60%, color-mix(in srgb, var(--f1) 15%, #151226) 100%);
+  background: linear-gradient(180deg, #221d3a, #151226);
   box-shadow: inset 0 0 0 0.6cqw var(--edge);
   z-index: 0;
 }
@@ -110,6 +109,14 @@
   overflow: hidden;
 }
 .card-text p { margin: 0 0 1.4cqw; max-width: none; }
+/* Text panel under the name: a soft tint of the frame colour with a thin, darker border of the same hue. */
+.card-textbox {
+  position: absolute; z-index: 1; left: 5.5cqw; right: 5.5cqw; top: 57.5%; bottom: 5cqw;
+  border-radius: 1.6cqw;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--f1) 26%, #1e1934), color-mix(in srgb, var(--f1) 14%, #151226));
+  box-shadow: inset 0 0 0 0.55cqw color-mix(in srgb, var(--f1) 55%, #08060f), inset 0 0 3cqw rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
 .card-watermark {
   position: absolute; z-index: 1; left: 0; right: 0; top: 62%; bottom: 6%;
   display: grid; place-items: center; pointer-events: none;
