@@ -17,12 +17,10 @@ interface Props {
   disabledFactions?: readonly Faction[];
   ownershipLabels?: Partial<Record<OwnershipFilter, string>>;
   compact?: boolean;
-  /** Extra control at the right end of the faction tab row. */
-  tabsEnd?: React.ReactNode;
 }
 
 /** Faction tabs, search and dropdown filters shared by the collection and deck editor. */
-export function CardFilterBar({ value, onChange, factions, disabledFactions = [], ownershipLabels, compact, tabsEnd }: Props) {
+export function CardFilterBar({ value, onChange, factions, disabledFactions = [], ownershipLabels, compact }: Props) {
   const set = <K extends keyof CardFilterState>(k: K, v: CardFilterState[K]) => onChange({ ...value, [k]: v });
   const active =
     value.rarity !== 'ALL' || value.set !== 'ALL' || value.type !== 'ALL' || value.cost !== 'ALL' || value.search !== '' || value.ownership !== 'ALL' || value.faction !== 'ALL';
@@ -52,7 +50,6 @@ export function CardFilterBar({ value, onChange, factions, disabledFactions = []
             </button>
           );
         })}
-        {tabsEnd && <div className="faction-tabs-end" role="presentation">{tabsEnd}</div>}
       </div>
       <div className="filter-row">
         <label className="search-field">

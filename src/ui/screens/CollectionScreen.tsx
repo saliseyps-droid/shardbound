@@ -7,7 +7,7 @@ import { ownedCopies } from '@/domain/save';
 import { gameService, useAccount } from '@/state/accountStore';
 import { toast, useUi } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
-import { CardBack, CardView } from '@/ui/components/CardView';
+import { CardView } from '@/ui/components/CardView';
 import { confirmDialog, Essence, ScreenHeader } from '@/ui/components/common';
 import { VirtualCardGrid } from '@/ui/components/collection/VirtualCardGrid';
 import { CardFilterBar } from '@/ui/components/collection/CardFilterBar';
@@ -15,9 +15,6 @@ import { DEFAULT_FILTERS, filterCards, type CardFilterState } from '@/ui/compone
 import { CardDetailPanel, bestVariant } from '@/ui/components/collection/CardDetailPanel';
 import { CollectionStats } from '@/ui/components/collection/CollectionStats';
 import { useCardWidth } from '@/ui/components/collection/useCardWidth';
-import { CardBackGrid } from '@/ui/components/CardBackGrid';
-import { CARD_BACKS } from '@/data/cardBacks';
-import { useNavigate } from 'react-router-dom';
 import '@/ui/styles/collection.css';
 
 const BADGE_H = 34;
@@ -27,8 +24,6 @@ export default function CollectionScreen() {
   const collection = save?.collection;
   const [filters, setFilters] = useState<CardFilterState>(DEFAULT_FILTERS);
   const [selected, setSelected] = useState<string | null>(null);
-  const [view, setView] = useState<'cards' | 'backs'>('cards');
-  const navigate = useNavigate();
   const cardWidth = useCardWidth();
   const cardHeight = Math.round(cardWidth * 1.4) + BADGE_H;
 
@@ -116,18 +111,6 @@ export default function CollectionScreen() {
     );
   };
 
-  const backsToggle = (
-    <button className={`backs-toggle ${view === 'backs' ? 'is-active' : ''}`} onClick={() => setView(view === 'backs' ? 'cards' : 'backs')} aria-pressed={view === 'backs'}>
-      <CardBack width={20} design={save.profile.cardBack} className="backs-toggle-thumb" />
-      <span>{view === 'backs' ? 'Back to cards' : 'Card backs'}</span>
-      {view !== 'backs' && (
-        <span className="backs-toggle-count num">
-          {save.profile.cardBacks.length}/{CARD_BACKS.length}
-        </span>
-      )}
-    </button>
-  );
-
   return (
     <div className="screen collection-screen">
       <ScreenHeader
@@ -142,28 +125,7 @@ export default function CollectionScreen() {
           </>
         }
       />
-      {view === 'backs' ? (
-        <>
-        <div className="faction-tabs coll-backs-bar">
-          <span className="coll-backs-crumb">Collection › Card backs</span>
-          <div className="faction-tabs-end">{backsToggle}</div>
-        </div>
-        <section className="panel coll-backs" aria-labelledby="coll-backs-title">
-          <div className="coll-backs-head">
-            <div>
-              <h3 id="coll-backs-title">Your card backs</h3>
-              <p className="muted">Pick the back your deck and hand show in every match.</p>
-            </div>
-            <button className="btn btn-sm btn-cyan" onClick={() => navigate('/shop')}>
-              Get more in the Shop
-            </button>
-          </div>
-          <CardBackGrid mode="owned" />
-        </section>
-        </>
-      ) : (
-      <>
-      <CardFilterBar value={filters} onChange={setFilters} factions={ALL_FACTIONS} tabsEnd={backsToggle} />
+      <CardFilterBar value={filters} onChange={setFilters} factions={ALL_FACTIONS} />
       <div className="collection-body">
         <VirtualCardGrid
           items={cards}
@@ -187,8 +149,6 @@ export default function CollectionScreen() {
           {selected ? <CardDetailPanel cardId={selected} onClose={() => setSelected(null)} /> : <CollectionStats collection={collection} />}
         </div>
       </div>
-      </>
-      )}
     </div>
   );
 }

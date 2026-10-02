@@ -16,6 +16,7 @@ const NAV: { to: string; label: MessageKey; icon: string }[] = [
   { to: '/decks', label: 'nav.decks', icon: 'deck' },
   { to: '/packs', label: 'nav.packs', icon: 'pack' },
   { to: '/shop', label: 'nav.shop', icon: 'coin' },
+  { to: '/card-backs', label: 'nav.cardBacks', icon: 'cardback' },
   { to: '/quests', label: 'nav.quests', icon: 'scroll2' },
   { to: '/profile', label: 'nav.profile', icon: 'person' },
   { to: '/patch-notes', label: 'nav.patchNotes', icon: 'scroll' },
