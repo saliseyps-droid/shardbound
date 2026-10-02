@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCardSafe } from '@/data/cards';
 import { getTalent } from '@/data/wardenTalents';
@@ -127,13 +127,42 @@ function describeEvent(e: GameEvent, game: GameState): string | null {
   }
 }
 
+type LogLine = { seq: number; text: string };
+
+/**
+ * The whole match, line by line. The engine keeps only a rolling window of events,
+ * so lines are collected here as they arrive and kept for the rest of the match.
+ */
 export function BattleLog({ game }: { game: GameState }) {
-  const lines = game.log
-    .map((e) => ({ seq: e.seq, text: describeEvent(e, game) }))
-    .filter((l): l is { seq: number; text: string } => !!l.text)
-    .slice(-9);
+  const startedAt = useMatch((s) => s.startedAt);
+  const store = useRef<{ match: unknown; lastSeq: number; lines: LogLine[] }>({ match: null, lastSeq: -1, lines: [] });
+  const box = useRef<HTMLDivElement>(null);
+  const stick = useRef(true);
+  const memo = store.current;
+  if (memo.match !== startedAt) Object.assign(memo, { match: startedAt, lastSeq: -1, lines: [] });
+  for (const e of game.log) {
+    if (e.seq <= memo.lastSeq) continue;
+    memo.lastSeq = e.seq;
+    const text = describeEvent(e, game);
+    if (text) memo.lines.push({ seq: e.seq, text });
+  }
+  const lines = memo.lines;
+  // Follow new lines unless the player scrolled up to read older ones.
+  useLayoutEffect(() => {
+    if (stick.current && box.current) box.current.scrollTop = box.current.scrollHeight;
+  }, [lines.length]);
   return (
-    <div className="battle-log" aria-label="Battle log" aria-live="polite">
+    <div
+      className="battle-log"
+      ref={box}
+      aria-label="Battle log"
+      aria-live="polite"
+      tabIndex={0}
+      onScroll={(e) => {
+        const el = e.currentTarget;
+        stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 24;
+      }}
+    >
       {lines.map((l) => (
         <div key={l.seq} className="log-line">
           {l.text}

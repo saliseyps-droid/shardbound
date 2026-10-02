@@ -409,7 +409,9 @@
   min-height: 0;
 }
 .hover-preview { min-height: calc(220px * 1.4); display: grid; place-items: start center; }
-.battle-log { overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; font-size: var(--t-sm); color: var(--parchment-dim); }
+.battle-log { min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 4px; padding-right: 4px; font-size: var(--t-sm); color: var(--parchment-dim); scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+/* Short logs sit at the bottom; long ones scroll. */
+.battle-log > .log-line:first-child { margin-top: auto; }
 .log-line { padding: 3px 8px; border-left: 2px solid var(--line-strong); animation: fade-in 0.3s; }
 .match-meta { font-size: var(--t-xs); }
 @media (max-width: 1450px) { .hover-preview { min-height: calc(180px * 1.4); } .hover-preview .card { --card-w: 180px !important; } }

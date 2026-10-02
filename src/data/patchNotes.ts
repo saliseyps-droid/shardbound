@@ -30,6 +30,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Both decks now lie on the left side of the board as a stack of cards that gets thinner as you draw. Drawn cards fly from the deck into your hand.',
           'The decks on the table are twice as big, with the card count shown on the top card.',
           'End turn and Concede are back on the right side.',
+          'The battle log on the right keeps the whole match. Scroll up to read older lines; it follows new ones while you are at the bottom.',
           'Warden abilities sit on both sides of the portrait: the first on the left, the second on the right.',
         ],
       },
