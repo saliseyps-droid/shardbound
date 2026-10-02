@@ -162,11 +162,13 @@
 }
 .draw-pile-count {
   /* Sits on the top card, above the stack and its shadow. */
-  position: absolute; z-index: 20; left: 50%; bottom: 10%; transform: translateX(-50%);
+  /* Centred on the top card, which is shifted up-left by 2px per layer below it. */
+  position: absolute; z-index: 20; left: 50%; bottom: 17%;
+  transform: translate(calc(-50% - (var(--layers) - 1) * 2px), calc((var(--layers) - 1) * -2px));
   min-width: 38px; padding: 2px 10px; text-align: center; font-weight: 800; font-size: var(--t-md, 1rem); color: var(--parchment);
   background: rgba(10, 8, 22, 0.75); border: 1px solid var(--gold-deep); border-radius: 999px;
 }
-.draw-pile.is-empty .draw-pile-count { color: var(--damage); }
+.draw-pile.is-empty .draw-pile-count { color: var(--damage); transform: translateX(-50%); bottom: 50%; }
 .hero-col-left { display: flex; align-items: center; gap: 10px; }
 .empower-chip { color: var(--gold-bright); }
 
