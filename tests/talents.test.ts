@@ -90,6 +90,20 @@ describe('Warden talents in decks, saves, bosses and online play', () => {
     expect(d3.talents).toEqual([pick('wt_astral_foresight', 2), pick('wt_astral_spellweave', 1)]);
   });
 
+  it('keeps a well-formed but unfinished build, resets malformed ones', () => {
+    const report = migrateSave({
+      saveVersion: CURRENT_SAVE_VERSION,
+      profile: { username: 'Old' },
+      decks: [
+        { id: 'd1', name: 'Wip', heroFaction: 'VOID', cards: {}, talents: [pick('wt_void_unending', 1)] },
+        { id: 'd2', name: 'Bad', heroFaction: 'VOID', cards: {}, talents: [pick('wt_void_unending', 2), pick('wt_void_unending', 1)] },
+      ],
+    });
+    expect(report.save.decks[0].talents).toEqual([pick('wt_void_unending', 1)]);
+    expect(report.save.decks[1].talents).toEqual(DEFAULT_BUILD.VOID);
+    expect(report.notes.some((n) => n.includes('Bad'))).toBe(true);
+  });
+
   it('new accounts start with valid builds on every starter deck', () => {
     const save = createNewSave('A', 'flame', 1, 'p');
     for (const d of save.decks) expect(validateBuild(d.heroFaction, d.talents)).toBeNull();

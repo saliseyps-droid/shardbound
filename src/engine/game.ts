@@ -144,7 +144,8 @@ function startTurn(ctx: EngineContext, playerId: PlayerId) {
   }
   p.maxEnergy = Math.min(GAME_RULES.maxEnergy, p.maxEnergy + GAME_RULES.energyPerTurn);
   p.energy = p.maxEnergy;
-  for (const a of p.hero.abilities) a.uses = 0;
+  // Per-turn ability counters reset for both Wardens: passives can also trigger on the opponent's turn.
+  for (const pl of state.players) for (const a of pl.hero.abilities) a.uses = 0;
   p.spellsCastThisTurn = 0;
   p.cardsPlayedThisTurn = 0;
   p.allyDiedThisTurn = false;

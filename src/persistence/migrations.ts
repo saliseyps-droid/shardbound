@@ -1,7 +1,7 @@
 import { hasCard } from '@/data/cards';
 import { STARTER_DECKS, starterDeckCards } from '@/data/starterDecks';
 import { PLAYABLE_FACTIONS, VARIANTS, type PlayableFaction } from '@/game/types';
-import { defaultBuild, validateBuild, type TalentPick } from '@/data/wardenTalents';
+import { defaultBuild, isWellFormedBuild, type TalentPick } from '@/data/wardenTalents';
 import type { Deck } from '@/domain/decks';
 import { CURRENT_SAVE_VERSION, emptyVariants, type GameSave } from '@/domain/save';
 import { createNewSave } from '@/domain/newAccount';
@@ -53,6 +53,13 @@ const num = (v: unknown, fallback: number, min = 0) => (typeof v === 'number' &&
  * Upgrades any older save and repairs invalid data field-by-field with safe
  * defaults. Never throws for bad content; throws only if the save is unusable.
  */
+/** Keeps any build the talent tree could have made (unfinished ones too); anything else becomes the default. */
+function repairTalents(faction: PlayableFaction, raw: unknown, deckName: string, notes: string[]): TalentPick[] {
+  if (isWellFormedBuild(faction, raw)) return raw.map((t) => ({ abilityId: t.abilityId, level: t.level }));
+  if (raw !== undefined) notes.push(`Reset the Warden talents of deck "${deckName}" to the default build.`);
+  return defaultBuild(faction);
+}
+
 export function migrateSave(input: Raw): MigrationReport {
   const notes: string[] = [];
   let raw: Raw = { ...input };
@@ -103,7 +110,7 @@ export function migrateSave(input: Raw): MigrationReport {
             name: String(d.name ?? 'Deck').slice(0, 40),
             heroFaction,
             cards: deckCards,
-            talents: validateBuild(heroFaction, d.talents) === null ? (d.talents as TalentPick[]).map((t) => ({ abilityId: t.abilityId, level: t.level })) : defaultBuild(heroFaction),
+            talents: repairTalents(heroFaction, d.talents, String(d.name ?? 'Deck'), notes),
             favorite: !!d.favorite,
             createdAt: num(d.createdAt, Date.now()),
             updatedAt: num(d.updatedAt, Date.now()),

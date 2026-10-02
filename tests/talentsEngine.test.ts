@@ -54,6 +54,13 @@ describe('Warden abilities in the engine', () => {
     expect(s.players[1].hero.health).toBe(28);
   });
 
+  it('passive limits reset on the opponent turn too', () => {
+    let s = newGame({ talents0: [t('wt_void_soul_harvest', 0), t('wt_void_hollow_summons', 2)], board0: ['token_recruit', 'token_recruit', 'token_recruit', 'token_recruit'] });
+    s.players[0].hero.abilities[0].uses = 3; // spent on our own turn
+    s = endTurn(s); // opponent's turn starts
+    expect(s.players[0].hero.abilities[0].uses).toBe(0);
+  });
+
   it('lists hero power actions for every usable active slot', () => {
     const s = newGame({ talents0: [t('wt_iron_rivet_plating', 2), t('wt_iron_assemble', 1)] });
     setEnergy(s, 0, 10);

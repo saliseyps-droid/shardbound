@@ -315,6 +315,18 @@ export function buildPoints(build: TalentPick[]): number {
   return build.reduce((sum, x) => sum + x.level + 1, 0);
 }
 
+/** A build the talent tree could have produced for this faction (possibly unfinished). */
+export function isWellFormedBuild(faction: PlayableFaction, build: unknown): build is TalentPick[] {
+  if (!Array.isArray(build) || build.length > TALENT_PICKS) return false;
+  const ids = new Set<string>();
+  for (const x of build) {
+    if (!x || typeof x !== 'object' || typeof x.abilityId !== 'string' || ![0, 1, 2].includes(x.level)) return false;
+    if (getTalent(x.abilityId)?.faction !== faction || ids.has(x.abilityId)) return false;
+    ids.add(x.abilityId);
+  }
+  return buildPoints(build as TalentPick[]) <= TALENT_POINTS;
+}
+
 /** Null when the build is legal for the faction, otherwise the reason. */
 export function validateBuild(faction: PlayableFaction, build: unknown): string | null {
   if (!Array.isArray(build)) return 'Choose your Warden abilities.';
