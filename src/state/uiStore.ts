@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { Variant } from '@/game/types';
+import { tr } from '@/i18n';
 
 export interface Toast {
   id: number;
@@ -29,4 +30,5 @@ export const useUi = create<UiStore>((set) => ({
   inspectCard: (cardId, variant) => set({ inspect: cardId ? { cardId, variant } : null }),
 }));
 
-export const toast = (message: string, kind: Toast['kind'] = 'info') => useUi.getState().pushToast(message, kind);
+/** Shows a toast; the (English) message is translated, including messages built by the game logic. */
+export const toast = (message: string, kind: Toast['kind'] = 'info') => useUi.getState().pushToast(tr(message), kind);

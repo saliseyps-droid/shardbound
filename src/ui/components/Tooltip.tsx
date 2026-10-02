@@ -66,7 +66,7 @@ export function TooltipLayer() {
 export function KeywordText({ text }: { text: string }) {
   const parts: ReactNode[] = [];
   let last = 0;
-  const re = new RegExp(KEYWORD_NAME_PATTERN.source, 'g');
+  const re = new RegExp(KEYWORD_NAME_PATTERN.source, 'gu');
   let m: RegExpExecArray | null;
   let i = 0;
   while ((m = re.exec(text))) {

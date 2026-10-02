@@ -7,6 +7,8 @@ export interface KeywordInfo {
   definition: string;
   category: 'static' | 'trigger' | 'status';
   icon: string;
+  /** Other word forms in rules text that get the same tooltip (localized text). */
+  aliases?: string[];
 }
 
 export const KEYWORDS: Record<KeywordId, KeywordInfo> = {
@@ -32,15 +34,27 @@ export const KEYWORDS: Record<KeywordId, KeywordInfo> = {
 
 export const KEYWORD_LIST = Object.values(KEYWORDS);
 
-/** Keyword names that appear in rules text, used for tooltip highlighting. */
-export const KEYWORD_NAME_PATTERN = new RegExp(
-  `\\b(${KEYWORD_LIST.map((k) => k.name).sort((a, b) => b.length - a.length).join('|')}|Frozen|Freezes?|Burning)\\b`,
-  'g',
-);
+/** English word forms that get the keyword tooltip too. */
+const EN_ALIASES: Partial<Record<KeywordId, string[]>> = { FREEZE: ['Frozen', 'Freezes'], BURN: ['Burning'] };
+
+const words = (k: KeywordInfo) => [k.name, ...(k.aliases ?? []), ...(EN_ALIASES[k.id] ?? [])];
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+function buildPattern(): RegExp {
+  const all = KEYWORD_LIST.flatMap(words).sort((a, b) => b.length - a.length);
+  // Unicode-aware word boundaries, so names with diacritics (Czech) match too.
+  return new RegExp(`(?<![\\p{L}\\p{N}])(${all.map(escapeRe).join('|')})(?![\\p{L}\\p{N}])`, 'gu');
+}
+
+/** Keyword names (and their other word forms) in rules text, used for tooltip highlighting. */
+export let KEYWORD_NAME_PATTERN = buildPattern();
+
+/** Called after keyword names are localized. */
+export function rebuildKeywordPattern() {
+  KEYWORD_NAME_PATTERN = buildPattern();
+}
 
 export function keywordByName(name: string): KeywordInfo | undefined {
-  const normalized = name.toLowerCase();
-  if (normalized.startsWith('froz') || normalized.startsWith('freez')) return KEYWORDS.FREEZE;
-  if (normalized === 'burning') return KEYWORDS.BURN;
-  return KEYWORD_LIST.find((k) => k.name.toLowerCase() === normalized);
+  const normalized = name.toLocaleLowerCase();
+  return KEYWORD_LIST.find((k) => words(k).some((w) => w.toLocaleLowerCase() === normalized));
 }
