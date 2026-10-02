@@ -1,6 +1,7 @@
 import type { Difficulty } from '@/config/progression';
 import type { Faction, PlayableFaction, Rarity, SetId } from '@/game/types';
 import type { AiPersonality } from '@/ai/config';
+import type { TalentPick } from './wardenTalents';
 
 export interface OpponentReward {
   gold?: number;
@@ -13,7 +14,8 @@ export interface OpponentReward {
 export interface SpecialRules {
   heroHealth?: number;
   bonusStartingEnergy?: number;
-  heroPowerId?: string;
+  /** Fixed Warden abilities (bosses); otherwise the AI build for the personality. */
+  talents?: TalentPick[];
   startingBoard?: string[];
   startingRelics?: string[];
   startingLocation?: string;
@@ -82,7 +84,7 @@ export const CAMPAIGN: Chapter[] = [
       {
         id: 'c1_boss', name: 'Grom the Unbroken', title: 'Warlord of the Road', avatar: 'compass', faction: 'IRON', secondFaction: 'NEUTRAL', archetype: 'Bulwark', difficulty: 'NORMAL', personality: 'CONTROL', rarities: NORMAL_POOL, boss: true,
         intro: 'Every Warden on this road pays my toll.',
-        special: { heroHealth: 35, heroPowerId: 'hp_iron', startingRelics: [], description: ['Grom starts with 35 Health.'] },
+        special: { heroHealth: 35, talents: [{ abilityId: 'wt_iron_rivet_plating', level: 2 }, { abilityId: 'wt_iron_reinforced_hull', level: 1 }], startingRelics: [], description: ['Grom starts with 35 Health.', 'Warden abilities: Rivet Plating III, Reinforced Hull II.'] },
         firstWinReward: { gold: 200, xp: 200, packs: { setId: 'CORE', amount: 2 } },
       },
     ],
@@ -99,7 +101,7 @@ export const CAMPAIGN: Chapter[] = [
       {
         id: 'c2_boss', name: 'Maw of the Deep', title: 'Leviathan of the Drowned Court', avatar: 'wave', faction: 'TIDE', archetype: 'Deep Freeze', difficulty: 'HARD', personality: 'CONTROL', rarities: HARD_POOL, boss: true,
         intro: 'The water beneath you shifts. Something vast opens its eye.',
-        special: { heroHealth: 40, heroPowerId: 'hp_boss_leviathan', startingBoard: ['token_kraken_tentacle', 'token_kraken_tentacle'], description: ['The Maw has 40 Health.', 'Starts with two Grasping Tentacles.', 'Warden Sigil: Crushing Depths.'] },
+        special: { heroHealth: 40, talents: [{ abilityId: 'wt_boss_crushing_depths', level: 0 }, { abilityId: 'wt_tide_rime_touch', level: 2 }], startingBoard: ['token_kraken_tentacle', 'token_kraken_tentacle'], description: ['The Maw has 40 Health.', 'Starts with two Grasping Tentacles.', 'Warden abilities: Crushing Depths, Rime Touch III.'] },
         firstWinReward: { gold: 300, xp: 250, packs: { setId: 'DEEP', amount: 2 } },
       },
     ],
@@ -112,19 +114,19 @@ export const CAMPAIGN: Chapter[] = [
       {
         id: 'c3_b1', name: 'Kharzul Reborn', title: 'The Living Caldera', avatar: 'flame', faction: 'EMBER', archetype: 'Pyromancy', difficulty: 'HARD', personality: 'AGGRESSIVE', rarities: ALL, boss: true,
         intro: 'The mountain itself rises to meet you.',
-        special: { heroHealth: 35, bonusStartingEnergy: 1, heroPowerId: 'hp_boss_inferno', startingLocation: 'emb_kharzul_caldera', description: ['Starts with 1 extra energy crystal.', 'Begins with Kharzul Caldera in play.', 'Warden Sigil: Caldera Eruption.'] },
+        special: { heroHealth: 35, bonusStartingEnergy: 1, talents: [{ abilityId: 'wt_boss_caldera_eruption', level: 0 }, { abilityId: 'wt_ember_searing_wrath', level: 1 }], startingLocation: 'emb_kharzul_caldera', description: ['Starts with 1 extra energy crystal.', 'Begins with Kharzul Caldera in play.', 'Warden abilities: Caldera Eruption, Searing Wrath II.'] },
         firstWinReward: { gold: 300, xp: 300, essence: 200 },
       },
       {
         id: 'c3_b2', name: 'The Endless Choir', title: 'Voice of the Hollow', avatar: 'eye', faction: 'VOID', archetype: 'Requiem', difficulty: 'EXPERT', personality: 'BALANCED', rarities: ALL, boss: true,
         intro: 'We are many. We were you, once.',
-        special: { heroHealth: 40, heroPowerId: 'hp_boss_choir', startingBoard: ['token_hollow_wisp', 'token_hollow_wisp', 'token_hollow_wisp'], description: ['The Choir has 40 Health.', 'Starts with three Hollow Wisps.', 'Warden Sigil: Requiem Chorus.'] },
+        special: { heroHealth: 40, talents: [{ abilityId: 'wt_boss_requiem_chorus', level: 0 }, { abilityId: 'wt_void_unending', level: 2 }], startingBoard: ['token_hollow_wisp', 'token_hollow_wisp', 'token_hollow_wisp'], description: ['The Choir has 40 Health.', 'Starts with three Hollow Wisps.', 'Warden abilities: Requiem Chorus, Unending III.'] },
         firstWinReward: { gold: 350, xp: 300, packs: { setId: 'DEEP', amount: 2 } },
       },
       {
         id: 'c3_final', name: 'The Shattered Sovereign', title: 'Echo of the Crown', avatar: 'crown', faction: 'ASTRAL', archetype: 'Starlit Control', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
         intro: 'You would rebuild my Crown? Then kneel before what it was.',
-        special: { heroHealth: 45, bonusStartingEnergy: 1, heroPowerId: 'hp_boss_sovereign', description: ['The Sovereign has 45 Health.', 'Starts with 1 extra energy crystal.', 'Warden Sigil: Crown Fragment.'] },
+        special: { heroHealth: 45, bonusStartingEnergy: 1, talents: [{ abilityId: 'wt_boss_crown_fragment', level: 0 }, { abilityId: 'wt_astral_foresight', level: 2 }], description: ['The Sovereign has 45 Health.', 'Starts with 1 extra energy crystal.', 'Warden abilities: Crown Fragment, Foresight III.'] },
         firstWinReward: { gold: 500, xp: 500, essence: 400, packs: { setId: 'CORE', amount: 3 } },
       },
     ],

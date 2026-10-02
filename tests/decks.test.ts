@@ -4,9 +4,10 @@ import { cardsBy, collectibleCards } from '@/data/cards';
 import { createNewSave } from '@/domain/newAccount';
 import { ownedCopies } from '@/domain/save';
 import { PLAYABLE_FACTIONS } from '@/game/types';
+import { defaultBuild } from '@/data/wardenTalents';
 
 const deck = (cards: Record<string, number>, heroFaction: Deck['heroFaction'] = 'EMBER'): Deck => ({
-  id: 'd', name: 'Test', heroFaction, cards, favorite: false, createdAt: 0, updatedAt: 0,
+  id: 'd', name: 'Test', heroFaction, cards, talents: defaultBuild(heroFaction), favorite: false, createdAt: 0, updatedAt: 0,
 });
 
 describe('deck validation', () => {

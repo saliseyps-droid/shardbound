@@ -5,6 +5,7 @@ import type { CardDefinition, Faction, PlayableFaction } from '@/game/types';
 import { PLAYABLE_FACTIONS } from '@/game/types';
 import { createRng, nextFloat } from '@/core/rng';
 import { hashString } from '@/core/rng';
+import { validateBuild, type TalentPick } from '@/data/wardenTalents';
 
 export interface Deck {
   id: string;
@@ -17,6 +18,8 @@ export interface Deck {
   updatedAt: number;
   /** Starter decks can't be deleted accidentally; they can be edited. */
   isStarter?: boolean;
+  /** Warden talent build: 2 abilities, one at rank III and one at rank II. */
+  talents: TalentPick[];
 }
 
 export type DeckIssueCode =
@@ -28,7 +31,8 @@ export type DeckIssueCode =
   | 'UNKNOWN_CARD'
   | 'NOT_OWNED'
   | 'NOT_COLLECTIBLE'
-  | 'NAME';
+  | 'NAME'
+  | 'TALENTS';
 
 export interface DeckIssue {
   code: DeckIssueCode;
@@ -57,8 +61,12 @@ export function deckFactions(deck: Pick<Deck, 'cards'>): Faction[] {
  * Validates a deck against the game rules and (optionally) the owner's collection.
  * @param owned cardId -> owned copies across all variants
  */
-export function validateDeck(deck: Pick<Deck, 'cards' | 'heroFaction' | 'name'>, owned?: (cardId: string) => number): DeckIssue[] {
+export function validateDeck(deck: Pick<Deck, 'cards' | 'heroFaction' | 'name'> & { talents?: TalentPick[] }, owned?: (cardId: string) => number): DeckIssue[] {
   const issues: DeckIssue[] = [];
+  // Card-list-only checks (online decks) pass no talents.
+  if ('talents' in deck && validateBuild(deck.heroFaction, deck.talents) !== null) {
+    issues.push({ code: 'TALENTS', message: 'Choose 2 Warden abilities and spend all 5 talent points.' });
+  }
   const size = deckSize(deck);
   if (size !== DECK_RULES.deckSize) issues.push({ code: 'SIZE', message: `${size} / ${DECK_RULES.deckSize} cards` });
   if (!deck.name?.trim()) issues.push({ code: 'NAME', message: 'Deck needs a name.' });

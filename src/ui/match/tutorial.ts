@@ -14,8 +14,8 @@ export function tutorialSetup(playerName: string, avatar: string): MatchSetup {
     firstPlayer: 0,
     skipMulligan: true,
     players: [
-      { name: playerName, avatar, faction: 'EMBER', deck: playerDeck, keepDeckOrder: true, heroPowerId: 'hp_ember' },
-      { name: TUTORIAL_OPPONENT.name, avatar: TUTORIAL_OPPONENT.avatar, faction: TUTORIAL_OPPONENT.faction, deck: oppDeck, keepDeckOrder: true, heroHealth: 12, heroPowerId: null },
+      { name: playerName, avatar, faction: 'EMBER', deck: playerDeck, keepDeckOrder: true, talents: [{ abilityId: 'wt_ember_cinder_bolt', level: 2 }, { abilityId: 'wt_ember_kindled_fury', level: 1 }] },
+      { name: TUTORIAL_OPPONENT.name, avatar: TUTORIAL_OPPONENT.avatar, faction: TUTORIAL_OPPONENT.faction, deck: oppDeck, keepDeckOrder: true, heroHealth: 12, talents: [] },
     ],
   };
 }

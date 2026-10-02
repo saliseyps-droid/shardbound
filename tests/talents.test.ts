@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { PLAYABLE_FACTIONS } from '@/game/types';
-import { DEFAULT_BUILD, FACTION_TALENTS, PERSONALITY_BUILD, buildPoints, getTalent, validateBuild, type TalentPick } from '@/data/wardenTalents';
+import { DEFAULT_BUILD, FACTION_TALENTS, PERSONALITY_BUILD, buildPoints, defaultBuild, getTalent, validateBuild, type TalentPick } from '@/data/wardenTalents';
+import { starterDeckCards } from '@/data/starterDecks';
+import { CAMPAIGN } from '@/data/opponents';
+import { validateDeck } from '@/domain/decks';
+import { createNewSave } from '@/domain/newAccount';
+import { opponentSide, playerSide } from '@/domain/matchSetup';
+import { CURRENT_SAVE_VERSION } from '@/domain/save';
+import { migrateSave } from '@/persistence/migrations';
+import { validateRemoteSide } from '@/net/lobby';
 
 const pick = (abilityId: string, level: 0 | 1 | 2): TalentPick => ({ abilityId, level });
 
@@ -53,5 +61,54 @@ describe('Warden talent data', () => {
     const [a, b] = FACTION_TALENTS.IRON.map((t) => t.id);
     expect(buildPoints([pick(a, 2), pick(b, 1)])).toBe(5);
     expect(buildPoints([pick(a, 0)])).toBe(1);
+  });
+});
+
+describe('Warden talents in decks, saves, bosses and online play', () => {
+  const cards = () => starterDeckCards('EMBER');
+
+  it('flags decks with an incomplete or foreign build', () => {
+    const base = { name: 'D', heroFaction: 'EMBER' as const, cards: cards() };
+    expect(validateDeck({ ...base, talents: defaultBuild('EMBER') }).map((i) => i.code)).not.toContain('TALENTS');
+    expect(validateDeck({ ...base, talents: [] }).map((i) => i.code)).toContain('TALENTS');
+    expect(validateDeck({ ...base, talents: defaultBuild('TIDE') }).map((i) => i.code)).toContain('TALENTS');
+  });
+
+  it('repairs saves without talents or with a broken build', () => {
+    const report = migrateSave({
+      saveVersion: CURRENT_SAVE_VERSION,
+      profile: { username: 'Old' },
+      decks: [
+        { id: 'd1', name: 'Old', heroFaction: 'IRON', cards: {} },
+        { id: 'd2', name: 'Broken', heroFaction: 'VOID', cards: {}, talents: [{ abilityId: 'wt_tide_rime_touch', level: 2 }] },
+        { id: 'd3', name: 'Mine', heroFaction: 'ASTRAL', cards: {}, talents: [pick('wt_astral_foresight', 2), pick('wt_astral_spellweave', 1)] },
+      ],
+    });
+    const [d1, d2, d3] = report.save.decks;
+    expect(d1.talents).toEqual(DEFAULT_BUILD.IRON);
+    expect(d2.talents).toEqual(DEFAULT_BUILD.VOID);
+    expect(d3.talents).toEqual([pick('wt_astral_foresight', 2), pick('wt_astral_spellweave', 1)]);
+  });
+
+  it('new accounts start with valid builds on every starter deck', () => {
+    const save = createNewSave('A', 'flame', 1, 'p');
+    for (const d of save.decks) expect(validateBuild(d.heroFaction, d.talents)).toBeNull();
+  });
+
+  it('gives every campaign boss two known abilities', () => {
+    for (const ch of CAMPAIGN) for (const enc of ch.encounters) {
+      const side = opponentSide(enc);
+      expect(side.talents).toHaveLength(2);
+      for (const t of side.talents!) expect(getTalent(t.abilityId)?.levels[t.level]).toBeTruthy();
+    }
+  });
+
+  it('the host rejects an online guest with an invalid build', () => {
+    const save = createNewSave('G', 'wave', 1, 'g');
+    const deck = { ...save.decks[0], cards: starterDeckCards(save.decks[0].heroFaction) };
+    const side = playerSide('G', 'wave', deck);
+    expect(validateRemoteSide(side)).toBeNull();
+    expect(validateRemoteSide({ ...side, talents: [] })).toBe('Invalid Warden abilities.');
+    expect(validateRemoteSide({ ...side, talents: undefined })).toBe('Invalid Warden abilities.');
   });
 });

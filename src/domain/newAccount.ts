@@ -1,6 +1,7 @@
 import { STARTING_CURRENCY } from '@/config/economy';
 import { STARTER_DECKS, starterCardIds, starterDeckCards } from '@/data/starterDecks';
 import { PLAYABLE_FACTIONS } from '@/game/types';
+import { defaultBuild } from '@/data/wardenTalents';
 import type { Deck } from './decks';
 import { newRanked } from './ranked';
 import { CURRENT_SAVE_VERSION, emptyVariants, type GameSave } from './save';
@@ -18,6 +19,7 @@ export function createNewSave(username: string, avatar: string, now: number, id:
     name: d.name,
     heroFaction: d.heroFaction,
     cards: starterDeckCards(d.heroFaction),
+    talents: defaultBuild(d.heroFaction),
     favorite: i === 0,
     createdAt: now,
     updatedAt: now,

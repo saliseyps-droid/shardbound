@@ -2,7 +2,8 @@ import type { OpponentDef } from '@/data/opponents';
 import type { PlayableFaction } from '@/game/types';
 import { factionOfList, validateDeck } from '@/domain/decks';
 import type { SideSetup } from '@/engine/types';
-import { FACTION_HERO_POWER } from '@/data/heroPowers';
+import { validateBuild } from '@/data/wardenTalents';
+import { PLAYABLE_FACTIONS } from '@/game/types';
 
 /** Display-only opponent definition for an online match. */
 export function onlineOpponent(name: string, avatar: string, faction: PlayableFaction): OpponentDef {
@@ -32,7 +33,7 @@ export function validateRemoteSide(side: SideSetup): string | null {
   if (issues.length) return `Your friend's deck is not valid: ${issues[0].message}`;
   // Bosses' special rules are not allowed in PvP.
   if (side.heroHealth || side.bonusStartingEnergy || side.startingBoard?.length || side.startingRelics?.length || side.startingLocation) return 'Invalid match setup.';
-  if (side.heroPowerId !== FACTION_HERO_POWER[faction]) return 'Invalid Warden Sigil.';
-  if (side.faction != null && !(side.faction in FACTION_HERO_POWER)) return 'Invalid Warden.';
+  if (validateBuild(faction, side.talents) !== null) return 'Invalid Warden abilities.';
+  if (side.faction != null && !(PLAYABLE_FACTIONS as readonly string[]).includes(side.faction)) return 'Invalid Warden.';
   return null;
 }

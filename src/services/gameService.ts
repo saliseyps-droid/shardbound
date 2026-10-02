@@ -5,6 +5,7 @@ import { DECK_RULES } from '@/config/gameRules';
 import { LEVELS } from '@/config/progression';
 import type { PlayableFaction, SetId, Variant } from '@/game/types';
 import { maxCopiesFor, type Deck } from '@/domain/decks';
+import { defaultBuild, type TalentPick } from '@/data/wardenTalents';
 import { buyOffer, craftCard, openPack, recycleAllSurplus, recycleCard } from '@/domain/economy';
 import { claimDaily } from '@/domain/daily';
 import { applyMatchResult, type MatchRewards, type MatchSummary } from '@/domain/matchResults';
@@ -221,11 +222,11 @@ export class GameService {
   // Decks
   // -------------------------------------------------------------------------
 
-  createDeck(name: string, heroFaction: PlayableFaction, cards: Record<string, number> = {}): Result<Deck> {
+  createDeck(name: string, heroFaction: PlayableFaction, cards: Record<string, number> = {}, talents: TalentPick[] = defaultBuild(heroFaction)): Result<Deck> {
     const save = this.require();
     if (save.decks.length >= DECK_RULES.maxDecks) return err(`You can have at most ${DECK_RULES.maxDecks} decks.`);
     const now = this.now();
-    const deck: Deck = { id: uid('deck'), name: name.trim().slice(0, DECK_RULES.maxDeckNameLength) || 'New Deck', heroFaction, cards, favorite: false, createdAt: now, updatedAt: now };
+    const deck: Deck = { id: uid('deck'), name: name.trim().slice(0, DECK_RULES.maxDeckNameLength) || 'New Deck', heroFaction, cards, talents, favorite: false, createdAt: now, updatedAt: now };
     this.commit({ ...save, decks: [...save.decks, deck] });
     return ok(deck);
   }
@@ -258,7 +259,7 @@ export class GameService {
     const save = this.require();
     const src = save.decks.find((d) => d.id === deckId);
     if (!src) return err('Deck not found.');
-    return this.createDeck(`${src.name} Copy`.slice(0, DECK_RULES.maxDeckNameLength), src.heroFaction, { ...src.cards });
+    return this.createDeck(`${src.name} Copy`.slice(0, DECK_RULES.maxDeckNameLength), src.heroFaction, { ...src.cards }, src.talents.map((t) => ({ ...t })));
   }
 
   setFavoriteDeck(deckId: string) {

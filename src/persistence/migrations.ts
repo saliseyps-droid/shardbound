@@ -1,6 +1,7 @@
 import { hasCard } from '@/data/cards';
 import { STARTER_DECKS, starterDeckCards } from '@/data/starterDecks';
-import { PLAYABLE_FACTIONS, VARIANTS } from '@/game/types';
+import { PLAYABLE_FACTIONS, VARIANTS, type PlayableFaction } from '@/game/types';
+import { defaultBuild, validateBuild, type TalentPick } from '@/data/wardenTalents';
 import type { Deck } from '@/domain/decks';
 import { CURRENT_SAVE_VERSION, emptyVariants, type GameSave } from '@/domain/save';
 import { createNewSave } from '@/domain/newAccount';
@@ -96,11 +97,13 @@ export function migrateSave(input: Raw): MigrationReport {
             if (hasCard(id) && typeof n === 'number' && n > 0) deckCards[id] = Math.floor(n);
             else if (!hasCard(id)) notes.push(`Removed unknown card ${id} from deck "${d.name}".`);
           }
+          const heroFaction: PlayableFaction = PLAYABLE_FACTIONS.includes(d.heroFaction) ? d.heroFaction : 'EMBER';
           return {
             id: d.id,
             name: String(d.name ?? 'Deck').slice(0, 40),
-            heroFaction: PLAYABLE_FACTIONS.includes(d.heroFaction) ? d.heroFaction : 'EMBER',
+            heroFaction,
             cards: deckCards,
+            talents: validateBuild(heroFaction, d.talents) === null ? (d.talents as TalentPick[]).map((t) => ({ abilityId: t.abilityId, level: t.level })) : defaultBuild(heroFaction),
             favorite: !!d.favorite,
             createdAt: num(d.createdAt, Date.now()),
             updatedAt: num(d.updatedAt, Date.now()),
@@ -110,7 +113,7 @@ export function migrateSave(input: Raw): MigrationReport {
     : [];
   if (decks.length === 0) {
     notes.push('No decks found; starter decks restored.');
-    decks = STARTER_DECKS.map((sd) => ({ id: sd.id, name: sd.name, heroFaction: sd.heroFaction, cards: starterDeckCards(sd.heroFaction), favorite: false, createdAt: Date.now(), updatedAt: Date.now(), isStarter: true }));
+    decks = STARTER_DECKS.map((sd) => ({ id: sd.id, name: sd.name, heroFaction: sd.heroFaction, cards: starterDeckCards(sd.heroFaction), talents: defaultBuild(sd.heroFaction), favorite: false, createdAt: Date.now(), updatedAt: Date.now(), isStarter: true }));
   }
   if (p.selectedDeckId && !decks.some((d) => d.id === p.selectedDeckId)) p.selectedDeckId = decks[0].id;
   if (p.favoriteDeckId && !decks.some((d) => d.id === p.favoriteDeckId)) p.favoriteDeckId = null;

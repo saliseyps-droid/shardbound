@@ -1,3 +1,4 @@
+import { BOSS_TALENTS, FACTION_TALENTS } from '@/data/wardenTalents';
 import type { DataConnection, Peer } from 'peerjs';
 import { collectibleCards } from '@/data/cards';
 import { hashString } from '@/core/rng';
@@ -9,7 +10,7 @@ import type { GameAction, GameEvent, GameState, SideSetup } from '@/engine/types
  * mirrored views. The guest only sends actions.
  */
 
-export const PROTOCOL_VERSION = 1;
+export const PROTOCOL_VERSION = 2;
 export const ID_PREFIX = 'shardbound-v1-';
 const HEARTBEAT_MS = 4000;
 const TIMEOUT_MS = 15000;
@@ -18,7 +19,7 @@ const TIMEOUT_MS = 15000;
 export const CONTENT_HASH = hashString(
   collectibleCards()
     .map((c) => `${c.id}:${c.manaCost}:${c.attack ?? ''}:${c.health ?? ''}:${JSON.stringify(c.abilities ?? [])}`)
-    .join('|'),
+    .join('|') + JSON.stringify(FACTION_TALENTS) + JSON.stringify(BOSS_TALENTS),
 );
 
 export type NetMessage =
