@@ -17,12 +17,9 @@
 .inventory-stack:disabled { cursor: default; }
 .inventory-set.is-empty .inventory-stack { filter: grayscale(0.8) brightness(0.55); }
 .stack-layer { position: absolute; left: 20px; top: 20px; transition: transform 0.3s var(--ease-spring); }
-.stack-2 { transform: rotate(-12deg) translate(-16px, 6px); opacity: 0.7; }
-.stack-1 { transform: rotate(-8deg) translate(-8px, 3px); opacity: 0.85; }
 /* Same tilt as the packs in the Shop. */
 .stack-0 { transform: rotate(-4deg); }
 .inventory-stack:not(:disabled):hover .stack-0 { transform: rotate(0deg) translateY(-6px) scale(1.03); }
-.inventory-stack:not(:disabled):hover .stack-1 { transform: rotate(-11deg) translate(-14px, 3px); }
 .stack-count {
   position: absolute; right: 4px; bottom: 8px;
   font-weight: 800; font-size: var(--t-xl); color: var(--parchment);

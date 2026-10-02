@@ -25,7 +25,7 @@ export const PATCH_NOTES: PatchNote[] = [
     summary: 'Shardbound has a new logo.',
     sections: [
       { kind: 'improved', items: ['The new Shardbound emblem appears in the header, on the loading and welcome screens, as the browser tab icon, and in the match sidebar above the battle log.'] },
-      { kind: 'fixed', items: ['Arena: once you press Continue on the run summary, it stays dismissed; coming back to the Arena shows Enter the Arena again.'] },
+      { kind: 'fixed', items: ['Booster packs: a set with several unopened packs no longer shows its pack art twice.', 'Arena: once you press Continue on the run summary, it stays dismissed; coming back to the Arena shows Enter the Arena again.'] },
     ],
     commits: [],
   },
