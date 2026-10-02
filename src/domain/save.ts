@@ -36,6 +36,9 @@ export interface PlayerProfile {
   factionWins: Partial<Record<PlayableFaction, number>>;
   /** Ranked online ladder. */
   ranked: RankedState;
+  /** Owned cosmetic card backs and the one in use. */
+  cardBacks: string[];
+  cardBack: string;
 }
 
 export type VariantCounts = Record<Variant, number>;

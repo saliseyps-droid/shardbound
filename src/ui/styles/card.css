@@ -173,6 +173,10 @@
   box-shadow: inset 0 0 0 3px var(--gold-deep), inset 0 0 0 7px #15122a, inset 0 0 0 8px rgba(232, 176, 75, 0.4);
 }
 
+/* Card backs with artwork: the frame is part of the image. */
+.card-back.has-art .card-back-inner { background: #0b0916; box-shadow: none; clip-path: inset(0 round 4.5cqw); }
+.card-back-img { width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none; }
+
 /* States */
 .card.is-clickable { cursor: pointer; }
 .card.is-dimmed { filter: grayscale(0.65) brightness(0.6) drop-shadow(0 6px 10px rgba(5, 3, 20, 0.6)); }

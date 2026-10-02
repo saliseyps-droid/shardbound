@@ -1,4 +1,5 @@
 import { aiBuild } from '@/data/wardenTalents';
+import { randomCardBack } from '@/data/cardBacks';
 import { DIFFICULTY_POOLS, type OpponentDef } from '@/data/opponents';
 import type { MatchSetup, SideSetup } from '@/engine/types';
 import { hashString } from '@/core/rng';
@@ -18,7 +19,8 @@ export function buildOpponentDeck(opponent: OpponentDef): string[] {
   return [...deckToList({ cards }), ...(opponent.special?.extraCards ?? [])];
 }
 
-export function opponentSide(opponent: OpponentDef): SideSetup {
+/** `random` picks the opponent's card back (a new one every match). */
+export function opponentSide(opponent: OpponentDef, random: () => number = Math.random): SideSetup {
   const s = opponent.special;
   return {
     name: opponent.name,
@@ -26,6 +28,7 @@ export function opponentSide(opponent: OpponentDef): SideSetup {
     faction: opponent.faction,
     deck: buildOpponentDeck(opponent),
     talents: s?.talents ?? aiBuild(opponent.faction, opponent.personality),
+    cardBack: randomCardBack(random),
     heroHealth: s?.heroHealth,
     bonusStartingEnergy: s?.bonusStartingEnergy,
     startingBoard: s?.startingBoard,
@@ -34,8 +37,8 @@ export function opponentSide(opponent: OpponentDef): SideSetup {
   };
 }
 
-export function playerSide(name: string, avatar: string, deck: Deck): SideSetup {
-  return { name, avatar, faction: deck.heroFaction, deck: deckToList(deck), talents: deck.talents };
+export function playerSide(name: string, avatar: string, deck: Deck, cardBack?: string): SideSetup {
+  return { name, avatar, faction: deck.heroFaction, deck: deckToList(deck), talents: deck.talents, cardBack: cardBack ?? null };
 }
 
 export function buildMatchSetup(player: SideSetup, opponent: SideSetup, seed: number): MatchSetup {

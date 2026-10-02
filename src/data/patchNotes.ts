@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.9.0',
+    date: '2026-10-02',
+    title: 'Card backs',
+    summary: '16 card backs to collect in the Shop, and a new look for the Tides packs.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Card backs: the Shop now sells 15 card backs for 300 to 1,250 Gold. Your deck on the table, the cards in your hand as your opponent sees them, and freshly opened packs all wear the back you choose.',
+          'Every Warden starts with Warden’s Compass. Buying a back equips it right away; switch any time with Equip.',
+          'AI opponents and bosses bring a random card back to every match. Online opponents show the back they picked.',
+        ],
+      },
+      { kind: 'improved', items: ['Tides of the Hollow Deep packs: a new polished trident with leaf-shaped blades over rolling waves.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.8.2',
     date: '2026-10-02',
     title: 'Draw pile',

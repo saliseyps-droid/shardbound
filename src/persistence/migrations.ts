@@ -2,6 +2,7 @@ import { hasCard } from '@/data/cards';
 import { STARTER_DECKS, starterDeckCards } from '@/data/starterDecks';
 import { PLAYABLE_FACTIONS, VARIANTS, type PlayableFaction } from '@/game/types';
 import { defaultBuild, isWellFormedBuild, type TalentPick } from '@/data/wardenTalents';
+import { DEFAULT_CARD_BACK, getCardBack } from '@/data/cardBacks';
 import type { Deck } from '@/domain/decks';
 import { CURRENT_SAVE_VERSION, emptyVariants, type GameSave } from '@/domain/save';
 import { createNewSave } from '@/domain/newAccount';
@@ -78,6 +79,10 @@ export function migrateSave(input: Raw): MigrationReport {
     p[k] = fixed;
   }
   if (!Array.isArray(p.titles)) p.titles = [];
+  // Card backs: keep known ones, always own the default, and only use an owned one.
+  const backs = Array.isArray(p.cardBacks) ? p.cardBacks.filter((b: unknown) => typeof b === 'string' && getCardBack(b)) : [];
+  p.cardBacks = [DEFAULT_CARD_BACK, ...new Set(backs.filter((b: string) => b !== DEFAULT_CARD_BACK))];
+  if (!p.cardBacks.includes(p.cardBack)) p.cardBack = DEFAULT_CARD_BACK;
   const r = p.ranked && typeof p.ranked === 'object' ? p.ranked : newRanked();
   p.ranked = { rating: num(r.rating, 1000, 100), peak: num(r.peak, 1000, 100), wins: Math.floor(num(r.wins, 0)), losses: Math.floor(num(r.losses, 0)) };
 

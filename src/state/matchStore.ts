@@ -526,7 +526,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         deckName = deck.name;
         const opponent = config.online === 'host' ? netSession.remoteSide : opponentSide(config.opponent);
         if (!opponent) throw new Error('Your opponent is no longer connected.');
-        setup = { seed: config.seed ?? randomSeed(), players: [playerSide(save.profile.username, save.profile.avatar, deck), opponent] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
+        setup = { seed: config.seed ?? randomSeed(), players: [playerSide(save.profile.username, save.profile.avatar, deck, save.profile.cardBack), opponent] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
       }
       const state = initialState ?? createGame(setup!).state;
       if (config.online === 'host') netSession.send({ t: 'state', state: guestView(state), events: [], initial: true });

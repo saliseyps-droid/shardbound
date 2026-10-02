@@ -309,7 +309,7 @@ export function PermanentsRow({ game, player, onHover }: { game: GameState; play
 }
 
 /** The draw pile: a stack of card backs that gets thinner as cards are drawn from it. */
-export function DrawPile({ count, label, player, width }: { count: number; label: string; player: PlayerId; width: number }) {
+export function DrawPile({ count, label, player, width, design }: { count: number; label: string; player: PlayerId; width: number; design?: string | null }) {
   // One visible layer per ~3 cards, so the stack visibly shrinks over the game.
   const layers = count === 0 ? 0 : Math.min(10, Math.ceil(count / 3));
   return (
@@ -317,7 +317,7 @@ export function DrawPile({ count, label, player, width }: { count: number; label
       <div className="draw-pile-stack" aria-hidden>
         {count === 0 && <span className="draw-pile-slot">Empty</span>}
         {Array.from({ length: layers }, (_, i) => (
-          <CardBack key={i} width={width} className="draw-pile-card" style={{ '--layer': i } as CSSProperties} />
+          <CardBack key={i} width={width} design={design} className="draw-pile-card" style={{ '--layer': i } as CSSProperties} />
         ))}
         <span className="draw-pile-count num">{count}</span>
       </div>

@@ -2,6 +2,7 @@ import { STARTING_CURRENCY } from '@/config/economy';
 import { STARTER_DECKS, starterCardIds, starterDeckCards } from '@/data/starterDecks';
 import { PLAYABLE_FACTIONS } from '@/game/types';
 import { defaultBuild } from '@/data/wardenTalents';
+import { DEFAULT_CARD_BACK } from '@/data/cardBacks';
 import type { Deck } from './decks';
 import { newRanked } from './ranked';
 import { CURRENT_SAVE_VERSION, emptyVariants, type GameSave } from './save';
@@ -54,6 +55,8 @@ export function createNewSave(username: string, avatar: string, now: number, id:
       winsTodayDay: null,
       factionWins: {},
       ranked: newRanked(),
+      cardBacks: [DEFAULT_CARD_BACK],
+      cardBack: DEFAULT_CARD_BACK,
     },
     collection: { cards, unseen: [] },
     decks,

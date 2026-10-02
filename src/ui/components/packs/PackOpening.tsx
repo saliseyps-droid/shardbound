@@ -45,6 +45,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
   const [freshReveal, setFreshReveal] = useState<number | null>(null);
   const reducedMotion = useSettings((s) => s.reducedMotion);
   const collection = useAccount((s) => s.save?.collection);
+  const cardBack = useAccount((s) => s.save?.profile.cardBack);
   const remaining = useAccount((s) => s.save?.economy.packs[setId] ?? 0);
   const inspect = useUi((s) => s.inspectCard);
   const cardW = useCardWidth();
@@ -198,7 +199,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
                   >
                     <span className="flip-inner">
                       <span className="flip-face flip-back">
-                        <CardBack width={cardW} />
+                        <CardBack width={cardW} design={cardBack} />
                         <span className="back-hint" aria-hidden />
                       </span>
                       <span className="flip-face flip-front">

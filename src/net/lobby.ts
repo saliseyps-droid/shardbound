@@ -3,6 +3,7 @@ import type { PlayableFaction } from '@/game/types';
 import { factionOfList, validateDeck } from '@/domain/decks';
 import type { SideSetup } from '@/engine/types';
 import { validateBuild } from '@/data/wardenTalents';
+import { getCardBack } from '@/data/cardBacks';
 import { PLAYABLE_FACTIONS } from '@/game/types';
 
 /** Display-only opponent definition for an online match. */
@@ -34,6 +35,7 @@ export function validateRemoteSide(side: SideSetup): string | null {
   // Bosses' special rules are not allowed in PvP.
   if (side.heroHealth || side.bonusStartingEnergy || side.startingBoard?.length || side.startingRelics?.length || side.startingLocation) return 'Invalid match setup.';
   if (validateBuild(faction, side.talents) !== null) return 'Invalid Warden abilities.';
+  if (side.cardBack != null && !getCardBack(side.cardBack)) return 'Invalid card back.';
   if (side.faction != null && !(PLAYABLE_FACTIONS as readonly string[]).includes(side.faction)) return 'Invalid Warden.';
   return null;
 }

@@ -5,6 +5,13 @@ import type { CardDefinition, Variant } from '@/game/types';
 import { cardArtPosition, cardArtUri } from './cardArt';
 import { Glyph } from './Icons';
 import { KeywordText } from './Tooltip';
+import { DEFAULT_CARD_BACK } from '@/data/cardBacks';
+
+/** Card back artwork: src/assets/cardbacks/<id>.webp */
+const BACK_ART = import.meta.glob('../../assets/cardbacks/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+export function cardBackUrl(design: string | null | undefined): string | undefined {
+  return BACK_ART[`../../assets/cardbacks/${design ?? DEFAULT_CARD_BACK}.webp`] ?? BACK_ART[`../../assets/cardbacks/${DEFAULT_CARD_BACK}.webp`];
+}
 
 export type CardSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
@@ -36,12 +43,12 @@ export interface CardViewProps {
   children?: React.ReactNode;
 }
 
-export function CardBack({ width = CARD_WIDTH.md, className = '', style }: { width?: number; className?: string; style?: CSSProperties }) {
+/** A face-down card. `design` is a card back id (src/data/cardBacks.ts); the default back when missing. */
+export function CardBack({ width = CARD_WIDTH.md, className = '', style, design }: { width?: number; className?: string; style?: CSSProperties; design?: string | null }) {
+  const url = cardBackUrl(design);
   return (
-    <div className={`card card-back ${className}`} style={{ '--card-w': `${width}px`, ...style } as CSSProperties} aria-label="Face-down card">
-      <div className="card-back-inner">
-        <Glyph name="crystal" size={width * 0.35} />
-      </div>
+    <div className={`card card-back ${url ? 'has-art' : ''} ${className}`} style={{ '--card-w': `${width}px`, ...style } as CSSProperties} aria-label="Face-down card">
+      <div className="card-back-inner">{url ? <img className="card-back-img" src={url} alt="" draggable={false} decoding="async" /> : <Glyph name="crystal" size={width * 0.35} />}</div>
     </div>
   );
 }

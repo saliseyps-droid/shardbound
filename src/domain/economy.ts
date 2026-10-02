@@ -1,4 +1,5 @@
 import { CRAFTING, SHOP_BONUS_PACKS, SHOP_OFFERS } from '@/config/economy';
+import { getCardBack } from '@/data/cardBacks';
 import { getCard } from '@/data/cards';
 import type { RngState } from '@/core/rng';
 import { err, ok, type Result } from '@/core/utils';
@@ -21,6 +22,21 @@ export function buyOffer(save: GameSave, offerId: string, now: number): Result<G
   let next: GameSave = { ...save, profile: { ...save.profile, gold: save.profile.gold - offer.price }, economy: { ...save.economy, packs } };
   next = pushReward(next, { source: `Purchased ${amount} pack${amount > 1 ? 's' : ''}`, packs: { setId: offer.setId, amount } }, now);
   return ok(next);
+}
+
+/** Buys a cosmetic card back with Gold. */
+export function buyCardBack(save: GameSave, backId: string, now: number): Result<GameSave> {
+  const back = getCardBack(backId);
+  if (!back) return err('This card back is not available.');
+  if (save.profile.cardBacks.includes(backId)) return err('You already own this card back.');
+  if (save.profile.gold < back.price) return err('Not enough Gold.');
+  const next: GameSave = { ...save, profile: { ...save.profile, gold: save.profile.gold - back.price, cardBacks: [...save.profile.cardBacks, backId] } };
+  return ok(pushReward(next, { source: `Purchased the ${back.name} card back` }, now));
+}
+
+export function equipCardBack(save: GameSave, backId: string): Result<GameSave> {
+  if (!save.profile.cardBacks.includes(backId)) return err('You do not own this card back yet.');
+  return ok({ ...save, profile: { ...save.profile, cardBack: backId } });
 }
 
 // ---------------------------------------------------------------------------

@@ -81,6 +81,8 @@ export interface HeroState {
   armor: number;
   /** The Warden's talent abilities, by slot. */
   abilities: HeroAbilityState[];
+  /** Cosmetic card back (src/data/cardBacks.ts). */
+  cardBack: string | null;
 }
 
 export interface MatchStats {
@@ -205,6 +207,8 @@ export interface SideSetup {
   faction?: string | null;
   /** Card ids; order is shuffled by the engine unless `keepDeckOrder`. */
   deck: string[];
+  /** Cosmetic card back id. */
+  cardBack?: string | null;
   /** Warden talent abilities (slot order). */
   talents?: { abilityId: string; level: 0 | 1 | 2 }[];
   heroHealth?: number;

@@ -365,7 +365,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         <div className="enemy-hand" aria-label={`Opponent has ${opp.hand.length} cards`}>
           {opp.hand.map((c, i) => (
             <div key={c.uid} className="enemy-hand-card" style={{ '--i': i - (opp.hand.length - 1) / 2 } as CSSProperties}>
-              {c.revealed ? <CardView card={c.cardId} width={64} /> : <CardBack width={64} />}
+              {c.revealed ? <CardView card={c.cardId} width={64} /> : <CardBack width={64} design={opp.hero.cardBack} />}
             </div>
           ))}
         </div>
@@ -383,7 +383,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           </div>
         </div>
         <div className="draw-pile-anchor">
-          <DrawPile count={opp.deck.length} label="the opponent's deck" player={AI} width={104} />
+          <DrawPile count={opp.deck.length} label="the opponent's deck" player={AI} width={104} design={opp.hero.cardBack} />
         </div>
       </section>
 
@@ -413,7 +413,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           </div>
         </div>
         <div className="draw-pile-anchor">
-          <DrawPile count={me.deck.length} label="your deck" player={HUMAN} width={Math.round(cardW * 1.24)} />
+          <DrawPile count={me.deck.length} label="your deck" player={HUMAN} width={Math.round(cardW * 1.24)} design={me.hero.cardBack} />
         </div>
         <div className="hand" data-tutorial="hand" style={{ '--card-w': `${cardW}px`, '--n': handCount } as CSSProperties} aria-label="Your hand">
           {me.hand.map((c, i) => {

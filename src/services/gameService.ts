@@ -6,7 +6,7 @@ import { LEVELS } from '@/config/progression';
 import type { PlayableFaction, SetId, Variant } from '@/game/types';
 import { maxCopiesFor, type Deck } from '@/domain/decks';
 import { defaultBuild, type TalentPick } from '@/data/wardenTalents';
-import { buyOffer, craftCard, openPack, recycleAllSurplus, recycleCard } from '@/domain/economy';
+import { buyCardBack, buyOffer, craftCard, equipCardBack, openPack, recycleAllSurplus, recycleCard } from '@/domain/economy';
 import { claimDaily } from '@/domain/daily';
 import { applyMatchResult, type MatchRewards, type MatchSummary } from '@/domain/matchResults';
 import { createNewSave } from '@/domain/newAccount';
@@ -175,6 +175,18 @@ export class GameService {
 
   buy(offerId: string): Result<GameSave> {
     const res = buyOffer(this.require(), offerId, this.now());
+    if (res.ok) this.commit(res.value);
+    return res;
+  }
+
+  buyCardBack(backId: string): Result<GameSave> {
+    const res = buyCardBack(this.require(), backId, this.now());
+    if (res.ok) this.commit(res.value);
+    return res;
+  }
+
+  equipCardBack(backId: string): Result<GameSave> {
+    const res = equipCardBack(this.require(), backId);
     if (res.ok) this.commit(res.value);
     return res;
   }
