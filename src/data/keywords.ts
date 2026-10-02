@@ -16,7 +16,7 @@ export const KEYWORDS: Record<KeywordId, KeywordInfo> = {
   DRAIN: { id: 'DRAIN', name: 'Drain', category: 'static', icon: '♥', definition: 'Damage this unit deals also restores that much Health to your Warden.' },
   BARRIER: { id: 'BARRIER', name: 'Barrier', category: 'static', icon: '◈', definition: 'The first time this unit would take damage, prevent it and remove Barrier.' },
   AMBUSH: { id: 'AMBUSH', name: 'Ambush', category: 'static', icon: '◐', definition: 'Cannot be attacked or targeted by enemies until it attacks or deals damage.' },
-  WARD: { id: 'WARD', name: 'Ward', category: 'static', icon: '✧', definition: 'Cannot be targeted by enemy spells or Warden Sigils.' },
+  WARD: { id: 'WARD', name: 'Ward', category: 'static', icon: '✧', definition: 'Cannot be targeted by enemy spells or Warden abilities.' },
   FRENZY: { id: 'FRENZY', name: 'Frenzy', category: 'static', icon: '⚔', definition: 'Can attack twice each turn.' },
   VENOM: { id: 'VENOM', name: 'Venom', category: 'static', icon: '☠', definition: 'Any damage this unit deals to a unit destroys it.' },
   REGENERATE: { id: 'REGENERATE', name: 'Regenerate', category: 'static', icon: '✚', definition: 'At the end of your turn, this unit restores itself to full Health.' },

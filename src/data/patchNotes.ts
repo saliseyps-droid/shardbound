@@ -19,6 +19,29 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.8.0',
+    date: '2026-10-02',
+    title: 'Warden Talents',
+    summary: 'The Warden Sigil is gone. Every deck now builds its own Warden from a talent tree.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Warden Talents: the deck editor has a new Talents tab. Each Warden has 5 abilities, each with ranks I, II and III.',
+          'Every deck learns 2 abilities and spends all 5 talent points: one ability reaches rank III, the other rank II. You can change the build at any time, for free.',
+          'Abilities are active (click the hexagon next to your portrait, pay energy, once per turn) or passive (a round badge that triggers on its own and lights up when it does).',
+          'Your old decks got their faction’s default build: the former Sigil at rank III plus one more ability at rank II.',
+          'Campaign bosses and AI opponents bring their own abilities. Bosses keep their signature power and add a second one.',
+        ],
+      },
+      {
+        kind: 'improved',
+        items: ['Deck boxes show the two abilities a deck uses. Ward now protects against enemy Warden abilities.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.7.0',
     date: '2026-10-01',
     title: 'Faction balance',

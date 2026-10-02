@@ -33,7 +33,8 @@ The collection holds 164 collectible cards: 23 per faction plus 26 neutral, acro
 ## Match rules (`src/config/gameRules.ts`)
 
 - Each Warden starts with 30 Health. Opening hands are 3 cards (first player) and 4 cards plus an Aether Shard (second player), with a mulligan.
-- Energy gains +1 per turn up to 10 and refills each turn. Every Warden also has a once-per-turn Warden Sigil (hero power).
+- Energy gains +1 per turn up to 10 and refills each turn.
+- Every deck sets up its Warden's talent tree (`src/data/wardenTalents.ts`): 5 abilities per faction, each with ranks I → II → III. A deck learns 2 of them and spends all 5 talent points (one ability at III, one at II). Active abilities cost energy and work once per turn; passive ones trigger on their own.
 - Limits: hand 10 (overdrawn cards burn), board 7, relics 3, one location per side.
 - Drawing from an empty deck causes escalating fatigue damage. There is a turn timer abstraction and a concede action.
 - Decks are exactly 30 cards, with at most 2 copies of a card (1 for Legendaries). A deck may only contain cards of its Warden faction plus Neutral cards.

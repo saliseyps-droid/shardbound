@@ -219,7 +219,7 @@ export function EnergyBar({ game, player }: { game: GameState; player: PlayerId 
   );
 }
 
-/** The Warden's two talent abilities: active ones are clicked like the old Sigil, passive ones only glow when they trigger. */
+/** The Warden's two talent abilities: active ones are clicked and aimed like a spell, passive ones only glow when they trigger. */
 export function HeroAbilities({ game, player }: { game: GameState; player: PlayerId }) {
   const abilities = game.players[player].hero.abilities;
   if (abilities.length === 0) return null;
