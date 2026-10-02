@@ -6,6 +6,7 @@ import { ScreenHeader } from '@/ui/components/common';
 import { GoldIcon } from '@/ui/components/Icons';
 import { DIFFICULTY_INFO } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
+import { t, tn } from '@/i18n';
 
 type Filter = 'ALL' | 'WIN' | 'LOSS' | 'DRAW';
 const MODE_LABEL = { PRACTICE: 'Practice', PVE: 'Campaign', TUTORIAL: 'Tutorial', PVP: 'Online', RANKED: 'Ranked', TOURNAMENT: 'Tournament', ARENA: 'Arena' } as const;
@@ -24,13 +25,13 @@ export default function MatchHistoryScreen() {
   return (
     <div className="screen history-screen">
       <ScreenHeader
-        title="Match history"
-        subtitle={history.length ? `Last ${history.length} matches, ${wins} won.` : undefined}
+        title={t('Match history')}
+        subtitle={history.length ? tn(history.length, 'Last {n} match, {wins} won.', 'Last {n} matches, {wins} won.', { wins }) : undefined}
         actions={
-          <div className="segmented" role="group" aria-label="Filter by result">
+          <div className="segmented" role="group" aria-label={t('Filter by result')}>
             {(['ALL', 'WIN', 'LOSS', 'DRAW'] as Filter[]).map((f) => (
               <button key={f} aria-pressed={filter === f} onClick={() => setFilter(f)}>
-                {f === 'ALL' ? 'All' : f === 'WIN' ? 'Victories' : f === 'LOSS' ? 'Defeats' : 'Draws'}
+                {f === 'ALL' ? t('All') : f === 'WIN' ? t('Victories') : f === 'LOSS' ? t('Defeats') : t('Draws')}
               </button>
             ))}
           </div>
@@ -38,9 +39,9 @@ export default function MatchHistoryScreen() {
       />
       {history.length === 0 ? (
         <div className="panel empty">
-          <p>No matches yet. Your battles will be recorded here.</p>
+          <p>{t('No matches yet. Your battles will be recorded here.')}</p>
           <Link to="/play" className="btn btn-primary">
-            Play a match
+            {t('Play a match')}
           </Link>
         </div>
       ) : (
@@ -48,16 +49,16 @@ export default function MatchHistoryScreen() {
           <table className="history-table">
             <thead>
               <tr>
-                <th scope="col">Result</th>
-                <th scope="col">Date</th>
-                <th scope="col">Opponent</th>
-                <th scope="col">Mode</th>
-                <th scope="col">Your deck</th>
-                <th scope="col" className="r">Turns</th>
-                <th scope="col" className="r">Duration</th>
-                <th scope="col" className="r">Damage</th>
-                <th scope="col" className="r">Cards</th>
-                <th scope="col" className="r">Rewards</th>
+                <th scope="col">{t('Result')}</th>
+                <th scope="col">{t('Date')}</th>
+                <th scope="col">{t('Opponent')}</th>
+                <th scope="col">{t('Mode')}</th>
+                <th scope="col">{t('Your deck')}</th>
+                <th scope="col" className="r">{t('Turns')}</th>
+                <th scope="col" className="r">{t('Duration')}</th>
+                <th scope="col" className="r">{t('Damage')}</th>
+                <th scope="col" className="r">{t('Cards')}</th>
+                <th scope="col" className="r">{t('Rewards')}</th>
               </tr>
             </thead>
             <tbody>
@@ -65,15 +66,15 @@ export default function MatchHistoryScreen() {
                 <tr key={m.id}>
                   <td>
                     <span className={`result-tag ${m.result.toLowerCase()}`}>
-                      {m.result === 'WIN' ? '▲ Victory' : m.result === 'LOSS' ? '▼ Defeat' : '■ Draw'}
+                      {m.result === 'WIN' ? `▲ ${t('Victory')}` : m.result === 'LOSS' ? `▼ ${t('Defeat')}` : `■ ${t('Draw')}`}
                     </span>
-                    {m.conceded && <span className="faint"> (conceded)</span>}
+                    {m.conceded && <span className="faint"> {t('(conceded)')}</span>}
                   </td>
                   <td className="faint">{new Date(m.date).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}</td>
                   <td>
-                    {m.opponentName} <span className="faint">{DIFFICULTY_INFO[m.difficulty]?.label}</span>
+                    {m.opponentName} <span className="faint">{DIFFICULTY_INFO[m.difficulty] && t(DIFFICULTY_INFO[m.difficulty].label)}</span>
                   </td>
-                  <td>{MODE_LABEL[m.mode]}</td>
+                  <td>{t(MODE_LABEL[m.mode])}</td>
                   <td>
                     <span style={{ color: FACTIONS[m.deckFaction]?.colors.primary }}>{m.deckName}</span>
                   </td>
@@ -92,7 +93,7 @@ export default function MatchHistoryScreen() {
               ))}
             </tbody>
           </table>
-          {rows.length === 0 && <p className="empty">No matches with this result.</p>}
+          {rows.length === 0 && <p className="empty">{t('No matches with this result.')}</p>}
         </div>
       )}
     </div>

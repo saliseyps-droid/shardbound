@@ -1,5 +1,6 @@
 import type { CardDefinition, CardType, Faction, Rarity, SetId } from '@/game/types';
 import { ALL_FACTIONS, RARITIES } from '@/game/types';
+import { currentLocale, t } from '@/i18n';
 
 export type SortKey = 'cost' | 'name' | 'rarity' | 'faction';
 export type OwnershipFilter = 'ALL' | 'OWNED' | 'MISSING';
@@ -32,7 +33,9 @@ const factionRank = (f: Faction) => ALL_FACTIONS.indexOf(f);
 
 function matchesSearch(card: CardDefinition, q: string): boolean {
   if (!q) return true;
-  const hay = `${card.name} ${card.description ?? ''} ${(card.tags ?? []).join(' ')} ${(card.keywords ?? []).join(' ')} ${card.cardType}`.toLowerCase();
+  // Outside English the translated type label is searchable too (e.g. "kouzlo").
+  const typeLabel = currentLocale() === 'en' ? '' : ` ${t(card.cardType.charAt(0) + card.cardType.slice(1).toLowerCase())}`;
+  const hay = `${card.name} ${card.description ?? ''} ${(card.tags ?? []).join(' ')} ${(card.keywords ?? []).join(' ')} ${card.cardType}${typeLabel}`.toLowerCase();
   return q
     .toLowerCase()
     .split(/\s+/)

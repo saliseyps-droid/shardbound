@@ -11,11 +11,12 @@ import { audio } from '@/audio/audioService';
 import { confirmDialog, Modal, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
+import { t } from '@/i18n';
 import '@/ui/styles/decks.css';
 
 function FactionPicker({ value, onChange }: { value: PlayableFaction; onChange: (f: PlayableFaction) => void }) {
   return (
-    <div className="faction-picker" role="radiogroup" aria-label="Warden faction">
+    <div className="faction-picker" role="radiogroup" aria-label={t('Warden faction')}>
       {PLAYABLE_FACTIONS.map((f) => {
         const info = FACTIONS[f];
         return (
@@ -58,18 +59,18 @@ function NameModal({ title, initial, confirmLabel, withFaction, onSubmit, onClos
         }}
       >
         <label className="field">
-          <span>Deck name</span>
+          <span>{t('Deck name')}</span>
           <input className="input" autoFocus maxLength={DECK_RULES.maxDeckNameLength} value={name} onChange={(e) => setName(e.target.value)} />
         </label>
         {withFaction && (
           <fieldset className="field">
-            <legend>Warden faction. Decks use cards of this faction plus Neutral cards.</legend>
+            <legend>{t('Warden faction. Decks use cards of this faction plus Neutral cards.')}</legend>
             <FactionPicker value={faction} onChange={setFaction} />
           </fieldset>
         )}
         <div className="modal-actions">
           <button type="button" className="btn btn-ghost" onClick={onClose}>
-            Cancel
+            {t('Cancel')}
           </button>
           <button type="submit" className="btn btn-primary" disabled={!name.trim()}>
             {confirmLabel}
@@ -91,20 +92,20 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
 
   const remove = async () => {
     const ok = await confirmDialog({
-      title: `Delete "${deck.name}"?`,
-      message: <p>The deck list is removed. Your cards stay in your collection.</p>,
-      confirmLabel: 'Delete deck',
+      title: t('Delete "{name}"?', { name: deck.name }),
+      message: <p>{t('The deck list is removed. Your cards stay in your collection.')}</p>,
+      confirmLabel: t('Delete deck'),
       danger: true,
     });
     if (!ok) return;
     const res = gameService.deleteDeck(deck.id);
-    if (res.ok) toast(`Deleted ${deck.name}.`);
+    if (res.ok) toast(t('Deleted {name}.', { name: deck.name }));
     else toast(res.error, 'error');
   };
 
   const duplicate = () => {
     const res = gameService.duplicateDeck(deck.id);
-    if (res.ok) toast(`Created ${res.value.name}.`, 'success');
+    if (res.ok) toast(t('Created {name}.', { name: res.value.name }), 'success');
     else toast(res.error, 'error');
   };
 
@@ -112,9 +113,9 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
     <article
       className={`deck-box ${selected ? 'is-selected' : ''} ${valid ? '' : 'is-invalid'}`}
       style={{ '--fc': hero.colors.primary, '--fc2': second ? FACTIONS[second].colors.primary : hero.colors.secondary, '--fd': hero.colors.dark } as CSSProperties}
-      aria-label={`${deck.name}, ${hero.name}${second ? ` and ${FACTIONS[second].name}` : ''}, ${size} of ${DECK_RULES.deckSize} cards${valid ? '' : ', incomplete'}`}
+      aria-label={`${deck.name}, ${hero.name}${second ? t(' and {name}', { name: FACTIONS[second].name }) : ''}, ${t('{n} of {max} cards', { n: size, max: DECK_RULES.deckSize })}${valid ? '' : t(', incomplete')}`}
     >
-      <button className="deck-box-face" onClick={() => navigate(`/decks/${deck.id}`)} aria-label={`Edit ${deck.name}`}>
+      <button className="deck-box-face" onClick={() => navigate(`/decks/${deck.id}`)} aria-label={t('Edit {name}', { name: deck.name })}>
         <span className="deck-sigil" aria-hidden>
           <WardenPortrait faction={deck.heroFaction} fill />
           {second && <Glyph name={FACTIONS[second].sigil} size={22} className="deck-sigil-second" />}
@@ -128,13 +129,13 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
           {valid ? <Glyph name="shield" size={14} /> : <span aria-hidden>!</span>}
           {size} / {DECK_RULES.deckSize}
         </span>
-        {!valid && <span className="deck-issue">{issues[0].message}</span>}
+        {!valid && <span className="deck-issue">{t(issues[0].message)}</span>}
       </button>
       <button
         className={`fav-toggle ${deck.favorite ? 'on' : ''}`}
         aria-pressed={deck.favorite}
-        aria-label={deck.favorite ? `Unset ${deck.name} as favorite` : `Set ${deck.name} as favorite`}
-        title="Favorite"
+        aria-label={deck.favorite ? t('Unset {name} as favorite', { name: deck.name }) : t('Set {name} as favorite', { name: deck.name })}
+        title={t('Favorite')}
         onClick={() => {
           audio.play('click');
           gameService.setFavoriteDeck(deck.id);
@@ -142,7 +143,7 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
       >
         <Glyph name="star" size={18} />
       </button>
-      {selected && <span className="selected-flag">Selected for play</span>}
+      {selected && <span className="selected-flag">{t('Selected for play')}</span>}
       <div className="deck-actions">
         <button
           className="btn btn-sm btn-cyan"
@@ -150,23 +151,23 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
           onClick={() => {
             audio.play('click');
             gameService.selectDeck(deck.id);
-            toast(`${deck.name} selected for play.`, 'success');
+            toast(t('{name} selected for play.', { name: deck.name }), 'success');
           }}
         >
-          {selected ? 'Selected' : 'Select'}
+          {selected ? t('Selected') : t('Select')}
         </button>
         <button className="btn btn-sm" onClick={() => navigate(`/decks/${deck.id}`)}>
-          Edit
+          {t('Edit')}
         </button>
         <span className="deck-links">
-        <button className="text-btn" onClick={onRename} aria-label={`Rename ${deck.name}`}>
-          Rename
+        <button className="text-btn" onClick={onRename} aria-label={t('Rename {name}', { name: deck.name })}>
+          {t('Rename')}
         </button>
-        <button className="text-btn" onClick={duplicate} aria-label={`Duplicate ${deck.name}`}>
-          Copy
+        <button className="text-btn" onClick={duplicate} aria-label={t('Duplicate {name}', { name: deck.name })}>
+          {t('Copy')}
         </button>
-        <button className="text-btn danger" onClick={() => void remove()} aria-label={`Delete ${deck.name}`}>
-          Delete
+        <button className="text-btn danger" onClick={() => void remove()} aria-label={t('Delete {name}', { name: deck.name })}>
+          {t('Delete')}
         </button>
         </span>
       </div>
@@ -186,11 +187,11 @@ export default function DeckListScreen() {
   return (
     <div className="screen deck-list-screen">
       <ScreenHeader
-        title="Decks"
-        subtitle={`${decks.length} / ${DECK_RULES.maxDecks} decks. Decks hold ${DECK_RULES.deckSize} cards from your Warden faction and Neutral.`}
+        title={t('Decks')}
+        subtitle={t('{n} / {max} decks. Decks hold {size} cards from your Warden faction and Neutral.', { n: decks.length, max: DECK_RULES.maxDecks, size: DECK_RULES.deckSize })}
         actions={
-          <button className="btn btn-primary" disabled={full} onClick={() => setCreating(true)} title={full ? 'Deck limit reached' : undefined}>
-            New deck
+          <button className="btn btn-primary" disabled={full} onClick={() => setCreating(true)} title={full ? t('Deck limit reached') : undefined}>
+            {t('New deck')}
           </button>
         }
       />
@@ -199,19 +200,19 @@ export default function DeckListScreen() {
           <DeckBox key={d.id} deck={d} selected={d.id === selectedId} onRename={() => setRenaming(d)} />
         ))}
         {!full && (
-          <button className="deck-box deck-new" onClick={() => setCreating(true)} aria-label="Create a new deck">
+          <button className="deck-box deck-new" onClick={() => setCreating(true)} aria-label={t('Create a new deck')}>
             <span className="deck-new-plus" aria-hidden>
               +
             </span>
-            <span>New deck</span>
+            <span>{t('New deck')}</span>
           </button>
         )}
       </div>
       {creating && (
         <NameModal
-          title="New deck"
-          initial="New deck"
-          confirmLabel="Create and edit"
+          title={t('New deck')}
+          initial={t('New deck')}
+          confirmLabel={t('Create and edit')}
           withFaction
           onClose={() => setCreating(false)}
           onSubmit={(name, faction) => {
@@ -224,9 +225,9 @@ export default function DeckListScreen() {
       )}
       {renaming && (
         <NameModal
-          title="Rename deck"
+          title={t('Rename deck')}
           initial={renaming.name}
-          confirmLabel="Rename"
+          confirmLabel={t('Rename')}
           onClose={() => setRenaming(null)}
           onSubmit={(name) => {
             const res = gameService.updateDeck({ ...renaming, name });

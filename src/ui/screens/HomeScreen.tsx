@@ -17,6 +17,7 @@ import { DailyTrack, DeckBox, QuestRow, RewardSummary, timeAgo, DIFFICULTY_INFO 
 import { campaignProgress, nextEncounter } from '@/ui/components/meta/campaign';
 import { audio } from '@/audio/audioService';
 import '@/ui/styles/meta.css';
+import { t, tn } from '@/i18n';
 
 export default function HomeScreen() {
   const save = useAccount((s) => s.save);
@@ -48,27 +49,27 @@ export default function HomeScreen() {
           <div>
             <h1 className="home-name">{p.username}</h1>
             <p className="muted home-title">
-              {p.title ?? 'Newly awakened Warden'}, level {p.level}
+              {t('{title}, level {n}', { title: p.title ? t(p.title) : t('Newly awakened Warden'), n: p.level })}
             </p>
             <div className="home-xp">
-              <ProgressBar value={p.level >= MAX_LEVEL ? 1 : p.xp} max={p.level >= MAX_LEVEL ? 1 : need} gold label="Experience" />
-              <span className="faint">{p.level >= MAX_LEVEL ? 'Max level' : `${p.xp} / ${need} XP to level ${p.level + 1}`}</span>
+              <ProgressBar value={p.level >= MAX_LEVEL ? 1 : p.xp} max={p.level >= MAX_LEVEL ? 1 : need} gold label={t('Experience')} />
+              <span className="faint">{p.level >= MAX_LEVEL ? t('Max level') : t('{xp} / {need} XP to level {n}', { xp: p.xp, need, n: p.level + 1 })}</span>
             </div>
           </div>
         </div>
 
-        <button className="play-shard" onClick={() => (audio.play('click'), navigate('/play'))} aria-label="Play a match">
+        <button className="play-shard" onClick={() => (audio.play('click'), navigate('/play'))} aria-label={t('Play a match')}>
           <span className="play-shard-facet" aria-hidden />
-          <span className="play-shard-label">Play</span>
-          <span className="play-shard-sub">Practice against a bot</span>
+          <span className="play-shard-label">{t('Play')}</span>
+          <span className="play-shard-sub">{t('Practice against a bot')}</span>
         </button>
 
         <div className="home-deck">
-          <span className="faint">Your deck</span>
+          <span className="faint">{t('Your deck')}</span>
           {deck && <DeckBox deck={deck} save={save} />}
           <div className="home-deck-links">
-            <Link to="/play">Change deck</Link>
-            {deck && <Link to={`/decks/${deck.id}`}>Edit deck</Link>}
+            <Link to="/play">{t('Change deck')}</Link>
+            {deck && <Link to={`/decks/${deck.id}`}>{t('Edit deck')}</Link>}
           </div>
         </div>
       </section>
@@ -77,11 +78,11 @@ export default function HomeScreen() {
         <section className="tutorial-banner panel">
           <Glyph name="compass" size={36} />
           <div>
-            <h3>Learn to fight as a Warden</h3>
-            <p className="muted">A short guided match teaches playing units, spending energy, attacking, targeting spells and winning. Completing it rewards Gold and XP.</p>
+            <h3>{t('Learn to fight as a Warden')}</h3>
+            <p className="muted">{t('A short guided match teaches playing units, spending energy, attacking, targeting spells and winning. Completing it rewards Gold and XP.')}</p>
           </div>
           <button className="btn btn-primary btn-lg" onClick={startTutorial}>
-            Start the tutorial
+            {t('Start the tutorial')}
           </button>
         </section>
       )}
@@ -89,11 +90,11 @@ export default function HomeScreen() {
       <div className="home-grid">
         <section className="panel home-quests" aria-labelledby="home-quests-title">
           <div className="panel-title">
-            <span id="home-quests-title">Daily quests</span>
-            <Link to="/quests" className="small-link">All quests</Link>
+            <span id="home-quests-title">{t('Daily quests')}</span>
+            <Link to="/quests" className="small-link">{t('All quests')}</Link>
           </div>
           {quests.length === 0 ? (
-            <p className="empty">New quests arrive tomorrow.</p>
+            <p className="empty">{t('New quests arrive tomorrow.')}</p>
           ) : (
             <div className="quest-list">
               {quests.map((q) => (
@@ -105,20 +106,20 @@ export default function HomeScreen() {
 
         <section className="panel home-daily" aria-labelledby="home-daily-title">
           <div className="panel-title">
-            <span id="home-daily-title">Login rewards</span>
-            <span className="faint">{save.daily.totalClaims} claimed</span>
+            <span id="home-daily-title">{t('Login rewards')}</span>
+            <span className="faint">{t('{n} claimed', { n: save.daily.totalClaims })}</span>
           </div>
           <DailyTrack save={save} />
         </section>
 
         <section className="panel home-campaign" aria-labelledby="home-camp-title">
           <div className="panel-title">
-            <span id="home-camp-title">Campaign</span>
+            <span id="home-camp-title">{t('Campaign')}</span>
             <span className="faint num">
-              {camp.cleared} / {camp.total} cleared
+              {t('{cleared} / {total} cleared', { cleared: camp.cleared, total: camp.total })}
             </span>
           </div>
-          <ProgressBar value={camp.cleared} max={camp.total} label="Campaign progress" />
+          <ProgressBar value={camp.cleared} max={camp.total} label={t('Campaign progress')} />
           {next ? (
             <div className="next-encounter" style={{ '--f1': FACTIONS[next.encounter.faction].colors.primary } as React.CSSProperties}>
               <span className="enc-sigil" aria-hidden>
@@ -128,28 +129,28 @@ export default function HomeScreen() {
                 <span className="faint">{CAMPAIGN[next.chapterIndex].name}</span>
                 <strong>
                   {next.encounter.name}
-                  {next.encounter.boss && <span className="boss-tag">Boss</span>}
+                  {next.encounter.boss && <span className="boss-tag">{t('Boss')}</span>}
                 </strong>
                 <span className="muted">
-                  {next.encounter.title}, {DIFFICULTY_INFO[next.encounter.difficulty].label}
+                  {next.encounter.title}, {t(DIFFICULTY_INFO[next.encounter.difficulty].label)}
                 </span>
               </div>
               <Link className="btn btn-cyan btn-sm" to="/campaign">
-                Continue
+                {t('Continue')}
               </Link>
             </div>
           ) : (
-            <p className="muted">You have conquered the Crown Ascendant. Replay any encounter from the campaign map.</p>
+            <p className="muted">{t('You have conquered the Crown Ascendant. Replay any encounter from the campaign map.')}</p>
           )}
         </section>
 
         <section className="panel home-packs" aria-labelledby="home-packs-title">
           <div className="panel-title">
-            <span id="home-packs-title">Booster packs</span>
-            <Link to="/shop" className="small-link">Shop</Link>
+            <span id="home-packs-title">{t('Booster packs')}</span>
+            <Link to="/shop" className="small-link">{t('Shop')}</Link>
           </div>
           {packs.length === 0 ? (
-            <p className="muted">No unopened packs. Earn Gold from matches and quests, then visit the shop.</p>
+            <p className="muted">{t('No unopened packs. Earn Gold from matches and quests, then visit the shop.')}</p>
           ) : (
             <div className="pack-stack-list">
               {packs.map(([setId, n]) => (
@@ -157,7 +158,7 @@ export default function HomeScreen() {
                   <PackIcon size={28} />
                   <span>
                     <strong>{SET_INFO[setId].name}</strong>
-                    <span className="faint num">{n} unopened</span>
+                    <span className="faint num">{t('{n} unopened', { n })}</span>
                   </span>
                 </Link>
               ))}
@@ -167,30 +168,30 @@ export default function HomeScreen() {
 
         <section className="panel home-collection" aria-labelledby="home-coll-title">
           <div className="panel-title">
-            <span id="home-coll-title">Collection</span>
-            <Link to="/collection" className="small-link">Browse</Link>
+            <span id="home-coll-title">{t('Collection')}</span>
+            <Link to="/collection" className="small-link">{t('Browse')}</Link>
           </div>
           <div className="big-stat">
             <span className="num">{Math.round((ownedUnique / all.length) * 100)}%</span>
             <span className="muted num">
-              {ownedUnique} of {all.length} cards discovered
+              {tn(all.length, '{owned} of {n} card discovered', '{owned} of {n} cards discovered', { owned: ownedUnique })}
             </span>
           </div>
-          <ProgressBar value={ownedUnique} max={all.length} label="Collection progress" />
+          <ProgressBar value={ownedUnique} max={all.length} label={t('Collection progress')} />
         </section>
 
         <section className="panel home-rewards" aria-labelledby="home-rew-title">
           <div className="panel-title">
-            <span id="home-rew-title">Recent rewards</span>
-            <Link to="/profile" className="small-link">Profile</Link>
+            <span id="home-rew-title">{t('Recent rewards')}</span>
+            <Link to="/profile" className="small-link">{t('Profile')}</Link>
           </div>
           {save.recentRewards.length === 0 ? (
-            <p className="muted">Rewards you earn will be listed here.</p>
+            <p className="muted">{t('Rewards you earn will be listed here.')}</p>
           ) : (
             <ul className="reward-list">
               {save.recentRewards.slice(0, 6).map((r) => (
                 <li key={r.id}>
-                  <span className="reward-source">{r.source}</span>
+                  <span className="reward-source">{t(r.source)}</span>
                   <RewardSummary reward={r} />
                   <span className="faint reward-time">{timeAgo(r.at)}</span>
                 </li>

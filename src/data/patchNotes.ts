@@ -19,11 +19,20 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
-    version: '0.11.1',
+    version: '0.12.0',
     date: '2026-10-02',
-    title: 'Card gift codes',
-    summary: 'Redeem codes can now give cards.',
-    sections: [{ kind: 'new', items: ['Redeem codes (Profile → Redeem code) can now grant cards, including Foil and Prismatic versions.'] }],
+    title: 'Czech language',
+    summary: 'The whole game is now available in Czech, and the campaign plays by the same rules as you.',
+    sections: [
+      { kind: 'new', items: ['Czech language: switch between English and Čeština in Settings or on the welcome screen. Every screen, card, ability, opponent, quest and patch note is translated.'] },
+      {
+        kind: 'balance',
+        items: [
+          'Campaign bosses no longer get extra Health, extra energy or units on the board at the start: they play by the same rules as you and are set apart only by their two Warden abilities.',
+          'Campaign difficulty retuned so every chapter can be won with the starter decks: Tinker Wobblesprocket, The Thornwidow, Kharzul Reborn and The Endless Choir play a little less ruthlessly.',
+        ],
+      },
+    ],
     commits: [],
   },
   {

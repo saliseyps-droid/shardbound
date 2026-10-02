@@ -14,6 +14,7 @@ import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { DeckBox, factionStyle } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
+import { t } from '@/i18n';
 
 
 export default function ProfileScreen() {
@@ -44,14 +45,14 @@ export default function ProfileScreen() {
   return (
     <div className="screen profile-screen">
       <ScreenHeader
-        title="Profile"
+        title={t('Profile')}
         actions={
           <>
             <Link className="btn btn-ghost" to="/history">
-              Match history
+              {t('Match history')}
             </Link>
             <Link className="btn btn-ghost" to="/lore">
-              Lore and keywords
+              {t('Lore and keywords')}
             </Link>
           </>
         }
@@ -59,7 +60,7 @@ export default function ProfileScreen() {
       <div className="profile-layout">
         <section className="panel profile-card">
           <div className="profile-id">
-            <span className="warden-sigil large" aria-hidden title="The Warden of the deck you play">
+            <span className="warden-sigil large" aria-hidden title={t('The Warden of the deck you play')}>
               <WardenPortrait faction={playingFaction} fill />
             </span>
             <div>
@@ -72,42 +73,44 @@ export default function ProfileScreen() {
                   }}
                 >
                   <label className="sr-only" htmlFor="pname">
-                    Warden name
+                    {t('Warden name')}
                   </label>
                   <input id="pname" className="input" value={name} maxLength={20} autoFocus onChange={(e) => setName(e.target.value)} />
                   <button className="btn btn-primary btn-sm" type="submit">
-                    Save
+                    {t('Save')}
                   </button>
                   <button className="btn btn-ghost btn-sm" type="button" onClick={() => setEditing(false)}>
-                    Cancel
+                    {t('Cancel')}
                   </button>
                 </form>
               ) : (
                 <h2 className="profile-name">
                   {p.username}{' '}
-                  <button className="icon-btn small" aria-label="Rename" onClick={() => (setName(p.username), setEditing(true))}>
+                  <button className="icon-btn small" aria-label={t('Rename')} onClick={() => (setName(p.username), setEditing(true))}>
                     ✎
                   </button>
                 </h2>
               )}
-              <span className="muted">Warden since {new Date(p.createdAt).toLocaleDateString()}</span>
+              <span className="muted">{t('Warden since {date}', { date: new Date(p.createdAt).toLocaleDateString() })}</span>
             </div>
           </div>
-          <p className="faint">Your portrait is the Warden of the deck you play{playingFaction ? `: ${FACTIONS[playingFaction].name}` : ''}.</p>
+          <p className="faint">{playingFaction ? t('Your portrait is the Warden of the deck you play: {faction}.', { faction: FACTIONS[playingFaction].name }) : t('Your portrait is the Warden of the deck you play.')}</p>
           <label className="field">
-            <span>Title</span>
+            <span>{t('Title')}</span>
             <select className="select" value={p.title ?? ''} onChange={(e) => gameService.updateProfile({ title: e.target.value || null })} disabled={p.titles.length === 0}>
-              <option value="">{p.titles.length ? 'No title' : 'Earn titles every 10 levels'}</option>
-              {p.titles.map((t) => (
-                <option key={t}>{t}</option>
+              <option value="">{p.titles.length ? t('No title') : t('Earn titles every 10 levels')}</option>
+              {p.titles.map((ti) => (
+                <option key={ti} value={ti}>
+                  {t(ti)}
+                </option>
               ))}
             </select>
           </label>
           <div className="profile-level">
             <span className="level-gem num">{p.level}</span>
             <div style={{ flex: 1 }}>
-              <ProgressBar value={p.level >= MAX_LEVEL ? 1 : p.xp} max={p.level >= MAX_LEVEL ? 1 : need} gold label="Experience" />
-              <span className="faint">{p.level >= MAX_LEVEL ? 'Max level' : `${p.xp} / ${need} XP`}, {p.totalXp.toLocaleString()} total</span>
+              <ProgressBar value={p.level >= MAX_LEVEL ? 1 : p.xp} max={p.level >= MAX_LEVEL ? 1 : need} gold label={t('Experience')} />
+              <span className="faint">{t('{progress}, {total} total', { progress: p.level >= MAX_LEVEL ? t('Max level') : t('{xp} / {need} XP', { xp: p.xp, need }), total: p.totalXp.toLocaleString() })}</span>
             </div>
           </div>
           <div className="profile-wallet">
@@ -116,7 +119,7 @@ export default function ProfileScreen() {
           </div>
           {fav && (
             <div>
-              <div className="faint">Favorite deck</div>
+              <div className="faint">{t('Favorite deck')}</div>
               <DeckBox deck={fav} save={save} compact />
             </div>
           )}
@@ -124,27 +127,27 @@ export default function ProfileScreen() {
         </section>
 
         <section className="panel">
-          <div className="panel-title">Battle record</div>
+          <div className="panel-title">{t('Battle record')}</div>
           <div className="stat-tiles">
             <div className="stat-tile">
               <span className="num">{p.wins}</span>
-              <span className="muted">Wins</span>
+              <span className="muted">{t('Wins')}</span>
             </div>
             <div className="stat-tile">
               <span className="num">{p.losses}</span>
-              <span className="muted">Losses</span>
+              <span className="muted">{t('Losses')}</span>
             </div>
             <div className="stat-tile">
               <span className="num">{p.draws}</span>
-              <span className="muted">Draws</span>
+              <span className="muted">{t('Draws')}</span>
             </div>
             <div className="stat-tile">
               <span className="num">{winRate}%</span>
-              <span className="muted">Win rate</span>
+              <span className="muted">{t('Win rate')}</span>
             </div>
           </div>
           <div className="panel-title" style={{ marginTop: 'var(--space-5)' }}>
-            Wins by faction
+            {t('Wins by faction')}
           </div>
           <ul className="faction-bars">
             {PLAYABLE_FACTIONS.map((f) => {
@@ -165,31 +168,31 @@ export default function ProfileScreen() {
         </section>
 
         <section className="panel">
-          <div className="panel-title">Collection and economy</div>
+          <div className="panel-title">{t('Collection and economy')}</div>
           <dl className="info-grid">
-            <dt>Cards discovered</dt>
+            <dt>{t('Cards discovered')}</dt>
             <dd className="num">
               {unique} / {all.length} ({Math.round((unique / all.length) * 100)}%)
             </dd>
-            <dt>Cards owned</dt>
+            <dt>{t('Cards owned')}</dt>
             <dd className="num">{totalCopies}</dd>
-            <dt>Foil and prismatic</dt>
+            <dt>{t('Foil and prismatic')}</dt>
             <dd className="num">{cosmetic}</dd>
-            <dt>Packs opened</dt>
+            <dt>{t('Packs opened')}</dt>
             <dd className="num">{p.packsOpened}</dd>
-            <dt>Cards crafted</dt>
+            <dt>{t('Cards crafted')}</dt>
             <dd className="num">{p.cardsCrafted}</dd>
-            <dt>Cards recycled</dt>
+            <dt>{t('Cards recycled')}</dt>
             <dd className="num">{p.cardsRecycled}</dd>
-            <dt>Quests completed</dt>
+            <dt>{t('Quests completed')}</dt>
             <dd className="num">{save.quests.totalCompleted}</dd>
-            <dt>Campaign clears</dt>
+            <dt>{t('Campaign clears')}</dt>
             <dd className="num">{Object.keys(save.pve.completed).length}</dd>
-            <dt>Decks</dt>
+            <dt>{t('Decks')}</dt>
             <dd className="num">{save.decks.length}</dd>
           </dl>
           <div className="panel-title" style={{ marginTop: 'var(--space-4)' }}>
-            By rarity
+            {t('By rarity')}
           </div>
           <ul className="rarity-progress">
             {RARITIES.map((r) => {
@@ -197,8 +200,8 @@ export default function ProfileScreen() {
               const owned = pool.filter((c) => ownedCopies(save.collection, c.id) > 0).length;
               return (
                 <li key={r}>
-                  <span className={`rarity-text-${r.toLowerCase()}`}>{r.charAt(0) + r.slice(1).toLowerCase()}</span>
-                  <ProgressBar value={owned} max={pool.length} label={`${r} collected`} />
+                  <span className={`rarity-text-${r.toLowerCase()}`}>{t(r.charAt(0) + r.slice(1).toLowerCase())}</span>
+                  <ProgressBar value={owned} max={pool.length} label={t('{rarity} collected', { rarity: t(r) })} />
                   <span className="num faint">
                     {owned} / {pool.length}
                   </span>
@@ -239,12 +242,12 @@ function RedeemCode() {
       }}
     >
       <label className="faint" htmlFor="redeem-code">
-        Redeem code
+        {t('Redeem code')}
       </label>
       <div className="redeem-row">
-        <input id="redeem-code" className="input" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Enter a code" autoComplete="off" spellCheck={false} maxLength={64} />
+        <input id="redeem-code" className="input" value={code} onChange={(e) => setCode(e.target.value)} placeholder={t('Enter a code')} autoComplete="off" spellCheck={false} maxLength={64} />
         <button className="btn btn-cyan" type="submit" disabled={!code.trim() || busy}>
-          {busy ? 'Checking…' : 'Redeem'}
+          {busy ? t('Checking…') : t('Redeem')}
         </button>
       </div>
     </form>

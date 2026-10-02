@@ -16,6 +16,7 @@ import { audio } from '@/audio/audioService';
 import { toast } from '@/state/uiStore';
 import { Glyph } from './Icons';
 import { Tip } from './Tooltip';
+import { t } from '@/i18n';
 
 const RANKS: TalentLevel[] = [0, 1, 2];
 
@@ -28,7 +29,7 @@ export function TalentTree({ faction, build, onChange }: { faction: PlayableFact
     const next = toggleNode(build, abilityId, rank);
     if (typeof next === 'string') {
       audio.play('error');
-      toast(next, 'error');
+      toast(t(next), 'error');
       return;
     }
     audio.play(next.length >= build.length && buildPoints(next) > spent ? 'buff' : 'click');
@@ -39,10 +40,10 @@ export function TalentTree({ faction, build, onChange }: { faction: PlayableFact
     <div className="talent-tree" style={{ '--fc': info.colors.primary } as CSSProperties}>
       <header className="talent-head">
         <div>
-          <h3>Warden Talents</h3>
-          <p className="faint small">Learn 2 abilities and spend all {TALENT_POINTS} points: one ability reaches rank III, the other rank II.</p>
+          <h3>{t('Warden Talents')}</h3>
+          <p className="faint small">{t('Learn 2 abilities and spend all {n} points: one ability reaches rank III, the other rank II.', { n: TALENT_POINTS })}</p>
         </div>
-        <div className="talent-points" aria-label={`Talent points ${spent} of ${TALENT_POINTS}`}>
+        <div className="talent-points" aria-label={t('Talent points {n} of {max}', { n: spent, max: TALENT_POINTS })}>
           <span className="talent-pips" aria-hidden>
             {Array.from({ length: TALENT_POINTS }, (_, i) => (
               <span key={i} className={`talent-pip ${i < spent ? 'is-spent' : ''}`} />
@@ -52,13 +53,13 @@ export function TalentTree({ faction, build, onChange }: { faction: PlayableFact
             {spent} / {TALENT_POINTS}
           </span>
           <button className="btn btn-sm btn-ghost" onClick={() => onChange(defaultBuild(faction))}>
-            Reset to default
+            {t('Reset to default')}
           </button>
         </div>
       </header>
       <div className="talent-columns">
-        {FACTION_TALENTS[faction].map((t) => (
-          <TalentColumn key={t.id} talent={t} pick={build.find((x) => x.abilityId === t.id)} build={build} glyph={info.sigil} onClick={click} />
+        {FACTION_TALENTS[faction].map((tal) => (
+          <TalentColumn key={tal.id} talent={tal} pick={build.find((x) => x.abilityId === tal.id)} build={build} glyph={info.sigil} onClick={click} />
         ))}
       </div>
     </div>
@@ -69,26 +70,27 @@ function TalentColumn({ talent, pick, build, glyph, onClick }: { talent: TalentA
   const learned = pick ? pick.level : -1;
   const shown = talent.levels[Math.max(0, learned)];
   return (
-    <section className={`talent-col ${pick ? 'is-picked' : ''}`} aria-label={`${talent.name}, ${talent.kind === 'ACTIVE' ? 'active' : 'passive'}`}>
+    <section className={`talent-col ${pick ? 'is-picked' : ''}`} aria-label={`${talent.name}, ${talent.kind === 'ACTIVE' ? t('active') : t('passive')}`}>
       <div className="talent-title">
-        <span className={`talent-kind kind-${talent.kind.toLowerCase()}`}>{talent.kind === 'ACTIVE' ? 'Active' : 'Passive'}</span>
+        <span className={`talent-kind kind-${talent.kind.toLowerCase()}`}>{talent.kind === 'ACTIVE' ? t('Active') : t('Passive')}</span>
         <strong>{talent.name}</strong>
       </div>
       <ol className="talent-nodes">
         {RANKS.map((rank) => {
           const level = talent.levels[rank];
           const isLearned = rank <= learned;
-          const reason = isLearned ? null : nodeBlocker(build, talent.id, rank);
+          const blocker = isLearned ? null : nodeBlocker(build, talent.id, rank);
+          const reason = blocker && t(blocker);
           const cost = 'cost' in level ? level.cost : null;
           const note = rank > 0 ? talent.upgradeNotes[rank - 1] : null;
           return (
             <li key={rank}>
-              <Tip title={`${talent.name} ${RANK_LABEL[rank]}`} body={[level.description, note && `Upgrade: ${note}`, reason].filter(Boolean).join(' ')}>
+              <Tip title={`${talent.name} ${RANK_LABEL[rank]}`} body={[level.description, note && t('Upgrade: {note}', { note }), reason].filter(Boolean).join(' ')}>
                 <button
                   className={`talent-node ${isLearned ? 'is-learned' : reason ? 'is-locked' : 'is-available'}`}
                   onClick={() => onClick(talent.id, rank)}
                   aria-pressed={isLearned}
-                  aria-label={`${talent.name} rank ${RANK_LABEL[rank]}${isLearned ? ', learned' : ''}. ${level.description}`}
+                  aria-label={`${t('{name} rank {rank}', { name: talent.name, rank: RANK_LABEL[rank] })}${isLearned ? t(', learned') : ''}. ${level.description}`}
                 >
                   {rank === 0 ? <Glyph name={glyph} size={20} /> : <span className="talent-rank">{RANK_LABEL[rank]}</span>}
                   {cost !== null && <span className="talent-cost num">{cost}</span>}

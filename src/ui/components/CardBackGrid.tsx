@@ -6,6 +6,7 @@ import { audio } from '@/audio/audioService';
 import { CardBack } from './CardView';
 import { confirmDialog, Gold } from './common';
 import { GoldIcon } from './Icons';
+import { t } from '@/i18n';
 import '@/ui/styles/cardbacks.css';
 
 /**
@@ -21,13 +22,13 @@ export function CardBackGrid({ mode }: { mode: 'shop' | 'owned' }) {
 
   const buy = async (b: CardBackDef) => {
     const ok = await confirmDialog({
-      title: `Buy ${b.name}?`,
+      title: t('Buy {name}?', { name: b.name }),
       message: (
         <p>
-          This spends <Gold amount={b.price} /> of your <Gold amount={gold} />. Card backs are cosmetic.
+          {t('This spends')} <Gold amount={b.price} /> {t('of your')} <Gold amount={gold} />. {t('Card backs are cosmetic.')}
         </p>
       ),
-      confirmLabel: `Buy for ${b.price.toLocaleString()} Gold`,
+      confirmLabel: t('Buy for {n} Gold', { n: b.price.toLocaleString() }),
     });
     if (!ok) return;
     const res = gameService.buyCardBack(b.id);
@@ -38,7 +39,7 @@ export function CardBackGrid({ mode }: { mode: 'shop' | 'owned' }) {
     }
     gameService.equipCardBack(b.id);
     audio.play('coin');
-    toast(`${b.name} is yours and now in use.`, 'success');
+    toast(t('{name} is yours and now in use.', { name: b.name }), 'success');
     setJustBought(b.id);
     window.setTimeout(() => setJustBought(null), 900);
   };
@@ -47,7 +48,7 @@ export function CardBackGrid({ mode }: { mode: 'shop' | 'owned' }) {
     const res = gameService.equipCardBack(b.id);
     if (res.ok) {
       audio.play('click');
-      toast(`Now using ${b.name}.`, 'success');
+      toast(t('Now using {name}.', { name: b.name }), 'success');
     } else toast(res.error, 'error');
   };
 
@@ -59,23 +60,23 @@ export function CardBackGrid({ mode }: { mode: 'shop' | 'owned' }) {
         const affordable = gold >= b.price;
         return (
           <li key={b.id} className={`cardback-item ${using ? 'is-equipped' : ''} ${justBought === b.id ? 'just-bought' : ''}`}>
-            <button className="cardback-preview" onClick={() => (has ? equip(b) : void buy(b))} disabled={using || (!has && !affordable)} aria-label={has ? (using ? `${b.name}, in use` : `Use ${b.name}`) : `Buy ${b.name}`}>
+            <button className="cardback-preview" onClick={() => (has ? equip(b) : void buy(b))} disabled={using || (!has && !affordable)} aria-label={has ? (using ? t('{name}, in use', { name: b.name }) : t('Use {name}', { name: b.name })) : t('Buy {name}', { name: b.name })}>
               <CardBack width={132} design={b.id} />
-              {using && <span className="cardback-badge">In use</span>}
+              {using && <span className="cardback-badge">{t('In use')}</span>}
             </button>
             <strong className="cardback-name">{b.name}</strong>
             <span className="cardback-desc faint">{b.description}</span>
             {has ? (
-              <button className="btn btn-sm cardback-action" onClick={() => equip(b)} disabled={using} aria-label={using ? `${b.name} is in use` : `Use ${b.name}`}>
-                {using ? 'Equipped' : 'Equip'}
+              <button className="btn btn-sm cardback-action" onClick={() => equip(b)} disabled={using} aria-label={using ? t('{name} is in use', { name: b.name }) : t('Use {name}', { name: b.name })}>
+                {using ? t('Equipped') : t('Equip')}
               </button>
             ) : (
               <button
                 className="btn btn-sm btn-primary cardback-action"
                 onClick={() => void buy(b)}
                 disabled={!affordable}
-                aria-label={`Buy ${b.name} for ${b.price} Gold`}
-                title={affordable ? undefined : `Need ${(b.price - gold).toLocaleString()} more Gold`}
+                aria-label={t('Buy {name} for {n} Gold', { name: b.name, n: b.price })}
+                title={affordable ? undefined : t('Need {n} more Gold', { n: (b.price - gold).toLocaleString() })}
               >
                 <GoldIcon size={16} />
                 <span className="num">{b.price.toLocaleString()}</span>

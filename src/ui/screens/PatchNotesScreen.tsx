@@ -4,6 +4,7 @@ import { ScreenHeader } from '@/ui/components/common';
 import { markPatchNotesSeen } from '@/ui/patchNotesSeen';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/patchnotes.css';
+import { t } from '@/i18n';
 
 const KIND_LABEL: Record<PatchSection['kind'], string> = { new: 'New', improved: 'Improved', balance: 'Balance', fixed: 'Fixed' };
 
@@ -19,7 +20,7 @@ export default function PatchNotesScreen() {
     });
   return (
     <div className="screen patch-screen">
-      <ScreenHeader title="Patch notes" subtitle="What changed in each update of Shardbound." />
+      <ScreenHeader title={t('Patch notes')} subtitle={t('What changed in each update of Shardbound.')} />
       <ol className="patch-list">
         {PATCH_NOTES.map((p, i) => {
           const expanded = open.has(p.version);
@@ -40,7 +41,7 @@ export default function PatchNotesScreen() {
                 <div className="patch-body">
                   {p.sections.map((s) => (
                     <section key={s.kind} className={`patch-section kind-${s.kind}`}>
-                      <h4>{KIND_LABEL[s.kind]}</h4>
+                      <h4>{t(KIND_LABEL[s.kind])}</h4>
                       <ul>
                         {s.items.map((item) => (
                           <li key={item}>{item}</li>

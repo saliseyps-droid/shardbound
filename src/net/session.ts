@@ -15,12 +15,17 @@ export const ID_PREFIX = 'shardbound-v1-';
 const HEARTBEAT_MS = 4000;
 const TIMEOUT_MS = 15000;
 
-/** Both players must run the same card database. */
-export const CONTENT_HASH = hashString(
+/** Both players must run the same card database (mechanics only, so different languages can play together). */
+export function contentHash(): number {
+  return hashString(
   collectibleCards()
     .map((c) => `${c.id}:${c.manaCost}:${c.attack ?? ''}:${c.health ?? ''}:${JSON.stringify(c.abilities ?? [])}`)
-    .join('|') + JSON.stringify(FACTION_TALENTS) + JSON.stringify(BOSS_TALENTS),
-);
+    .join('|') +
+    // Mechanics only: names and texts differ between languages, which must still play together.
+    JSON.stringify([...Object.values(FACTION_TALENTS).flat(), ...BOSS_TALENTS].map((t) => [t.id, t.kind, t.levels.map(({ description: _d, ...rules }) => rules)])),
+  );
+}
+export const CONTENT_HASH = contentHash();
 
 export type NetMessage =
   | { t: 'hello'; protocol: number; content: number; side: SideSetup; deckName: string; meta?: Record<string, unknown> }

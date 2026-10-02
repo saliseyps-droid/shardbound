@@ -14,6 +14,7 @@ import { talentSummary } from '@/data/wardenTalents';
 import { Essence, Gold, ProgressBar } from '../common';
 import { EssenceIcon, Glyph, GoldIcon, PackIcon } from '../Icons';
 import { WardenPortrait } from '../WardenPortrait';
+import { t, tn } from '@/i18n';
 
 export function factionStyle(faction: keyof typeof FACTIONS): CSSProperties {
   const f = FACTIONS[faction];
@@ -37,13 +38,13 @@ export function DeckBox({ deck, save, selected, onSelect, compact }: { deck: Dec
       <span className="deckbox-text">
         <strong>
           {deck.name}
-          {deck.favorite && <span className="deckbox-fav" title="Favorite deck"> ★</span>}
+          {deck.favorite && <span className="deckbox-fav" title={t('Favorite deck')}> ★</span>}
         </strong>
         <span className="faint">
-          {f.name}, {deckSize(deck)} cards
+          {f.name}, {tn(deckSize(deck), '{n} card', '{n} cards')}
         </span>
         {deck.talents.length > 0 && <span className="deckbox-talents faint small">{talentSummary(deck.talents)}</span>}
-        {!valid && <span className="deckbox-issue">⚠ {issues[0].message}</span>}
+        {!valid && <span className="deckbox-issue">⚠ {t(issues[0].message)}</span>}
       </span>
       {selected && <span className="deckbox-check" aria-hidden>✓</span>}
     </>
@@ -58,7 +59,7 @@ export function DeckBox({ deck, save, selected, onSelect, compact }: { deck: Dec
       onClick={onSelect}
       disabled={!valid}
       aria-pressed={selected}
-      aria-label={`${deck.name}, ${f.name}${valid ? '' : `, unavailable: ${issues[0].message}`}`}
+      aria-label={`${deck.name}, ${f.name}${valid ? '' : t(', unavailable: {reason}', { reason: t(issues[0].message) })}`}
     >
       {content}
     </button>
@@ -68,7 +69,7 @@ export function DeckBox({ deck, save, selected, onSelect, compact }: { deck: Dec
 /** Deck picker listing all decks; invalid ones disabled with reason. */
 export function DeckPicker({ save, value, onChange }: { save: GameSave; value: string | null; onChange: (id: string) => void }) {
   return (
-    <div className="deck-picker" role="radiogroup" aria-label="Choose your deck">
+    <div className="deck-picker" role="radiogroup" aria-label={t('Choose your deck')}>
       {save.decks.map((d) => (
         <DeckBox
           key={d.id}
@@ -100,13 +101,13 @@ export function firstValidDeck(save: GameSave, preferred: string | null): string
 function rewardLabel(r: DailyReward): { icon: React.ReactNode; text: string } {
   switch (r.kind) {
     case 'GOLD':
-      return { icon: <GoldIcon size={22} />, text: `${r.amount} Gold` };
+      return { icon: <GoldIcon size={22} />, text: t('{n} Gold', { n: r.amount }) };
     case 'ESSENCE':
-      return { icon: <EssenceIcon size={22} />, text: `${r.amount} Essence` };
+      return { icon: <EssenceIcon size={22} />, text: t('{n} Essence', { n: r.amount }) };
     case 'PACK':
-      return { icon: <PackIcon size={22} />, text: `${r.amount} ${SET_INFO[r.setId].name} pack` };
+      return { icon: <PackIcon size={22} />, text: t('{n} {set} pack', { n: r.amount, set: SET_INFO[r.setId].name }) };
     case 'RANDOM_CARD':
-      return { icon: <Glyph name="crystal" size={22} className={`rarity-text-${r.rarity.toLowerCase()}`} />, text: `${r.rarity.charAt(0) + r.rarity.slice(1).toLowerCase()} card` };
+      return { icon: <Glyph name="crystal" size={22} className={`rarity-text-${r.rarity.toLowerCase()}`} />, text: t(`${r.rarity.charAt(0) + r.rarity.slice(1).toLowerCase()} card`) };
   }
 }
 
@@ -134,8 +135,8 @@ export function DailyTrack({ save }: { save: GameSave }) {
           const done = i < status.index || (!status.canClaim && claimedToday && status.index === 0);
           const state = isNext && status.canClaim ? 'ready' : done ? 'done' : 'future';
           return (
-            <li key={i} className={`daily-day ${state}`} aria-label={`Day ${i + 1}: ${lbl.text}${state === 'done' ? ', claimed' : state === 'ready' ? ', ready to claim' : ''}`}>
-              <span className="daily-num">Day {i + 1}</span>
+            <li key={i} className={`daily-day ${state}`} aria-label={`${t('Day {n}: {reward}', { n: i + 1, reward: lbl.text })}${state === 'done' ? t(', claimed') : state === 'ready' ? t(', ready to claim') : ''}`}>
+              <span className="daily-num">{t('Day {n}', { n: i + 1 })}</span>
               <span className="daily-icon">{lbl.icon}</span>
               <span className="daily-text">{lbl.text}</span>
               {state === 'done' && <span className="daily-mark" aria-hidden>✓</span>}
@@ -146,10 +147,10 @@ export function DailyTrack({ save }: { save: GameSave }) {
       <div className="daily-actions">
         {status.canClaim ? (
           <button className="btn btn-primary" onClick={claim}>
-            Claim day {status.index + 1}
+            {t('Claim day {n}', { n: status.index + 1 })}
           </button>
         ) : (
-          <span className="muted">{status.reason === 'Already claimed today.' ? 'Come back tomorrow for the next reward.' : status.reason}</span>
+          <span className="muted">{status.reason === 'Already claimed today.' ? t('Come back tomorrow for the next reward.') : status.reason && t(status.reason)}</span>
         )}
       </div>
     </div>
@@ -187,14 +188,14 @@ export function QuestRow({ quest, save, allowReroll = true }: { quest: Quest; sa
       </span>
       <div className="quest-main">
         <div className="quest-title">
-          <strong>{quest.name}</strong>
+          <strong>{t(quest.name)}</strong>
           <span className="quest-reward">
             <Gold amount={quest.gold} size={15} /> <span className="num faint">+{quest.xp} XP</span>
           </span>
         </div>
-        <span className="muted quest-desc">{quest.description}</span>
+        <span className="muted quest-desc">{t(quest.description)}</span>
         <div className="quest-progress">
-          <ProgressBar value={quest.progress} max={quest.target} gold={quest.completed} label={`${quest.name} progress`} />
+          <ProgressBar value={quest.progress} max={quest.target} gold={quest.completed} label={t('{name} progress', { name: t(quest.name) })} />
           <span className="num">
             {quest.progress} / {quest.target}
           </span>
@@ -202,15 +203,15 @@ export function QuestRow({ quest, save, allowReroll = true }: { quest: Quest; sa
       </div>
       <div className="quest-actions">
         {quest.claimed ? (
-          <span className="chip">Claimed</span>
+          <span className="chip">{t('Claimed')}</span>
         ) : quest.completed ? (
           <button className="btn btn-primary btn-sm" onClick={claim}>
-            Claim
+            {t('Claim')}
           </button>
         ) : (
           rerollable && (
-            <button className="btn btn-ghost btn-sm" onClick={reroll} title="Replace this quest (once per day)">
-              Replace
+            <button className="btn btn-ghost btn-sm" onClick={reroll} title={t('Replace this quest (once per day)')}>
+              {t('Replace')}
             </button>
           )
         )}
@@ -235,19 +236,20 @@ export function RewardSummary({ reward }: { reward: GameSave['recentRewards'][nu
           {getCardSafe(c.cardId).name}
         </span>
       ))}
-      {reward.title ? <span className="chip gold-text">Title: {reward.title}</span> : null}
+      {reward.title ? <span className="chip gold-text">{t('Title: {title}', { title: t(reward.title) })}</span> : null}
     </span>
   );
 }
 
 export function timeAgo(ts: number): string {
   const s = Math.max(0, (Date.now() - ts) / 1000);
-  if (s < 60) return 'just now';
-  if (s < 3600) return `${Math.floor(s / 60)} min ago`;
-  if (s < 86400) return `${Math.floor(s / 3600)} h ago`;
-  return `${Math.floor(s / 86400)} d ago`;
+  if (s < 60) return t('just now');
+  if (s < 3600) return t('{n} min ago', { n: Math.floor(s / 60) });
+  if (s < 86400) return t('{n} h ago', { n: Math.floor(s / 3600) });
+  return t('{n} d ago', { n: Math.floor(s / 86400) });
 }
 
+/** English source text; wrap label/text in t() where rendered. */
 export const DIFFICULTY_INFO: Record<string, { label: string; text: string }> = {
   EASY: { label: 'Easy', text: 'Plays greedily one move at a time and sometimes blunders or passes with energy left.' },
   NORMAL: { label: 'Normal', text: 'Makes sensible trades, reads board advantage and takes lethal when it sees it.' },

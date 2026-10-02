@@ -13,6 +13,7 @@ import type { Faction } from '@/game/types';
 import { Tip } from '@/ui/components/Tooltip';
 import type { StaticKeyword } from '@/game/types';
 import { useMatch, HUMAN, type Fx } from '@/state/matchStore';
+import { t } from '@/i18n';
 
 // ---------------------------------------------------------------------------
 // Floating combat numbers
@@ -90,14 +91,14 @@ export const UnitView = memo(function UnitView({
     fx.some((f) => f.kind === 'summon') ? 'is-summoned' : '',
   ].join(' ');
   const status = [
-    `${card.name}, ${atk} attack, ${hp} of ${maxHp} health`,
-    guard && 'Guard',
-    unit.barrier && 'Barrier',
-    unit.ambush && 'Ambush',
-    unit.frozen && 'Frozen',
-    unit.burn > 0 && `Burn ${unit.burn}`,
-    ready && 'ready to attack',
-    targetable && 'valid target',
+    t('{name}, {atk} attack, {hp} of {max} health', { name: card.name, atk, hp, max: maxHp }),
+    guard && KEYWORDS.GUARD.name,
+    unit.barrier && KEYWORDS.BARRIER.name,
+    unit.ambush && KEYWORDS.AMBUSH.name,
+    unit.frozen && t('Frozen'),
+    unit.burn > 0 && `${KEYWORDS.BURN.name} ${unit.burn}`,
+    ready && t('ready to attack'),
+    targetable && t('valid target'),
   ]
     .filter(Boolean)
     .join(', ');
@@ -128,17 +129,17 @@ export const UnitView = memo(function UnitView({
           </Tip>
         ))}
         {hasLastBreath && (
-          <Tip title="Last Breath" body={KEYWORDS.LAST_BREATH.definition} className="unit-badge">
+          <Tip title={KEYWORDS.LAST_BREATH.name} body={KEYWORDS.LAST_BREATH.definition} className="unit-badge">
             ✝
           </Tip>
         )}
         {hasTrigger && (
-          <Tip title="Triggered ability" body={card.description ?? ''} className="unit-badge">
+          <Tip title={t('Triggered ability')} body={card.description ?? ''} className="unit-badge">
             ϟ
           </Tip>
         )}
         {unit.burn > 0 && (
-          <Tip title={`Burn ${unit.burn}`} body={KEYWORDS.BURN.definition} className="unit-badge badge-burn">
+          <Tip title={`${KEYWORDS.BURN.name} ${unit.burn}`} body={KEYWORDS.BURN.definition} className="unit-badge badge-burn">
             🔥{unit.burn}
           </Tip>
         )}
@@ -177,7 +178,7 @@ export function HeroPanel({
       data-entity={key}
       role="button"
       tabIndex={0}
-      aria-label={`${p.hero.name}, ${p.hero.health} health${p.hero.armor ? `, ${p.hero.armor} armor` : ''}${targetable ? ', valid target' : ''}`}
+      aria-label={`${t('{name}, {hp} health', { name: p.hero.name, hp: p.hero.health })}${p.hero.armor ? `, ${t('{n} armor', { n: p.hero.armor })}` : ''}${targetable ? `, ${t('valid target')}` : ''}`}
       onClick={onClick}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onClick())}
     >
@@ -188,11 +189,11 @@ export function HeroPanel({
           <Glyph name={p.hero.avatar} size={44} />
         </div>
       )}
-      <div className="hero-health num" title="Health">
+      <div className="hero-health num" title={t('Health')}>
         {p.hero.health}
       </div>
       {p.hero.armor > 0 && (
-        <div className="hero-armor num" title="Armor">
+        <div className="hero-armor num" title={t('Armor')}>
           {p.hero.armor}
         </div>
       )}
@@ -207,7 +208,7 @@ export function EnergyBar({ game, player }: { game: GameState; player: PlayerId 
   const p = game.players[player];
   const crystals = Array.from({ length: Math.max(p.maxEnergy, p.energy) }, (_, i) => i < p.energy);
   return (
-    <div className="energy" data-tutorial={player === HUMAN ? 'energy' : undefined} aria-label={`Energy ${p.energy} of ${p.maxEnergy}`}>
+    <div className="energy" data-tutorial={player === HUMAN ? 'energy' : undefined} aria-label={t('Energy {n} of {max}', { n: p.energy, max: p.maxEnergy })}>
       <span className="energy-count num">
         {p.energy}/{p.maxEnergy}
       </span>
@@ -256,8 +257,8 @@ function HeroAbilitySlot({ game, player, slot, tutorial }: { game: GameState; pl
   const title = `${talent.name} ${RANK_LABEL[state.level] ?? ''}`.trim();
   if (talent.kind === 'PASSIVE') {
     return (
-      <Tip title={`${title} · Passive`} body={level.description}>
-        <span className={`hero-power is-passive ${flash ? 'is-flash' : ''}`} data-slot={slot} role="img" aria-label={`Passive Warden ability: ${title}. ${level.description}`}>
+      <Tip title={`${title} · ${t('Passive')}`} body={level.description}>
+        <span className={`hero-power is-passive ${flash ? 'is-flash' : ''}`} data-slot={slot} role="img" aria-label={`${t('Passive Warden ability: {title}.', { title })} ${level.description}`}>
           <Glyph name={glyph} size={20} />
         </span>
       </Tip>
@@ -267,14 +268,14 @@ function HeroAbilitySlot({ game, player, slot, tutorial }: { game: GameState; pl
   const usable = player === HUMAN && canUseHeroPower(game, player, slot).ok;
   const used = state.uses >= (active.usesPerTurn ?? 1);
   return (
-    <Tip title={`${title} · Active (${active.cost})`} body={active.description}>
+    <Tip title={`${title} · ${t('Active ({cost})', { cost: active.cost })}`} body={active.description}>
       <button
         data-tutorial={tutorial ? 'sigil' : undefined}
         data-slot={slot}
         className={`hero-power ${usable ? 'is-usable' : ''} ${used ? 'is-used' : ''} ${selected ? 'is-selected' : ''}`}
         onClick={player === HUMAN ? () => click(slot) : undefined}
         disabled={player !== HUMAN}
-        aria-label={`Warden ability: ${title}, costs ${active.cost}. ${active.description}${used ? ' Already used this turn.' : ''}`}
+        aria-label={`${t('Warden ability: {title}, costs {cost}.', { title, cost: active.cost })} ${active.description}${used ? ` ${t('Already used this turn.')}` : ''}`}
       >
         <Glyph name={glyph} size={22} />
         <span className="hero-power-cost num">{active.cost}</span>
@@ -313,9 +314,9 @@ export function DrawPile({ count, label, player, width, design }: { count: numbe
   // One visible layer per ~3 cards, so the stack visibly shrinks over the game.
   const layers = count === 0 ? 0 : Math.min(10, Math.ceil(count / 3));
   return (
-    <div className={`draw-pile ${count === 0 ? 'is-empty' : ''}`} data-draw-pile={player} title={`${count} cards in ${label}`} aria-label={`${count} cards in ${label}`} style={{ '--pile-w': `${width}px`, '--layers': layers } as CSSProperties}>
+    <div className={`draw-pile ${count === 0 ? 'is-empty' : ''}`} data-draw-pile={player} title={t(`{count} cards in ${label}`, { count })} aria-label={t(`{count} cards in ${label}`, { count })} style={{ '--pile-w': `${width}px`, '--layers': layers } as CSSProperties}>
       <div className="draw-pile-stack" aria-hidden>
-        {count === 0 && <span className="draw-pile-slot">Empty</span>}
+        {count === 0 && <span className="draw-pile-slot">{t('Empty')}</span>}
         {Array.from({ length: layers }, (_, i) => (
           <CardBack key={i} width={width} design={design} className="draw-pile-card" style={{ '--layer': i } as CSSProperties} />
         ))}
@@ -329,7 +330,7 @@ export function EmpowerBadge({ game, player }: { game: GameState; player: Player
   const n = empower(game, player);
   if (!n) return null;
   return (
-    <Tip title={`Empower ${n}`} body={KEYWORDS.EMPOWER.definition} className="chip empower-chip">
+    <Tip title={`${KEYWORDS.EMPOWER.name} ${n}`} body={KEYWORDS.EMPOWER.definition} className="chip empower-chip">
       ✦ +{n}
     </Tip>
   );

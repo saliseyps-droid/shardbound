@@ -8,6 +8,7 @@ import { playerSide } from '@/domain/matchSetup';
 import { ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { FACTIONS } from '@/data/factions';
+import { t } from '@/i18n';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/online.css';
 
@@ -39,27 +40,27 @@ export default function JoinScreen() {
 
   return (
     <div className="screen online-screen">
-      <ScreenHeader title="Join a match" subtitle={`You were invited to room ${code.toUpperCase()}. Pick your deck and join.`} />
+      <ScreenHeader title={t('Join a match')} subtitle={t('You were invited to room {code}. Pick your deck and join.', { code: code.toUpperCase() })} />
       <div className="online-grid">
         <section className="panel">
-          <div className="panel-title">Your deck</div>
+          <div className="panel-title">{t('Your deck')}</div>
           <DeckPicker save={save} value={deckId} onChange={setDeckId} />
         </section>
         <section className="panel online-host" aria-live="polite">
-          <div className="panel-title">Room {code.toUpperCase()}</div>
+          <div className="panel-title">{t('Room {code}', { code: code.toUpperCase() })}</div>
           {deck && (
             <p className="muted">
-              You’ll play <strong style={{ color: FACTIONS[deck.heroFaction].colors.primary }}>{deck.name}</strong>. Online matches give the same rewards and quest progress as normal matches.
+              {t('You’ll play')} <strong style={{ color: FACTIONS[deck.heroFaction].colors.primary }}>{deck.name}</strong>. {t('Online matches give the same rewards and quest progress as normal matches.')}
             </p>
           )}
           <button className="btn btn-primary btn-lg" disabled={!valid || busy} onClick={() => void join()}>
-            {busy ? 'Connecting…' : 'Join match'}
+            {busy ? t('Connecting…') : t('Join match')}
           </button>
-          {busy && <Spinner label="Connecting" />}
-          {!valid && <p className="deckbox-issue">Choose a valid 30-card deck first.</p>}
-          {error && <p className="online-error">{error}</p>}
+          {busy && <Spinner label={t('Connecting')} />}
+          {!valid && <p className="deckbox-issue">{t('Choose a valid 30-card deck first.')}</p>}
+          {error && <p className="online-error">{t(error)}</p>}
           <Link to="/online" className="small-link">
-            Create your own match instead
+            {t('Create your own match instead')}
           </Link>
         </section>
       </div>

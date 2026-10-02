@@ -5,6 +5,7 @@ import { ALL_FACTIONS, RARITIES } from '@/game/types';
 import type { CollectionState } from '@/domain/save';
 import { ownedCopies } from '@/domain/save';
 import { ProgressBar } from '@/ui/components/common';
+import { t } from '@/i18n';
 
 const cap = (s: string) => s.charAt(0) + s.slice(1).toLowerCase();
 
@@ -36,29 +37,29 @@ const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
 export function CollectionStats({ collection, children }: { collection: CollectionState; children?: React.ReactNode }) {
   const s = useMemo(() => summarizeCollection(collection), [collection]);
   return (
-    <section className="stats-panel panel" aria-label="Collection statistics">
+    <section className="stats-panel panel" aria-label={t('Collection statistics')}>
       <div className="stats-overall">
         <span className="stats-big num">{pct(s.owned, s.total)}%</span>
         <span className="muted">
           <strong className="num">
             {s.owned} / {s.total}
           </strong>{' '}
-          unique cards collected
+          {t('unique cards collected')}
         </span>
       </div>
-      <ProgressBar value={s.owned} max={s.total} gold label="Overall collection" />
-      <h4 className="stats-sub">By rarity</h4>
+      <ProgressBar value={s.owned} max={s.total} gold label={t('Overall collection')} />
+      <h4 className="stats-sub">{t('By rarity')}</h4>
       <ul className="stats-list">
         {RARITIES.map((r) => (
           <li key={r}>
-            <span className={`rarity-text-${r.toLowerCase()}`}>{cap(r)}</span>
+            <span className={`rarity-text-${r.toLowerCase()}`}>{t(cap(r))}</span>
             <span className="num">
               {s.byRarity[r]?.owned ?? 0} / {s.byRarity[r]?.total ?? 0}
             </span>
           </li>
         ))}
       </ul>
-      <h4 className="stats-sub">By faction</h4>
+      <h4 className="stats-sub">{t('By faction')}</h4>
       <ul className="stats-list factions">
         {ALL_FACTIONS.map((f) => {
           const v = s.byFaction[f] ?? { owned: 0, total: 0 };

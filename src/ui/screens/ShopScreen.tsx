@@ -9,6 +9,7 @@ import { confirmDialog, Gold, ScreenHeader } from '@/ui/components/common';
 import { GoldIcon } from '@/ui/components/Icons';
 import { BoosterPack } from '@/ui/components/packs/BoosterPack';
 import { CardBackGrid } from '@/ui/components/CardBackGrid';
+import { t, tn } from '@/i18n';
 import '@/ui/styles/shop.css';
 
 const SETS = (Object.keys(SET_INFO) as SetId[]).sort((a, b) => SET_INFO[a].releaseOrder - SET_INFO[b].releaseOrder);
@@ -32,22 +33,22 @@ function OddsTable() {
   const rarities: Rarity[] = ['COMMON', 'RARE', 'EPIC', 'LEGENDARY'];
   return (
     <details className="odds panel panel-tight">
-      <summary>Odds and guarantees</summary>
+      <summary>{t('Odds and guarantees')}</summary>
       <div className="odds-body">
         <table className="odds-table">
-          <caption className="sr-only">Card rarity chances per slot</caption>
+          <caption className="sr-only">{t('Card rarity chances per slot')}</caption>
           <thead>
             <tr>
-              <th scope="col">Rarity</th>
-              <th scope="col">Cards 1–{PACK_CONFIG.cardsPerPack - 1}</th>
-              <th scope="col">Card {PACK_CONFIG.cardsPerPack}</th>
+              <th scope="col">{t('Rarity')}</th>
+              <th scope="col">{t('Cards 1–{n}', { n: PACK_CONFIG.cardsPerPack - 1 })}</th>
+              <th scope="col">{t('Card {n}', { n: PACK_CONFIG.cardsPerPack })}</th>
             </tr>
           </thead>
           <tbody>
             {rarities.map((r) => (
               <tr key={r}>
                 <th scope="row" className={`rarity-text-${r.toLowerCase()}`}>
-                  {RARITY_LABEL[r]}
+                  {t(RARITY_LABEL[r])}
                 </th>
                 <td className="num">{pct(PACK_CONFIG.standardSlotWeights, r)}</td>
                 <td className="num">{pct(PACK_CONFIG.guaranteedSlotWeights, r)}</td>
@@ -56,19 +57,19 @@ function OddsTable() {
           </tbody>
         </table>
         <table className="odds-table">
-          <caption className="sr-only">Foil and Prismatic chances</caption>
+          <caption className="sr-only">{t('Foil and Prismatic chances')}</caption>
           <thead>
             <tr>
-              <th scope="col">Variant</th>
-              <th scope="col">Each card</th>
-              <th scope="col">At least one per pack</th>
+              <th scope="col">{t('Variant')}</th>
+              <th scope="col">{t('Each card')}</th>
+              <th scope="col">{t('At least one per pack')}</th>
             </tr>
           </thead>
           <tbody>
             {(['FOIL', 'PRISMATIC'] as Variant[]).map((v) => (
               <tr key={v}>
                 <th scope="row" className={`variant-name v-${v.toLowerCase()}`}>
-                  {VARIANT_LABEL[v]}
+                  {t(VARIANT_LABEL[v])}
                 </th>
                 <td className="num">{pct(PACK_CONFIG.variantWeights, v)}</td>
                 <td className="num">{perPackPct(v)}</td>
@@ -77,11 +78,11 @@ function OddsTable() {
           </tbody>
         </table>
         <ul className="odds-notes">
-          <li>Every pack holds at least one Rare or better card.</li>
-          {PACK_CONFIG.pity.EPIC && <li>An Epic or better is guaranteed at least once every {PACK_CONFIG.pity.EPIC} packs.</li>}
-          {PACK_CONFIG.pity.LEGENDARY && <li>A Legendary is guaranteed at least once every {PACK_CONFIG.pity.LEGENDARY} packs.</li>}
-          <li>Rare, Epic and Legendary cards favour ones you don’t own a full playset of yet.</li>
-          <li>Foil and Prismatic are cosmetic: they never change how a card plays.</li>
+          <li>{t('Every pack holds at least one Rare or better card.')}</li>
+          {PACK_CONFIG.pity.EPIC && <li>{t('An Epic or better is guaranteed at least once every {n} packs.', { n: PACK_CONFIG.pity.EPIC })}</li>}
+          {PACK_CONFIG.pity.LEGENDARY && <li>{t('A Legendary is guaranteed at least once every {n} packs.', { n: PACK_CONFIG.pity.LEGENDARY })}</li>}
+          <li>{t('Rare, Epic and Legendary cards favour ones you don’t own a full playset of yet.')}</li>
+          <li>{t('Foil and Prismatic are cosmetic: they never change how a card plays.')}</li>
         </ul>
       </div>
     </details>
@@ -95,20 +96,20 @@ function OfferButton({ offer, gold, busy, onBuy }: { offer: ShopOffer; gold: num
   return (
     <div className={`offer ${affordable ? '' : 'offer-locked'}`}>
       <div className="offer-head">
-        <span className="offer-label">{offer.label}</span>
-        {offer.badge && <span className="offer-badge">{offer.badge}</span>}
+        <span className="offer-label">{t(offer.label)}</span>
+        {offer.badge && <span className="offer-badge">{t(offer.badge)}</span>}
       </div>
-      <span className="faint offer-per">{perPack} Gold per pack</span>
+      <span className="faint offer-per">{t('{n} Gold per pack', { n: perPack })}</span>
       <button
         className="btn btn-primary offer-buy"
         disabled={!affordable || busy}
         onClick={() => onBuy(offer)}
-        aria-label={`Buy ${offer.label} of ${SET_INFO[offer.setId].name} for ${offer.price} Gold`}
+        aria-label={t('Buy {offer} of {set} for {price} Gold', { offer: t(offer.label), set: SET_INFO[offer.setId].name, price: offer.price })}
       >
         <GoldIcon size={18} />
         <span className="num">{offer.price.toLocaleString()}</span>
       </button>
-      <span className="offer-reason">{!affordable && `Need ${(offer.price - gold).toLocaleString()} more Gold`}</span>
+      <span className="offer-reason">{!affordable && t('Need {n} more Gold', { n: (offer.price - gold).toLocaleString() })}</span>
     </div>
   );
 }
@@ -118,8 +119,8 @@ function CardBackShop() {
   return (
     <section className="panel cardback-shop" aria-labelledby="cardbacks-title">
       <div className="cardback-shop-head">
-        <h3 id="cardbacks-title">Card Backs</h3>
-        <p className="muted">Show off in every match: your deck on the table and the cards in your hand, as your opponent sees them, wear the back you choose. Switch between your backs under Card Backs in the menu.</p>
+        <h3 id="cardbacks-title">{t('Card Backs')}</h3>
+        <p className="muted">{t('Show off in every match: your deck on the table and the cards in your hand, as your opponent sees them, wear the back you choose. Switch between your backs under Card Backs in the menu.')}</p>
       </div>
       <CardBackGrid mode="shop" />
     </section>
@@ -138,13 +139,13 @@ export default function ShopScreen() {
     const setName = SET_INFO[offer.setId].name;
     if (offer.packs > 1) {
       const ok = await confirmDialog({
-        title: `Buy ${total} ${setName} packs?`,
+        title: t('Buy {n} {set} packs?', { n: total, set: setName }),
         message: (
           <p>
-            This spends <Gold amount={offer.price} /> of your <Gold amount={gold} />. The packs go to your inventory, ready to open.
+            {t('This spends')} <Gold amount={offer.price} /> {t('of your')} <Gold amount={gold} />. {t('The packs go to your inventory, ready to open.')}
           </p>
         ),
-        confirmLabel: `Buy for ${offer.price.toLocaleString()} Gold`,
+        confirmLabel: t('Buy for {n} Gold', { n: offer.price.toLocaleString() }),
       });
       if (!ok) return;
     }
@@ -153,7 +154,7 @@ export default function ShopScreen() {
     setBusy(false);
     if (res.ok) {
       audio.play('coin');
-      toast(`Bought ${total} ${setName} pack${total > 1 ? 's' : ''}.`, 'success');
+      toast(tn(total, 'Bought {n} {set} pack.', 'Bought {n} {set} packs.', { set: setName }), 'success');
       setFlash(offer.setId);
       window.setTimeout(() => setFlash(null), 900);
     } else {
@@ -165,15 +166,15 @@ export default function ShopScreen() {
   return (
     <div className="screen shop-screen">
       <ScreenHeader
-        title="Shop"
-        subtitle="Trade Gold for booster packs and card backs. Every pack holds five cards."
+        title={t('Shop')}
+        subtitle={t('Trade Gold for booster packs and card backs. Every pack holds five cards.')}
         actions={
           <>
             <span className="shop-wallet">
               <Gold amount={gold} size={22} />
             </span>
             <button className="btn btn-cyan" onClick={() => navigate('/packs')}>
-              Open packs
+              {t('Open packs')}
             </button>
           </>
         }
@@ -187,7 +188,7 @@ export default function ShopScreen() {
               <div className="shop-set-art">
                 <BoosterPack setId={setId} width={190} className="shop-pack" />
                 {owned > 0 && (
-                  <span className="shop-owned num" aria-label={`${owned} unopened`}>
+                  <span className="shop-owned num" aria-label={t('{n} unopened', { n: owned })}>
                     {owned}
                   </span>
                 )}
@@ -202,11 +203,11 @@ export default function ShopScreen() {
                 </div>
                 <div className="shop-set-foot">
                   <span className="muted">
-                    {owned > 0 ? `You have ${owned} unopened ${owned === 1 ? 'pack' : 'packs'}.` : 'No unopened packs of this set.'}
+                    {owned > 0 ? tn(owned, 'You have {n} unopened pack.', 'You have {n} unopened packs.') : t('No unopened packs of this set.')}
                   </span>
                   {owned > 0 && (
                     <button className="btn btn-sm" onClick={() => navigate(`/packs?set=${setId}`)}>
-                      Open now
+                      {t('Open now')}
                     </button>
                   )}
                 </div>
@@ -217,7 +218,7 @@ export default function ShopScreen() {
       </div>
       <OddsTable />
       <CardBackShop />
-      {gold < 100 && <p className="muted shop-hint">Earn Gold by winning matches, completing quests and claiming daily rewards.</p>}
+      {gold < 100 && <p className="muted shop-hint">{t('Earn Gold by winning matches, completing quests and claiming daily rewards.')}</p>}
     </div>
   );
 }

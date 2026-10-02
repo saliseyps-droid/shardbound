@@ -13,6 +13,7 @@ import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { DeckPicker, DIFFICULTY_INFO, factionStyle, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
 import '@/ui/styles/meta.css';
+import { t } from '@/i18n';
 
 export default function PlayScreen() {
   const save = useAccount((s) => s.save);
@@ -34,13 +35,13 @@ export default function PlayScreen() {
 
   return (
     <div className="screen play-screen">
-      <ScreenHeader title="Practice match" subtitle="Pick a rival Warden, set their skill, and bring your deck." />
+      <ScreenHeader title={t('Practice match')} subtitle={t('Pick a rival Warden, set their skill, and bring your deck.')} />
       <div className="play-layout">
         <section className="panel" aria-labelledby="opp-title">
           <div className="panel-title" id="opp-title">
-            Opponent
+            {t('Opponent')}
           </div>
-          <div className="opponent-grid" role="radiogroup" aria-label="Opponent faction">
+          <div className="opponent-grid" role="radiogroup" aria-label={t('Opponent faction')}>
             {PLAYABLE_FACTIONS.map((f) => {
               const o = PRACTICE_OPPONENTS[f];
               const sel = f === faction;
@@ -58,15 +59,15 @@ export default function PlayScreen() {
           <div className="opponent-detail" style={factionStyle(faction)}>
             <h3>{opp.name}</h3>
             <p className="muted">
-              {opp.title}. Plays {opp.archetype ?? 'a balanced'} strategy: {FACTIONS[faction].identity}
+              {t('{title}. Plays {archetype} strategy: {identity}', { title: opp.title, archetype: opp.archetype ?? t('a balanced'), identity: FACTIONS[faction].identity })}
             </p>
             <blockquote>“{opp.intro}”</blockquote>
           </div>
 
           <div className="panel-title" style={{ marginTop: 'var(--space-5)' }}>
-            Difficulty
+            {t('Difficulty')}
           </div>
-          <div className="difficulty-list" role="radiogroup" aria-label="Difficulty">
+          <div className="difficulty-list" role="radiogroup" aria-label={t('Difficulty')}>
             {DIFFICULTIES.map((d, i) => (
               <button key={d} type="button" role="radio" aria-checked={d === difficulty} className={`difficulty-option ${d === difficulty ? 'selected' : ''}`} onClick={() => (audio.play('click'), setDifficulty(d))}>
                 <span className="diff-pips" aria-hidden>
@@ -74,8 +75,8 @@ export default function PlayScreen() {
                     <span key={j} className={j <= i ? 'on' : ''} />
                   ))}
                 </span>
-                <strong>{DIFFICULTY_INFO[d].label}</strong>
-                <span className="muted">{DIFFICULTY_INFO[d].text}</span>
+                <strong>{t(DIFFICULTY_INFO[d].label)}</strong>
+                <span className="muted">{t(DIFFICULTY_INFO[d].text)}</span>
               </button>
             ))}
           </div>
@@ -83,59 +84,59 @@ export default function PlayScreen() {
 
         <section className="panel play-side" aria-labelledby="deck-title">
           <div className="panel-title">
-            <span id="deck-title">Your deck</span>
-            <Link to="/decks" className="small-link">Manage decks</Link>
+            <span id="deck-title">{t('Your deck')}</span>
+            <Link to="/decks" className="small-link">{t('Manage decks')}</Link>
           </div>
           <DeckPicker save={save} value={deckId} onChange={setDeckId} />
           <div className="play-rewards muted">
-            Victory pays <strong className="gold-text">{winGold} Gold</strong> and <strong>{winXp} XP</strong>, plus a first-win-of-the-day bonus.
+            {t('Victory pays')} <strong className="gold-text">{t('{n} Gold', { n: winGold })}</strong> {t('and')} <strong>{winXp} XP</strong>{t(', plus a first-win-of-the-day bonus.')}
           </div>
           <button className="btn btn-primary btn-xl play-start" disabled={!validDeck} onClick={start}>
-            Fight {opp.name.split(' ').slice(-1)[0]}
+            {t('Fight {name}', { name: opp.name.split(' ').slice(-1)[0] })}
           </button>
-          {!validDeck && <p className="deckbox-issue">Choose a valid 30-card deck to play.</p>}
+          {!validDeck && <p className="deckbox-issue">{t('Choose a valid 30-card deck to play.')}</p>}
 
           <div className="tutorial-card online-card">
             <Glyph name="trophy" size={28} />
             <div>
-              <strong>Ranked</strong>
-              <span className="muted">Get matched against a random player who is searching right now and climb the ladder.</span>
+              <strong>{t('Ranked')}</strong>
+              <span className="muted">{t('Get matched against a random player who is searching right now and climb the ladder.')}</span>
             </div>
             <Link className="btn btn-sm btn-cyan" to="/ranked">
-              Find match
+              {t('Find match')}
             </Link>
           </div>
 
           <div className="tutorial-card online-card">
             <Glyph name="crown" size={28} />
             <div>
-              <strong>Tournament</strong>
-              <span className="muted">A 4-player knockout for 2–4 friends; bots fill the empty seats.</span>
+              <strong>{t('Tournament')}</strong>
+              <span className="muted">{t('A 4-player knockout for 2–4 friends; bots fill the empty seats.')}</span>
             </div>
             <Link className="btn btn-sm btn-cyan" to="/tournament">
-              Open
+              {t('Open')}
             </Link>
           </div>
 
           <div className="tutorial-card online-card">
             <Glyph name="person" size={28} />
             <div>
-              <strong>Play a friend online</strong>
-              <span className="muted">Create a match, send your friend the room code, and they join from their browser.</span>
+              <strong>{t('Play a friend online')}</strong>
+              <span className="muted">{t('Create a match, send your friend the room code, and they join from their browser.')}</span>
             </div>
             <Link className="btn btn-sm btn-cyan" to="/online">
-              Play online
+              {t('Play online')}
             </Link>
           </div>
 
           <div className="tutorial-card">
             <Glyph name="compass" size={28} />
             <div>
-              <strong>Tutorial</strong>
-              <span className="muted">{save.profile.tutorialCompleted ? 'Replay the guided lesson any time.' : 'New to Shardbound? Learn the basics in a guided match.'}</span>
+              <strong>{t('Tutorial')}</strong>
+              <span className="muted">{save.profile.tutorialCompleted ? t('Replay the guided lesson any time.') : t('New to Shardbound? Learn the basics in a guided match.')}</span>
             </div>
             <button className="btn btn-sm" onClick={() => launchMatch({ mode: 'TUTORIAL', deckId: null, opponent: TUTORIAL_OPPONENT }, navigate)}>
-              {save.profile.tutorialCompleted ? 'Replay' : 'Start'}
+              {save.profile.tutorialCompleted ? t('Replay') : t('Start')}
             </button>
           </div>
         </section>

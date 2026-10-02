@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { t } from '@/i18n';
 
 interface Props {
   children: ReactNode;
@@ -31,15 +32,15 @@ export class ErrorBoundary extends Component<Props, State> {
     if (!this.state.error) return this.props.children;
     return (
       <div className="panel error-panel" role="alert">
-        <h3>{this.props.fallbackTitle ?? 'This screen ran into a problem'}</h3>
-        <p className="muted">Your progress is saved. Try again, or return to the home screen.</p>
+        <h3>{this.props.fallbackTitle ?? t('This screen ran into a problem')}</h3>
+        <p className="muted">{t('Your progress is saved. Try again, or return to the home screen.')}</p>
         <pre className="error-detail">{this.state.error.message}</pre>
         <div className="modal-actions">
           <button className="btn" onClick={() => this.setState({ error: null })}>
-            Try again
+            {t('Try again')}
           </button>
           <a className="btn btn-primary" href="#/">
-            Go home
+            {t('Go home')}
           </a>
         </div>
       </div>

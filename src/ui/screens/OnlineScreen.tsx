@@ -9,6 +9,7 @@ import { factionOfList } from '@/domain/decks';
 import { ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
+import { t } from '@/i18n';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/online.css';
 
@@ -66,11 +67,11 @@ export default function OnlineScreen() {
 
   return (
     <div className="screen online-screen">
-      <ScreenHeader title="Play a friend" subtitle="Create a match and send your friend the room code. The match starts as soon as they join." />
+      <ScreenHeader title={t('Play a friend')} subtitle={t('Create a match and send your friend the room code. The match starts as soon as they join.')} />
       <div className="online-grid">
         <section className="panel" aria-labelledby="online-deck">
           <div className="panel-title" id="online-deck">
-            Your deck
+            {t('Your deck')}
           </div>
           <DeckPicker save={save} value={deckId} onChange={setDeckId} />
         </section>
@@ -78,25 +79,25 @@ export default function OnlineScreen() {
         <section className="panel online-host" aria-live="polite">
           {!waiting && (
             <>
-              <div className="panel-title">Create a match</div>
-              <p className="muted">Online matches give the same Gold, XP and quest progress as normal matches. Both players need an internet connection.</p>
+              <div className="panel-title">{t('Create a match')}</div>
+              <p className="muted">{t('Online matches give the same Gold, XP and quest progress as normal matches. Both players need an internet connection.')}</p>
               <button className="btn btn-primary btn-lg" disabled={!valid || status === 'opening'} onClick={() => void create()}>
-                {status === 'opening' ? 'Creating…' : 'Create match'}
+                {status === 'opening' ? t('Creating…') : t('Create match')}
               </button>
-              {!valid && <p className="deckbox-issue">Choose a valid 30-card deck first.</p>}
+              {!valid && <p className="deckbox-issue">{t('Choose a valid 30-card deck first.')}</p>}
             </>
           )}
           {waiting && (
             <>
-              <div className="panel-title">Waiting for your friend</div>
-              <p className="muted">Send your friend this code — they enter it under “Have a code?”. Keep this screen open until they join.</p>
+              <div className="panel-title">{t('Waiting for your friend')}</div>
+              <p className="muted">{t('Send your friend this code — they enter it under “Have a code?”. Keep this screen open until they join.')}</p>
               <div className="invite-row">
-                <strong className="room-code" aria-label={`Room code ${code}`}>{code}</strong>
+                <strong className="room-code" aria-label={t('Room code {code}', { code: code ?? '' })}>{code}</strong>
                 <button className="btn btn-cyan" onClick={() => void copy()}>
-                  Copy code
+                  {t('Copy code')}
                 </button>
               </div>
-              <Spinner label="Waiting for your friend" />
+              <Spinner label={t('Waiting for your friend')} />
               <button
                 className="btn btn-ghost btn-sm"
                 onClick={() => {
@@ -104,14 +105,14 @@ export default function OnlineScreen() {
                   setCode(null);
                 }}
               >
-                Cancel
+                {t('Cancel')}
               </button>
             </>
           )}
-          {error && <p className="online-error">{error}</p>}
+          {error && <p className="online-error">{t(error)}</p>}
 
           <hr className="divider" />
-          <div className="panel-title">Have a code?</div>
+          <div className="panel-title">{t('Have a code?')}</div>
           <form
             className="invite-row"
             onSubmit={(e) => {
@@ -120,9 +121,9 @@ export default function OnlineScreen() {
               if (c.length >= 4) navigate(`/join/${c}`);
             }}
           >
-            <input className="input" value={joinCode} onChange={(e) => setJoinCode(e.target.value)} placeholder="Room code" maxLength={8} aria-label="Room code" />
+            <input className="input" value={joinCode} onChange={(e) => setJoinCode(e.target.value)} placeholder={t('Room code')} maxLength={8} aria-label={t('Room code')} />
             <button className="btn" type="submit" disabled={joinCode.trim().length < 4}>
-              Join
+              {t('Join')}
             </button>
           </form>
         </section>

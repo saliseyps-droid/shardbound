@@ -6,6 +6,7 @@ import { ScreenHeader } from '@/ui/components/common';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { factionStyle } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
+import { t } from '@/i18n';
 
 const CATEGORY = { static: 'Unit abilities', trigger: 'Triggers', status: 'Statuses' } as const;
 
@@ -47,10 +48,10 @@ export default function LoreScreen() {
         })}
       </div>
 
-      <h3 style={{ marginTop: 'var(--space-6)' }}>Keyword glossary</h3>
+      <h3 style={{ marginTop: 'var(--space-6)' }}>{t('Keyword glossary')}</h3>
       {(Object.keys(CATEGORY) as (keyof typeof CATEGORY)[]).map((cat) => (
         <section key={cat} className="glossary-section">
-          <h4 className="muted">{CATEGORY[cat]}</h4>
+          <h4 className="muted">{t(CATEGORY[cat])}</h4>
           <dl className="glossary">
             {KEYWORD_LIST.filter((k) => k.category === cat).map((k) => (
               <div key={k.id} className="glossary-item">

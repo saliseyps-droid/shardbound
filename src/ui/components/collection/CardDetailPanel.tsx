@@ -12,8 +12,18 @@ import { audio } from '@/audio/audioService';
 import { CardView } from '@/ui/components/CardView';
 import { confirmDialog, Essence } from '@/ui/components/common';
 import { EssenceIcon } from '@/ui/components/Icons';
+import { t, tn } from '@/i18n';
 
 export const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic' };
+
+/** Variant-specific sentences (Czech declines the variant adjective). */
+const CRAFTED: Record<Variant, string> = { NORMAL: 'Crafted normal {name}.', FOIL: 'Crafted foil {name}.', PRISMATIC: 'Crafted prismatic {name}.' };
+const DESTROY_ONE: Record<Variant, string> = {
+  NORMAL: 'You will destroy one normal copy and receive',
+  FOIL: 'You will destroy one foil copy and receive',
+  PRISMATIC: 'You will destroy one prismatic copy and receive',
+};
+const THIS_IS: Record<Variant, string> = { NORMAL: 'This is a normal copy.', FOIL: 'This is a foil copy.', PRISMATIC: 'This is a prismatic copy.' };
 
 export function bestVariant(counts: Record<Variant, number> | undefined): Variant {
   if (!counts) return 'NORMAL';
@@ -39,7 +49,7 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
     const res = gameService.craft(cardId, variant);
     if (res.ok) {
       audio.play(card.rarity === 'LEGENDARY' ? 'legendaryReveal' : card.rarity === 'EPIC' ? 'epicReveal' : 'reveal');
-      toast(`Crafted ${VARIANT_LABEL[variant].toLowerCase()} ${card.name}.`, 'success');
+      toast(t(CRAFTED[variant], { name: card.name }), 'success');
     } else {
       audio.play('error');
       toast(res.error, 'error');
@@ -52,14 +62,14 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
     const needsConfirm = CRAFTING.confirmRecycle.includes(card.rarity) || variant !== 'NORMAL' || remaining < maxUsage;
     if (needsConfirm) {
       const warnings: string[] = [];
-      if (remaining < maxUsage) warnings.push(`It is used in ${usedIn.length} deck${usedIn.length > 1 ? 's' : ''} (${usedIn.map((d) => d.name).join(', ')}), which will lose a copy.`);
-      if (variant !== 'NORMAL') warnings.push(`This is a ${VARIANT_LABEL[variant].toLowerCase()} copy.`);
+      if (remaining < maxUsage) warnings.push(tn(usedIn.length, 'It is used in {n} deck ({names}), which will lose a copy.', 'It is used in {n} decks ({names}), which will lose a copy.', { names: usedIn.map((d) => d.name).join(', ') }));
+      if (variant !== 'NORMAL') warnings.push(t(THIS_IS[variant]));
       const ok = await confirmDialog({
-        title: `Recycle ${card.name}?`,
+        title: t('Recycle {name}?', { name: card.name }),
         message: (
           <>
             <p>
-              You will destroy one {VARIANT_LABEL[variant].toLowerCase()} copy and receive <strong>{value} Essence</strong>. This can't be undone.
+              {t(DESTROY_ONE[variant])} <strong>{t('{n} Essence', { n: value })}</strong>. {t("This can't be undone.")}
             </p>
             {warnings.map((w) => (
               <p key={w} className="warn-text">
@@ -68,7 +78,7 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
             ))}
           </>
         ),
-        confirmLabel: `Recycle for ${value} Essence`,
+        confirmLabel: t('Recycle for {n} Essence', { n: value }),
         danger: true,
       });
       if (!ok) return;
@@ -76,7 +86,7 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
     const res = gameService.recycle(cardId, variant, 1);
     if (res.ok) {
       audio.play('coin');
-      toast(`Recycled ${card.name} for ${res.value} Essence.`, 'success');
+      toast(t('Recycled {name} for {n} Essence.', { name: card.name, n: res.value }), 'success');
     } else {
       audio.play('error');
       toast(res.error, 'error');
@@ -84,37 +94,37 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
   };
 
   return (
-    <aside className="detail-panel panel" aria-label={`${card.name} details`}>
+    <aside className="detail-panel panel" aria-label={t('{name} details', { name: card.name })}>
       <div className="detail-head">
         <h3>{card.name}</h3>
-        <button className="icon-btn" onClick={onClose} aria-label="Close details">
+        <button className="icon-btn" onClick={onClose} aria-label={t('Close details')}>
           ✕
         </button>
       </div>
       <div className="detail-card">
-        <CardView card={card} size="lg" variant={bestVariant(counts)} dimmed={owned === 0} onClick={() => useUi.getState().inspectCard(cardId, bestVariant(counts))} ariaLabel={`Inspect ${card.name}`} />
+        <CardView card={card} size="lg" variant={bestVariant(counts)} dimmed={owned === 0} onClick={() => useUi.getState().inspectCard(cardId, bestVariant(counts))} ariaLabel={t('Inspect {name}', { name: card.name })} />
       </div>
       <p className="detail-meta">
         <span style={{ color: faction.colors.primary }}>{faction.name}</span>
-        <span className={`rarity-text-${card.rarity.toLowerCase()}`}>{card.rarity.charAt(0) + card.rarity.slice(1).toLowerCase()}</span>
+        <span className={`rarity-text-${card.rarity.toLowerCase()}`}>{t(card.rarity.charAt(0) + card.rarity.slice(1).toLowerCase())}</span>
         <span className="faint">{SET_INFO[card.set].name}</span>
       </p>
       <div className="owned-line">
-        <span>Owned</span>
+        <span>{t('Owned')}</span>
         <strong className="num">
           {owned} / {max}
         </strong>
-        {owned > max && <span className="chip surplus-chip">{owned - max} surplus</span>}
+        {owned > max && <span className="chip surplus-chip">{t('{n} surplus', { n: owned - max })}</span>}
       </div>
-      {usedIn.length > 0 && <p className="faint small">In decks: {usedIn.map((d) => `${d.name} ×${d.cards[cardId]}`).join(', ')}</p>}
+      {usedIn.length > 0 && <p className="faint small">{t('In decks:')} {usedIn.map((d) => `${d.name} ×${d.cards[cardId]}`).join(', ')}</p>}
 
       <table className="variant-table">
         <thead>
           <tr>
-            <th scope="col">Variant</th>
-            <th scope="col">Owned</th>
-            <th scope="col">Craft</th>
-            <th scope="col">Recycle</th>
+            <th scope="col">{t('Variant')}</th>
+            <th scope="col">{t('Owned')}</th>
+            <th scope="col">{t('Craft')}</th>
+            <th scope="col">{t('Recycle')}</th>
           </tr>
         </thead>
         <tbody>
@@ -123,7 +133,7 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
             return (
               <tr key={v}>
                 <th scope="row" className={`variant-name v-${v.toLowerCase()}`}>
-                  {VARIANT_LABEL[v]}
+                  {t(VARIANT_LABEL[v])}
                 </th>
                 <td className="num">{counts[v]}</td>
                 <td>
@@ -131,8 +141,8 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
                     className="btn btn-sm btn-cyan"
                     disabled={essence < cost}
                     onClick={() => craft(v)}
-                    aria-label={`Craft ${VARIANT_LABEL[v]} ${card.name} for ${cost} Essence`}
-                    title={essence < cost ? `Needs ${cost - essence} more Essence` : undefined}
+                    aria-label={t('Craft {variant} {name} for {n} Essence', { variant: t(VARIANT_LABEL[v]), name: card.name, n: cost })}
+                    title={essence < cost ? t('Needs {n} more Essence', { n: cost - essence }) : undefined}
                   >
                     <EssenceIcon size={14} />
                     {cost}
@@ -143,7 +153,7 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
                     className="btn btn-sm"
                     disabled={counts[v] === 0}
                     onClick={() => void recycle(v)}
-                    aria-label={`Recycle one ${VARIANT_LABEL[v]} ${card.name} for ${recycleValue(cardId, v)} Essence`}
+                    aria-label={t('Recycle one {variant} {name} for {n} Essence', { variant: t(VARIANT_LABEL[v]), name: card.name, n: recycleValue(cardId, v) })}
                   >
                     +{recycleValue(cardId, v)}
                   </button>
@@ -156,10 +166,10 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
       <div className="detail-foot">
         <Essence amount={essence} />
         <button className="btn btn-ghost btn-sm" onClick={() => useUi.getState().inspectCard(cardId, bestVariant(counts))}>
-          Inspect
+          {t('Inspect')}
         </button>
       </div>
-      <p className="faint small">Variants are cosmetic only; they play identically.</p>
+      <p className="faint small">{t('Variants are cosmetic only; they play identically.')}</p>
     </aside>
   );
 }

@@ -7,7 +7,7 @@ import { MAX_LEVEL } from '@/config/progression';
 import { Essence, Gold, Packs, ProgressBar } from './components/common';
 import { Glyph } from './components/Icons';
 import { audio } from '@/audio/audioService';
-import { useT, type MessageKey } from '@/i18n';
+import { tn, useT, type MessageKey } from '@/i18n';
 import { usePatchNotesSeen } from './patchNotesSeen';
 
 const NAV: { to: string; label: MessageKey; icon: string }[] = [
@@ -39,7 +39,7 @@ export function AppHeader() {
   const need = xpToNext(profile.level);
   return (
     <header className="app-header">
-      <button className="nav-toggle icon-btn" aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
+      <button className="nav-toggle icon-btn" aria-label={menuOpen ? t('Close menu') : t('Open menu')} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
         <span className={`burger ${menuOpen ? 'is-open' : ''}`} aria-hidden>
           <span />
           <span />
@@ -47,18 +47,18 @@ export function AppHeader() {
         </span>
       </button>
       {menuOpen && <div className="nav-backdrop" onClick={() => setMenuOpen(false)} aria-hidden />}
-      <NavLink to="/" className="brand" aria-label="Shardbound home">
+      <NavLink to="/" className="brand" aria-label={t('Shardbound home')}>
         <BrandLogo size={34} />
         <span className="brand-name">Shardbound</span>
       </NavLink>
-      <nav className={`main-nav ${menuOpen ? 'is-open' : ''}`} aria-label="Main">
+      <nav className={`main-nav ${menuOpen ? 'is-open' : ''}`} aria-label={t('Main')}>
         {NAV.map((n) => (
           <NavLink key={n.to} to={n.to} end={n.to === '/'} className="nav-link" onClick={() => audio.play('click')}>
             <Glyph name={n.icon} size={16} />
             <span>{t(n.label)}</span>
-            {n.to === '/quests' && claimable > 0 && <span className="nav-dot" aria-label={`${claimable} rewards to claim`} />}
+            {n.to === '/quests' && claimable > 0 && <span className="nav-dot" aria-label={tn(claimable, '{n} reward to claim', '{n} rewards to claim')} />}
             {n.to === '/packs' && packs > 0 && <span className="nav-count">{packs}</span>}
-            {n.to === '/patch-notes' && !patchSeen && <span className="nav-dot" aria-label="New patch notes" />}
+            {n.to === '/patch-notes' && !patchSeen && <span className="nav-dot" aria-label={t('New patch notes')} />}
           </NavLink>
         ))}
       </nav>
@@ -68,14 +68,14 @@ export function AppHeader() {
         <NavLink to="/packs" className="header-packs">
           <Packs amount={packs} />
         </NavLink>
-        <NavLink to="/profile" className="level-badge" title={`Level ${profile.level}`}>
+        <NavLink to="/profile" className="level-badge" title={t('Level {n}', { n: profile.level })}>
           <span className="level-gem num">{profile.level}</span>
           <span className="level-xp">
-            <ProgressBar value={profile.level >= MAX_LEVEL ? 1 : profile.xp} max={profile.level >= MAX_LEVEL ? 1 : need} gold label="Experience" />
-            <span className="faint num">{profile.level >= MAX_LEVEL ? 'Max level' : `${profile.xp} / ${need} XP`}</span>
+            <ProgressBar value={profile.level >= MAX_LEVEL ? 1 : profile.xp} max={profile.level >= MAX_LEVEL ? 1 : need} gold label={t('Experience')} />
+            <span className="faint num">{profile.level >= MAX_LEVEL ? t('Max level') : t('{xp} / {need} XP', { xp: profile.xp, need })}</span>
           </span>
         </NavLink>
-        <NavLink to="/settings" className="icon-btn" aria-label="Settings">
+        <NavLink to="/settings" className="icon-btn" aria-label={t('Settings')}>
           <Glyph name="cog" size={18} />
         </NavLink>
       </div>

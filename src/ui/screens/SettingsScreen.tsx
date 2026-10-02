@@ -7,8 +7,7 @@ import { audio } from '@/audio/audioService';
 import { confirmDialog, ScreenHeader } from '@/ui/components/common';
 import '@/ui/styles/meta.css';
 
-/** Languages the UI can load. Strings are English-only for now; the selector and persisted setting form the i18n seam. */
-import { LANGUAGES } from '@/i18n';
+import { currentLocale, LANGUAGES, setLanguage, t, type Locale } from '@/i18n';
 
 function Slider({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
   const id = `s-${label.replace(/\s/g, '')}`;
@@ -57,9 +56,9 @@ export default function SettingsScreen() {
 
   const resetAccount = async () => {
     const ok = await confirmDialog({
-      title: 'Reset account?',
-      message: 'This permanently deletes your Warden: collection, decks, currency, quests and campaign progress. This cannot be undone.',
-      confirmLabel: 'Delete everything',
+      title: t('Reset account?'),
+      message: t('This permanently deletes your Warden: collection, decks, currency, quests and campaign progress. This cannot be undone.'),
+      confirmLabel: t('Delete everything'),
       danger: true,
     });
     if (!ok) return;
@@ -69,45 +68,45 @@ export default function SettingsScreen() {
 
   return (
     <div className="screen settings-screen">
-      <ScreenHeader title="Settings" subtitle="Changes save automatically on this device." />
+      <ScreenHeader title={t('Settings')} subtitle={t('Changes save automatically on this device.')} />
       <div className="settings-layout">
         <section className="panel">
-          <div className="panel-title">Audio</div>
-          <Slider label="Master volume" value={s.masterVolume} onChange={(v) => set({ masterVolume: v })} />
-          <Slider label="Music" value={s.musicVolume} onChange={(v) => set({ musicVolume: v })} />
-          <Slider label="Sound effects" value={s.sfxVolume} onChange={(v) => set({ sfxVolume: v })} />
-          <Toggle label="Mute all" checked={s.muted} onChange={(v) => set({ muted: v })} />
+          <div className="panel-title">{t('Audio')}</div>
+          <Slider label={t('Master volume')} value={s.masterVolume} onChange={(v) => set({ masterVolume: v })} />
+          <Slider label={t('Music')} value={s.musicVolume} onChange={(v) => set({ musicVolume: v })} />
+          <Slider label={t('Sound effects')} value={s.sfxVolume} onChange={(v) => set({ sfxVolume: v })} />
+          <Toggle label={t('Mute all')} checked={s.muted} onChange={(v) => set({ muted: v })} />
         </section>
 
         <section className="panel">
-          <div className="panel-title">Gameplay</div>
+          <div className="panel-title">{t('Gameplay')}</div>
           <div className="toggle-row">
-            <span>Animation speed</span>
-            <div className="segmented" role="group" aria-label="Animation speed">
+            <span>{t('Animation speed')}</span>
+            <div className="segmented" role="group" aria-label={t('Animation speed')}>
               {[
                 { v: 0.5, l: 'Fast' },
                 { v: 1, l: 'Normal' },
                 { v: 1.5, l: 'Slow' },
               ].map((o) => (
                 <button key={o.v} aria-pressed={s.animationSpeed === o.v} onClick={() => set({ animationSpeed: o.v })}>
-                  {o.l}
+                  {t(o.l)}
                 </button>
               ))}
             </div>
           </div>
-          <Toggle label="Confirm end turn" hint="Ask before ending a turn with energy or ready units left." checked={s.confirmEndTurn} onChange={(v) => set({ confirmEndTurn: v })} />
-          <Toggle label="Turn timer" hint="Your turn ends automatically after 90 seconds." checked={s.turnTimer} onChange={(v) => set({ turnTimer: v })} />
-          <Toggle label="Show damage numbers" checked={s.showDamageNumbers} onChange={(v) => set({ showDamageNumbers: v })} />
+          <Toggle label={t('Confirm end turn')} hint={t('Ask before ending a turn with energy or ready units left.')} checked={s.confirmEndTurn} onChange={(v) => set({ confirmEndTurn: v })} />
+          <Toggle label={t('Turn timer')} hint={t('Your turn ends automatically after 90 seconds.')} checked={s.turnTimer} onChange={(v) => set({ turnTimer: v })} />
+          <Toggle label={t('Show damage numbers')} checked={s.showDamageNumbers} onChange={(v) => set({ showDamageNumbers: v })} />
         </section>
 
         <section className="panel">
-          <div className="panel-title">Display and accessibility</div>
-          <Toggle label="Reduced motion" hint="Minimises animations and screen movement." checked={s.reducedMotion} onChange={(v) => set({ reducedMotion: v })} />
-          <Toggle label="Performance mode" hint="Disables blur and animated foil effects." checked={s.performanceMode} onChange={(v) => set({ performanceMode: v })} />
-          {document.fullscreenEnabled && <Toggle label="Fullscreen" checked={fullscreen} onChange={() => void toggleFullscreen()} />}
+          <div className="panel-title">{t('Display and accessibility')}</div>
+          <Toggle label={t('Reduced motion')} hint={t('Minimises animations and screen movement.')} checked={s.reducedMotion} onChange={(v) => set({ reducedMotion: v })} />
+          <Toggle label={t('Performance mode')} hint={t('Disables blur and animated foil effects.')} checked={s.performanceMode} onChange={(v) => set({ performanceMode: v })} />
+          {document.fullscreenEnabled && <Toggle label={t('Fullscreen')} checked={fullscreen} onChange={() => void toggleFullscreen()} />}
           <div className="toggle-row">
-            <label htmlFor="lang">Language</label>
-            <select id="lang" className="select" value={s.language} onChange={(e) => set({ language: e.target.value })}>
+            <label htmlFor="lang">{t('Language')}</label>
+            <select id="lang" className="select" value={currentLocale()} onChange={(e) => setLanguage(e.target.value as Locale)}>
               {LANGUAGES.map((l) => (
                 <option key={l.code} value={l.code}>
                   {l.label}
@@ -115,22 +114,22 @@ export default function SettingsScreen() {
               ))}
             </select>
           </div>
-          <p className="faint">More languages will be added in future updates.</p>
+          <p className="faint">{t('More languages will be added in future updates.')}</p>
           <button className="btn btn-ghost btn-sm" onClick={() => (s.reset(), toast('Settings restored to defaults', 'success'))}>
-            Restore default settings
+            {t('Restore default settings')}
           </button>
         </section>
 
         <section className="panel danger-zone">
-          <div className="panel-title">Account</div>
-          <p className="muted">Resetting deletes all progress stored on this device.</p>
+          <div className="panel-title">{t('Account')}</div>
+          <p className="muted">{t('Resetting deletes all progress stored on this device.')}</p>
           <button className="btn btn-danger" onClick={resetAccount}>
-            Reset account
+            {t('Reset account')}
           </button>
           {import.meta.env.DEV && (
             <p style={{ marginTop: 'var(--space-4)' }}>
               <Link to="/debug" className="small-link">
-                Developer tools
+                {t('Developer tools')}
               </Link>
             </p>
           )}

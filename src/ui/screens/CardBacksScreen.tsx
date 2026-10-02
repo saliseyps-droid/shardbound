@@ -3,6 +3,7 @@ import { CARD_BACKS } from '@/data/cardBacks';
 import { useAccount } from '@/state/accountStore';
 import { ScreenHeader } from '@/ui/components/common';
 import { CardBackGrid } from '@/ui/components/CardBackGrid';
+import { t } from '@/i18n';
 
 /** The card backs the player owns; pick the one used in matches. */
 export default function CardBacksScreen() {
@@ -11,11 +12,11 @@ export default function CardBacksScreen() {
   return (
     <div className="screen cardbacks-screen">
       <ScreenHeader
-        title="Card Backs"
-        subtitle={`You own ${owned} of ${CARD_BACKS.length}. Pick the back your deck and hand show in every match.`}
+        title={t('Card Backs')}
+        subtitle={t('You own {n} of {max}. Pick the back your deck and hand show in every match.', { n: owned, max: CARD_BACKS.length })}
         actions={
           <button className="btn btn-cyan" onClick={() => navigate('/shop')}>
-            Get more in the Shop
+            {t('Get more in the Shop')}
           </button>
         }
       />

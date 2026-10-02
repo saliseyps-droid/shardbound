@@ -7,6 +7,7 @@ import { audio } from '@/audio/audioService';
 import { ProgressBar, ScreenHeader } from '@/ui/components/common';
 import { BoosterPack } from '@/ui/components/packs/BoosterPack';
 import { PackOpening } from '@/ui/components/packs/PackOpening';
+import { t, tn } from '@/i18n';
 import '@/ui/styles/shop.css';
 import '@/ui/styles/packs.css';
 
@@ -30,11 +31,11 @@ export default function PacksScreen() {
   return (
     <div className="screen packs-screen">
       <ScreenHeader
-        title="Booster packs"
-        subtitle={total > 0 ? `You have ${total} unopened ${total === 1 ? 'pack' : 'packs'}. ${opened} opened so far.` : `No unopened packs. ${opened} opened so far.`}
+        title={t('Booster packs')}
+        subtitle={`${total > 0 ? tn(total, 'You have {n} unopened pack.', 'You have {n} unopened packs.') : t('No unopened packs.')} ${t('{n} opened so far.', { n: opened })}`}
         actions={
           <button className="btn" onClick={() => navigate('/shop')}>
-            Buy packs
+            {t('Buy packs')}
           </button>
         }
       />
@@ -47,7 +48,7 @@ export default function PacksScreen() {
           const legIn = Math.max(1, (PACK_CONFIG.pity.LEGENDARY ?? 30) - p.LEGENDARY);
           return (
             <section key={setId} className={`inventory-set panel ${count === 0 ? 'is-empty' : ''} ${highlight === setId ? 'is-highlight' : ''}`} aria-labelledby={`inv-${setId}`}>
-              <button className="inventory-stack" onClick={() => count > 0 && start(setId)} disabled={count === 0} aria-label={count > 0 ? `Open a ${SET_INFO[setId].name} pack` : `No ${SET_INFO[setId].name} packs`}>
+              <button className="inventory-stack" onClick={() => count > 0 && start(setId)} disabled={count === 0} aria-label={count > 0 ? t('Open a {name} pack', { name: SET_INFO[setId].name }) : t('No {name} packs', { name: SET_INFO[setId].name })}>
                 <BoosterPack setId={setId} width={190} className="stack-layer stack-0" />
                 <span className="stack-count num">×{count}</span>
               </button>
@@ -57,24 +58,24 @@ export default function PacksScreen() {
                 <div className="pity">
                   <div className="pity-row">
                     <span>
-                      Epic guaranteed within <strong className="num">{epicIn}</strong> {epicIn === 1 ? 'pack' : 'packs'}
+                      {t('Epic guaranteed within')} <strong className="num">{epicIn}</strong> {tn(epicIn, 'pack', 'packs')}
                     </span>
-                    <ProgressBar value={p.EPIC} max={PACK_CONFIG.pity.EPIC ?? 10} label="Epic pity progress" />
+                    <ProgressBar value={p.EPIC} max={PACK_CONFIG.pity.EPIC ?? 10} label={t('Epic pity progress')} />
                   </div>
                   <div className="pity-row">
                     <span>
-                      Legendary guaranteed within <strong className="num">{legIn}</strong> {legIn === 1 ? 'pack' : 'packs'}
+                      {t('Legendary guaranteed within')} <strong className="num">{legIn}</strong> {tn(legIn, 'pack', 'packs')}
                     </span>
-                    <ProgressBar value={p.LEGENDARY} max={PACK_CONFIG.pity.LEGENDARY ?? 30} gold label="Legendary pity progress" />
+                    <ProgressBar value={p.LEGENDARY} max={PACK_CONFIG.pity.LEGENDARY ?? 30} gold label={t('Legendary pity progress')} />
                   </div>
                 </div>
                 {count > 0 ? (
                   <button className="btn btn-primary btn-lg" onClick={() => start(setId)}>
-                    Open a pack
+                    {t('Open a pack')}
                   </button>
                 ) : (
                   <button className="btn" onClick={() => navigate('/shop')}>
-                    Get {SET_INFO[setId].name} packs in the shop
+                    {t('Get {name} packs in the shop', { name: SET_INFO[setId].name })}
                   </button>
                 )}
               </div>

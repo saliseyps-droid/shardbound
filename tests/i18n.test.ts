@@ -26,3 +26,13 @@ describe('i18n', () => {
     rebuildKeywordPattern();
   });
 });
+
+describe('online compatibility across languages', () => {
+  it('the content hash is the same in English and Czech', async () => {
+    const { contentHash } = await import('@/net/session');
+    const { applyLocale } = await import('@/i18n/applyLocale');
+    const english = contentHash();
+    applyLocale('cs');
+    expect(contentHash()).toBe(english);
+  });
+});

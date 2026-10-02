@@ -20,6 +20,7 @@ import { CardFilterBar } from '@/ui/components/collection/CardFilterBar';
 import { DEFAULT_FILTERS, filterCards, type CardFilterState } from '@/ui/components/collection/cardFilters';
 import { bestVariant } from '@/ui/components/collection/CardDetailPanel';
 import { useCardWidth } from '@/ui/components/collection/useCardWidth';
+import { t, tn } from '@/i18n';
 import '@/ui/styles/collection.css';
 import '@/ui/styles/decks.css';
 
@@ -34,7 +35,7 @@ function sameCards(a: Record<string, number>, b: Record<string, number>) {
 function ManaCurve({ curve }: { curve: number[] }) {
   const max = Math.max(4, ...curve);
   return (
-    <div className="mana-curve" role="img" aria-label={`Mana curve: ${curve.map((n, i) => `${n} at cost ${i === 7 ? '7+' : i}`).join(', ')}`}>
+    <div className="mana-curve" role="img" aria-label={t('Mana curve: {list}', { list: curve.map((n, i) => t('{n} at cost {cost}', { n, cost: i === 7 ? '7+' : i })).join(', ') })}>
       {curve.map((n, i) => (
         <div key={i} className="curve-col">
           <span className="curve-n num">{n || ''}</span>
@@ -88,9 +89,9 @@ export default function DeckEditorScreen() {
     return (
       <div className="screen">
         <div className="panel empty">
-          <p>This deck no longer exists.</p>
+          <p>{t('This deck no longer exists.')}</p>
           <button className="btn" onClick={() => navigate('/decks')}>
-            Back to decks
+            {t('Back to decks')}
           </button>
         </div>
       </div>
@@ -105,7 +106,7 @@ export default function DeckEditorScreen() {
     const reason = canAddCard(draft, card.id, owned(card.id));
     if (reason) {
       audio.play('error');
-      toast(`${card.name}: ${reason}.`, 'error');
+      toast(t('{name}: {reason}.', { name: card.name, reason: t(reason) }), 'error');
       return;
     }
     audio.play('draw');
@@ -126,7 +127,7 @@ export default function DeckEditorScreen() {
     if (res.ok) {
       audio.play('coin');
       setDraft(res.value);
-      toast(issues.length === 0 ? `Saved ${res.value.name}.` : `Saved ${res.value.name}. It can't be played until it's complete.`, issues.length === 0 ? 'success' : 'info');
+      toast(issues.length === 0 ? t('Saved {name}.', { name: res.value.name }) : t("Saved {name}. It can't be played until it's complete.", { name: res.value.name }), issues.length === 0 ? 'success' : 'info');
     } else toast(res.error, 'error');
     return res.ok;
   };
@@ -134,10 +135,10 @@ export default function DeckEditorScreen() {
   const leave = async (to: string) => {
     if (dirty) {
       const discard = await confirmDialog({
-        title: 'Leave without saving?',
-        message: <p>You have unsaved changes to {draft.name}.</p>,
-        confirmLabel: 'Discard changes',
-        cancelLabel: 'Keep editing',
+        title: t('Leave without saving?'),
+        message: <p>{t('You have unsaved changes to {name}.', { name: draft.name })}</p>,
+        confirmLabel: t('Discard changes'),
+        cancelLabel: t('Keep editing'),
         danger: true,
       });
       if (!discard) return;
@@ -146,23 +147,23 @@ export default function DeckEditorScreen() {
   };
 
   const autoComplete = () => {
-    if (size >= DECK_RULES.deckSize) return toast('The deck is already full.');
+    if (size >= DECK_RULES.deckSize) return toast(t('The deck is already full.'));
     const cards = autoBuildDeck({ heroFaction: draft.heroFaction, owned, base: draft.cards, seed: Date.now() >>> 0 });
     const added = deckSize({ cards }) - size;
     setDraft({ ...draft, cards });
     audio.play('buff');
-    toast(added > 0 ? `Added ${added} card${added === 1 ? '' : 's'} from your collection.` : 'No more owned cards fit this deck.');
+    toast(added > 0 ? tn(added, 'Added {n} card from your collection.', 'Added {n} cards from your collection.') : t('No more owned cards fit this deck.'));
   };
 
   const clear = async () => {
-    const ok = await confirmDialog({ title: 'Remove all cards?', message: <p>The deck list will be emptied. Nothing is saved until you choose Save.</p>, confirmLabel: 'Clear deck', danger: true });
+    const ok = await confirmDialog({ title: t('Remove all cards?'), message: <p>{t('The deck list will be emptied. Nothing is saved until you choose Save.')}</p>, confirmLabel: t('Clear deck'), danger: true });
     if (ok) setDraft({ ...draft, cards: {} });
   };
 
   const playWith = async () => {
     if (dirty && !save()) return;
     if (validateDeck({ ...draft }, owned).length > 0) {
-      toast('Finish the deck before playing with it.', 'error');
+      toast(t('Finish the deck before playing with it.'), 'error');
       return;
     }
     gameService.selectDeck(draft.id);
@@ -191,13 +192,13 @@ export default function DeckEditorScreen() {
             e.preventDefault();
             useUi.getState().inspectCard(card.id);
           }}
-          ariaLabel={`Add ${card.name}. ${inDeck} in deck, ${have} owned.${blocked ? ` ${blocked}.` : ''}`}
+          ariaLabel={t('Add {name}. {inDeck} in deck, {have} owned.', { name: card.name, inDeck, have }) + (blocked ? ` ${t(blocked)}.` : '')}
         />
         <div className={`owned-badge ${inDeck > 0 ? 'full' : have === 0 ? 'none' : ''}`} aria-hidden>
           <span className="num">
             {inDeck} / {limit}
           </span>{" "}
-          in deck
+          {t('in deck')}
         </div>
       </div>
     );
@@ -208,35 +209,35 @@ export default function DeckEditorScreen() {
   return (
     <div className="screen deck-editor-screen" style={{ '--fc': hero.colors.primary } as CSSProperties}>
       <ScreenHeader
-        title={draft.name || 'Untitled deck'}
+        title={draft.name || t('Untitled deck')}
         subtitle={
           <>
-            Click a card to add it, click a list entry to remove it, right-click to inspect.
-            {dirty && <span className="unsaved"> Unsaved changes</span>}
+            {t('Click a card to add it, click a list entry to remove it, right-click to inspect.')}
+            {dirty && <span className="unsaved"> {t('Unsaved changes')}</span>}
           </>
         }
         actions={
           <>
             <button className="btn btn-ghost" onClick={() => void leave('/decks')}>
-              Back to decks
+              {t('Back to decks')}
             </button>
             <button className="btn btn-cyan" onClick={() => void playWith()}>
-              Play with this deck
+              {t('Play with this deck')}
             </button>
             <button className="btn btn-primary" onClick={save} disabled={!dirty}>
-              Save
+              {t('Save')}
             </button>
           </>
         }
       />
       <div className="editor-body">
-        <section className={`editor-pool ${tab === 'talents' ? 'is-talents' : ''}`} aria-label={tab === 'cards' ? 'Card pool' : 'Warden talents'}>
+        <section className={`editor-pool ${tab === 'talents' ? 'is-talents' : ''}`} aria-label={tab === 'cards' ? t('Card pool') : t('Warden talents')}>
           <div className="editor-tabs" role="tablist">
             <button role="tab" aria-selected={tab === 'cards'} className={`editor-tab ${tab === 'cards' ? 'is-active' : ''}`} onClick={() => setTab('cards')}>
-              Cards
+              {t('Cards')}
             </button>
             <button role="tab" aria-selected={tab === 'talents'} className={`editor-tab ${tab === 'talents' ? 'is-active' : ''}`} onClick={() => setTab('talents')}>
-              Talents {issues.some((i) => i.code === 'TALENTS') && <span className="tab-warn" aria-label="incomplete">!</span>}
+              {t('Talents')} {issues.some((i) => i.code === 'TALENTS') && <span className="tab-warn" aria-label={t('incomplete')}>!</span>}
             </button>
           </div>
           {tab === 'talents' ? (
@@ -248,7 +249,7 @@ export default function DeckEditorScreen() {
             onChange={setFilters}
             factions={factionsOrder}
             disabledFactions={disabledFactions}
-            ownershipLabels={{ ALL: 'All cards', OWNED: 'Owned only', MISSING: 'Missing only' }}
+            ownershipLabels={{ ALL: t('All cards'), OWNED: t('Owned only'), MISSING: t('Missing only') }}
             compact
           />
           <VirtualCardGrid
@@ -259,10 +260,10 @@ export default function DeckEditorScreen() {
             getKey={(c) => c.id}
             renderItem={renderPoolCard}
             className="collection-grid"
-            ariaLabel="Available cards"
+            ariaLabel={t('Available cards')}
             empty={
               <div className="empty">
-                <p>No cards match. Try showing all cards or clearing filters.</p>
+                <p>{t('No cards match. Try showing all cards or clearing filters.')}</p>
               </div>
             }
           />
@@ -270,13 +271,13 @@ export default function DeckEditorScreen() {
           )}
         </section>
 
-        <aside className="editor-side panel" aria-label="Deck list">
+        <aside className="editor-side panel" aria-label={t('Deck list')}>
           <label className="field">
-            <span>Name</span>
+            <span>{t('Name')}</span>
             <input className="input" value={draft.name} maxLength={DECK_RULES.maxDeckNameLength} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
           </label>
           <label className="field">
-            <span>Warden faction</span>
+            <span>{t('Warden faction')}</span>
             <select className="select" value={draft.heroFaction} onChange={(e) => setDraft({ ...draft, heroFaction: e.target.value as PlayableFaction, talents: defaultBuild(e.target.value as PlayableFaction) })}>
               {PLAYABLE_FACTIONS.map((f) => (
                 <option key={f} value={f}>
@@ -288,8 +289,8 @@ export default function DeckEditorScreen() {
           <button type="button" className="talent-summary" style={{ '--f1': hero.colors.primary } as CSSProperties} onClick={() => setTab('talents')}>
             <WardenPortrait faction={draft.heroFaction} size={44} />
             <span className="talent-summary-text">
-              <strong>Warden abilities</strong>
-              <span>{draft.talents.length ? talentSummary(draft.talents) : 'None chosen yet'}</span>
+              <strong>{t('Warden abilities')}</strong>
+              <span>{draft.talents.length ? talentSummary(draft.talents) : t('None chosen yet')}</span>
             </span>
           </button>
           <div className="deck-meta">
@@ -297,10 +298,10 @@ export default function DeckEditorScreen() {
               <span className="num">
                 {size} / {DECK_RULES.deckSize}
               </span>{" "}
-              cards
+              {t('cards')}
             </span>
             <span className="faint">
-              Average cost <span className="num">{stats.averageCost.toFixed(1)}</span>
+              {t('Average cost')} <span className="num">{stats.averageCost.toFixed(1)}</span>
             </span>
           </div>
           <div className="bar gold" aria-hidden>
@@ -311,27 +312,27 @@ export default function DeckEditorScreen() {
             <ul className="issue-list" aria-live="polite">
               {issues.map((i) => (
                 <li key={i.code + (i.cardId ?? '')}>
-                  <span aria-hidden>!</span> {i.message}
+                  <span aria-hidden>!</span> {t(i.message)}
                 </li>
               ))}
             </ul>
           ) : (
             <p className="valid-line" aria-live="polite">
-              <Glyph name="shield" size={14} /> Ready to play
+              <Glyph name="shield" size={14} /> {t('Ready to play')}
             </p>
           )}
 
           <ManaCurve curve={stats.curve} />
           <div className="type-stats">
-            {Object.entries(TYPE_LABEL).map(([t, label]) => (
-              <span key={t} className="chip">
-                {label} <strong className="num">{stats.types[t] ?? 0}</strong>
+            {Object.entries(TYPE_LABEL).map(([type, label]) => (
+              <span key={type} className="chip">
+                {t(label)} <strong className="num">{stats.types[type] ?? 0}</strong>
               </span>
             ))}
           </div>
 
           <ol className="deck-rows">
-            {rows.length === 0 && <li className="empty small">Add cards from the pool to build your deck.</li>}
+            {rows.length === 0 && <li className="empty small">{t('Add cards from the pool to build your deck.')}</li>}
             {rows.map(({ card, n }) => (
               <li key={card.id}>
                 <button
@@ -342,11 +343,11 @@ export default function DeckEditorScreen() {
                     e.preventDefault();
                     useUi.getState().inspectCard(card.id);
                   }}
-                  aria-label={`Remove one ${card.name}, ${n} in deck`}
+                  aria-label={t('Remove one {name}, {n} in deck', { name: card.name, n })}
                 >
                   <span className="row-cost num">{card.manaCost}</span>
                   <span className="row-name">{card.name}</span>
-                  {n > owned(card.id) && <span className="row-warn" title="Not enough copies owned">!</span>}
+                  {n > owned(card.id) && <span className="row-warn" title={t('Not enough copies owned')}>!</span>}
                   <span className="row-count num">×{n}</span>
                 </button>
               </li>
@@ -355,13 +356,13 @@ export default function DeckEditorScreen() {
 
           <div className="editor-actions">
             <button className="btn btn-sm" onClick={autoComplete} disabled={size >= DECK_RULES.deckSize}>
-              Auto-complete
+              {t('Auto-complete')}
             </button>
             <button className="btn btn-sm btn-ghost" onClick={() => void clear()} disabled={size === 0}>
-              Clear
+              {t('Clear')}
             </button>
             <button className="btn btn-sm btn-ghost" onClick={() => setDraft(saved)} disabled={!dirty}>
-              Revert
+              {t('Revert')}
             </button>
           </div>
         </aside>

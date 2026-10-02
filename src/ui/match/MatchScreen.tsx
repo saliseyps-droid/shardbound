@@ -12,7 +12,7 @@ import { confirmDialog, Spinner } from '@/ui/components/common';
 import { audio } from '@/audio/audioService';
 import { DrawPile, EmpowerBadge, EnergyBar, HeroAbilities, HeroPanel, PermanentsRow, UnitView } from './BoardParts';
 import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
-import { useT } from '@/i18n';
+import { t, tn, useT } from '@/i18n';
 import { BrandLogo } from '@/ui/components/BrandLogo';
 import { Glyph } from '@/ui/components/Icons';
 import { enterGameFullscreen, fullscreenSupported, maybeAutoFullscreen, startMatchFullscreen } from './fullscreen';
@@ -88,10 +88,10 @@ export default function MatchScreen() {
     return (
       <div className="screen">
         <div className="panel error-panel">
-          <h3>The match could not start</h3>
-          <p className="muted">{error}</p>
+          <h3>{t('The match could not start')}</h3>
+          <p className="muted">{t(error)}</p>
           <button className="btn btn-primary" onClick={() => navigate('/decks')}>
-            Fix my deck
+            {t('Fix my deck')}
           </button>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function MatchScreen() {
   if (!game || matchConfig !== config)
     return (
       <div className="screen-loading">
-        <Spinner label="Preparing the battlefield" />
+        <Spinner label={t('Preparing the battlefield')} />
       </div>
     );
   return <Board game={game} phase={phase} />;
@@ -172,7 +172,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
     if (!interactive) return;
     const hasPlays = me.hand.some((c) => canPlayCard(game, HUMAN, c).ok);
     if (confirmEnd && hasPlays) {
-      const ok = await confirmDialog({ title: 'End your turn?', message: 'You still have playable cards.', confirmLabel: 'End turn' });
+      const ok = await confirmDialog({ title: t('End your turn?'), message: t('You still have playable cards.'), confirmLabel: t('End turn') });
       if (!ok) return;
     }
     audio.play('click');
@@ -180,7 +180,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   }, [interactive, me.hand, game, confirmEnd, store]);
 
   const concede = useCallback(async () => {
-    const ok = await confirmDialog({ title: 'Concede the match?', message: 'This counts as a loss.', confirmLabel: 'Concede', danger: true });
+    const ok = await confirmDialog({ title: t('Concede the match?'), message: t('This counts as a loss.'), confirmLabel: t('Concede'), danger: true });
     if (ok) store.getState().concede();
   }, [store]);
 
@@ -353,7 +353,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         className={`board-row ${player === HUMAN ? 'self' : 'enemy'} ${drag?.active && drag.kind === 'card' && player === HUMAN ? 'is-drop-target' : ''}`}
         data-dropzone={player === HUMAN ? 'board' : undefined}
         data-tutorial={player === HUMAN ? 'my-board' : 'enemy-board'}
-        aria-label={player === HUMAN ? 'Your battlefield' : 'Enemy battlefield'}
+        aria-label={player === HUMAN ? t('Your battlefield') : t('Enemy battlefield')}
       >
         {player === HUMAN && draggingUnit && items.length < 7 && <span className="board-empty faint">{t('match.dragHere')}</span>}
         {items.map((i) => (
@@ -418,8 +418,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
     >
       <div className="board-mat" aria-hidden />
       {/* ---- Enemy side ---- */}
-      <section className="side enemy-side" aria-label="Opponent">
-        <div className="enemy-hand" aria-label={`Opponent has ${opp.hand.length} cards`}>
+      <section className="side enemy-side" aria-label={t('Opponent')}>
+        <div className="enemy-hand" aria-label={tn(opp.hand.length, 'Opponent has {n} cards', 'Opponent has {n} cards')}>
           {opp.hand.map((c, i) => (
             <div key={c.uid} className="enemy-hand-card" style={{ '--i': i - (opp.hand.length - 1) / 2 } as CSSProperties}>
               {c.revealed ? <CardView card={c.cardId} width={64} /> : <CardBack width={64} design={opp.hero.cardBack} />}
@@ -445,7 +445,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       </section>
 
       {/* ---- Battlefield ---- */}
-      <section className="battlefield" aria-label="Battlefield">
+      <section className="battlefield" aria-label={t('Battlefield')}>
         {renderRow(AI)}
         <div className="battle-divider" aria-hidden>
           <span />
@@ -454,7 +454,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       </section>
 
       {/* ---- Player side ---- */}
-      <section className="side self-side" aria-label="You" style={{ '--card-w': `${cardW}px` } as CSSProperties}>
+      <section className="side self-side" aria-label={t('You')} style={{ '--card-w': `${cardW}px` } as CSSProperties}>
         <div className="hero-area hero-self-area">
           <div className="hero-col-left">
             <PermanentsRow game={game} player={HUMAN} onHover={setHoverCard} />
@@ -472,7 +472,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         <div className="draw-pile-anchor">
           <DrawPile count={me.deck.length} label="your deck" player={HUMAN} width={Math.round(cardW * 1.24)} design={me.hero.cardBack} />
         </div>
-        <div className="hand" data-tutorial="hand" style={{ '--card-w': `${cardW}px`, '--n': handCount } as CSSProperties} aria-label="Your hand">
+        <div className="hand" data-tutorial="hand" style={{ '--card-w': `${cardW}px`, '--n': handCount } as CSSProperties} aria-label={t('Your hand')}>
           {me.hand.map((c, i) => {
             const playable = interactive && canPlayCard(game, HUMAN, c).ok;
             const cost = effectiveCost(game, HUMAN, c);
@@ -494,9 +494,9 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
                   selected={selected}
                   onPointerDown={(e) => startCardDrag(e, c.uid)}
                   onClick={(e) => e.detail === 0 && store.getState().clickHandCard(c.uid)}
-                  ariaLabel={`${getCardSafe(c.cardId).name}, costs ${cost}${playable ? ', playable' : ''}. ${getCardSafe(c.cardId).description ?? ''}`}
+                  ariaLabel={`${t(playable ? '{name}, costs {cost}, playable.' : '{name}, costs {cost}.', { name: getCardSafe(c.cardId).name, cost })} ${getCardSafe(c.cardId).description ?? ''}`}
                 />
-                {c.fleeting && <span className="fleeting-tag">Fleeting</span>}
+                {c.fleeting && <span className="fleeting-tag">{t('Fleeting')}</span>}
               </div>
             );
           })}
@@ -508,7 +508,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
             data-tutorial="end-turn"
             onClick={() => void endTurn()}
             disabled={!interactive}
-            aria-label={myTurn ? 'End turn (E)' : 'Opponent turn'}
+            aria-label={myTurn ? t('End turn (E)') : t('Opponent turn')}
           >
             {myTurn ? t('match.endTurn') : aiThinking ? t('match.thinking') : t('match.enemyTurn')}
           </button>
@@ -526,7 +526,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         </div>
         <BattleLog game={game} />
         <div className="match-meta faint">
-          {config?.mode === 'ARENA' ? 'Arena' : config?.mode === 'PVE' ? 'Campaign' : config?.mode === 'TUTORIAL' ? 'Tutorial' : config?.online ? 'Online' : 'Practice'} vs {game.players[AI].hero.name}
+          {t('{mode} vs {name}', { mode: t(config?.mode === 'ARENA' ? 'Arena' : config?.mode === 'PVE' ? 'Campaign' : config?.mode === 'TUTORIAL' ? 'Tutorial' : config?.online ? 'Online' : 'Practice'), name: game.players[AI].hero.name })}
         </div>
       </aside>
 
@@ -562,18 +562,18 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
               if (interactive) store.getState().clickHandCard(peekCard.uid);
               else toast('Wait for your turn.', 'info');
             }}
-            ariaLabel={`${getCardSafe(peekCard.cardId).name}. Tap to play.`}
+            ariaLabel={t('{name}. Tap to play.', { name: getCardSafe(peekCard.cardId).name })}
           />
-          <span className="hand-peek-hint">{interactive ? (canPlayCard(game, HUMAN, peekCard).ok ? 'Tap the card to play it' : 'Not enough energy') : 'Opponent’s turn'}</span>
+          <span className="hand-peek-hint">{interactive ? (canPlayCard(game, HUMAN, peekCard).ok ? t('Tap the card to play it') : t('Not enough energy')) : t('Opponent’s turn')}</span>
         </div>
       )}
       <div className="rotate-hint" role="alert">
         <Glyph name="deck" size={48} />
-        <strong>Turn your phone sideways</strong>
-        <span className="muted">The battlefield needs a landscape screen.</span>
+        <strong>{t('Turn your phone sideways')}</strong>
+        <span className="muted">{t('The battlefield needs a landscape screen.')}</span>
         {fullscreenSupported() && (
           <button className="btn btn-primary" onClick={() => void enterGameFullscreen()}>
-            Play fullscreen
+            {t('Play fullscreen')}
           </button>
         )}
       </div>
@@ -583,7 +583,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       {phase === 'mulligan' && <MulliganOverlay game={game} />}
       {phase === 'ended' && <ResultsOverlay game={game} />}
       {phase !== 'ended' && config?.mode !== 'TUTORIAL' && (
-        <button className="leave-btn icon-btn" aria-label="Leave match (concede)" onClick={() => void concede()}>
+        <button className="leave-btn icon-btn" aria-label={t('Leave match (concede)')} onClick={() => void concede()}>
           ✕
         </button>
       )}

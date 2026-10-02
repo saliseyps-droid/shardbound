@@ -15,6 +15,7 @@ import { DEFAULT_FILTERS, filterCards, type CardFilterState } from '@/ui/compone
 import { CardDetailPanel, bestVariant } from '@/ui/components/collection/CardDetailPanel';
 import { CollectionStats } from '@/ui/components/collection/CollectionStats';
 import { useCardWidth } from '@/ui/components/collection/useCardWidth';
+import { t, tn } from '@/i18n';
 import '@/ui/styles/collection.css';
 
 const BADGE_H = 34;
@@ -60,19 +61,19 @@ export default function CollectionScreen() {
 
   const recycleSurplus = async () => {
     const ok = await confirmDialog({
-      title: 'Recycle all surplus cards?',
+      title: t('Recycle all surplus cards?'),
       message: (
         <p>
-          Recycles {surplus.cards} card{surplus.cards === 1 ? '' : 's'} you own beyond the playable limit for <strong>{surplus.essence} Essence</strong>. Foil and prismatic copies are kept first. This can't be undone.
+          {tn(surplus.cards, 'Recycles {n} card you own beyond the playable limit for', 'Recycles {n} cards you own beyond the playable limit for')} <strong>{t('{n} Essence', { n: surplus.essence })}</strong>. {t("Foil and prismatic copies are kept first. This can't be undone.")}
         </p>
       ),
-      confirmLabel: `Recycle for ${surplus.essence} Essence`,
+      confirmLabel: t('Recycle for {n} Essence', { n: surplus.essence }),
       danger: true,
     });
     if (!ok) return;
     const res = gameService.recycleSurplus();
     audio.play('coin');
-    toast(`Recycled ${res.cards} surplus card${res.cards === 1 ? '' : 's'} for ${res.essence} Essence.`, 'success');
+    toast(tn(res.cards, 'Recycled {n} surplus card for {essence} Essence.', 'Recycled {n} surplus cards for {essence} Essence.', { essence: res.essence }), 'success');
   };
 
   const renderCard = (card: CardDefinition) => {
@@ -92,9 +93,9 @@ export default function CollectionScreen() {
             e.preventDefault();
             useUi.getState().inspectCard(card.id, bestVariant(counts));
           }}
-          ariaLabel={`${card.name}, owned ${n} of ${max}${unseen.has(card.id) ? ', new' : ''}`}
+          ariaLabel={t('{name}, owned {n} of {max}', { name: card.name, n, max }) + (unseen.has(card.id) ? t(', new') : '')}
         >
-          {unseen.has(card.id) && <span className="badge-new coll-new">New</span>}
+          {unseen.has(card.id) && <span className="badge-new coll-new">{t('New')}</span>}
         </CardView>
         <div className={`owned-badge ${n === 0 ? 'none' : n >= max ? 'full' : ''}`} aria-hidden>
           <span className="pips">
@@ -114,13 +115,13 @@ export default function CollectionScreen() {
   return (
     <div className="screen collection-screen">
       <ScreenHeader
-        title="Collection"
-        subtitle={`${cards.length} card${cards.length === 1 ? '' : 's'} shown. Right-click a card to inspect it.`}
+        title={t('Collection')}
+        subtitle={`${tn(cards.length, '{n} card shown.', '{n} cards shown.')} ${t('Right-click a card to inspect it.')}`}
         actions={
           <>
             <Essence amount={save.profile.essence} />
-            <button className="btn btn-sm" disabled={surplus.cards === 0} onClick={() => void recycleSurplus()} title="Recycle copies beyond the playable limit">
-              Recycle surplus{surplus.cards > 0 ? ` (${surplus.cards})` : ''}
+            <button className="btn btn-sm" disabled={surplus.cards === 0} onClick={() => void recycleSurplus()} title={t('Recycle copies beyond the playable limit')}>
+              {t('Recycle surplus')}{surplus.cards > 0 ? ` (${surplus.cards})` : ''}
             </button>
           </>
         }
@@ -135,12 +136,12 @@ export default function CollectionScreen() {
           getKey={(c) => c.id}
           renderItem={renderCard}
           className="collection-grid"
-          ariaLabel="Cards"
+          ariaLabel={t('Cards')}
           empty={
             <div className="empty">
-              <p>No cards match these filters.</p>
+              <p>{t('No cards match these filters.')}</p>
               <button className="btn btn-sm" onClick={() => setFilters(DEFAULT_FILTERS)}>
-                Clear filters
+                {t('Clear filters')}
               </button>
             </div>
           }

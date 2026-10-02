@@ -17,6 +17,7 @@ import { confirmDialog, Gold, ScreenHeader } from '@/ui/components/common';
 import { Glyph, PackIcon } from '@/ui/components/Icons';
 import { TalentTree } from '@/ui/components/TalentTree';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
+import { t, tn } from '@/i18n';
 import '@/ui/styles/decks.css';
 import '@/ui/styles/shop.css';
 import '@/ui/styles/arena.css';
@@ -27,7 +28,7 @@ function report(res: { ok: boolean; error?: string }, sound: 'click' | 'coin' | 
   if (res.ok) audio.play(sound);
   else {
     audio.play('error');
-    toast(res.error ?? 'Something went wrong.', 'error');
+    toast(res.error ?? t('Something went wrong.'), 'error');
   }
   return res.ok;
 }
@@ -43,19 +44,19 @@ export default function ArenaScreen() {
   return (
     <div className="screen arena-screen">
       <ScreenHeader
-        title="Arena"
-        subtitle={run ? runSubtitle(run) : 'Draft a deck from scratch, then see how far it takes you.'}
+        title={t('Arena')}
+        subtitle={run ? runSubtitle(run) : t('Draft a deck from scratch, then see how far it takes you.')}
         actions={
           run ? (
             <button
               className="btn btn-ghost"
               onClick={async () => {
                 const wins = arenaWins(run);
-                const ok = await confirmDialog({ title: 'Retire from the Arena?', message: <p>The run ends now and you get the reward for {wins} win{wins === 1 ? '' : 's'}.</p>, confirmLabel: 'Retire', danger: true });
+                const ok = await confirmDialog({ title: t('Retire from the Arena?'), message: <p>{tn(wins, 'The run ends now and you get the reward for {n} win.', 'The run ends now and you get the reward for {n} wins.')}</p>, confirmLabel: t('Retire'), danger: true });
                 if (ok) report(gameService.arenaRetire(), 'coin');
               }}
             >
-              Retire
+              {t('Retire')}
             </button>
           ) : (
             <span className="shop-wallet">
@@ -83,10 +84,10 @@ export default function ArenaScreen() {
 
 function runSubtitle(run: ArenaRun): string {
   const phase = arenaPhase(run);
-  if (phase === 'FACTION') return 'Choose your Warden.';
-  if (phase === 'DRAFT') return `Pick ${run.picks.length + 1} of ${ARENA.deckSize}.`;
-  if (phase === 'TALENTS') return 'Set up your Warden abilities.';
-  return `${arenaWins(run)} win${arenaWins(run) === 1 ? '' : 's'} so far. One loss ends the run.`;
+  if (phase === 'FACTION') return t('Choose your Warden.');
+  if (phase === 'DRAFT') return t('Pick {n} of {max}.', { n: run.picks.length + 1, max: ARENA.deckSize });
+  if (phase === 'TALENTS') return t('Set up your Warden abilities.');
+  return tn(arenaWins(run), '{n} win so far. One loss ends the run.', '{n} wins so far. One loss ends the run.');
 }
 
 function RewardTable({ highlight }: { highlight?: number }) {
@@ -94,8 +95,8 @@ function RewardTable({ highlight }: { highlight?: number }) {
     <table className="arena-rewards">
       <thead>
         <tr>
-          <th scope="col">Wins</th>
-          <th scope="col">Reward</th>
+          <th scope="col">{t('Wins')}</th>
+          <th scope="col">{t('Reward')}</th>
         </tr>
       </thead>
       <tbody>
@@ -104,9 +105,9 @@ function RewardTable({ highlight }: { highlight?: number }) {
             <th scope="row" className="num">{wins}</th>
             <td>
               <span className="arena-reward-line">
-                <span className="arena-reward-chip"><PackIcon size={16} /> {r.packs} pack{r.packs === 1 ? '' : 's'}</span>
+                <span className="arena-reward-chip"><PackIcon size={16} /> {tn(r.packs, '{n} pack', '{n} packs')}</span>
                 <span className="arena-reward-chip"><Gold amount={r.gold} /></span>
-                {r.cardBack && <span className="arena-reward-chip is-back">+ a card back you don’t own</span>}
+                {r.cardBack && <span className="arena-reward-chip is-back">{t('+ a card back you don’t own')}</span>}
               </span>
             </td>
           </tr>
@@ -122,26 +123,26 @@ function ArenaLobby({ gold, runsPlayed, bestWins }: { gold: number; runsPlayed: 
     <div className="arena-lobby">
       <section className="panel arena-intro">
         <Glyph name="trophy" size={56} />
-        <h3>Enter the Arena</h3>
+        <h3>{t('Enter the Arena')}</h3>
         <ol className="arena-steps">
-          <li>Choose one of two Wardens.</li>
-          <li>Draft {ARENA.deckSize} cards, one of three at a time, from that faction and Neutral.</li>
-          <li>Set up your Warden abilities.</li>
-          <li>Win up to {ARENA.maxWins} matches. Opponents get tougher with every win, and your first loss ends the run.</li>
+          <li>{t('Choose one of two Wardens.')}</li>
+          <li>{t('Draft {n} cards, one of three at a time, from that faction and Neutral.', { n: ARENA.deckSize })}</li>
+          <li>{t('Set up your Warden abilities.')}</li>
+          <li>{t('Win up to {n} matches. Opponents get tougher with every win, and your first loss ends the run.', { n: ARENA.maxWins })}</li>
         </ol>
-        <p className="muted small">Drafted cards are only for this run. You don’t need to own them, and they don’t go into your collection.</p>
+        <p className="muted small">{t('Drafted cards are only for this run. You don’t need to own them, and they don’t go into your collection.')}</p>
         <button className="btn btn-primary btn-xl" disabled={!canEnter} onClick={() => report(gameService.arenaStart(), 'coin')}>
-          Enter for <Gold amount={ARENA.entryGold} />
+          {t('Enter for')} <Gold amount={ARENA.entryGold} />
         </button>
-        {!canEnter && <p className="deckbox-issue">You need {ARENA.entryGold - gold} more Gold.</p>}
+        {!canEnter && <p className="deckbox-issue">{t('You need {n} more Gold.', { n: ARENA.entryGold - gold })}</p>}
         {runsPlayed > 0 && (
           <p className="faint small">
-            Runs played: <strong className="num">{runsPlayed}</strong> · Best: <strong className="num">{bestWins}</strong> win{bestWins === 1 ? '' : 's'}
+            {t('Runs played:')} <strong className="num">{runsPlayed}</strong> · {t('Best:')} <strong className="num">{bestWins}</strong> {tn(bestWins, 'win', 'wins')}
           </p>
         )}
       </section>
       <section className="panel">
-        <h3>Rewards</h3>
+        <h3>{t('Rewards')}</h3>
         <RewardTable />
       </section>
     </div>
@@ -159,7 +160,7 @@ function FactionPick({ run }: { run: ArenaRun }) {
             <strong className="arena-faction-name">{info.name}</strong>
             <em className="muted">{info.motto}</em>
             <span className="arena-faction-identity">{info.identity}</span>
-            <span className="btn btn-primary">Choose {info.short}</span>
+            <span className="btn btn-primary">{t('Choose {name}', { name: info.short })}</span>
           </button>
         );
       })}
@@ -181,13 +182,13 @@ function DeckSidebar({ run }: { run: ArenaRun }) {
   const max = Math.max(3, ...curve);
   const info = run.faction ? FACTIONS[run.faction] : null;
   return (
-    <aside className="panel arena-deck" aria-label="Your Arena deck">
+    <aside className="panel arena-deck" aria-label={t('Your Arena deck')}>
       <div className="arena-deck-head">
         {run.faction && <WardenPortrait faction={run.faction} size={40} />}
         <div>
           <strong>{info?.name}</strong>
           <span className="faint num">
-            {run.picks.length} / {ARENA.deckSize} cards
+            {run.picks.length} / {ARENA.deckSize} {t('cards')}
           </span>
         </div>
       </div>
@@ -200,7 +201,7 @@ function DeckSidebar({ run }: { run: ArenaRun }) {
         ))}
       </div>
       <ol className="deck-rows">
-        {rows.length === 0 && <li className="empty small">Your picks show up here.</li>}
+        {rows.length === 0 && <li className="empty small">{t('Your picks show up here.')}</li>}
         {rows.map(({ card, n }) => (
           <li key={card.id}>
             <span
@@ -230,10 +231,10 @@ function Draft({ run }: { run: ArenaRun }) {
       <section className="arena-offer-wrap">
         <div className="arena-offer-head">
           <span className="arena-pick-count">
-            Pick <strong className="num">{run.picks.length + 1}</strong> / {ARENA.deckSize}
+            {t('Pick')} <strong className="num">{run.picks.length + 1}</strong> / {ARENA.deckSize}
           </span>
-          {rarity && <span className={`arena-rarity rarity-text-${rarity.toLowerCase()}`}>{rarity.charAt(0) + rarity.slice(1).toLowerCase()}</span>}
-          <span className="faint small">Click a card to add it to your deck · right-click to inspect</span>
+          {rarity && <span className={`arena-rarity rarity-text-${rarity.toLowerCase()}`}>{t(rarity.charAt(0) + rarity.slice(1).toLowerCase())}</span>}
+          <span className="faint small">{t('Click a card to add it to your deck · right-click to inspect')}</span>
         </div>
         <div className="arena-offer" key={run.picks.length}>
           {offer.map((id, i) => {
@@ -248,7 +249,7 @@ function Draft({ run }: { run: ArenaRun }) {
                     e.preventDefault();
                     useUi.getState().inspectCard(id);
                   }}
-                  ariaLabel={`Pick ${card.name}. ${card.description ?? ''}`}
+                  ariaLabel={`${t('Pick {name}.', { name: card.name })} ${card.description ?? ''}`}
                 />
               </div>
             );
@@ -268,7 +269,7 @@ function ArenaTalents({ run }: { run: ArenaRun }) {
         <TalentTree faction={run.faction!} build={build} onChange={setBuild} />
         <div className="arena-talents-foot">
           <button className="btn btn-primary btn-lg" onClick={() => report(gameService.arenaSetTalents(build), 'buff')}>
-            Lock in and start
+            {t('Lock in and start')}
           </button>
         </div>
       </section>
@@ -284,7 +285,7 @@ function ArenaMatches({ run, onPlay }: { run: ArenaRun; onPlay: () => void }) {
   return (
     <div className="arena-play">
       <section className="panel arena-matches">
-        <div className="arena-record" aria-label={`${wins} of ${ARENA.maxWins} wins`}>
+        <div className="arena-record" aria-label={t('{n} of {max} wins', { n: wins, max: ARENA.maxWins })}>
           {Array.from({ length: ARENA.maxWins }, (_, i) => (
             <span key={i} className={`arena-pip ${i < wins ? 'is-win' : ''}`}>
               <Glyph name={i < wins ? 'crown' : 'shield'} size={22} />
@@ -292,17 +293,17 @@ function ArenaMatches({ run, onPlay }: { run: ArenaRun; onPlay: () => void }) {
           ))}
         </div>
         <div className="arena-next" style={{ '--fc': FACTIONS[opp.faction].colors.primary } as CSSProperties}>
-          <span className="faint small">Match {run.results.length + 1} of {ARENA.maxWins}</span>
+          <span className="faint small">{t('Match {n} of {max}', { n: run.results.length + 1, max: ARENA.maxWins })}</span>
           <WardenPortrait faction={opp.faction} size={110} />
           <strong className="arena-faction-name">{opp.name}</strong>
           <span className="muted">
-            {opp.title} · <span className={`arena-diff diff-${opp.difficulty.toLowerCase()}`}>{DIFF_LABEL[opp.difficulty]}</span>
+            {opp.title} · <span className={`arena-diff diff-${opp.difficulty.toLowerCase()}`}>{t(DIFF_LABEL[opp.difficulty])}</span>
           </span>
           <button className="btn btn-primary btn-xl" onClick={onPlay}>
-            Fight
+            {t('Fight')}
           </button>
         </div>
-        <p className="faint small">Your Warden: {talentSummary(deck.talents)}</p>
+        <p className="faint small">{t('Your Warden:')} {talentSummary(deck.talents)}</p>
         <RewardTable highlight={wins} />
       </section>
       <DeckSidebar run={run} />
@@ -316,9 +317,9 @@ function RunSummary({ last, onDone }: { last: ArenaSummary; onDone: () => void }
     <section className="panel arena-summary">
       <Glyph name="trophy" size={60} />
       <h3>
-        {last.wins} win{last.wins === 1 ? '' : 's'}
+        {tn(last.wins, '{n} win', '{n} wins')}
       </h3>
-      <p className="muted">{last.wins >= ARENA.maxWins ? 'A perfect run! The crowd roars your name.' : 'Your Arena run is over. Here is what you earned:'}</p>
+      <p className="muted">{last.wins >= ARENA.maxWins ? t('A perfect run! The crowd roars your name.') : t('Your Arena run is over. Here is what you earned:')}</p>
       <div className="arena-summary-rewards">
         <span className="arena-reward-chip big">
           <Gold amount={last.reward.gold} size={22} />
@@ -336,7 +337,7 @@ function RunSummary({ last, onDone }: { last: ArenaSummary; onDone: () => void }
         )}
       </div>
       <button className="btn btn-primary btn-lg" onClick={onDone}>
-        Continue
+        {t('Continue')}
       </button>
     </section>
   );

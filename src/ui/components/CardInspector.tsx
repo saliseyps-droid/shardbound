@@ -10,6 +10,7 @@ import type { KeywordId, Variant } from '@/game/types';
 import { VARIANTS } from '@/game/types';
 import { CardView } from './CardView';
 import { Modal } from './common';
+import { t } from '@/i18n';
 
 const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic' };
 
@@ -51,44 +52,44 @@ export function CardInspector() {
         </div>
         <div className="inspector-info">
           <dl className="info-grid">
-            <dt>Faction</dt>
+            <dt>{t('Faction')}</dt>
             <dd style={{ color: faction.colors.primary }}>{faction.name}</dd>
-            <dt>Type</dt>
-            <dd>{card.cardType.charAt(0) + card.cardType.slice(1).toLowerCase()}{card.tags?.length ? ` — ${card.tags.join(', ')}` : ''}</dd>
-            <dt>Rarity</dt>
-            <dd className={`rarity-text-${card.rarity.toLowerCase()}`}>{card.rarity.charAt(0) + card.rarity.slice(1).toLowerCase()}</dd>
-            <dt>Cost</dt>
-            <dd className="num">{card.manaCost} energy</dd>
+            <dt>{t('Type')}</dt>
+            <dd>{t(card.cardType.charAt(0) + card.cardType.slice(1).toLowerCase())}{card.tags?.length ? ` — ${card.tags.map((tag) => t(tag)).join(', ')}` : ''}</dd>
+            <dt>{t('Rarity')}</dt>
+            <dd className={`rarity-text-${card.rarity.toLowerCase()}`}>{t(card.rarity.charAt(0) + card.rarity.slice(1).toLowerCase())}</dd>
+            <dt>{t('Cost')}</dt>
+            <dd className="num">{t('{n} energy', { n: card.manaCost })}</dd>
             {card.cardType === 'UNIT' && (
               <>
-                <dt>Stats</dt>
+                <dt>{t('Stats')}</dt>
                 <dd className="num">
-                  {card.attack} Attack / {card.health} Health
+                  {t('{attack} Attack / {health} Health', { attack: String(card.attack), health: String(card.health) })}
                 </dd>
               </>
             )}
-            <dt>Set</dt>
+            <dt>{t('Set')}</dt>
             <dd>{SET_INFO[card.set].name}</dd>
             {card.collectible && (
               <>
-                <dt>Owned</dt>
+                <dt>{t('Owned')}</dt>
                 <dd className="num">
                   {owned} / {maxCopiesFor(card)}
                   {counts && (
                     <span className="faint">
                       {' '}
-                      ({VARIANTS.filter((v) => counts[v] > 0).map((v) => `${counts[v]} ${VARIANT_LABEL[v]}`).join(', ') || 'none'})
+                      ({VARIANTS.filter((v) => counts[v] > 0).map((v) => `${counts[v]} ${t(VARIANT_LABEL[v])}`).join(', ') || t('none')})
                     </span>
                   )}
                 </dd>
-                <dt>Craft</dt>
-                <dd className="num">{craftCost(card.id)} Essence</dd>
-                <dt>Recycle</dt>
-                <dd className="num">{recycleValue(card.id)} Essence</dd>
+                <dt>{t('Craft')}</dt>
+                <dd className="num">{t('{n} Essence', { n: craftCost(card.id) })}</dd>
+                <dt>{t('Recycle')}</dt>
+                <dd className="num">{t('{n} Essence', { n: recycleValue(card.id) })}</dd>
               </>
             )}
-            <dt>Artist</dt>
-            <dd>{card.artist ?? 'Shardbound procedural atelier'}</dd>
+            <dt>{t('Artist')}</dt>
+            <dd>{card.artist ?? t('Shardbound procedural atelier')}</dd>
           </dl>
           <div className="inspector-text">
             <p>{card.description}</p>
@@ -106,7 +107,7 @@ export function CardInspector() {
               ))}
             </ul>
           )}
-          {card.archetypes && <p className="faint">Archetypes: {card.archetypes.join(', ')}</p>}
+          {card.archetypes && <p className="faint">{t('Archetypes:')} {card.archetypes.map((a) => t(a)).join(', ')}</p>}
         </div>
       </div>
     </Modal>

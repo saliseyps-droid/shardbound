@@ -13,6 +13,7 @@ import { audio, type SoundEvent } from '@/audio/audioService';
 import { CardBack, CardView } from '@/ui/components/CardView';
 import { Essence } from '@/ui/components/common';
 import { BoosterPack, PACK_THEME } from './BoosterPack';
+import { t, tn } from '@/i18n';
 
 type Phase = 'intro' | 'opening' | 'reveal' | 'summary';
 
@@ -56,7 +57,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
   const later = (fn: () => void, ms: number) => {
     timers.current.push(window.setTimeout(fn, ms));
   };
-  useEffect(() => () => timers.current.forEach((t) => window.clearTimeout(t)), []);
+  useEffect(() => () => timers.current.forEach((id) => window.clearTimeout(id)), []);
   useEffect(() => {
     if (phase === 'intro') openBtn.current?.focus();
   }, [phase]);
@@ -153,12 +154,12 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
       style={{ '--pack-glow': theme.glow, '--pack-a': theme.a, '--pack-card-w': `${cardW}px` } as CSSProperties}
       role="dialog"
       aria-modal="true"
-      aria-label={`Opening a ${SET_INFO[setId].name} pack`}
+      aria-label={t('Opening a {name} pack', { name: SET_INFO[setId].name })}
     >
       <div className="pack-stage-bg" aria-hidden />
       {(phase === 'intro' || phase === 'opening') && (
         <div className="pack-center">
-          <button ref={openBtn} className="pack-open-btn" onClick={open} disabled={phase !== 'intro'} aria-label="Open the pack">
+          <button ref={openBtn} className="pack-open-btn" onClick={open} disabled={phase !== 'intro'} aria-label={t('Open the pack')}>
             <BoosterPack setId={setId} width={Math.min(260, cardW * 1.15)} className="pack-hero" />
             {phase === 'opening' && (
               <>
@@ -168,11 +169,11 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
             )}
           </button>
           <p className="pack-instruction" aria-live="polite">
-            {phase === 'intro' ? 'Click the pack or press Space to open it' : 'The seal breaks…'}
+            {phase === 'intro' ? t('Click the pack or press Space to open it') : t('The seal breaks…')}
           </p>
           {phase === 'intro' && (
             <button className="btn btn-ghost pack-cancel" onClick={onClose}>
-              Back to inventory
+              {t('Back to inventory')}
             </button>
           )}
         </div>
@@ -180,7 +181,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
 
       {(phase === 'reveal' || phase === 'summary') && (
         <>
-          <ol className="pack-cards" aria-label="Pack contents">
+          <ol className="pack-cards" aria-label={t('Pack contents')}>
             {cards.map((c, i) => {
               const isUp = revealed[i];
               const def = getCardSafe(c.cardId);
@@ -195,7 +196,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
                   <button
                     className="flip-card"
                     onClick={() => (isUp ? inspect(c.cardId, c.variant) : reveal(i))}
-                    aria-label={isUp ? `${def.name}, ${RARITY_LABEL[c.rarity]}${c.isNew ? ', new' : ''}. Open details` : `Reveal card ${i + 1}`}
+                    aria-label={isUp ? `${def.name}, ${t(RARITY_LABEL[c.rarity])}${c.isNew ? t(', new') : ''}. ${t('Open details')}` : t('Reveal card {n}', { n: i + 1 })}
                   >
                     <span className="flip-inner">
                       <span className="flip-face flip-back">
@@ -204,7 +205,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
                       </span>
                       <span className="flip-face flip-front">
                         <CardView card={def} width={cardW} variant={c.variant} />
-                        {c.variant !== 'NORMAL' && <span className="variant-label">{c.variant === 'FOIL' ? 'Foil' : 'Prismatic'}</span>}
+                        {c.variant !== 'NORMAL' && <span className="variant-label">{c.variant === 'FOIL' ? t('Foil') : t('Prismatic')}</span>}
                       </span>
                     </span>
                     {isUp && c.rarity === 'EPIC' && <span className="epic-swirl" aria-hidden />}
@@ -213,10 +214,10 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
                   <div className="slot-meta" aria-hidden={!isUp}>
                     {isUp && (
                       <>
-                        {c.isNew && <span className="badge-new">New</span>}
-                        <span className={`rarity-text-${c.rarity.toLowerCase()}`}>{RARITY_LABEL[c.rarity]}</span>
+                        {c.isNew && <span className="badge-new">{t('New')}</span>}
+                        <span className={`rarity-text-${c.rarity.toLowerCase()}`}>{t(RARITY_LABEL[c.rarity])}</span>
                         <span className="faint">
-                          Owned <span className="num">{owned} / {max}</span>
+                          {t('Owned')} <span className="num">{owned} / {max}</span>
                         </span>
                       </>
                     )}
@@ -229,9 +230,9 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
           <div className="pack-controls">
             {phase === 'reveal' && !allRevealed && (
               <>
-                <span className="muted">Click a card to reveal it</span>
+                <span className="muted">{t('Click a card to reveal it')}</span>
                 <button className="btn btn-cyan" onClick={revealAll}>
-                  Reveal all
+                  {t('Reveal all')}
                 </button>
               </>
             )}
@@ -239,14 +240,14 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
               <div className="pack-summary panel panel-tight" role="status">
                 <div className="pack-summary-text">
                   <strong className="summary-title">
-                    {summary.best === 'LEGENDARY' ? 'A Legendary pull' : summary.best === 'EPIC' ? 'An Epic pack' : 'Pack opened'}
+                    {summary.best === 'LEGENDARY' ? t('A Legendary pull') : summary.best === 'EPIC' ? t('An Epic pack') : t('Pack opened')}
                   </strong>
                   <span className="muted">
-                    {summary.newCount > 0 ? `${summary.newCount} new ${summary.newCount === 1 ? 'card' : 'cards'} added to your collection.` : 'All cards added to your collection.'}
+                    {summary.newCount > 0 ? tn(summary.newCount, '{n} new card added to your collection.', '{n} new cards added to your collection.') : t('All cards added to your collection.')}
                     {summary.surplusEssence > 0 && (
                       <>
                         {' '}
-                        Extra copies beyond a playset are worth <Essence amount={summary.surplusEssence} /> if recycled.
+                        {t('Extra copies beyond a playset are worth')} <Essence amount={summary.surplusEssence} />{t(' if recycled.')}
                       </>
                     )}
                   </span>
@@ -254,14 +255,14 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
                 <div className="pack-summary-actions">
                   {remaining > 0 && (
                     <button className="btn btn-primary" onClick={onOpenAnother} autoFocus>
-                      Open another ({remaining} left)
+                      {t('Open another ({n} left)', { n: remaining })}
                     </button>
                   )}
                   <a className="btn" href="#/collection">
-                    View collection
+                    {t('View collection')}
                   </a>
                   <button className="btn btn-ghost" onClick={onClose} autoFocus={remaining === 0}>
-                    Done
+                    {t('Done')}
                   </button>
                 </div>
               </div>

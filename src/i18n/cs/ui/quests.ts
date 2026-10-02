@@ -1,0 +1,42 @@
+const d: Record<string, string> = {
+  // Quest names and descriptions (stored in the save, translated at display time)
+  'Card Slinger': 'Vrhač karet',
+  'Play 20 cards.': 'Zahraj 20 karet.',
+  'Triumphant': 'Vítězoslavný',
+  'Win 3 matches.': 'Vyhraj 3 zápasy.',
+  'Into the Fray': 'Do boje',
+  'Play 3 matches.': 'Odehraj 3 zápasy.',
+  'Muster the Ranks': 'Svolej šiky',
+  'Play 10 units.': 'Zahraj 10 jednotek.',
+  'Arcane Study': 'Studium magie',
+  'Play 5 spells.': 'Zahraj 5 kouzel.',
+  'Relentless': 'Neúprosný',
+  'Deal 50 damage.': 'Způsob 50 poškození.',
+  'Culling': 'Probírka',
+  'Destroy 12 enemy units.': 'Znič 12 nepřátelských jednotek.',
+  'Treasure Hunter': 'Lovec pokladů',
+  'Open a booster pack.': 'Otevři booster.',
+  'Shardwright': 'Mistr Střepů',
+  'Craft a card.': 'Vyrob kartu.',
+  'Kindle the Legion': 'Rozdmýchej Legii',
+  'Win 2 matches with a Cinder Legion deck.': 'Vyhraj 2 zápasy s balíčkem Popelavé legie.',
+  'Root and Bloom': 'Kořen a květ',
+  'Win 2 matches with a Thornweald deck.': 'Vyhraj 2 zápasy s balíčkem Trnoboru.',
+  'Gears of War': 'Válečná soukolí',
+  'Win 2 matches with a Brass Dominion deck.': 'Vyhraj 2 zápasy s balíčkem Mosazného dominia.',
+  'Starlit Victory': 'Hvězdné vítězství',
+  'Win 2 matches with a Lumen Conclave deck.': 'Vyhraj 2 zápasy s balíčkem Konkláve Lumenu.',
+  'Hymn of Hollows': 'Chorál Prázdnoty',
+  'Win 2 matches with a Hollow Choir deck.': 'Vyhraj 2 zápasy s balíčkem Prázdného chóru.',
+  'Turn of the Tide': 'Obrat přílivu',
+  'Win 2 matches with a Rimetide Court deck.': 'Vyhraj 2 zápasy s balíčkem Dvora Jinovatky.',
+
+  // Level titles (stored in reward history)
+  'Shardseeker': 'Hledač Střepů',
+  'Crownbreaker': 'Lamač korun',
+  'Aether Warden': 'Strážce Éteru',
+  'Sovereign of Shards': 'Vladař Střepů',
+  'Veteran': 'Veterán',
+};
+
+export default d;

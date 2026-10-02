@@ -12,6 +12,7 @@ import type { PlayableFaction } from '@/game/types';
 import { ProgressBar, ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
+import { tr } from '@/i18n';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/online.css';
 
@@ -83,49 +84,49 @@ export default function RankedScreen() {
 
   return (
     <div className="screen online-screen">
-      <ScreenHeader title="Ranked" subtitle="Get matched against a random Warden who is searching right now. Wins raise your rating; losses lower it." />
+      <ScreenHeader title={tr('Ranked')} subtitle={tr('Get matched against a random Warden who is searching right now. Wins raise your rating; losses lower it.')} />
       <div className="online-grid">
         <section className="panel" aria-labelledby="ranked-deck">
           <div className="panel-title" id="ranked-deck">
-            Your deck
+            {tr('Your deck')}
           </div>
           <DeckPicker save={save} value={deckId} onChange={setDeckId} />
         </section>
         <section className="panel online-host" aria-live="polite">
           <div className="ranked-tier" style={{ color: tier.color }}>
-            <span className="ranked-tier-name">{tier.name}</span>
+            <span className="ranked-tier-name">{tr(tier.name)}</span>
             <span className="ranked-rating num">{r.rating}</span>
           </div>
           {next && (
             <div className="ranked-next">
-              <ProgressBar value={r.rating - tier.min} max={next.min - tier.min} gold label={`Progress to ${next.name}`} />
+              <ProgressBar value={r.rating - tier.min} max={next.min - tier.min} gold label={tr('Progress to {tier}', { tier: tr(next.name) })} />
               <span className="faint num">
-                {next.min - r.rating} to {next.name}
+                {next.min - r.rating} {tr('to {tier}', { tier: tr(next.name) })}
               </span>
             </div>
           )}
           <p className="muted num">
-            {r.wins} wins, {r.losses} losses, peak {r.peak}
+            {tr('{wins} wins, {losses} losses, peak {peak}', { wins: r.wins, losses: r.losses, peak: r.peak })}
           </p>
           {!searching ? (
             <button className="btn btn-primary btn-lg" disabled={!valid} onClick={() => void search()}>
-              Find match
+              {tr('Find match')}
             </button>
           ) : (
             <>
-              <Spinner label="Searching" />
+              <Spinner label={tr('Searching')} />
               <p className="muted">
-                {status} <span className="num">{elapsed}s</span>
+                {tr(status)} <span className="num">{elapsed}s</span>
               </p>
-              <p className="faint">An opponent appears as soon as another player searches at the same time.</p>
+              <p className="faint">{tr('An opponent appears as soon as another player searches at the same time.')}</p>
               <button className="btn btn-ghost btn-sm" onClick={cancel}>
-                Cancel search
+                {tr('Cancel search')}
               </button>
             </>
           )}
-          {!valid && <p className="deckbox-issue">Choose a valid 30-card deck first.</p>}
-          {error && <p className="online-error">{error}</p>}
-          <p className="faint">Ranked matches give the usual Gold, XP and quest progress too.</p>
+          {!valid && <p className="deckbox-issue">{tr('Choose a valid 30-card deck first.')}</p>}
+          {error && <p className="online-error">{tr(error)}</p>}
+          <p className="faint">{tr('Ranked matches give the usual Gold, XP and quest progress too.')}</p>
         </section>
       </div>
     </div>

@@ -79,12 +79,12 @@ export const CAMPAIGN: Chapter[] = [
     encounters: [
       { id: 'c1_e1', name: 'Pip Tallow', title: 'Shard Scavenger', avatar: 'compass', faction: 'VERDANT', difficulty: 'EASY', personality: 'BALANCED', rarities: EASY_POOL, intro: 'Finders keepers! That Shard is mine!', firstWinReward: { gold: 100, xp: 100 } },
       { id: 'c1_e2', name: 'Brakka Ashhand', title: 'Legion Deserter', avatar: 'flame', faction: 'EMBER', difficulty: 'EASY', personality: 'AGGRESSIVE', rarities: EASY_POOL, intro: 'The Legion cast me out. You’ll do for practice.', firstWinReward: { gold: 100, xp: 100 } },
-      { id: 'c1_e3', name: 'Tinker Wobblesprocket', title: 'Rogue Artificer', avatar: 'gear', faction: 'IRON', difficulty: 'NORMAL', personality: 'SWARM', rarities: EASY_POOL, intro: 'My automatons need field testing. Hold still.', firstWinReward: { gold: 120, xp: 120, packs: { setId: 'CORE', amount: 1 } } },
+      { id: 'c1_e3', name: 'Tinker Wobblesprocket', title: 'Rogue Artificer', avatar: 'gear', faction: 'IRON', difficulty: 'EASY', personality: 'SWARM', rarities: EASY_POOL, intro: 'My automatons need field testing. Hold still.', firstWinReward: { gold: 120, xp: 120, packs: { setId: 'CORE', amount: 1 } } },
       { id: 'c1_e4', name: 'Sister Vey', title: 'Wandering Choir Initiate', avatar: 'eye', faction: 'VOID', difficulty: 'NORMAL', personality: 'BALANCED', rarities: NORMAL_POOL, intro: 'Your Shard sings so loudly. Let me quiet it.', firstWinReward: { gold: 120, xp: 120 } },
       {
         id: 'c1_boss', name: 'Grom the Unbroken', title: 'Warlord of the Road', avatar: 'compass', faction: 'IRON', secondFaction: 'NEUTRAL', archetype: 'Bulwark', difficulty: 'NORMAL', personality: 'CONTROL', rarities: NORMAL_POOL, boss: true,
         intro: 'Every Warden on this road pays my toll.',
-        special: { heroHealth: 35, talents: [{ abilityId: 'wt_iron_rivet_plating', level: 2 }, { abilityId: 'wt_iron_reinforced_hull', level: 1 }], startingRelics: [], description: ['Grom starts with 35 Health.', 'Warden abilities: Rivet Plating III, Reinforced Hull II.'] },
+        special: { talents: [{ abilityId: 'wt_iron_rivet_plating', level: 2 }, { abilityId: 'wt_iron_reinforced_hull', level: 1 }], description: ['Warden abilities: Rivet Plating III, Reinforced Hull II.'] },
         firstWinReward: { gold: 200, xp: 200, packs: { setId: 'CORE', amount: 2 } },
       },
     ],
@@ -96,12 +96,12 @@ export const CAMPAIGN: Chapter[] = [
     encounters: [
       { id: 'c2_e1', name: 'Harpooner Quell', title: 'Icebreaker Captain', avatar: 'wave', faction: 'TIDE', archetype: 'Undertow', difficulty: 'NORMAL', personality: 'BALANCED', rarities: NORMAL_POOL, intro: 'The sea gives back what it takes. Eventually.', firstWinReward: { gold: 150, xp: 150 } },
       { id: 'c2_e2', name: 'Lumen Scribe Aurel', title: 'Conclave Cartographer', avatar: 'star', faction: 'ASTRAL', archetype: 'Spellweave', difficulty: 'NORMAL', personality: 'CONTROL', rarities: NORMAL_POOL, intro: 'Your path is already charted. It ends here.', firstWinReward: { gold: 150, xp: 150, packs: { setId: 'DEEP', amount: 1 } } },
-      { id: 'c2_e3', name: 'The Thornwidow', title: 'Blighted Druid', avatar: 'leaf', faction: 'VERDANT', archetype: 'Wellspring', difficulty: 'HARD', personality: 'BALANCED', rarities: HARD_POOL, intro: 'Rot is only another kind of growth.', firstWinReward: { gold: 150, xp: 150 } },
+      { id: 'c2_e3', name: 'The Thornwidow', title: 'Blighted Druid', avatar: 'leaf', faction: 'VERDANT', archetype: 'Wellspring', difficulty: 'EASY', personality: 'BALANCED', rarities: NORMAL_POOL, intro: 'Rot is only another kind of growth.', firstWinReward: { gold: 150, xp: 150 } },
       { id: 'c2_e4', name: 'Commander Ignis Rael', title: 'Legion Drake-Rider', avatar: 'flame', faction: 'EMBER', archetype: 'Blitz', difficulty: 'HARD', personality: 'AGGRESSIVE', rarities: HARD_POOL, intro: 'From the sky, the Legion sees all.', firstWinReward: { gold: 150, xp: 150, packs: { setId: 'CORE', amount: 1 } } },
       {
         id: 'c2_boss', name: 'Maw of the Deep', title: 'Leviathan of the Drowned Court', avatar: 'wave', faction: 'TIDE', archetype: 'Deep Freeze', difficulty: 'HARD', personality: 'CONTROL', rarities: HARD_POOL, boss: true,
         intro: 'The water beneath you shifts. Something vast opens its eye.',
-        special: { heroHealth: 40, talents: [{ abilityId: 'wt_boss_crushing_depths', level: 0 }, { abilityId: 'wt_tide_rime_touch', level: 2 }], startingBoard: ['token_kraken_tentacle', 'token_kraken_tentacle'], description: ['The Maw has 40 Health.', 'Starts with two Grasping Tentacles.', 'Warden abilities: Crushing Depths, Rime Touch III.'] },
+        special: { talents: [{ abilityId: 'wt_boss_crushing_depths', level: 0 }, { abilityId: 'wt_tide_rime_touch', level: 2 }], description: ['Warden abilities: Crushing Depths, Rime Touch III.'] },
         firstWinReward: { gold: 300, xp: 250, packs: { setId: 'DEEP', amount: 2 } },
       },
     ],
@@ -112,21 +112,21 @@ export const CAMPAIGN: Chapter[] = [
     description: 'Three powers stand between you and the heart of the Sundered Crown.',
     encounters: [
       {
-        id: 'c3_b1', name: 'Kharzul Reborn', title: 'The Living Caldera', avatar: 'flame', faction: 'EMBER', archetype: 'Pyromancy', difficulty: 'HARD', personality: 'AGGRESSIVE', rarities: ALL, boss: true,
+        id: 'c3_b1', name: 'Kharzul Reborn', title: 'The Living Caldera', avatar: 'flame', faction: 'EMBER', archetype: 'Pyromancy', difficulty: 'NORMAL', personality: 'AGGRESSIVE', rarities: ALL, boss: true,
         intro: 'The mountain itself rises to meet you.',
-        special: { heroHealth: 35, bonusStartingEnergy: 1, talents: [{ abilityId: 'wt_boss_caldera_eruption', level: 0 }, { abilityId: 'wt_ember_searing_wrath', level: 1 }], startingLocation: 'emb_kharzul_caldera', description: ['Starts with 1 extra energy crystal.', 'Begins with Kharzul Caldera in play.', 'Warden abilities: Caldera Eruption, Searing Wrath II.'] },
+        special: { talents: [{ abilityId: 'wt_boss_caldera_eruption', level: 0 }, { abilityId: 'wt_ember_searing_wrath', level: 1 }], description: ['Warden abilities: Caldera Eruption, Searing Wrath II.'] },
         firstWinReward: { gold: 300, xp: 300, essence: 200 },
       },
       {
-        id: 'c3_b2', name: 'The Endless Choir', title: 'Voice of the Hollow', avatar: 'eye', faction: 'VOID', archetype: 'Requiem', difficulty: 'EXPERT', personality: 'BALANCED', rarities: ALL, boss: true,
+        id: 'c3_b2', name: 'The Endless Choir', title: 'Voice of the Hollow', avatar: 'eye', faction: 'VOID', archetype: 'Requiem', difficulty: 'NORMAL', personality: 'BALANCED', rarities: ALL, boss: true,
         intro: 'We are many. We were you, once.',
-        special: { heroHealth: 40, talents: [{ abilityId: 'wt_boss_requiem_chorus', level: 0 }, { abilityId: 'wt_void_unending', level: 2 }], startingBoard: ['token_hollow_wisp', 'token_hollow_wisp', 'token_hollow_wisp'], description: ['The Choir has 40 Health.', 'Starts with three Hollow Wisps.', 'Warden abilities: Requiem Chorus, Unending III.'] },
+        special: { talents: [{ abilityId: 'wt_boss_requiem_chorus', level: 0 }, { abilityId: 'wt_void_unending', level: 2 }], description: ['Warden abilities: Requiem Chorus, Unending III.'] },
         firstWinReward: { gold: 350, xp: 300, packs: { setId: 'DEEP', amount: 2 } },
       },
       {
         id: 'c3_final', name: 'The Shattered Sovereign', title: 'Echo of the Crown', avatar: 'crown', faction: 'ASTRAL', archetype: 'Starlit Control', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
         intro: 'You would rebuild my Crown? Then kneel before what it was.',
-        special: { heroHealth: 45, bonusStartingEnergy: 1, talents: [{ abilityId: 'wt_boss_crown_fragment', level: 0 }, { abilityId: 'wt_astral_foresight', level: 2 }], description: ['The Sovereign has 45 Health.', 'Starts with 1 extra energy crystal.', 'Warden abilities: Crown Fragment, Foresight III.'] },
+        special: { talents: [{ abilityId: 'wt_boss_crown_fragment', level: 0 }, { abilityId: 'wt_astral_foresight', level: 2 }], description: ['Warden abilities: Crown Fragment, Foresight III.'] },
         firstWinReward: { gold: 500, xp: 500, essence: 400, packs: { setId: 'CORE', amount: 3 } },
       },
     ],

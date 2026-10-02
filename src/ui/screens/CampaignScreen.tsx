@@ -13,6 +13,7 @@ import { DeckPicker, DIFFICULTY_INFO, factionStyle, firstValidDeck } from '@/ui/
 import { campaignProgress, isCleared, isUnlocked, nextEncounter } from '@/ui/components/meta/campaign';
 import { audio } from '@/audio/audioService';
 import '@/ui/styles/meta.css';
+import { t } from '@/i18n';
 
 function RewardList({ r }: { r: OpponentReward }) {
   return (
@@ -52,14 +53,14 @@ export default function CampaignScreen() {
   return (
     <div className="screen campaign-screen">
       <ScreenHeader
-        title="Campaign"
-        subtitle="Follow the falling Shards across Aethra. Each victory unlocks the next rival; first clears pay extra."
+        title={t('Campaign')}
+        subtitle={t('Follow the falling Shards across Aethra. Each victory unlocks the next rival; first clears pay extra.')}
         actions={
           <div className="camp-progress">
             <span className="num">
               {prog.cleared} / {prog.total}
             </span>
-            <ProgressBar value={prog.cleared} max={prog.total} label="Campaign progress" />
+            <ProgressBar value={prog.cleared} max={prog.total} label={t('Campaign progress')} />
           </div>
         }
       />
@@ -73,7 +74,7 @@ export default function CampaignScreen() {
                 <header className="chapter-head">
                   <h3 id={`${ch.id}-t`}>{ch.name}</h3>
                   <span className="faint">
-                    {chLocked ? 'Locked' : `${chCleared} / ${ch.encounters.length}`}
+                    {chLocked ? t('Locked') : `${chCleared} / ${ch.encounters.length}`}
                   </span>
                 </header>
                 <p className="muted">{ch.description}</p>
@@ -91,7 +92,7 @@ export default function CampaignScreen() {
                           style={factionStyle(e.faction)}
                           onClick={() => (audio.play('click'), setSelectedId(e.id))}
                           aria-pressed={selectedId === e.id}
-                          aria-label={`${e.name}${e.boss ? ', boss' : ''}, ${state === 'done' ? 'cleared' : state === 'open' ? 'available' : 'locked'}`}
+                          aria-label={`${e.name}${e.boss ? t(', boss') : ''}, ${state === 'done' ? t('cleared') : state === 'open' ? t('available') : t('locked')}`}
                         >
                           {state === 'locked' ? <Glyph name="shield" size={e.boss ? 30 : 24} /> : <WardenPortrait faction={e.faction} fill />}
                           {done && <span className="enc-check" aria-hidden>✓</span>}
@@ -116,38 +117,38 @@ export default function CampaignScreen() {
               <div>
                 <span className="faint">{sel?.chapter.name}</span>
                 <h3>
-                  {enc.name} {enc.boss && <span className="boss-tag">Boss</span>}
+                  {enc.name} {enc.boss && <span className="boss-tag">{t('Boss')}</span>}
                 </h3>
                 <span className="muted">
                   {enc.title}. {FACTIONS[enc.faction].name}
-                  {enc.secondFaction && enc.secondFaction !== 'NEUTRAL' ? ` and ${FACTIONS[enc.secondFaction].name}` : ''}
+                  {enc.secondFaction && enc.secondFaction !== 'NEUTRAL' ? t(' and {name}', { name: FACTIONS[enc.secondFaction].name }) : ''}
                 </span>
               </div>
             </div>
             <blockquote>“{enc.intro}”</blockquote>
             <dl className="info-grid">
-              <dt>Difficulty</dt>
-              <dd>{DIFFICULTY_INFO[enc.difficulty].label}</dd>
-              <dt>Strategy</dt>
+              <dt>{t('Difficulty')}</dt>
+              <dd>{t(DIFFICULTY_INFO[enc.difficulty].label)}</dd>
+              <dt>{t('Strategy')}</dt>
               <dd>{enc.archetype ?? FACTIONS[enc.faction].archetypes[0].name}</dd>
               {enc.firstWinReward && (
                 <>
-                  <dt>First clear</dt>
+                  <dt>{t('First clear')}</dt>
                   <dd>
-                    <RewardList r={enc.firstWinReward} /> {cleared && <span className="chip">Claimed</span>}
+                    <RewardList r={enc.firstWinReward} /> {cleared && <span className="chip">{t('Claimed')}</span>}
                   </dd>
                 </>
               )}
               {cleared && (
                 <>
-                  <dt>Wins</dt>
+                  <dt>{t('Wins')}</dt>
                   <dd className="num">{save.pve.completed[enc.id].wins}</dd>
                 </>
               )}
             </dl>
             {enc.special && (
               <div className="special-rules">
-                <strong>Special rules</strong>
+                <strong>{t('Special rules')}</strong>
                 <ul>
                   {enc.special.description.map((d) => (
                     <li key={d}>{d}</li>
@@ -158,16 +159,16 @@ export default function CampaignScreen() {
             {unlocked ? (
               <>
                 <div className="faint" style={{ margin: 'var(--space-3) 0 var(--space-2)' }}>
-                  Your deck
+                  {t('Your deck')}
                 </div>
                 <DeckPicker save={save} value={deckId} onChange={setDeckId} />
                 <button className="btn btn-primary btn-lg enc-fight" disabled={!validDeck} onClick={fight}>
-                  {cleared ? 'Fight again' : 'Fight'}
+                  {cleared ? t('Fight again') : t('Fight')}
                 </button>
               </>
             ) : (
               <p className="locked-note">
-                <Glyph name="shield" size={16} /> Clear the previous encounter to unlock this fight.
+                <Glyph name="shield" size={16} /> {t('Clear the previous encounter to unlock this fight.')}
               </p>
             )}
           </aside>

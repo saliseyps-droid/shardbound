@@ -4,6 +4,7 @@ import { canReroll } from '@/domain/quests';
 import { ScreenHeader } from '@/ui/components/common';
 import { DailyTrack, QuestRow } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
+import { t } from '@/i18n';
 
 export default function QuestsScreen() {
   const save = useAccount((s) => s.save);
@@ -13,18 +14,18 @@ export default function QuestsScreen() {
   return (
     <div className="screen quests-screen">
       <ScreenHeader
-        title="Quests"
-        subtitle={`A new quest arrives each day, up to ${QUEST_CONFIG.maxActive} at a time. ${rerollLeft ? 'You can replace one unfinished quest today.' : 'Your replacement for today is used.'}`}
+        title={t('Quests')}
+        subtitle={`${t('A new quest arrives each day, up to {n} at a time.', { n: QUEST_CONFIG.maxActive })} ${rerollLeft ? t('You can replace one unfinished quest today.') : t('Your replacement for today is used.')}`}
       />
       <div className="quests-layout">
         <section className="panel" aria-labelledby="q-active">
           <div className="panel-title">
-            <span id="q-active">Active quests</span>
-            <span className="faint">{save.quests.totalCompleted} completed all time</span>
+            <span id="q-active">{t('Active quests')}</span>
+            <span className="faint">{t('{n} completed all time', { n: save.quests.totalCompleted })}</span>
           </div>
           {quests.length === 0 ? (
             <div className="empty">
-              <p>All quests are done. Come back tomorrow for a new one.</p>
+              <p>{t('All quests are done. Come back tomorrow for a new one.')}</p>
             </div>
           ) : (
             <div className="quest-list">
@@ -36,10 +37,10 @@ export default function QuestsScreen() {
         </section>
         <section className="panel" aria-labelledby="q-daily">
           <div className="panel-title">
-            <span id="q-daily">Login rewards</span>
-            <span className="faint">One claim per day</span>
+            <span id="q-daily">{t('Login rewards')}</span>
+            <span className="faint">{t('One claim per day')}</span>
           </div>
-          <p className="muted">Claim once each day to advance the 7-day cycle. Missing more than a day starts the cycle again.</p>
+          <p className="muted">{t('Claim once each day to advance the 7-day cycle. Missing more than a day starts the cycle again.')}</p>
           <DailyTrack save={save} />
         </section>
       </div>

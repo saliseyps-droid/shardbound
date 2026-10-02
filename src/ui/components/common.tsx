@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { useUi } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
 import { EssenceIcon, GoldIcon, PackIcon } from './Icons';
+import { t } from '@/i18n';
 
 // ---------------------------------------------------------------------------
 // Modal
@@ -50,7 +51,7 @@ export function Modal({
           <div className="modal-head">
             <h3 id={labelledBy}>{title}</h3>
             {onClose && (
-              <button className="icon-btn" onClick={onClose} aria-label="Close">
+              <button className="icon-btn" onClick={onClose} aria-label={t('Close')}>
                 ✕
               </button>
             )}
@@ -93,14 +94,14 @@ export function ConfirmHost() {
     set(null);
   };
   return (
-    <Modal open onClose={() => close(false)} title={req.title} labelledBy="confirm-title">
-      <div className="confirm-body">{req.message}</div>
+    <Modal open onClose={() => close(false)} title={t(req.title)} labelledBy="confirm-title">
+      <div className="confirm-body">{typeof req.message === 'string' ? t(req.message) : req.message}</div>
       <div className="modal-actions">
         <button className="btn btn-ghost" onClick={() => close(false)}>
-          {req.cancelLabel ?? 'Cancel'}
+          {req.cancelLabel ? t(req.cancelLabel) : t('Cancel')}
         </button>
         <button className={`btn ${req.danger ? 'btn-danger' : 'btn-primary'}`} onClick={() => close(true)} autoFocus>
-          {req.confirmLabel}
+          {t(req.confirmLabel)}
         </button>
       </div>
     </Modal>
@@ -131,30 +132,30 @@ export function ToastHost() {
 
 export function Gold({ amount, size }: { amount: number; size?: number }) {
   return (
-    <span className="currency" title="Gold">
+    <span className="currency" title={t('Gold')}>
       <GoldIcon size={size} />
       <span>{amount.toLocaleString()}</span>
-      <span className="sr-only">Gold</span>
+      <span className="sr-only">{t('Gold')}</span>
     </span>
   );
 }
 
 export function Essence({ amount, size }: { amount: number; size?: number }) {
   return (
-    <span className="currency essence" title="Essence">
+    <span className="currency essence" title={t('Essence')}>
       <EssenceIcon size={size} />
       <span>{amount.toLocaleString()}</span>
-      <span className="sr-only">Essence</span>
+      <span className="sr-only">{t('Essence')}</span>
     </span>
   );
 }
 
 export function Packs({ amount }: { amount: number }) {
   return (
-    <span className="currency" title="Unopened packs">
+    <span className="currency" title={t('Unopened packs')}>
       <PackIcon />
       <span>{amount}</span>
-      <span className="sr-only">unopened packs</span>
+      <span className="sr-only">{t('unopened packs')}</span>
     </span>
   );
 }
@@ -193,11 +194,11 @@ export function SfxButton(props: React.ButtonHTMLAttributes<HTMLButtonElement>) 
   );
 }
 
-export function Spinner({ label = 'Loading' }: { label?: string }) {
+export function Spinner({ label }: { label?: string }) {
   return (
     <div className="spinner" role="status">
       <span className="spinner-shard" />
-      <span className="sr-only">{label}</span>
+      <span className="sr-only">{label ?? t('Loading')}</span>
     </div>
   );
 }

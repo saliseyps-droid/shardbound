@@ -5,6 +5,7 @@ import { SET_INFO } from '@/config/economy';
 import { Glyph } from '@/ui/components/Icons';
 import type { CardFilterState, OwnershipFilter, SortKey } from './cardFilters';
 import { DEFAULT_FILTERS } from './cardFilters';
+import { t } from '@/i18n';
 
 const cap = (s: string) => s.charAt(0) + s.slice(1).toLowerCase();
 
@@ -26,10 +27,10 @@ export function CardFilterBar({ value, onChange, factions, disabledFactions = []
     value.rarity !== 'ALL' || value.set !== 'ALL' || value.type !== 'ALL' || value.cost !== 'ALL' || value.search !== '' || value.ownership !== 'ALL' || value.faction !== 'ALL';
   return (
     <div className={`filter-bar ${compact ? 'compact' : ''}`}>
-      <div className="faction-tabs" role="tablist" aria-label="Faction">
+      <div className="faction-tabs" role="tablist" aria-label={t('Faction')}>
         <button role="tab" aria-selected={value.faction === 'ALL'} className="faction-tab" onClick={() => set('faction', 'ALL')}>
           <Glyph name="crystal" size={16} />
-          <span>All</span>
+          <span>{t('All')}</span>
         </button>
         {factions.map((f) => {
           const info = FACTIONS[f];
@@ -40,7 +41,7 @@ export function CardFilterBar({ value, onChange, factions, disabledFactions = []
               role="tab"
               aria-selected={value.faction === f}
               disabled={disabled}
-              title={disabled ? `${info.name} can't be added to this deck` : info.name}
+              title={disabled ? t("{name} can't be added to this deck", { name: info.name }) : info.name}
               className="faction-tab"
               style={{ '--tab-color': info.colors.primary } as React.CSSProperties}
               onClick={() => set('faction', f)}
@@ -53,36 +54,36 @@ export function CardFilterBar({ value, onChange, factions, disabledFactions = []
       </div>
       <div className="filter-row">
         <label className="search-field">
-          <span className="sr-only">Search cards</span>
+          <span className="sr-only">{t('Search cards')}</span>
           <Glyph name="eye" size={16} />
-          <input className="input" type="search" placeholder="Search name, text or tag" value={value.search} onChange={(e) => set('search', e.target.value)} />
+          <input className="input" type="search" placeholder={t('Search name, text or tag')} value={value.search} onChange={(e) => set('search', e.target.value)} />
         </label>
-        <div className="segmented cost-filter" role="group" aria-label="Energy cost">
+        <div className="segmented cost-filter" role="group" aria-label={t('Energy cost')}>
           {Array.from({ length: 8 }, (_, i) => (
-            <button key={i} aria-pressed={value.cost === i} aria-label={i === 7 ? 'Cost 7 or more' : `Cost ${i}`} onClick={() => set('cost', value.cost === i ? 'ALL' : i)}>
+            <button key={i} aria-pressed={value.cost === i} aria-label={i === 7 ? t('Cost 7 or more') : t('Cost {n}', { n: i })} onClick={() => set('cost', value.cost === i ? 'ALL' : i)}>
               {i === 7 ? '7+' : i}
             </button>
           ))}
         </div>
-        <select className="select" aria-label="Rarity" value={value.rarity} onChange={(e) => set('rarity', e.target.value as Rarity | 'ALL')}>
-          <option value="ALL">Any rarity</option>
+        <select className="select" aria-label={t('Rarity')} value={value.rarity} onChange={(e) => set('rarity', e.target.value as Rarity | 'ALL')}>
+          <option value="ALL">{t('Any rarity')}</option>
           {RARITIES.map((r) => (
             <option key={r} value={r}>
-              {cap(r)}
+              {t(cap(r))}
             </option>
           ))}
         </select>
-        <select className="select" aria-label="Card type" value={value.type} onChange={(e) => set('type', e.target.value as CardType | 'ALL')}>
-          <option value="ALL">Any type</option>
-          {CARD_TYPES.map((t) => (
-            <option key={t} value={t}>
-              {cap(t)}
+        <select className="select" aria-label={t('Card type')} value={value.type} onChange={(e) => set('type', e.target.value as CardType | 'ALL')}>
+          <option value="ALL">{t('Any type')}</option>
+          {CARD_TYPES.map((ct) => (
+            <option key={ct} value={ct}>
+              {t(cap(ct))}
             </option>
           ))}
         </select>
         {!compact && (
-          <select className="select" aria-label="Set" value={value.set} onChange={(e) => set('set', e.target.value as SetId | 'ALL')}>
-            <option value="ALL">Any set</option>
+          <select className="select" aria-label={t('Set')} value={value.set} onChange={(e) => set('set', e.target.value as SetId | 'ALL')}>
+            <option value="ALL">{t('Any set')}</option>
             {(Object.keys(SET_INFO) as SetId[]).map((s) => (
               <option key={s} value={s}>
                 {SET_INFO[s].name}
@@ -90,20 +91,20 @@ export function CardFilterBar({ value, onChange, factions, disabledFactions = []
             ))}
           </select>
         )}
-        <select className="select" aria-label="Ownership" value={value.ownership} onChange={(e) => set('ownership', e.target.value as OwnershipFilter)}>
-          <option value="ALL">{ownershipLabels?.ALL ?? 'Owned and missing'}</option>
-          <option value="OWNED">{ownershipLabels?.OWNED ?? 'Owned only'}</option>
-          <option value="MISSING">{ownershipLabels?.MISSING ?? 'Missing only'}</option>
+        <select className="select" aria-label={t('Ownership')} value={value.ownership} onChange={(e) => set('ownership', e.target.value as OwnershipFilter)}>
+          <option value="ALL">{ownershipLabels?.ALL ?? t('Owned and missing')}</option>
+          <option value="OWNED">{ownershipLabels?.OWNED ?? t('Owned only')}</option>
+          <option value="MISSING">{ownershipLabels?.MISSING ?? t('Missing only')}</option>
         </select>
-        <select className="select" aria-label="Sort by" value={value.sort} onChange={(e) => set('sort', e.target.value as SortKey)}>
-          <option value="cost">Sort by cost</option>
-          <option value="name">Sort by name</option>
-          <option value="rarity">Sort by rarity</option>
-          <option value="faction">Sort by faction</option>
+        <select className="select" aria-label={t('Sort by')} value={value.sort} onChange={(e) => set('sort', e.target.value as SortKey)}>
+          <option value="cost">{t('Sort by cost')}</option>
+          <option value="name">{t('Sort by name')}</option>
+          <option value="rarity">{t('Sort by rarity')}</option>
+          <option value="faction">{t('Sort by faction')}</option>
         </select>
         {active && (
           <button className="btn btn-ghost btn-sm" onClick={() => onChange({ ...DEFAULT_FILTERS, sort: value.sort })}>
-            Clear filters
+            {t('Clear filters')}
           </button>
         )}
       </div>

@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { SET_INFO } from '@/config/economy';
 import type { SetId } from '@/game/types';
+import { t } from '@/i18n';
 import kingdomsAtWar from '@/assets/packs/kingdoms_at_war.webp';
 import fantasyRealms from '@/assets/packs/fantasy_realms.webp';
 
@@ -16,7 +17,7 @@ const PACK_ART: Record<SetId, string> = { CORE: kingdomsAtWar, DEEP: fantasyReal
 export function BoosterPack({ setId, width = 180, className = '', style }: { setId: SetId; width?: number; className?: string; style?: CSSProperties }) {
   const art = PACK_ART[setId];
   return (
-    <div className={`booster ${className}`} style={{ width, '--pack-art': `url(${art})`, ...style } as CSSProperties} role="img" aria-label={`${SET_INFO[setId].name} booster pack`}>
+    <div className={`booster ${className}`} style={{ width, '--pack-art': `url(${art})`, ...style } as CSSProperties} role="img" aria-label={t('{name} booster pack', { name: SET_INFO[setId].name })}>
       <img className="booster-art" src={art} alt="" draggable={false} />
       <span className="booster-sheen" aria-hidden />
     </div>

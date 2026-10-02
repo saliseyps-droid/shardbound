@@ -6,6 +6,7 @@ import { cardArtPosition, cardArtUri } from './cardArt';
 import { Glyph } from './Icons';
 import { KeywordText } from './Tooltip';
 import { DEFAULT_CARD_BACK } from '@/data/cardBacks';
+import { t } from '@/i18n';
 
 /** Card back artwork: src/assets/cardbacks/<id>.webp */
 const BACK_ART = import.meta.glob('../../assets/cardbacks/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
@@ -47,7 +48,7 @@ export interface CardViewProps {
 export function CardBack({ width = CARD_WIDTH.md, className = '', style, design }: { width?: number; className?: string; style?: CSSProperties; design?: string | null }) {
   const url = cardBackUrl(design);
   return (
-    <div className={`card card-back ${url ? 'has-art' : ''} ${className}`} style={{ '--card-w': `${width}px`, ...style } as CSSProperties} aria-label="Face-down card">
+    <div className={`card card-back ${url ? 'has-art' : ''} ${className}`} style={{ '--card-w': `${width}px`, ...style } as CSSProperties} aria-label={t('Face-down card')}>
       <div className="card-back-inner">{url ? <img className="card-back-img" src={url} alt="" draggable={false} decoding="async" /> : <Glyph name="crystal" size={width * 0.35} />}</div>
     </div>
   );
@@ -90,7 +91,7 @@ export const CardView = memo(function CardView(props: CardViewProps) {
   } as CSSProperties;
   const label =
     props.ariaLabel ??
-    `${card.name}, ${cost} energy ${TYPE_LABEL[card.cardType]}${card.cardType === 'UNIT' ? `, ${card.attack} attack ${card.health} health` : ''}. ${card.description ?? ''}`;
+    `${card.name}, ${t('{n} energy {type}', { n: cost, type: t(TYPE_LABEL[card.cardType]) })}${card.cardType === 'UNIT' ? t(', {attack} attack {health} health', { attack: String(card.attack), health: String(card.health) }) : ''}. ${card.description ?? ''}`;
 
   return (
     <div
@@ -116,9 +117,9 @@ export const CardView = memo(function CardView(props: CardViewProps) {
           <span>{card.name}</span>
         </div>
         <div className="card-typeline">
-          <span>{TYPE_LABEL[card.cardType]}</span>
-          <span className="rarity-gem" title={card.rarity.toLowerCase()} />
-          <span className="card-tags">{card.tags?.[0] ?? faction.short}</span>
+          <span>{t(TYPE_LABEL[card.cardType])}</span>
+          <span className="rarity-gem" title={t(card.rarity.toLowerCase())} />
+          <span className="card-tags">{card.tags?.[0] ? t(card.tags[0]) : faction.short}</span>
         </div>
         <span className="card-textbox" aria-hidden />
         {/* Faction emblem watermark behind the rules text (below it in z-order). */}
@@ -142,12 +143,12 @@ export const CardView = memo(function CardView(props: CardViewProps) {
           </>
         )}
         {card.cardType === 'RELIC' && card.charges && (
-          <div className="card-stat stat-charges" aria-hidden title="Charges">
+          <div className="card-stat stat-charges" aria-hidden title={t('Charges')}>
             <span>{card.charges}</span>
           </div>
         )}
         {card.cardType === 'LOCATION' && card.duration && (
-          <div className="card-stat stat-duration" aria-hidden title="Duration">
+          <div className="card-stat stat-duration" aria-hidden title={t('Duration')}>
             <span>{card.duration}</span>
           </div>
         )}
