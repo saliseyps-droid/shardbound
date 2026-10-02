@@ -1,3 +1,4 @@
+import { emptyArena } from './arena';
 import { STARTING_CURRENCY } from '@/config/economy';
 import { STARTER_DECKS, starterCardIds, starterDeckCards } from '@/data/starterDecks';
 import { PLAYABLE_FACTIONS } from '@/game/types';
@@ -67,5 +68,6 @@ export function createNewSave(username: string, avatar: string, now: number, id:
     matchHistory: [],
     recentRewards: [],
     redeemedCodes: [],
+    arena: emptyArena(),
   };
 }

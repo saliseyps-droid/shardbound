@@ -1,3 +1,4 @@
+import type { ArenaState } from './arena';
 import type { Difficulty } from '@/config/progression';
 import type { QuestType } from '@/config/quests';
 import type { PlayableFaction, SetId, Variant } from '@/game/types';
@@ -95,7 +96,7 @@ export interface MatchRecord {
   id: string;
   date: number;
   durationMs: number;
-  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'PVP' | 'RANKED' | 'TOURNAMENT';
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'PVP' | 'RANKED' | 'TOURNAMENT' | 'ARENA';
   /** Ranked rating change, when ranked. */
   ratingChange?: number;
   opponentId: string;
@@ -139,6 +140,8 @@ export interface GameSave {
   recentRewards: RewardEntry[];
   /** Ids of redeem codes already used by this account. */
   redeemedCodes: string[];
+  /** Arena run in progress, last result and records. */
+  arena: ArenaState;
 }
 
 export const MATCH_HISTORY_LIMIT = 100;

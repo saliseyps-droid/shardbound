@@ -1,3 +1,4 @@
+import { repairArena } from '@/domain/arena';
 import { hasCard } from '@/data/cards';
 import { STARTER_DECKS, starterDeckCards } from '@/data/starterDecks';
 import { PLAYABLE_FACTIONS, VARIANTS, type PlayableFaction } from '@/game/types';
@@ -148,6 +149,7 @@ export function migrateSave(input: Raw): MigrationReport {
     pve: { completed: { ...(raw.pve?.completed ?? {}) } },
     matchHistory: Array.isArray(raw.matchHistory) ? raw.matchHistory.slice(0, 100) : [],
     recentRewards: Array.isArray(raw.recentRewards) ? raw.recentRewards.slice(0, 20) : [],
+    arena: repairArena(raw.arena),
     redeemedCodes: Array.isArray(raw.redeemedCodes) ? raw.redeemedCodes.filter((c: unknown) => typeof c === 'string') : [],
   };
   for (const [k, v] of Object.entries(save.economy.packs)) save.economy.packs[k as keyof typeof save.economy.packs] = Math.floor(num(v, 0));
