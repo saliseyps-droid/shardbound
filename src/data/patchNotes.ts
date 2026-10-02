@@ -27,7 +27,7 @@ export const PATCH_NOTES: PatchNote[] = [
       {
         kind: 'new',
         items: [
-          'Arena (Play → Arena, entry 300 Gold): choose one of two Wardens, then draft 30 cards by picking one of three each time, from that faction and Neutral.',
+          'Arena (its own item in the main menu, entry 300 Gold): choose one of two Wardens, then draft 30 cards by picking one of three each time, from that faction and Neutral.',
           'Set up your Warden abilities, then fight up to 4 AI opponents that get tougher with every win. Your first loss ends the run.',
           'Rewards by wins: 0 – 1 pack and 50 Gold, 1 – 1 pack and 150 Gold, 2 – 2 packs and 250 Gold, 3 – 2 packs and 400 Gold, 4 – 3 packs, 600 Gold and a card back you don’t own yet.',
           'Drafted cards are only for the run: you don’t need to own them. Your run is saved, so you can leave and come back; Retire ends it early with the reward for your wins.',

@@ -13,6 +13,7 @@ const en = {
   'nav.decks': 'Decks',
   'nav.packs': 'Packs',
   'nav.shop': 'Shop',
+  'nav.arena': 'Arena',
   'nav.cardBacks': 'Card Backs',
   'nav.quests': 'Quests',
   'nav.profile': 'Profile',

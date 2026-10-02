@@ -135,7 +135,7 @@ Play → *Ranked* → *Find match*. Without a server, searching players meet thr
 
 ### Arena
 
-Play → *Arena* (entry 300 Gold): pick one of two factions, draft 30 cards one of three at a time (that faction + Neutral, rarity rolled per pick), set up the Warden talents, then fight up to 4 AI opponents (Normal, Normal, Hard, Expert) until the first loss. Rewards scale with wins (`src/config/arena.ts`); the run is stored in the save and its offers are seeded, so reloading never re-rolls (`src/domain/arena.ts`).
+*Arena* in the main menu (entry 300 Gold): pick one of two factions, draft 30 cards one of three at a time (that faction + Neutral, rarity rolled per pick), set up the Warden talents, then fight up to 4 AI opponents (Normal, Normal, Hard, Expert) until the first loss. Rewards scale with wins (`src/config/arena.ts`); the run is stored in the save and its offers are seeded, so reloading never re-rolls (`src/domain/arena.ts`).
 
 ### Tournament
 

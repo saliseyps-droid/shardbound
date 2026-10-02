@@ -11,6 +11,7 @@ import { usePatchNotesSeen } from './patchNotesSeen';
 const NAV: { to: string; label: MessageKey; icon: string }[] = [
   { to: '/', label: 'nav.home', icon: 'home' },
   { to: '/play', label: 'nav.play', icon: 'sword' },
+  { to: '/arena', label: 'nav.arena', icon: 'trophy' },
   { to: '/campaign', label: 'nav.campaign', icon: 'map' },
   { to: '/collection', label: 'nav.collection', icon: 'crystal' },
   { to: '/decks', label: 'nav.decks', icon: 'deck' },
