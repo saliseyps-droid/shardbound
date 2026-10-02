@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.11.1',
+    date: '2026-10-02',
+    title: 'Card gift codes',
+    summary: 'Redeem codes can now give cards.',
+    sections: [{ kind: 'new', items: ['Redeem codes (Profile → Redeem code) can now grant cards, including Foil and Prismatic versions.'] }],
+    commits: [],
+  },
+  {
     version: '0.11.0',
     date: '2026-10-02',
     title: 'Play on your phone',

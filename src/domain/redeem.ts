@@ -1,6 +1,6 @@
 import { REDEEM_CODES, type RedeemCodeDef } from '@/config/redeemCodes';
 import { err, ok, type Result } from '@/core/utils';
-import { pushReward, type GameSave } from './save';
+import { addCards, pushReward, type GameSave } from './save';
 
 /** SHA-256 hex digest via Web Crypto (browser and Node 20+). */
 export async function sha256Hex(text: string): Promise<string> {
@@ -30,6 +30,7 @@ export function applyRedeem(save: GameSave, def: RedeemCodeDef | undefined, now:
   if (r.packs) {
     next = { ...next, economy: { ...next.economy, packs: { ...next.economy.packs, [r.packs.setId]: (next.economy.packs[r.packs.setId] ?? 0) + r.packs.amount } } };
   }
-  next = pushReward(next, { source: `Code: ${def.label}`, gold: r.gold, essence: r.essence, packs: r.packs }, now);
+  if (r.cards?.length) next = { ...next, collection: addCards(next.collection, r.cards) };
+  next = pushReward(next, { source: `Code: ${def.label}`, gold: r.gold, essence: r.essence, packs: r.packs, cards: r.cards }, now);
   return ok({ save: next, def });
 }

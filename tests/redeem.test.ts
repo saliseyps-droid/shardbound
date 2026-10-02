@@ -44,3 +44,18 @@ describe('redeem codes', () => {
     expect((await svc.redeemCode('')).ok).toBe(false);
   });
 });
+
+describe('card redeem codes', () => {
+  it('the Meowchick code adds one Prismatic Meowchick, once per account', async () => {
+    const { applyRedeem } = await import('@/domain/redeem');
+    const { createNewSave } = await import('@/domain/newAccount');
+    const def = REDEEM_CODES.find((c) => c.id === 'gift-prismatic-meowchick');
+    expect(def).toBeTruthy();
+    const save = createNewSave('A', 'flame', 1, 'p');
+    const first = applyRedeem(save, def, 2);
+    if (!first.ok) throw new Error(first.error);
+    expect(first.value.save.collection.cards.neu_meowchick?.PRISMATIC).toBe(1);
+    expect(first.value.save.collection.unseen).toContain('neu_meowchick');
+    expect(applyRedeem(first.value.save, def, 3).ok).toBe(false);
+  });
+});
