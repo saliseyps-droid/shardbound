@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.12.1': {
+    title: 'Balanc talentů',
+    summary: 'Vyvolávací schopnosti Prázdného chóru a Mosazného dominia jsou o něco dražší.',
+    sections: [
+      [
+        'Prázdné vyvolání teď stojí na všech úrovních 3 energie (dřív 2): příliš dobře se kombinovalo se Žní duší a Nekonečným.',
+        'Sestavení teď stojí na všech úrovních 3 energie (dřív 2): příliš dobře se kombinovalo s Montážním protokolem.',
+      ],
+    ],
+  },
   '0.12.0': {
     title: 'Čeština',
     summary: 'Celá hra je teď i v češtině a kampaň hraje podle stejných pravidel jako ty.',

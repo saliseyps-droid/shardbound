@@ -119,9 +119,9 @@ const IRON: TalentAbility[] = [
     { cost: 2, effects: [{ type: 'GAIN_ARMOR', amount: 3, target: 'ALLY_HERO' }, { type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO', condition: { kind: 'CONTROLS_TAG', tag: 'Construct' } }], description: 'Gain 3 Armor, or 4 if you control a Construct.' },
   ], ['Gain 3 Armor instead of 2.', '+1 Armor while you control a Construct.']),
   active('IRON', 'assemble', 'Assemble', [
-    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot' }], description: 'Summon a 1/1 Scrapbot.' },
-    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot' }, { type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }], description: 'Summon a 1/1 Scrapbot and gain 1 Armor.' },
-    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot', count: 2 }], description: 'Summon two 1/1 Scrapbots.' },
+    { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot' }], description: 'Summon a 1/1 Scrapbot.' },
+    { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot' }, { type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }], description: 'Summon a 1/1 Scrapbot and gain 1 Armor.' },
+    { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot', count: 2 }], description: 'Summon two 1/1 Scrapbots.' },
   ], ['Also gain 1 Armor.', 'Summon two Scrapbots instead (no Armor).']),
   passive('IRON', 'reinforced_hull', 'Reinforced Hull', [
     { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }] }], description: 'At the end of your turn, gain 1 Armor.' },
@@ -170,9 +170,9 @@ const ASTRAL: TalentAbility[] = [
 
 const VOID: TalentAbility[] = [
   active('VOID', 'hollow_summons', 'Hollow Summons', [
-    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_hollow_wisp' }], description: 'Summon a 1/1 Hollow Wisp.' },
-    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }], description: 'Summon 2/2 Risen Bones.' },
-    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }, { type: 'SUMMON', cardId: 'token_hollow_wisp', condition: { kind: 'ALLY_DIED_THIS_TURN' } }], description: 'Summon 2/2 Risen Bones. If a friendly unit died this turn, also summon a 1/1 Hollow Wisp.' },
+    { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_hollow_wisp' }], description: 'Summon a 1/1 Hollow Wisp.' },
+    { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }], description: 'Summon 2/2 Risen Bones.' },
+    { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }, { type: 'SUMMON', cardId: 'token_hollow_wisp', condition: { kind: 'ALLY_DIED_THIS_TURN' } }], description: 'Summon 2/2 Risen Bones. If a friendly unit died this turn, also summon a 1/1 Hollow Wisp.' },
   ], ['Summon 2/2 Risen Bones instead.', 'Also a Hollow Wisp if a friendly unit died this turn.']),
   passive('VOID', 'soul_harvest', 'Soul Harvest', [
     { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_DIED', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ENEMY_HERO' }] }], description: 'Whenever a friendly unit dies, deal 1 damage to the enemy Warden. Twice per turn.' },

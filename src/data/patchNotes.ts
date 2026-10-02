@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.12.1',
+    date: '2026-10-03',
+    title: 'Talent balance',
+    summary: 'Summoning abilities of the Hollow Choir and the Brass Dominion cost a bit more.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Hollow Summons now costs 3 energy at every rank (was 2): it combined too well with Soul Harvest and Unending.',
+          'Assemble now costs 3 energy at every rank (was 2): it combined too well with Assembly Protocol.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.12.0',
     date: '2026-10-02',
     title: 'Czech language',
