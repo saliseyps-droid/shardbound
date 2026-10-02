@@ -10,7 +10,7 @@ import { toast, useUi } from '@/state/uiStore';
 import { CardBack, CardView } from '@/ui/components/CardView';
 import { confirmDialog, Spinner } from '@/ui/components/common';
 import { audio } from '@/audio/audioService';
-import { DeckPile, EmpowerBadge, EnergyBar, HeroPanel, HeroPowerButton, PermanentsRow, UnitView } from './BoardParts';
+import { DeckPile, EmpowerBadge, EnergyBar, HeroAbilities, HeroPanel, PermanentsRow, UnitView } from './BoardParts';
 import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
 import { useT } from '@/i18n';
 import { pickBoardBackground } from './boardBackgrounds';
@@ -274,7 +274,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
     if (drag?.active && drag.kind === 'attack') return document.querySelector(`[data-entity="u:${drag.uid}"]`);
     if (selection?.kind === 'attacker') return document.querySelector(`[data-entity="u:${selection.uid}"]`);
     if (selection?.kind === 'card') return document.querySelector(`[data-hand-uid="${selection.uid}"]`);
-    if (selection?.kind === 'power') return document.querySelector('.hero-self-area .hero-power');
+    if (selection?.kind === 'power') return document.querySelector(`.hero-self-area .hero-power[data-slot="${selection.slot}"]`);
     return null;
   })();
   const arrowTo = drag?.active && drag.kind === 'attack' ? { x: drag.x, y: drag.y } : pointer;
@@ -359,7 +359,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
             <HeroPanel game={game} player={AI} targetable={targets.includes('h:1')} onClick={() => store.getState().clickHero(AI)} />
           </div>
           <div className="hero-side-info">
-            <HeroPowerButton game={game} player={AI} />
+            <HeroAbilities game={game} player={AI} />
             <EnergyBar game={game} player={AI} />
             <DeckPile count={opp.deck.length} label="the opponent's deck" />
           </div>
@@ -385,7 +385,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
             <HeroPanel game={game} player={HUMAN} targetable={targets.includes('h:0')} onClick={() => store.getState().clickHero(HUMAN)} />
           </div>
           <div className="hero-side-info">
-            <HeroPowerButton game={game} player={HUMAN} />
+            <HeroAbilities game={game} player={HUMAN} />
             <EnergyBar game={game} player={HUMAN} />
             <DeckPile count={me.deck.length} label="your deck" />
             <EmpowerBadge game={game} player={HUMAN} />

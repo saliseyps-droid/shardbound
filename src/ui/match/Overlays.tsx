@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCardSafe } from '@/data/cards';
+import { getTalent } from '@/data/wardenTalents';
 import type { GameEvent, GameState } from '@/engine/types';
 import { useMatch, HUMAN, AI } from '@/state/matchStore';
 import { useAccount } from '@/state/accountStore';
@@ -106,7 +107,9 @@ function describeEvent(e: GameEvent, game: GameState): string | null {
     case 'UNIT_DIED':
       return `${name(e.cardId)} was destroyed`;
     case 'HERO_POWER_USED':
-      return `${who(e.player)} used a Warden Sigil`;
+      return `${who(e.player)} used ${getTalent(e.abilityId)?.name ?? 'a Warden ability'}`;
+    case 'HERO_ABILITY_TRIGGERED':
+      return `${getTalent(e.abilityId)?.name ?? 'A Warden ability'} triggered`;
     case 'TURN_STARTED':
       return `— ${e.player === HUMAN ? 'Your' : `${game.players[AI].hero.name}'s`} turn —`;
     case 'FATIGUE':

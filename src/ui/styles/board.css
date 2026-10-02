@@ -122,6 +122,14 @@
 .hero-power.is-selected { filter: drop-shadow(0 0 8px var(--cyan)); }
 .hero-power-cost { position: absolute; top: 3px; right: 9px; font-size: 0.75rem; color: #bff8ff; }
 .hero-power:disabled { cursor: default; }
+.hero-abilities { display: flex; gap: 4px; align-items: center; }
+.hero-power.is-passive { cursor: default; color: var(--parchment-dim); width: 42px; height: 42px; clip-path: circle(50%); }
+.hero-power.is-flash { animation: ability-flash 0.9s ease-out; }
+@keyframes ability-flash {
+  0% { filter: drop-shadow(0 0 0 transparent); }
+  25% { filter: drop-shadow(0 0 10px var(--gold-bright)) brightness(1.5); }
+  100% { filter: drop-shadow(0 0 0 transparent); }
+}
 
 .energy { display: flex; align-items: center; gap: 6px; }
 .energy-count { font-weight: 800; color: #bff8ff; min-width: 36px; }

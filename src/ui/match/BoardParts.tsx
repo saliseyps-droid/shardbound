@@ -1,7 +1,7 @@
-import { memo, useState, type CSSProperties, type PointerEvent as RPointerEvent } from 'react';
+import { memo, useEffect, useState, type CSSProperties, type PointerEvent as RPointerEvent } from 'react';
 import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
-import { getHeroPower } from '@/data/heroPowers';
+import { RANK_LABEL, getTalent } from '@/data/wardenTalents';
 import { KEYWORDS } from '@/data/keywords';
 import type { GameState, PlayerId, UnitInstance } from '@/engine/types';
 import { canAttack, canUseHeroPower, currentHealth, empower, hasKeyword, maxHealth, unitAttack } from '@/engine/queries';
@@ -219,25 +219,63 @@ export function EnergyBar({ game, player }: { game: GameState; player: PlayerId 
   );
 }
 
-export function HeroPowerButton({ game, player }: { game: GameState; player: PlayerId }) {
-  const p = game.players[player];
-  const power = p.hero.heroPowerId ? getHeroPower(p.hero.heroPowerId) : undefined;
-  const selected = useMatch((s) => s.selection?.kind === 'power');
-  const click = useMatch((s) => s.clickHeroPower);
-  if (!power) return null;
-  const usable = player === HUMAN && canUseHeroPower(game, player).ok;
-  const used = p.hero.heroPowerUses >= (power.usesPerTurn ?? 1);
+/** The Warden's two talent abilities: active ones are clicked like the old Sigil, passive ones only glow when they trigger. */
+export function HeroAbilities({ game, player }: { game: GameState; player: PlayerId }) {
+  const abilities = game.players[player].hero.abilities;
+  if (abilities.length === 0) return null;
+  const firstActive = abilities.findIndex((a) => getTalent(a.id)?.kind === 'ACTIVE');
   return (
-    <Tip title={`${power.name} (${power.cost})`} body={power.description}>
+    <div className="hero-abilities">
+      {abilities.map((_, slot) => (
+        <HeroAbilitySlot key={slot} game={game} player={player} slot={slot} tutorial={player === HUMAN && slot === firstActive} />
+      ))}
+    </div>
+  );
+}
+
+function HeroAbilitySlot({ game, player, slot, tutorial }: { game: GameState; player: PlayerId; slot: number; tutorial: boolean }) {
+  const p = game.players[player];
+  const state = p.hero.abilities[slot];
+  const talent = getTalent(state.id);
+  const level = talent?.levels[state.level];
+  const selected = useMatch((s) => s.selection?.kind === 'power' && s.selection.slot === slot && player === HUMAN);
+  const click = useMatch((s) => s.clickHeroPower);
+  // Passive glow: the newest trigger event of this slot.
+  const lastTrigger = [...game.log].reverse().find((e) => e.type === 'HERO_ABILITY_TRIGGERED' && e.player === player && e.slot === slot)?.seq;
+  const [flash, setFlash] = useState(false);
+  useEffect(() => {
+    if (lastTrigger === undefined) return;
+    setFlash(true);
+    const t = setTimeout(() => setFlash(false), 900);
+    return () => clearTimeout(t);
+  }, [lastTrigger]);
+  if (!talent || !level) return null;
+  const glyph = (p.hero.faction && FACTIONS[p.hero.faction as Faction]?.sigil) || 'crystal';
+  const title = `${talent.name} ${RANK_LABEL[state.level] ?? ''}`.trim();
+  if (talent.kind === 'PASSIVE') {
+    return (
+      <Tip title={`${title} · Passive`} body={level.description}>
+        <span className={`hero-power is-passive ${flash ? 'is-flash' : ''}`} data-slot={slot} role="img" aria-label={`Passive Warden ability: ${title}. ${level.description}`}>
+          <Glyph name={glyph} size={20} />
+        </span>
+      </Tip>
+    );
+  }
+  const active = talent.levels[state.level];
+  const usable = player === HUMAN && canUseHeroPower(game, player, slot).ok;
+  const used = state.uses >= (active.usesPerTurn ?? 1);
+  return (
+    <Tip title={`${title} · Active (${active.cost})`} body={active.description}>
       <button
-        data-tutorial={player === HUMAN ? 'sigil' : undefined}
+        data-tutorial={tutorial ? 'sigil' : undefined}
+        data-slot={slot}
         className={`hero-power ${usable ? 'is-usable' : ''} ${used ? 'is-used' : ''} ${selected ? 'is-selected' : ''}`}
-        onClick={player === HUMAN ? click : undefined}
+        onClick={player === HUMAN ? () => click(slot) : undefined}
         disabled={player !== HUMAN}
-        aria-label={`Warden Sigil: ${power.name}, costs ${power.cost}. ${power.description}${used ? ' Already used this turn.' : ''}`}
+        aria-label={`Warden ability: ${title}, costs ${active.cost}. ${active.description}${used ? ' Already used this turn.' : ''}`}
       >
-        <Glyph name={(p.hero.faction && FACTIONS[p.hero.faction as Faction]?.sigil) || 'crystal'} size={22} />
-        <span className="hero-power-cost num">{power.cost}</span>
+        <Glyph name={glyph} size={22} />
+        <span className="hero-power-cost num">{active.cost}</span>
       </button>
     </Tip>
   );

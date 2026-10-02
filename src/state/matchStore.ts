@@ -2,9 +2,8 @@ import { create } from 'zustand';
 import { randomSeed } from '@/core/rng';
 import { applyAction, createGame } from '@/engine/game';
 import type { GameAction, GameEvent, GameState, PlayerId, TargetRef, UnitInstance } from '@/engine/types';
-import { attackTargets, canAttack, canPlayCard, canUseHeroPower, findUnit, validTargets } from '@/engine/queries';
+import { activeLevelOf, attackTargets, canAttack, canPlayCard, canUseHeroPower, findUnit, validTargets } from '@/engine/queries';
 import { getCard } from '@/data/cards';
-import { getHeroPower } from '@/data/heroPowers';
 import { aiClient } from '@/ai/aiClient';
 import { audio, type SoundEvent } from '@/audio/audioService';
 import { GAME_RULES } from '@/config/gameRules';
@@ -48,7 +47,7 @@ export interface Ghost {
 export type Selection =
   | { kind: 'card'; uid: number }
   | { kind: 'attacker'; uid: number }
-  | { kind: 'power' }
+  | { kind: 'power'; slot: number }
   | null;
 
 interface MatchStore {
@@ -79,7 +78,7 @@ interface MatchStore {
   clickHandCard: (uid: number) => void;
   clickUnit: (uid: number) => void;
   clickHero: (player: PlayerId) => void;
-  clickHeroPower: () => void;
+  clickHeroPower: (slot: number) => void;
   dropCard: (uid: number, target: TargetRef | null, position?: number) => void;
   dropAttack: (attackerUid: number, target: TargetRef) => void;
   cancelSelection: () => void;
@@ -211,7 +210,7 @@ function targetsFor(game: GameState, sel: Selection): EntityKey[] {
     const u = findUnit(game, sel.uid);
     return u ? attackTargets(game, u).map(entityKey) : [];
   }
-  const power = game.players[HUMAN].hero.heroPowerId ? getHeroPower(game.players[HUMAN].hero.heroPowerId) : undefined;
+  const power = activeLevelOf(game, HUMAN, sel.slot);
   return power?.target ? validTargets(game, HUMAN, power.target, { spellLike: true }).map(entityKey) : [];
 }
 
@@ -638,7 +637,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         const target: TargetRef = { type: 'unit', uid };
         if (s.selection.kind === 'card') void dispatch({ type: 'PLAY_CARD', player: HUMAN, cardUid: s.selection.uid, target });
         else if (s.selection.kind === 'attacker') void dispatch({ type: 'ATTACK', player: HUMAN, attackerUid: s.selection.uid, target });
-        else void dispatch({ type: 'HERO_POWER', player: HUMAN, target });
+        else void dispatch({ type: 'HERO_POWER', player: HUMAN, slot: s.selection.slot, target });
         return;
       }
       const unit = findUnit(game, uid);
@@ -665,22 +664,24 @@ export const useMatch = create<MatchStore>((set, get) => {
       const target: TargetRef = { type: 'hero', player };
       if (s.selection.kind === 'card') void dispatch({ type: 'PLAY_CARD', player: HUMAN, cardUid: s.selection.uid, target });
       else if (s.selection.kind === 'attacker') void dispatch({ type: 'ATTACK', player: HUMAN, attackerUid: s.selection.uid, target });
-      else void dispatch({ type: 'HERO_POWER', player: HUMAN, target });
+      else void dispatch({ type: 'HERO_POWER', player: HUMAN, slot: s.selection.slot, target });
     },
 
-    clickHeroPower: () => {
+    clickHeroPower: (slot) => {
       if (!selectionAllowed()) return;
       const game = get().game!;
-      const check = canUseHeroPower(game, HUMAN);
+      const check = canUseHeroPower(game, HUMAN, slot);
       if (!check.ok) {
         audio.play('error');
-        toast(check.reason ?? 'Cannot use Warden Sigil', 'error');
+        toast(check.reason ?? 'Cannot use Warden ability', 'error');
         return;
       }
-      if (get().selection?.kind === 'power') return set({ selection: null, targets: [] });
-      const targets = targetsFor(game, { kind: 'power' });
-      if (targets.length === 0) void dispatch({ type: 'HERO_POWER', player: HUMAN });
-      else set({ selection: { kind: 'power' }, targets });
+      const current = get().selection;
+      if (current?.kind === 'power' && current.slot === slot) return set({ selection: null, targets: [] });
+      const sel: Selection = { kind: 'power', slot };
+      const targets = targetsFor(game, sel);
+      if (targets.length === 0) void dispatch({ type: 'HERO_POWER', player: HUMAN, slot });
+      else set({ selection: sel, targets });
     },
 
     dropCard: (uid, target, position) => {
