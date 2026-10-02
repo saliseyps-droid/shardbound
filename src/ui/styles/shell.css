@@ -53,6 +53,38 @@
 @media (max-width: 1500px) { .nav-link span:not(.nav-count):not(.nav-dot) { display: none; } .nav-link { padding: 8px 10px; } }
 
 .header-resources { display: flex; align-items: center; gap: var(--space-4); flex: none; }
+
+/* Phones: menu button + slide-in drawer; compact resources. */
+.nav-toggle { display: none; }
+.burger { position: relative; width: 20px; height: 14px; display: block; }
+.burger span { position: absolute; left: 0; right: 0; height: 2px; border-radius: 2px; background: currentColor; transition: transform 0.2s, opacity 0.2s, top 0.2s; }
+.burger span:nth-child(1) { top: 0; }
+.burger span:nth-child(2) { top: 6px; }
+.burger span:nth-child(3) { top: 12px; }
+.burger.is-open span:nth-child(1) { top: 6px; transform: rotate(45deg); }
+.burger.is-open span:nth-child(2) { opacity: 0; }
+.burger.is-open span:nth-child(3) { top: 6px; transform: rotate(-45deg); }
+.nav-backdrop { display: none; }
+@media (max-width: 760px) {
+  .app-header { gap: var(--space-2); padding: 0 var(--space-2); }
+  .nav-toggle { display: grid; place-items: center; flex: none; }
+  .brand-name { display: none; }
+  .main-nav {
+    position: fixed; z-index: 60; top: var(--header-h); left: 0; bottom: 0; width: min(280px, 82vw);
+    flex-direction: column; gap: 2px; padding: var(--space-3); overflow-y: auto;
+    background: linear-gradient(180deg, #1d1838, #120f24); box-shadow: 12px 0 30px -10px #000;
+    transform: translateX(-105%); transition: transform 0.25s var(--ease-out);
+  }
+  .main-nav.is-open { transform: none; }
+  .main-nav .nav-link { padding: 12px 14px; font-size: var(--t-md, 1rem); }
+  .main-nav .nav-link span:not(.nav-count):not(.nav-dot) { display: inline; }
+  .main-nav .nav-link.active::after { left: 0; right: auto; top: 8px; bottom: 8px; width: 3px; height: auto; clip-path: none; }
+  .nav-backdrop { display: block; position: fixed; z-index: 55; inset: var(--header-h) 0 0 0; background: rgba(5, 3, 14, 0.55); }
+  .header-resources { gap: var(--space-2); margin-left: auto; }
+  .header-resources .currency { font-size: var(--t-sm); }
+  .level-gem { width: 28px; height: 32px; font-size: var(--t-sm); }
+}
+@media (max-width: 420px) { .header-resources .currency:nth-child(2) { display: none; } }
 .header-packs { text-decoration: none; color: inherit; }
 .level-badge { display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; }
 .level-gem {

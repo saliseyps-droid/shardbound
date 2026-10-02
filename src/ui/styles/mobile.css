@@ -1,0 +1,135 @@
+/* ------------------------------------------------------------------ */
+/* Phones and small tablets. Loaded after every other stylesheet.      */
+/* ------------------------------------------------------------------ */
+
+/* Mobile browsers: 100vh includes the URL bar; dvh is the visible height. */
+body .match { height: 100dvh; }
+
+/* Portrait phones get a hint to rotate during a match. */
+body .rotate-hint { display: none; }
+@media (orientation: portrait) and (max-width: 760px) {
+  body .rotate-hint {
+    position: fixed; inset: 0; z-index: 3000;
+    display: grid; place-content: center; justify-items: center; gap: var(--space-3); text-align: center; padding: var(--space-5);
+    color: var(--gold-bright); background: rgba(10, 8, 24, 0.96);
+  }
+  body .rotate-hint svg { animation: rotate-hint 2.2s ease-in-out infinite; }
+  body .rotate-hint strong { font-family: var(--font-display); font-size: var(--t-xl); color: var(--parchment); }
+}
+@keyframes rotate-hint { 0%, 30% { transform: rotate(0); } 60%, 100% { transform: rotate(90deg); } }
+
+/* ---------------- Screens ---------------- */
+@media (max-width: 760px) {
+  body .screen { padding: var(--space-4) 12px var(--space-6); }
+  body .screen-header { gap: var(--space-2); margin-bottom: var(--space-4); }
+  body .screen-header h2 { font-size: 1.7rem; }
+
+  /* Filter bar: faction tabs scroll sideways instead of wrapping into many rows. */
+  body .faction-tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  body .faction-tab { flex: none; }
+  body .filter-row { gap: 6px; }
+  body .cost-filter { flex-wrap: wrap; }
+
+  /* Collection: cards use the full width; the card detail slides up as a sheet. */
+  body .collection-body { grid-template-columns: 1fr; }
+  body .collection-side { display: none; }
+  body .collection-side.has-detail {
+    display: block; position: fixed; z-index: 70; left: 0; right: 0; bottom: 0; max-height: 78dvh; margin: 0;
+    padding: var(--space-3); overflow-y: auto;
+    background: linear-gradient(180deg, #221c3d, #141126); box-shadow: 0 -12px 30px -8px #000; border-top: 1px solid var(--line-strong);
+    border-radius: 14px 14px 0 0;
+  }
+
+  /* Deck editor: the card pool on top, the deck list underneath. */
+  body .deck-editor-screen { height: auto; }
+  body .editor-body { grid-template-columns: 1fr; }
+  body .editor-pool { height: 62dvh; }
+  body .editor-side { margin-top: 0; max-height: none; }
+
+  /* Arena & shop details */
+  body .arena-play { grid-template-columns: 1fr; }
+  body .arena-offer { gap: var(--space-3); }
+  body .arena-offer-card .card { --card-w: 150px !important; }
+  body .shop-set { grid-template-columns: 1fr; justify-items: center; }
+  body .talent-columns { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+}
+
+/* ---------------- Match: phones held sideways ---------------- */
+@media (max-height: 520px) {
+  body .match {
+    --unit-w: clamp(42px, 12.5vh, 78px);
+    --sidebar-w: 0px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(50px, 16vh) minmax(0, 1fr) minmax(0, 33vh);
+    grid-template-areas: 'enemy' 'field' 'self';
+  }
+  body .match-sidebar { display: none; }
+  body .match::before { width: min(70vw, 600px); }
+  body .battlefield { padding: 0 var(--space-2); }
+
+  body .hero { width: 52px; }
+  body .hero-health { min-width: 22px; height: 24px; font-size: 0.8rem; }
+  body .hero-armor { min-width: 20px; height: 22px; font-size: 0.75rem; }
+  body .hero-name { font-size: var(--t-xs); }
+  body .hero-area { gap: 8px; width: min(560px, 88%); }
+  body .hero-side-info { gap: 6px; }
+  body .hero-power { width: 32px; height: 35px; }
+  body .hero-power svg { width: 15px; height: 15px; }
+  body .hero-power-cost { top: 1px; right: 5px; font-size: 0.6rem; }
+  body .hero-power.is-passive { width: 28px; height: 28px; }
+  body .energy-crystals { display: none; }
+  body .energy-count { min-width: 0; font-size: var(--t-sm); }
+  body .permanent { width: 30px; height: 34px; }
+  body .permanent.location { width: 40px; }
+
+  body .enemy-hand { transform: scale(0.55); transform-origin: 50% 0; }
+  body .draw-pile-anchor { left: 8px; }
+  body .self-side > .draw-pile-anchor { bottom: 38%; }
+  body .enemy-side > .draw-pile-anchor { top: 6px; }
+  body .draw-pile-count { min-width: 26px; padding: 0 6px; font-size: var(--t-xs); }
+
+  body .turn-controls { right: 8px; bottom: 40%; gap: 4px; }
+  body .end-turn { min-width: 84px; height: 38px; padding: 0 12px; font-size: 0.95rem; }
+  body .turn-timer { width: 84px; font-size: var(--t-xs); }
+  body .leave-btn { top: 4px; left: 4px; transform: scale(0.8); }
+
+  /* Cards in hand grow more when touched so their text stays readable. */
+  body .hand-card:hover, body .hand-card:focus-within, body .hand-card.is-selected { transform: translateX(calc(-50% + var(--o) * var(--spread))) scale(2.1); }
+  body .fleeting-tag { font-size: 0.55rem; }
+
+  body .unit-stat { transform: scale(0.8); }
+  body .fx { font-size: 1.1rem; }
+
+  body .mulligan-card .card { --card-w: clamp(84px, 30vh, 150px) !important; }
+  body .mulligan-cards { gap: var(--space-3); }
+  body .match-overlay { justify-content: flex-start; padding: var(--space-3); gap: var(--space-3); }
+  body .match-overlay h1, body .results-title { font-size: 2rem; }
+  body .turn-banner { transform: scale(0.7); }
+  body .tutorial-box { width: min(260px, 40vw); font-size: var(--t-xs); }
+}
+
+/* Touch screens: a tap leaves :hover stuck, so only a selected card or unit grows. */
+@media (hover: none) {
+  body .hand-card:hover:not(.is-selected) {
+    z-index: 1;
+    bottom: calc(var(--card-w) * -0.08);
+    transform: translateX(calc(-50% + var(--o) * var(--spread))) translateY(calc(var(--o) * var(--o) * 3px)) rotate(calc(var(--o) * 2.5deg));
+    transform-origin: 50% 120%;
+  }
+  body .hand-card:focus-within:not(.is-selected) {
+    z-index: 1;
+    bottom: calc(var(--card-w) * -0.08);
+    transform: translateX(calc(-50% + var(--o) * var(--spread))) translateY(calc(var(--o) * var(--o) * 3px)) rotate(calc(var(--o) * 2.5deg));
+  }
+  body .unit:hover:not(.is-selected) { transform: none; }
+}
+
+/* Card inspector on short screens: a smaller card with the text beside it. */
+@media (max-height: 520px) {
+  body .inspector-body { grid-template-columns: auto minmax(0, 1fr); justify-items: start; gap: var(--space-4); }
+  body .inspector-card { padding: 0; }
+  body .inspector-card .card { --card-w: min(56vh, 210px) !important; }
+  body .inspector-text p { font-size: var(--t-sm); }
+  body .modal { max-height: 94dvh; overflow-y: auto; padding: var(--space-3) var(--space-4); }
+  body .modal-backdrop { padding: var(--space-2); }
+}

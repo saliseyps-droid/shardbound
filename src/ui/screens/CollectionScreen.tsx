@@ -145,7 +145,7 @@ export default function CollectionScreen() {
             </div>
           }
         />
-        <div className="collection-side">
+        <div className={`collection-side ${selected ? 'has-detail' : ''}`}>
           {selected ? <CardDetailPanel cardId={selected} onClose={() => setSelected(null)} /> : <CollectionStats collection={collection} />}
         </div>
       </div>

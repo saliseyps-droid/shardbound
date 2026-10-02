@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.11.0',
+    date: '2026-10-02',
+    title: 'Play on your phone',
+    summary: 'Shardbound now works on phones.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Phones: the main menu opens from the ☰ button, and every screen fits a phone held upright.',
+          'Matches on phones are played with the phone held sideways: smaller cards, the battle log tucked away, and a reminder to rotate when you hold it upright.',
+          'Touch controls: tap a card to play it, drag a unit onto a target to attack, and press and hold a card or unit to inspect it.',
+          'Collection on phones: tapping a card opens its details in a panel that slides up from the bottom.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.10.1',
     date: '2026-10-02',
     title: 'A new emblem',

@@ -14,6 +14,7 @@ import { DrawPile, EmpowerBadge, EnergyBar, HeroAbilities, HeroPanel, Permanents
 import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
 import { useT } from '@/i18n';
 import { BrandLogo } from '@/ui/components/BrandLogo';
+import { Glyph } from '@/ui/components/Icons';
 import { pickBoardBackground } from './boardBackgrounds';
 import '@/ui/styles/board.css';
 
@@ -30,10 +31,13 @@ interface Drag {
 const DRAG_THRESHOLD = 8;
 let mountedBoards = 0;
 
+/** Hand card width: from the viewport height; much smaller on phones held sideways. */
+const cardWidthFor = (h: number) => (h <= 520 ? Math.round(Math.max(54, h * 0.17)) : Math.round(Math.min(150, Math.max(104, h * 0.14))));
+
 function useViewportCardWidth() {
-  const [w, setW] = useState(() => Math.round(Math.min(150, Math.max(104, window.innerHeight * 0.14))));
+  const [w, setW] = useState(() => cardWidthFor(window.innerHeight));
   useEffect(() => {
-    const on = () => setW(Math.round(Math.min(150, Math.max(104, window.innerHeight * 0.14))));
+    const on = () => setW(cardWidthFor(window.innerHeight));
     window.addEventListener('resize', on);
     return () => window.removeEventListener('resize', on);
   }, []);
@@ -119,6 +123,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const [newCards, setNewCards] = useState<Set<number>>(new Set());
   const prevHand = useRef<number[]>([]);
   const boardRef = useRef<HTMLDivElement>(null);
+  const longPress = useRef<{ timer?: number }>({});
 
   const me = game.players[HUMAN];
   const opp = game.players[AI];
@@ -343,6 +348,15 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const handCount = me.hand.length;
   const draggingCard = drag?.active && drag.kind === 'card' ? me.hand.find((c) => c.uid === drag.uid) : undefined;
 
+  /** Opens the inspector for the hand card or unit under `el`; true when there was one. */
+  const inspectAt = (el: HTMLElement): boolean => {
+    const handUid = el.closest('[data-hand-uid]')?.getAttribute('data-hand-uid');
+    const entity = el.closest('[data-entity^="u:"]')?.getAttribute('data-entity');
+    const cardId = handUid ? me.hand.find((c) => c.uid === Number(handUid))?.cardId : entity ? game.players.flatMap((p) => p.board).find((u) => `u:${u.uid}` === entity)?.cardId : undefined;
+    if (cardId) useUi.getState().inspectCard(cardId);
+    return !!cardId;
+  };
+
   return (
     <div
       className={`match ${myTurn ? 'my-turn' : 'their-turn'} ${selection ? 'is-targeting' : ''}`}
@@ -353,11 +367,29 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         const s = store.getState();
         if (s.selection) return s.cancelSelection();
         // Right-click inspects a card in hand or a unit on the battlefield.
+        inspectAt(e.target as HTMLElement);
+      }}
+      onPointerDownCapture={(e) => {
+        // Touch: press and hold a card or unit to inspect it (phones have no right click).
+        if (e.pointerType !== 'touch') return;
         const el = e.target as HTMLElement;
-        const handUid = el.closest('[data-hand-uid]')?.getAttribute('data-hand-uid');
-        const entity = el.closest('[data-entity^="u:"]')?.getAttribute('data-entity');
-        const cardId = handUid ? me.hand.find((c) => c.uid === Number(handUid))?.cardId : entity ? game.players.flatMap((p) => p.board).find((u) => `u:${u.uid}` === entity)?.cardId : undefined;
-        if (cardId) useUi.getState().inspectCard(cardId);
+        const x0 = e.clientX;
+        const y0 = e.clientY;
+        clearTimeout(longPress.current.timer);
+        const stop = () => {
+          clearTimeout(longPress.current.timer);
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', stop);
+          window.removeEventListener('pointercancel', stop);
+        };
+        const onMove = (ev: PointerEvent) => Math.hypot(ev.clientX - x0, ev.clientY - y0) > 10 && stop();
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', stop);
+        window.addEventListener('pointercancel', stop);
+        longPress.current.timer = window.setTimeout(() => {
+          stop();
+          if (inspectAt(el)) endDrag.current?.();
+        }, 500);
       }}
     >
       <div className="board-mat" aria-hidden />
@@ -384,7 +416,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           </div>
         </div>
         <div className="draw-pile-anchor">
-          <DrawPile count={opp.deck.length} label="the opponent's deck" player={AI} width={104} design={opp.hero.cardBack} />
+          <DrawPile count={opp.deck.length} label="the opponent's deck" player={AI} width={Math.round(cardW * 0.83)} design={opp.hero.cardBack} />
         </div>
       </section>
 
@@ -494,6 +526,11 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         </div>
       )}
 
+      <div className="rotate-hint" role="alert">
+        <Glyph name="deck" size={48} />
+        <strong>Turn your phone sideways</strong>
+        <span className="muted">The battlefield needs a landscape screen.</span>
+      </div>
       <CastPreview />
       <TurnBanner />
       <TutorialOverlay />

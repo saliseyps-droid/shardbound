@@ -1,5 +1,6 @@
 import { BrandLogo } from '@/ui/components/BrandLogo';
-import { NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { xpToNext } from '@/domain/progression';
 import { MAX_LEVEL } from '@/config/progression';
@@ -30,15 +31,27 @@ export function AppHeader() {
   const claimable = useAccount((s) => s.save?.quests.active.filter((q) => q.completed && !q.claimed).length ?? 0);
   const t = useT();
   const patchSeen = usePatchNotesSeen((s) => s.seen);
+  // Phones: the menu lives in a drawer behind a menu button.
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  useEffect(() => setMenuOpen(false), [location.pathname]);
   if (!profile) return null;
   const need = xpToNext(profile.level);
   return (
     <header className="app-header">
+      <button className="nav-toggle icon-btn" aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
+        <span className={`burger ${menuOpen ? 'is-open' : ''}`} aria-hidden>
+          <span />
+          <span />
+          <span />
+        </span>
+      </button>
+      {menuOpen && <div className="nav-backdrop" onClick={() => setMenuOpen(false)} aria-hidden />}
       <NavLink to="/" className="brand" aria-label="Shardbound home">
         <BrandLogo size={34} />
         <span className="brand-name">Shardbound</span>
       </NavLink>
-      <nav className="main-nav" aria-label="Main">
+      <nav className={`main-nav ${menuOpen ? 'is-open' : ''}`} aria-label="Main">
         {NAV.map((n) => (
           <NavLink key={n.to} to={n.to} end={n.to === '/'} className="nav-link" onClick={() => audio.play('click')}>
             <Glyph name={n.icon} size={16} />
