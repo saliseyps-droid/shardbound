@@ -10,6 +10,7 @@ import { gameService } from '@/state/accountStore';
 import { toast } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
 import { getCardSafe } from '@/data/cards';
+import { talentSummary } from '@/data/wardenTalents';
 import { Essence, Gold, ProgressBar } from '../common';
 import { EssenceIcon, Glyph, GoldIcon, PackIcon } from '../Icons';
 import { WardenPortrait } from '../WardenPortrait';
@@ -41,6 +42,7 @@ export function DeckBox({ deck, save, selected, onSelect, compact }: { deck: Dec
         <span className="faint">
           {f.name}, {deckSize(deck)} cards
         </span>
+        {deck.talents.length > 0 && <span className="deckbox-talents faint small">{talentSummary(deck.talents)}</span>}
         {!valid && <span className="deckbox-issue">⚠ {issues[0].message}</span>}
       </span>
       {selected && <span className="deckbox-check" aria-hidden>✓</span>}

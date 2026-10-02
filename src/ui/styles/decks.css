@@ -127,7 +127,7 @@
   grid-template-columns: minmax(0, 1fr) clamp(290px, 22vw, 360px);
   gap: var(--space-5);
 }
-.editor-pool { min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.editor-pool { min-height: 0; display: grid; grid-template-rows: auto auto minmax(0, 1fr); }
 .editor-pool .filter-bar { margin-bottom: var(--space-2); }
 
 .editor-side {
@@ -200,21 +200,68 @@
   .editor-body { grid-template-columns: minmax(0, 1fr) 280px; gap: var(--space-3); }
 }
 
-/* Warden Sigil summary under the Warden faction picker */
-.sigil-info {
-  align-items: center !important;
-  display: flex; align-items: flex-start; gap: var(--space-3);
+/* Warden abilities summary under the Warden faction picker (opens the Talents tab) */
+.talent-summary {
+  display: flex; align-items: center; gap: var(--space-3); width: 100%;
   padding: var(--space-3); margin-top: calc(var(--space-2) * -1);
-  background: rgba(0, 0, 0, 0.22);
-  border-left: 3px solid var(--f1);
-  font-size: var(--t-sm);
+  background: rgba(0, 0, 0, 0.22); border: 0; border-left: 3px solid var(--f1);
+  color: inherit; font: inherit; font-size: var(--t-sm); text-align: left; cursor: pointer;
 }
-.sigil-gem {
-  position: relative; flex: none; width: 36px; height: 40px; display: grid; place-items: center;
-  color: var(--gold-bright); background: linear-gradient(160deg, #6b5a1f, #2b2210);
+.talent-summary:hover { background: rgba(0, 0, 0, 0.32); }
+.talent-summary-text { display: grid; gap: 2px; }
+.talent-summary-text strong { color: var(--parchment); }
+.talent-summary-text span { color: var(--parchment-dim); }
+.deckbox-talents { display: block; }
+
+/* Cards | Talents switcher */
+.editor-pool.is-talents { grid-template-rows: auto minmax(0, 1fr); }
+.editor-tabs { display: flex; gap: 4px; margin-bottom: var(--space-2); }
+.editor-tab {
+  padding: 6px 16px; border: 0; cursor: pointer; font: inherit; font-family: var(--font-display);
+  color: var(--parchment-dim); background: rgba(0, 0, 0, 0.25);
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+}
+.editor-tab.is-active { color: var(--ink-1); background: var(--gold); }
+.tab-warn { color: var(--damage); font-weight: 800; margin-left: 4px; }
+.editor-tab.is-active .tab-warn { color: #7a1010; }
+
+/* Talent tree */
+.talent-tree { --fc: var(--gold); overflow: auto; display: grid; align-content: start; gap: var(--space-4); padding: var(--space-2) 2px; }
+.talent-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-3); }
+.talent-head h3 { margin: 0; font-family: var(--font-display); }
+.talent-head p { margin: 2px 0 0; }
+.talent-points { display: flex; align-items: center; gap: var(--space-2); font-weight: 700; }
+.talent-pips { display: inline-flex; gap: 4px; }
+.talent-pip { width: 12px; height: 14px; background: rgba(255, 255, 255, 0.12); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+.talent-pip.is-spent { background: var(--gold-bright); }
+.talent-columns { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-3); }
+@media (max-width: 900px) { .talent-columns { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }
+.talent-col {
+  display: grid; grid-template-rows: auto auto 1fr; justify-items: center; gap: var(--space-3);
+  padding: var(--space-3); background: rgba(0, 0, 0, 0.22);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fc) 25%, transparent);
+}
+.talent-col.is-picked { background: linear-gradient(180deg, color-mix(in srgb, var(--fc) 22%, transparent), rgba(0, 0, 0, 0.22)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fc) 70%, transparent); }
+.talent-title { display: grid; justify-items: center; gap: 4px; text-align: center; }
+.talent-title strong { font-family: var(--font-display); font-size: var(--t-md, 1rem); line-height: 1.15; }
+.talent-kind { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 1px 6px; }
+.talent-kind.kind-active { color: var(--ink-1); background: var(--cyan); }
+.talent-kind.kind-passive { color: var(--parchment); background: rgba(255, 255, 255, 0.14); }
+.talent-nodes { list-style: none; margin: 0; padding: 0; display: grid; justify-items: center; gap: 18px; position: relative; }
+.talent-nodes::before { content: ''; position: absolute; top: 20px; bottom: 20px; left: 50%; width: 2px; transform: translateX(-50%); background: rgba(255, 255, 255, 0.14); }
+.talent-node {
+  position: relative; width: 48px; height: 54px; display: grid; place-items: center; cursor: pointer; border: 0;
+  color: var(--parchment-faint); background: linear-gradient(160deg, #3d3564, #1d1933);
   clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  font-family: var(--font-display); font-size: 1rem; font-weight: 700;
+  transition: transform 0.12s var(--ease-out), filter 0.12s;
 }
-.sigil-cost { position: absolute; top: 2px; right: 6px; font-size: 0.7rem; font-weight: 800; color: #bff8ff; }
-.sigil-text { display: grid; gap: 2px; }
-.sigil-text strong { color: var(--parchment); }
-.sigil-text span { color: var(--parchment-dim); }
+.talent-node:hover { transform: scale(1.06); }
+.talent-node.is-available { color: var(--parchment); background: linear-gradient(160deg, color-mix(in srgb, var(--fc) 45%, #3d3564), #1d1933); }
+.talent-node.is-learned { color: #2b2210; background: linear-gradient(160deg, var(--gold-bright), #8a6a22); filter: drop-shadow(0 0 6px rgba(232, 176, 75, 0.6)); }
+.talent-node.is-locked { opacity: 0.45; }
+.talent-node:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.talent-cost { position: absolute; top: 4px; right: 8px; font-size: 0.68rem; font-family: var(--font-body, inherit); color: #bff8ff; }
+.talent-node.is-learned .talent-cost { color: #12324a; }
+.talent-desc { margin: 0; color: var(--parchment-dim); text-align: center; line-height: 1.35; }
+.talent-desc-rank { color: var(--gold-bright); font-weight: 800; }

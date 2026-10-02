@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { DECK_RULES } from '@/config/gameRules';
 import { collectibleCards, getCard } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
-import { FACTION_HERO_POWER, getHeroPower } from '@/data/heroPowers';
+import { defaultBuild, talentSummary } from '@/data/wardenTalents';
 import { PLAYABLE_FACTIONS, type CardDefinition, type Faction, type PlayableFaction } from '@/game/types';
 import { autoBuildDeck, canAddCard, deckFactions, deckSize, deckStats, maxCopiesFor, validateDeck, type Deck } from '@/domain/decks';
 import { ownedCopies } from '@/domain/save';
@@ -14,6 +14,7 @@ import { CardView } from '@/ui/components/CardView';
 import { confirmDialog, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
+import { TalentTree } from '@/ui/components/TalentTree';
 import { VirtualCardGrid } from '@/ui/components/collection/VirtualCardGrid';
 import { CardFilterBar } from '@/ui/components/collection/CardFilterBar';
 import { DEFAULT_FILTERS, filterCards, type CardFilterState } from '@/ui/components/collection/cardFilters';
@@ -54,6 +55,7 @@ export default function DeckEditorScreen() {
   const collection = useAccount((s) => s.save?.collection);
   const [draft, setDraft] = useState<Deck | null>(saved ?? null);
   const [filters, setFilters] = useState<CardFilterState>({ ...DEFAULT_FILTERS, ownership: 'OWNED' });
+  const [tab, setTab] = useState<'cards' | 'talents'>('cards');
   const cardWidth = useCardWidth(0.86);
 
   // Adopt the saved deck when it first becomes available (or after a save elsewhere).
@@ -73,7 +75,7 @@ export default function DeckEditorScreen() {
   const issues = useMemo(() => (draft ? validateDeck(draft, owned) : []), [draft, owned]);
   const stats = useMemo(() => deckStats(draft ?? { cards: {} }), [draft]);
 
-  const dirty = !!draft && !!saved && (draft.name !== saved.name || draft.heroFaction !== saved.heroFaction || !sameCards(draft.cards, saved.cards));
+  const dirty = !!draft && !!saved && (draft.name !== saved.name || draft.heroFaction !== saved.heroFaction || !sameCards(draft.cards, saved.cards) || JSON.stringify(draft.talents) !== JSON.stringify(saved.talents));
 
   useEffect(() => {
     if (!dirty) return;
@@ -228,7 +230,19 @@ export default function DeckEditorScreen() {
         }
       />
       <div className="editor-body">
-        <section className="editor-pool" aria-label="Card pool">
+        <section className={`editor-pool ${tab === 'talents' ? 'is-talents' : ''}`} aria-label={tab === 'cards' ? 'Card pool' : 'Warden talents'}>
+          <div className="editor-tabs" role="tablist">
+            <button role="tab" aria-selected={tab === 'cards'} className={`editor-tab ${tab === 'cards' ? 'is-active' : ''}`} onClick={() => setTab('cards')}>
+              Cards
+            </button>
+            <button role="tab" aria-selected={tab === 'talents'} className={`editor-tab ${tab === 'talents' ? 'is-active' : ''}`} onClick={() => setTab('talents')}>
+              Talents {issues.some((i) => i.code === 'TALENTS') && <span className="tab-warn" aria-label="incomplete">!</span>}
+            </button>
+          </div>
+          {tab === 'talents' ? (
+            <TalentTree faction={draft.heroFaction} build={draft.talents} onChange={(talents) => setDraft({ ...draft, talents })} />
+          ) : (
+          <>
           <CardFilterBar
             value={filters}
             onChange={setFilters}
@@ -252,6 +266,8 @@ export default function DeckEditorScreen() {
               </div>
             }
           />
+          </>
+          )}
         </section>
 
         <aside className="editor-side panel" aria-label="Deck list">
@@ -261,7 +277,7 @@ export default function DeckEditorScreen() {
           </label>
           <label className="field">
             <span>Warden faction</span>
-            <select className="select" value={draft.heroFaction} onChange={(e) => setDraft({ ...draft, heroFaction: e.target.value as PlayableFaction })}>
+            <select className="select" value={draft.heroFaction} onChange={(e) => setDraft({ ...draft, heroFaction: e.target.value as PlayableFaction, talents: defaultBuild(e.target.value as PlayableFaction) })}>
               {PLAYABLE_FACTIONS.map((f) => (
                 <option key={f} value={f}>
                   {FACTIONS[f].name}
@@ -269,7 +285,13 @@ export default function DeckEditorScreen() {
               ))}
             </select>
           </label>
-          <WardenSigilInfo faction={draft.heroFaction} />
+          <button type="button" className="talent-summary" style={{ '--f1': hero.colors.primary } as CSSProperties} onClick={() => setTab('talents')}>
+            <WardenPortrait faction={draft.heroFaction} size={44} />
+            <span className="talent-summary-text">
+              <strong>Warden abilities</strong>
+              <span>{draft.talents.length ? talentSummary(draft.talents) : 'None chosen yet'}</span>
+            </span>
+          </button>
           <div className="deck-meta">
             <span className={`deck-size ${size === DECK_RULES.deckSize ? 'ok' : ''}`}>
               <span className="num">
@@ -348,23 +370,3 @@ export default function DeckEditorScreen() {
   );
 }
 
-/** Shows the Warden Sigil (hero power) that the chosen Warden faction grants. */
-function WardenSigilInfo({ faction }: { faction: PlayableFaction }) {
-  const power = getHeroPower(FACTION_HERO_POWER[faction]);
-  if (!power) return null;
-  return (
-    <div className="sigil-info" style={{ '--f1': FACTIONS[faction].colors.primary } as CSSProperties}>
-      <WardenPortrait faction={faction} size={52} />
-      <span className="sigil-gem" aria-hidden>
-        <Glyph name="crystal" size={18} />
-        <span className="sigil-cost num">{power.cost}</span>
-      </span>
-      <span className="sigil-text">
-        <strong>Warden Sigil: {power.name}</strong>
-        <span>
-          {power.description} Costs {power.cost} energy, once per turn.
-        </span>
-      </span>
-    </div>
-  );
-}

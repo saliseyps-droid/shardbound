@@ -305,6 +305,11 @@ export function aiBuild(faction: PlayableFaction, personality: AiPersonality): T
   return (PERSONALITY_BUILD[faction][personality] ?? DEFAULT_BUILD[faction]).map((x) => ({ ...x }));
 }
 
+/** "Cinder Bolt III · Kindled Fury II" */
+export function talentSummary(build: TalentPick[]): string {
+  return build.map((x) => `${getTalent(x.abilityId)?.name ?? '?'} ${RANK_LABEL[x.level] ?? ''}`.trim()).join(' · ');
+}
+
 /** Talent points a build spends: rank I costs 1, II costs 2, III costs 3. */
 export function buildPoints(build: TalentPick[]): number {
   return build.reduce((sum, x) => sum + x.level + 1, 0);
@@ -325,4 +330,20 @@ export function validateBuild(faction: PlayableFaction, build: unknown): string 
   }
   if (buildPoints(build as TalentPick[]) !== TALENT_POINTS) return `Spend all ${TALENT_POINTS} talent points.`;
   return null;
+}
+
+/**
+ * Talent-tree click on `rank` of an ability: learns the next rank, or unlearns the
+ * clicked rank and everything above it. Returns the new build or why it can't be done.
+ */
+export function toggleNode(build: TalentPick[], abilityId: string, rank: TalentLevel): TalentPick[] | string {
+  const current = build.find((x) => x.abilityId === abilityId);
+  if (current && rank <= current.level) {
+    return rank === 0 ? build.filter((x) => x !== current) : build.map((x) => (x === current ? { ...x, level: (rank - 1) as TalentLevel } : x));
+  }
+  const have = current ? current.level : -1;
+  if (rank > have + 1) return `Learn rank ${RANK_LABEL[have + 1]} first.`;
+  if (!current && build.length >= TALENT_PICKS) return `You can learn only ${TALENT_PICKS} abilities.`;
+  if (buildPoints(build) >= TALENT_POINTS) return 'No talent points left.';
+  return current ? build.map((x) => (x === current ? { ...x, level: rank } : x)) : [...build, { abilityId, level: rank }];
 }

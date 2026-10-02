@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PLAYABLE_FACTIONS } from '@/game/types';
-import { DEFAULT_BUILD, FACTION_TALENTS, PERSONALITY_BUILD, buildPoints, defaultBuild, getTalent, validateBuild, type TalentPick } from '@/data/wardenTalents';
+import { DEFAULT_BUILD, FACTION_TALENTS, PERSONALITY_BUILD, buildPoints, defaultBuild, getTalent, toggleNode, validateBuild, type TalentPick } from '@/data/wardenTalents';
 import { starterDeckCards } from '@/data/starterDecks';
 import { CAMPAIGN } from '@/data/opponents';
 import { validateDeck } from '@/domain/decks';
@@ -110,5 +110,30 @@ describe('Warden talents in decks, saves, bosses and online play', () => {
     expect(validateRemoteSide(side)).toBeNull();
     expect(validateRemoteSide({ ...side, talents: [] })).toBe('Invalid Warden abilities.');
     expect(validateRemoteSide({ ...side, talents: undefined })).toBe('Invalid Warden abilities.');
+  });
+});
+
+describe('talent tree clicks', () => {
+  const [a, b, c] = FACTION_TALENTS.VOID.map((t) => t.id);
+
+  it('learns rank I, then upgrades in order', () => {
+    let build = toggleNode([], a, 0) as TalentPick[];
+    expect(build).toEqual([pick(a, 0)]);
+    build = toggleNode(build, a, 1) as TalentPick[];
+    build = toggleNode(build, a, 2) as TalentPick[];
+    expect(build).toEqual([pick(a, 2)]);
+  });
+
+  it('refuses out-of-order ranks, a third ability and overspending', () => {
+    expect(toggleNode([], a, 1)).toBe('Learn rank I first.');
+    expect(toggleNode([pick(a, 0)], a, 2)).toBe('Learn rank II first.');
+    expect(toggleNode([pick(a, 0), pick(b, 0)], c, 0)).toBe('You can learn only 2 abilities.');
+    expect(toggleNode([pick(a, 2), pick(b, 1)], b, 2)).toBe('No talent points left.');
+  });
+
+  it('unlearning a rank also drops the ranks above it', () => {
+    expect(toggleNode([pick(a, 2), pick(b, 1)], a, 0)).toEqual([pick(b, 1)]);
+    expect(toggleNode([pick(a, 2), pick(b, 1)], a, 1)).toEqual([pick(a, 0), pick(b, 1)]);
+    expect(toggleNode([pick(a, 2), pick(b, 1)], b, 1)).toEqual([pick(a, 2), pick(b, 0)]);
   });
 });
