@@ -161,7 +161,9 @@
   font-size: var(--t-xs); color: var(--parchment-faint);
 }
 .draw-pile-count {
-  min-width: 34px; padding: 1px 8px; text-align: center; font-weight: 800; color: var(--parchment);
+  /* Sits on the top card, above the stack and its shadow. */
+  position: absolute; z-index: 20; left: 50%; bottom: 10%; transform: translateX(-50%);
+  min-width: 38px; padding: 2px 10px; text-align: center; font-weight: 800; font-size: var(--t-md, 1rem); color: var(--parchment);
   background: rgba(10, 8, 22, 0.75); border: 1px solid var(--gold-deep); border-radius: 999px;
 }
 .draw-pile.is-empty .draw-pile-count { color: var(--damage); }

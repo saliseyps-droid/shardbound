@@ -319,8 +319,8 @@ export function DrawPile({ count, label, player, width }: { count: number; label
         {Array.from({ length: layers }, (_, i) => (
           <CardBack key={i} width={width} className="draw-pile-card" style={{ '--layer': i } as CSSProperties} />
         ))}
+        <span className="draw-pile-count num">{count}</span>
       </div>
-      <span className="draw-pile-count num">{count}</span>
     </div>
   );
 }
