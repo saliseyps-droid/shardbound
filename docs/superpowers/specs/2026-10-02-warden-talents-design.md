@@ -294,11 +294,10 @@ Popisy bossů v kampani („Warden Sigil: …“) se přepíšou na „Warden ab
 ### Zápas
 
 - Vedle portrétu Wardena budou **2 sloty** místo dnešního jednoho krystalu Sigil.
-  - Aktivní slot: klikatelný krystal s cenou, stav „použito“ a cílení jako dnes.
+  - Aktivní slot se ovládá přesně jako dnešní Sigil: kliknutím na krystal (s cenou a stavem „použito“), cíl se vybírá šipkou stejně jako dnes. Žádné klávesové zkratky.
   - Pasivní slot: kulatý neklikatelný odznak. Při spuštění krátce zasvítí (událost s `abilityId`).
 - Hover a pravé kliknutí ukáží text, i u soupeře.
 - Log zápasu: „You used Cinder Bolt“ a „Kindled Fury triggered“.
-- Klávesové zkratky Q a W pro sloty 1 a 2.
 
 ## Texty a přejmenování
 
