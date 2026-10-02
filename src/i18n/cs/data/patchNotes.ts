@@ -9,6 +9,7 @@ const notes: PatchNotesOverlay = {
         'Prázdné vyvolání teď stojí na všech úrovních 3 energie (dřív 2): příliš dobře se kombinovalo se Žní duší a Nekonečným.',
         'Sestavení teď stojí na všech úrovních 3 energie (dřív 2): příliš dobře se kombinovalo s Montážním protokolem.',
       ],
+      ['Obrazovky už nehlásí „Na této obrazovce došlo k chybě“, když se hra aktualizovala, zatímco jsi ji měl otevřenou: sama se jednou znovu načte a otevře novou verzi.'],
     ],
   },
   '0.12.0': {

@@ -31,6 +31,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Assemble now costs 3 energy at every rank (was 2): it combined too well with Assembly Protocol.',
         ],
       },
+      { kind: 'fixed', items: ['Screens no longer show “This screen ran into a problem” when the game was updated while you had it open: it now reloads itself once and opens the new version.'] },
     ],
     commits: [],
   },
