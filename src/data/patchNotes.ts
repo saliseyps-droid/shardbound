@@ -32,7 +32,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Shop: the Buy and Equip buttons of all card backs line up at the same height.',
           'Booster packs: your unopened packs are shown as large as in the Shop, tilted the same way.',
           'Card backs are now in high resolution.',
-          'Cards: the text area under the card name has a soft tint of the card’s frame colour.',
+          'Cards: a faint faction emblem sits behind the card text.',
         ],
       },
     ],

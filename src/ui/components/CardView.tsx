@@ -120,6 +120,10 @@ export const CardView = memo(function CardView(props: CardViewProps) {
           <span className="rarity-gem" title={card.rarity.toLowerCase()} />
           <span className="card-tags">{card.tags?.[0] ?? faction.short}</span>
         </div>
+        {/* Faction emblem watermark behind the rules text (below it in z-order). */}
+        <span className="card-watermark" aria-hidden>
+          <Glyph name={faction.sigil} size={Math.round(width * 0.36)} />
+        </span>
         <div className="card-text">
           <p>
             <KeywordText text={card.description ?? ''} />
