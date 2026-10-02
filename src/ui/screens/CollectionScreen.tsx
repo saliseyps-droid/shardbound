@@ -7,7 +7,7 @@ import { ownedCopies } from '@/domain/save';
 import { gameService, useAccount } from '@/state/accountStore';
 import { toast, useUi } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
-import { CardView } from '@/ui/components/CardView';
+import { CardBack, CardView } from '@/ui/components/CardView';
 import { confirmDialog, Essence, ScreenHeader } from '@/ui/components/common';
 import { VirtualCardGrid } from '@/ui/components/collection/VirtualCardGrid';
 import { CardFilterBar } from '@/ui/components/collection/CardFilterBar';
@@ -116,6 +116,18 @@ export default function CollectionScreen() {
     );
   };
 
+  const backsToggle = (
+    <button className={`backs-toggle ${view === 'backs' ? 'is-active' : ''}`} onClick={() => setView(view === 'backs' ? 'cards' : 'backs')} aria-pressed={view === 'backs'}>
+      <CardBack width={20} design={save.profile.cardBack} className="backs-toggle-thumb" />
+      <span>{view === 'backs' ? 'Back to cards' : 'Card backs'}</span>
+      {view !== 'backs' && (
+        <span className="backs-toggle-count num">
+          {save.profile.cardBacks.length}/{CARD_BACKS.length}
+        </span>
+      )}
+    </button>
+  );
+
   return (
     <div className="screen collection-screen">
       <ScreenHeader
@@ -124,18 +136,18 @@ export default function CollectionScreen() {
         actions={
           <>
             <Essence amount={save.profile.essence} />
-            <div className="coll-action-stack">
-              <button className="btn btn-sm" disabled={surplus.cards === 0} onClick={() => void recycleSurplus()} title="Recycle copies beyond the playable limit">
-                Recycle surplus{surplus.cards > 0 ? ` (${surplus.cards})` : ''}
-              </button>
-              <button className={`btn btn-sm ${view === 'backs' ? 'btn-primary' : ''}`} onClick={() => setView(view === 'backs' ? 'cards' : 'backs')} aria-pressed={view === 'backs'}>
-                {view === 'backs' ? 'Back to cards' : `Card backs (${save.profile.cardBacks.length}/${CARD_BACKS.length})`}
-              </button>
-            </div>
+            <button className="btn btn-sm" disabled={surplus.cards === 0} onClick={() => void recycleSurplus()} title="Recycle copies beyond the playable limit">
+              Recycle surplus{surplus.cards > 0 ? ` (${surplus.cards})` : ''}
+            </button>
           </>
         }
       />
       {view === 'backs' ? (
+        <>
+        <div className="faction-tabs coll-backs-bar">
+          <span className="coll-backs-crumb">Collection › Card backs</span>
+          <div className="faction-tabs-end">{backsToggle}</div>
+        </div>
         <section className="panel coll-backs" aria-labelledby="coll-backs-title">
           <div className="coll-backs-head">
             <div>
@@ -148,9 +160,10 @@ export default function CollectionScreen() {
           </div>
           <CardBackGrid mode="owned" />
         </section>
+        </>
       ) : (
       <>
-      <CardFilterBar value={filters} onChange={setFilters} factions={ALL_FACTIONS} />
+      <CardFilterBar value={filters} onChange={setFilters} factions={ALL_FACTIONS} tabsEnd={backsToggle} />
       <div className="collection-body">
         <VirtualCardGrid
           items={cards}

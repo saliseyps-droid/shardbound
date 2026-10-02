@@ -118,10 +118,27 @@
 .variant-name.v-prismatic { background: linear-gradient(90deg, #ff9a8a, #ffd27a, #7ef29a, #72dfe6, #c59bff); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .detail-foot { display: flex; justify-content: space-between; align-items: center; }
 
-/* Recycle surplus with the Card backs switch below it */
-.coll-action-stack { display: grid; gap: 6px; }
 .coll-backs { overflow: auto; min-height: 0; }
 .coll-backs-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
 .coll-backs-head h3 { margin: 0 0 var(--space-1); }
 .coll-backs-head p { margin: 0; }
-.collection-screen:has(> .coll-backs) { grid-template-rows: auto minmax(0, 1fr); }
+.collection-screen:has(> .coll-backs) { grid-template-rows: auto auto minmax(0, 1fr); }
+
+/* Card backs switch at the end of the faction tab row */
+.faction-tabs-end { margin-left: auto; display: flex; align-items: center; }
+.backs-toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 36px; padding: 0 14px 0 8px; cursor: pointer;
+  font: 700 var(--t-sm) var(--font-display); letter-spacing: 0.02em; color: var(--gold-bright);
+  background: linear-gradient(180deg, rgba(232, 176, 75, 0.14), rgba(232, 176, 75, 0.04));
+  border: 1px solid rgba(232, 176, 75, 0.55); border-radius: 999px;
+  box-shadow: inset 0 0 12px rgba(232, 176, 75, 0.12);
+  transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+.backs-toggle:hover { background: linear-gradient(180deg, rgba(232, 176, 75, 0.26), rgba(232, 176, 75, 0.08)); box-shadow: 0 0 14px rgba(232, 176, 75, 0.35), inset 0 0 12px rgba(232, 176, 75, 0.18); }
+.backs-toggle:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.backs-toggle.is-active { color: var(--ink-0); background: linear-gradient(180deg, var(--gold-bright), var(--gold)); }
+.backs-toggle-thumb { transform: rotate(-8deg); filter: drop-shadow(0 1px 2px #000); flex: none; }
+.backs-toggle-count { padding: 0 7px; border-radius: 999px; font: 800 var(--t-xs) var(--font-body); color: var(--ink-0); background: var(--gold); }
+.coll-backs-bar { align-items: center; margin-bottom: var(--space-4); }
+.coll-backs-crumb { font-family: var(--font-display); color: var(--parchment-dim); padding-left: 4px; }
