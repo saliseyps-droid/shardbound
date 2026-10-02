@@ -31,6 +31,10 @@
   filter: drop-shadow(0 0 6px rgba(232, 176, 75, 0.6));
 }
 .brand-shard.large { width: 56px; height: 76px; }
+.brand-logo { display: block; flex: none; object-fit: contain; filter: drop-shadow(0 0 6px rgba(255, 90, 180, 0.35)); }
+.brand-logo.large { filter: drop-shadow(0 0 24px rgba(255, 90, 180, 0.45)); animation: logo-breathe 4s ease-in-out infinite; }
+@keyframes logo-breathe { 50% { filter: drop-shadow(0 0 34px rgba(255, 110, 200, 0.65)); transform: scale(1.03); } }
+@media (prefers-reduced-motion: reduce) { .brand-logo.large { animation: none; } }
 
 .main-nav { display: flex; gap: 2px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
 .nav-link {

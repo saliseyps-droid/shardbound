@@ -1,3 +1,4 @@
+import { BrandLogo } from '@/ui/components/BrandLogo';
 import { useState } from 'react';
 import { gameService, useAccount } from '@/state/accountStore';
 import { WORLD_LORE } from '@/data/factions';
@@ -8,7 +9,7 @@ export function BootScreen() {
   return (
     <div className="boot-screen" aria-busy="true">
       <div className="boot-logo">
-        <span className="brand-shard large" aria-hidden />
+        <BrandLogo size={140} className="large" />
         <h1>Shardbound</h1>
       </div>
       <Spinner label="Loading your Warden" />
@@ -35,7 +36,7 @@ export function WelcomeScreen() {
   return (
     <div className="welcome-screen">
       <section className="welcome-lore">
-        <span className="brand-shard large" aria-hidden />
+        <BrandLogo size={140} className="large" />
         <h1>Shardbound</h1>
         <h3>{WORLD_LORE.title}</h3>
         {WORLD_LORE.paragraphs.map((p) => (

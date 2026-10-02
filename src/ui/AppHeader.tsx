@@ -1,3 +1,4 @@
+import { BrandLogo } from '@/ui/components/BrandLogo';
 import { NavLink } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { xpToNext } from '@/domain/progression';
@@ -34,7 +35,7 @@ export function AppHeader() {
   return (
     <header className="app-header">
       <NavLink to="/" className="brand" aria-label="Shardbound home">
-        <span className="brand-shard" aria-hidden />
+        <BrandLogo size={34} />
         <span className="brand-name">Shardbound</span>
       </NavLink>
       <nav className="main-nav" aria-label="Main">

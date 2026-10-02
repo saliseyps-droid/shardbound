@@ -17,6 +17,7 @@ import {
   pickArenaCard,
   recordArenaMatch,
   retireArena,
+  acknowledgeArenaResult,
   setArenaTalents,
   startArena,
 } from '@/domain/arena';
@@ -132,6 +133,14 @@ describe('arena', () => {
     expect(r.cardBack).toBeUndefined();
     expect(r.gold).toBe(ARENA.rewards[4].gold + ARENA.cardBackFallbackGold);
     expect(r.packs.reduce((a, p) => a + p.amount, 0)).toBe(ARENA.rewards[4].packs);
+  });
+
+  it('the run summary is shown until acknowledged, then stays dismissed', () => {
+    let s = ok(retireArena(ok(startArena(rich(), 1, 4)), 2));
+    expect(s.arena.last?.seen).toBe(false);
+    s = acknowledgeArenaResult(s);
+    expect(s.arena.last?.seen).toBe(true);
+    expect(migrateSave({ saveVersion: CURRENT_SAVE_VERSION, profile: { username: 'Old' }, decks: [], arena: s.arena }).save.arena.last?.seen).toBe(true);
   });
 
   it('retiring ends the run with the current wins', () => {

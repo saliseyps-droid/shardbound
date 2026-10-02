@@ -33,6 +33,8 @@ export interface ArenaSummary {
   faction: PlayableFaction | null;
   finishedAt: number;
   reward: ArenaReward;
+  /** The player has seen the end-of-run summary. */
+  seen: boolean;
 }
 
 export interface ArenaState {
@@ -175,7 +177,7 @@ function finish(save: GameSave, run: ArenaRun, now: number): GameSave {
     economy: { ...save.economy, packs },
     arena: {
       run: null,
-      last: { wins, faction: run.faction, finishedAt: now, reward },
+      last: { wins, faction: run.faction, finishedAt: now, reward, seen: false },
       runsPlayed: save.arena.runsPlayed + 1,
       bestWins: Math.max(save.arena.bestWins, wins),
     },
@@ -183,6 +185,12 @@ function finish(save: GameSave, run: ArenaRun, now: number): GameSave {
   const total = reward.packs.reduce((a, p) => a + p.amount, 0);
   next = pushReward(next, { source: `Arena: ${wins} win${wins === 1 ? '' : 's'}`, gold: reward.gold, packs: reward.packs[0] ? { setId: reward.packs[0].setId, amount: total } : undefined }, now);
   return next;
+}
+
+/** Dismisses the end-of-run summary for good. */
+export function acknowledgeArenaResult(save: GameSave): GameSave {
+  const last = save.arena.last;
+  return last && !last.seen ? { ...save, arena: { ...save.arena, last: { ...last, seen: true } } } : save;
 }
 
 function withRun(save: GameSave, run: ArenaRun): GameSave {
@@ -196,7 +204,7 @@ export function repairArena(raw: unknown): ArenaState {
   const a = raw as Partial<ArenaState> & Record<string, unknown>;
   const out: ArenaState = {
     run: null,
-    last: a.last && typeof a.last === 'object' && typeof (a.last as ArenaSummary).wins === 'number' ? (a.last as ArenaSummary) : null,
+    last: a.last && typeof a.last === 'object' && typeof (a.last as ArenaSummary).wins === 'number' ? { ...(a.last as ArenaSummary), seen: (a.last as ArenaSummary).seen !== false } : null,
     runsPlayed: Number.isFinite(a.runsPlayed) ? Math.max(0, Math.floor(a.runsPlayed as number)) : 0,
     bestWins: Number.isFinite(a.bestWins) ? Math.max(0, Math.min(ARENA.maxWins, Math.floor(a.bestWins as number))) : 0,
   };

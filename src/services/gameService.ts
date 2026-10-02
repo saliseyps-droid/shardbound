@@ -6,7 +6,7 @@ import { LEVELS } from '@/config/progression';
 import type { PlayableFaction, SetId, Variant } from '@/game/types';
 import { maxCopiesFor, type Deck } from '@/domain/decks';
 import { defaultBuild, type TalentPick } from '@/data/wardenTalents';
-import { chooseArenaFaction, pickArenaCard, recordArenaMatch, retireArena, setArenaTalents, startArena } from '@/domain/arena';
+import { acknowledgeArenaResult, chooseArenaFaction, pickArenaCard, recordArenaMatch, retireArena, setArenaTalents, startArena } from '@/domain/arena';
 import { buyCardBack, buyOffer, craftCard, equipCardBack, openPack, recycleAllSurplus, recycleCard } from '@/domain/economy';
 import { claimDaily } from '@/domain/daily';
 import { applyMatchResult, type MatchRewards, type MatchSummary } from '@/domain/matchResults';
@@ -361,6 +361,11 @@ export class GameService {
   }
   arenaSetTalents(talents: TalentPick[]): Result<GameSave> {
     return this.applyArena(setArenaTalents(this.require(), talents));
+  }
+  arenaAcknowledge() {
+    const save = this.require();
+    const next = acknowledgeArenaResult(save);
+    if (next !== save) this.commit(next);
   }
   arenaRetire(): Result<GameSave> {
     return this.applyArena(retireArena(this.require(), this.now()));

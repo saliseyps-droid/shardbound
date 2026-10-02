@@ -19,6 +19,17 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.10.1',
+    date: '2026-10-02',
+    title: 'A new emblem',
+    summary: 'Shardbound has a new logo.',
+    sections: [
+      { kind: 'improved', items: ['The new Shardbound emblem appears in the header, on the loading and welcome screens, as the browser tab icon, and in the match sidebar above the battle log.'] },
+      { kind: 'fixed', items: ['Arena: once you press Continue on the run summary, it stays dismissed; coming back to the Arena shows Enter the Arena again.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.10.0',
     date: '2026-10-02',
     title: 'The Arena',

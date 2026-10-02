@@ -35,11 +35,10 @@ function report(res: { ok: boolean; error?: string }, sound: 'click' | 'coin' | 
 export default function ArenaScreen() {
   const save = useAccount((s) => s.save);
   const navigate = useNavigate();
-  const [seenLast, setSeenLast] = useState<number | null>(null);
   if (!save) return null;
   const run = save.arena.run;
   const last = save.arena.last;
-  const showSummary = !run && last && seenLast !== last.finishedAt && Date.now() - last.finishedAt < 10 * 60 * 1000;
+  const showSummary = !run && last && !last.seen;
 
   return (
     <div className="screen arena-screen">
@@ -66,7 +65,7 @@ export default function ArenaScreen() {
         }
       />
       {showSummary ? (
-        <RunSummary last={last!} onDone={() => setSeenLast(last!.finishedAt)} />
+        <RunSummary last={last!} onDone={() => gameService.arenaAcknowledge()} />
       ) : !run ? (
         <ArenaLobby gold={save.profile.gold} runsPlayed={save.arena.runsPlayed} bestWins={save.arena.bestWins} />
       ) : arenaPhase(run) === 'FACTION' ? (

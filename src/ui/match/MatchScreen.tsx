@@ -13,6 +13,7 @@ import { audio } from '@/audio/audioService';
 import { DrawPile, EmpowerBadge, EnergyBar, HeroAbilities, HeroPanel, PermanentsRow, UnitView } from './BoardParts';
 import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
 import { useT } from '@/i18n';
+import { BrandLogo } from '@/ui/components/BrandLogo';
 import { pickBoardBackground } from './boardBackgrounds';
 import '@/ui/styles/board.css';
 
@@ -465,7 +466,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
 
       <aside className="match-sidebar">
         <div className="hover-preview" aria-hidden>
-          {hoverCard && <CardView card={hoverCard} width={220} />}
+          {hoverCard ? <CardView card={hoverCard} width={220} /> : <BrandLogo size={200} className="sidebar-logo" />}
         </div>
         <BattleLog game={game} />
         <div className="match-meta faint">
