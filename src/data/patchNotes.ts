@@ -31,6 +31,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Collection: the new Card backs button below Recycle surplus shows the card backs you own. Pick the one you want to use there.',
           'Shop: the Buy and Equip buttons of all card backs line up at the same height.',
           'Booster packs: your unopened packs are shown as large as in the Shop, tilted the same way.',
+          'Card backs are now in high resolution.',
         ],
       },
     ],
