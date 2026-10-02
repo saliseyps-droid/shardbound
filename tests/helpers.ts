@@ -1,6 +1,7 @@
 import { createGame, applyAction } from '@/engine';
 import type { GameAction, GameState, PlayerId, TargetRef, UnitInstance } from '@/engine';
 import type { StaticKeyword } from '@/game/types';
+import type { TalentPick } from '@/data/wardenTalents';
 
 export const filler = (id = 'token_recruit', n = 30) => Array.from({ length: n }, () => id);
 
@@ -9,8 +10,8 @@ export function newGame(opts: {
   deck1?: string[];
   board0?: string[];
   board1?: string[];
-  hp0?: string | null;
-  hp1?: string | null;
+  talents0?: TalentPick[];
+  talents1?: TalentPick[];
   seed?: number;
 } = {}): GameState {
   const { state } = createGame({
@@ -18,8 +19,8 @@ export function newGame(opts: {
     firstPlayer: 0,
     skipMulligan: true,
     players: [
-      { name: 'P0', avatar: 'a', deck: opts.deck0 ?? filler(), startingBoard: opts.board0, heroPowerId: opts.hp0 ?? null, keepDeckOrder: true },
-      { name: 'P1', avatar: 'b', deck: opts.deck1 ?? filler(), startingBoard: opts.board1, heroPowerId: opts.hp1 ?? null, keepDeckOrder: true },
+      { name: 'P0', avatar: 'a', deck: opts.deck0 ?? filler(), startingBoard: opts.board0, talents: opts.talents0, keepDeckOrder: true },
+      { name: 'P1', avatar: 'b', deck: opts.deck1 ?? filler(), startingBoard: opts.board1, talents: opts.talents1, keepDeckOrder: true },
     ],
   });
   return state;

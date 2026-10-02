@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { DEFAULT_BUILD } from '@/data/wardenTalents';
 import { applyAction, createGame, getLegalActions } from '@/engine';
 import { guestEvents, guestView, mirrorAction, mirrorState, HIDDEN_CARD } from '@/net/view';
 import { validateRemoteSide } from '@/net/lobby';
@@ -13,8 +14,8 @@ function game() {
     firstPlayer: 0,
     skipMulligan: true,
     players: [
-      { name: 'Host', avatar: 'a', deck: deckToList({ cards: starterDeckCards('EMBER') }), heroPowerId: 'hp_ember' },
-      { name: 'Guest', avatar: 'b', deck: deckToList({ cards: starterDeckCards('TIDE') }), heroPowerId: 'hp_tide' },
+      { name: 'Host', avatar: 'a', deck: deckToList({ cards: starterDeckCards('EMBER') }), talents: DEFAULT_BUILD.EMBER },
+      { name: 'Guest', avatar: 'b', deck: deckToList({ cards: starterDeckCards('TIDE') }), talents: DEFAULT_BUILD.TIDE },
     ],
   }).state;
 }

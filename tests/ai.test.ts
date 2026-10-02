@@ -5,7 +5,7 @@ import { chooseAction, determinize, makeAiConfig, runAiMulligan } from '@/ai';
 import type { AiConfig } from '@/ai';
 import { starterDeckCards } from '@/data/starterDecks';
 import { deckToList } from '@/domain/decks';
-import { FACTION_HERO_POWER } from '@/data/heroPowers';
+import { DEFAULT_BUILD } from '@/data/wardenTalents';
 import type { Difficulty } from '@/config/progression';
 import type { PlayableFaction } from '@/game/types';
 import { newGame, giveCard, hero, setEnergy } from './helpers';
@@ -14,8 +14,8 @@ function startMatch(seed: number, f0: PlayableFaction, f1: PlayableFaction): Gam
   return createGame({
     seed,
     players: [
-      { name: 'A', avatar: 'a', deck: deckToList({ cards: starterDeckCards(f0) }), heroPowerId: FACTION_HERO_POWER[f0] },
-      { name: 'B', avatar: 'b', deck: deckToList({ cards: starterDeckCards(f1) }), heroPowerId: FACTION_HERO_POWER[f1] },
+      { name: 'A', avatar: 'a', deck: deckToList({ cards: starterDeckCards(f0) }), talents: DEFAULT_BUILD[f0] },
+      { name: 'B', avatar: 'b', deck: deckToList({ cards: starterDeckCards(f1) }), talents: DEFAULT_BUILD[f1] },
     ],
   }).state;
 }

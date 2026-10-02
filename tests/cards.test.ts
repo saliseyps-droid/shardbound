@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { DEFAULT_BUILD } from '@/data/wardenTalents';
 import { CARD_LOAD_ERRORS, allCards, collectibleCards } from '@/data/cards';
 import { PLAYABLE_FACTIONS } from '@/game/types';
 import { describeCard } from '@/game/describe';
@@ -31,7 +32,7 @@ describe('card database', () => {
         firstPlayer: 0,
         skipMulligan: true,
         players: [
-          { name: 'A', avatar: 'a', deck, heroPowerId: 'hp_ember', startingBoard: ['emb_kindling_imp'] },
+          { name: 'A', avatar: 'a', deck, talents: DEFAULT_BUILD.EMBER, startingBoard: ['emb_kindling_imp'] },
           { name: 'B', avatar: 'b', deck: Array.from({ length: 30 }, () => 'emb_kindling_imp'), startingBoard: ['emb_kindling_imp', 'emb_kindling_imp'] },
         ],
       });

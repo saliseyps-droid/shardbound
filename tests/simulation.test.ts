@@ -7,7 +7,7 @@ import { PLAYABLE_FACTIONS } from '@/game/types';
 import type { PlayableFaction } from '@/game/types';
 import { buildOpponentDeck } from '@/domain/matchSetup';
 import { validateDeck, factionOfList } from '@/domain/decks';
-import { FACTION_HERO_POWER } from '@/data/heroPowers';
+import { DEFAULT_BUILD } from '@/data/wardenTalents';
 import { PRACTICE_OPPONENTS, DIFFICULTY_POOLS, allEncounters } from '@/data/opponents';
 
 function botDeck(f: PlayableFaction) {
@@ -18,8 +18,8 @@ function play(deck0: string[], deck1: string[], cfg: [AiConfig, AiConfig], seed:
   let s: GameState = createGame({
     seed,
     players: [
-      { name: 'A', avatar: 'a', deck: deck0, heroPowerId: FACTION_HERO_POWER[factionOfList(deck0)] },
-      { name: 'B', avatar: 'b', deck: deck1, heroPowerId: FACTION_HERO_POWER[factionOfList(deck1)] },
+      { name: 'A', avatar: 'a', deck: deck0, talents: DEFAULT_BUILD[factionOfList(deck0)] },
+      { name: 'B', avatar: 'b', deck: deck1, talents: DEFAULT_BUILD[factionOfList(deck1)] },
     ],
   }).state;
   s = runAiMulligan(runAiMulligan(s, 0, cfg[0]), 1, cfg[1]);
@@ -75,8 +75,8 @@ describe('simulated AI games', () => {
   it('expert decisions complete within a responsive time budget', () => {
     const cfg = makeAiConfig('EXPERT');
     let s = createGame({ seed: 4, skipMulligan: true, players: [
-      { name: 'A', avatar: 'a', deck: botDeck('IRON'), heroPowerId: 'hp_iron' },
-      { name: 'B', avatar: 'b', deck: botDeck('VOID'), heroPowerId: 'hp_void' },
+      { name: 'A', avatar: 'a', deck: botDeck('IRON'), talents: DEFAULT_BUILD.IRON },
+      { name: 'B', avatar: 'b', deck: botDeck('VOID'), talents: DEFAULT_BUILD.VOID },
     ] }).state;
     let worst = 0;
     let perTurn = 0;

@@ -62,6 +62,15 @@ export interface LocationInstance {
   turnsRemaining: number | null;
 }
 
+export interface HeroAbilityState {
+  /** Talent ability id (src/data/wardenTalents.ts). */
+  id: string;
+  /** Rank index: 0 = I, 1 = II, 2 = III. */
+  level: 0 | 1 | 2;
+  /** Activations (active) or triggers (passive) this turn. */
+  uses: number;
+}
+
 export interface HeroState {
   name: string;
   avatar: string;
@@ -70,8 +79,8 @@ export interface HeroState {
   health: number;
   maxHealth: number;
   armor: number;
-  heroPowerId: string | null;
-  heroPowerUses: number;
+  /** The Warden's talent abilities, by slot. */
+  abilities: HeroAbilityState[];
 }
 
 export interface MatchStats {
@@ -134,7 +143,7 @@ export type GameAction =
   | { type: 'MULLIGAN'; player: PlayerId; replaceUids: number[] }
   | { type: 'PLAY_CARD'; player: PlayerId; cardUid: number; target?: TargetRef; position?: number }
   | { type: 'ATTACK'; player: PlayerId; attackerUid: number; target: TargetRef }
-  | { type: 'HERO_POWER'; player: PlayerId; target?: TargetRef }
+  | { type: 'HERO_POWER'; player: PlayerId; slot: number; target?: TargetRef }
   | { type: 'END_TURN'; player: PlayerId }
   | { type: 'CONCEDE'; player: PlayerId };
 
@@ -174,7 +183,8 @@ export type GameEvent =
   | { seq: number; type: 'CARD_CREATED'; player: PlayerId; cardId: string; destination: 'HAND' | 'DECK' }
   | { seq: number; type: 'CARD_DISCARDED'; player: PlayerId; cardId: string }
   | { seq: number; type: 'CARD_STOLEN'; player: PlayerId; cardId: string }
-  | { seq: number; type: 'HERO_POWER_USED'; player: PlayerId; powerId: string; target?: TargetRef }
+  | { seq: number; type: 'HERO_POWER_USED'; player: PlayerId; slot: number; abilityId: string; target?: TargetRef }
+  | { seq: number; type: 'HERO_ABILITY_TRIGGERED'; player: PlayerId; slot: number; abilityId: string }
   | { seq: number; type: 'TRIGGER_RESOLVED'; player: PlayerId; sourceCardId: string; trigger: string }
   | { seq: number; type: 'TRIGGER_LIMIT_REACHED' }
   | { seq: number; type: 'GAME_ENDED'; winner: PlayerId | 'DRAW'; reason: string };
@@ -195,7 +205,8 @@ export interface SideSetup {
   faction?: string | null;
   /** Card ids; order is shuffled by the engine unless `keepDeckOrder`. */
   deck: string[];
-  heroPowerId?: string | null;
+  /** Warden talent abilities (slot order). */
+  talents?: { abilityId: string; level: 0 | 1 | 2 }[];
   heroHealth?: number;
   /** Boss rule: extra permanent energy from turn 1. */
   bonusStartingEnergy?: number;

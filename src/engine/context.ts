@@ -1,7 +1,7 @@
 import type { Ability } from '@/game/types';
 import type { GameEvent, GameState, NewGameEvent, PlayerId, TargetRef } from './types';
 
-/** Where an ability comes from. `hero` = Warden Sigil or spell (no board object). */
+/** Where an ability comes from. `hero` = Warden ability (no board object). */
 export interface AbilitySource {
   kind: 'unit' | 'relic' | 'location' | 'spell' | 'hero';
   uid: number | null;
@@ -11,6 +11,10 @@ export interface AbilitySource {
   fromGraveyard?: boolean;
   /** Board position of the source when it died (Last Breath summons). */
   position?: number;
+  /** Warden ability slot, for hero sources. */
+  talentSlot?: number;
+  /** Passive Warden ability (emits HERO_ABILITY_TRIGGERED when it resolves). */
+  passive?: boolean;
 }
 
 export interface PendingAbility {

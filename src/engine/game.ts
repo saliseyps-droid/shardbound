@@ -1,5 +1,5 @@
 import { getCard } from '@/data/cards';
-import { getHeroPower } from '@/data/heroPowers';
+import { getTalent } from '@/data/wardenTalents';
 import { GAME_RULES } from '@/config/gameRules';
 import { createRng, nextInt, shuffleInPlace } from '@/core/rng';
 import type { EngineContext } from './context';
@@ -11,6 +11,7 @@ import {
   attackTargets,
   canAttack,
   canPlayCard,
+  activeLevelOf,
   canUseHeroPower,
   currentHealth,
   effectiveCost,
@@ -45,7 +46,7 @@ function createPlayer(id: PlayerId, side: SideSetup): PlayerState {
   const health = side.heroHealth ?? GAME_RULES.heroStartingHealth;
   return {
     id,
-    hero: { name: side.name, avatar: side.avatar, faction: side.faction ?? null, health, maxHealth: health, armor: 0, heroPowerId: side.heroPowerId ?? null, heroPowerUses: 0 },
+    hero: { name: side.name, avatar: side.avatar, faction: side.faction ?? null, health, maxHealth: health, armor: 0, abilities: (side.talents ?? []).filter((t) => getTalent(t.abilityId)?.levels[t.level]).map((t) => ({ id: t.abilityId, level: t.level, uses: 0 })) },
     energy: 0,
     maxEnergy: GAME_RULES.startingMaxEnergy + (side.bonusStartingEnergy ?? 0),
     deck: [],
@@ -143,7 +144,7 @@ function startTurn(ctx: EngineContext, playerId: PlayerId) {
   }
   p.maxEnergy = Math.min(GAME_RULES.maxEnergy, p.maxEnergy + GAME_RULES.energyPerTurn);
   p.energy = p.maxEnergy;
-  p.hero.heroPowerUses = 0;
+  for (const a of p.hero.abilities) a.uses = 0;
   p.spellsCastThisTurn = 0;
   p.cardsPlayedThisTurn = 0;
   p.allyDiedThisTurn = false;
@@ -369,12 +370,13 @@ function queueOnKill(ctx: EngineContext, unit: UnitInstance) {
   });
 }
 
-function doHeroPower(ctx: EngineContext, playerId: PlayerId, target: TargetRef | undefined) {
+function doHeroPower(ctx: EngineContext, playerId: PlayerId, slot: number, target: TargetRef | undefined) {
   const state = ctx.state;
-  const check = canUseHeroPower(state, playerId);
-  if (!check.ok) fail(check.reason ?? 'Cannot use Warden Sigil');
+  const check = canUseHeroPower(state, playerId, slot);
+  if (!check.ok) fail(check.reason ?? 'Cannot use Warden ability');
   const p = state.players[playerId];
-  const power = getHeroPower(p.hero.heroPowerId!)!;
+  const ability = p.hero.abilities[slot];
+  const power = activeLevelOf(state, playerId, slot)!;
   if (power.target) {
     const options = validTargets(state, playerId, power.target, { spellLike: true });
     if (target) {
@@ -382,11 +384,11 @@ function doHeroPower(ctx: EngineContext, playerId: PlayerId, target: TargetRef |
     } else if (options.length > 0) fail('A target is required');
   } else target = undefined;
   p.energy -= power.cost;
-  p.hero.heroPowerUses++;
-  emit(ctx, { type: 'HERO_POWER_USED', player: playerId, powerId: power.id, target });
+  ability.uses++;
+  emit(ctx, { type: 'HERO_POWER_USED', player: playerId, slot, abilityId: ability.id, target });
   emit(ctx, { type: 'ENERGY_CHANGED', player: playerId, energy: p.energy, maxEnergy: p.maxEnergy });
   runAbility(ctx, {
-    source: { kind: 'hero', uid: null, cardId: power.id, controller: playerId },
+    source: { kind: 'hero', uid: null, cardId: ability.id, controller: playerId, talentSlot: slot },
     ability: { trigger: 'ON_CAST', effects: power.effects },
     target,
   });
@@ -413,7 +415,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         doAttack(ctx, action.player, action.attackerUid, action.target);
         break;
       case 'HERO_POWER':
-        doHeroPower(ctx, action.player, action.target);
+        doHeroPower(ctx, action.player, action.slot ?? 0, action.target);
         break;
       case 'END_TURN':
         if (draft.phase !== 'MAIN' || draft.activePlayer !== action.player) fail('Not your turn');

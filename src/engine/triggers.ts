@@ -1,5 +1,6 @@
 import { getCard, getCardSafe } from '@/data/cards';
 import type { Ability, TriggerType } from '@/game/types';
+import { getTalent } from '@/data/wardenTalents';
 import { GAME_RULES } from '@/config/gameRules';
 import type { AbilitySource, EngineContext, PendingAbility } from './context';
 import { pushEvent } from './context';
@@ -19,6 +20,8 @@ export function emit(ctx: EngineContext, event: NewGameEvent): GameEvent {
 interface Listener {
   source: AbilitySource;
   abilities: Ability[];
+  /** Passive Warden abilities: max triggers per turn. */
+  limitPerTurn?: number;
 }
 
 /** All permanent ability sources controlled by a player, in board order. */
@@ -36,6 +39,13 @@ function listenersFor(ctx: EngineContext, playerId: PlayerId): Listener[] {
     const l = p.location;
     out.push({ source: { kind: 'location', uid: l.uid, cardId: l.cardId, controller: playerId }, abilities: getCard(l.cardId)?.abilities ?? [] });
   }
+  p.hero.abilities.forEach((a, slot) => {
+    const talent = getTalent(a.id);
+    if (talent?.kind !== 'PASSIVE') return;
+    const level = talent.levels[a.level];
+    if (!level) return;
+    out.push({ source: { kind: 'hero', uid: null, cardId: a.id, controller: playerId, talentSlot: slot, passive: true }, abilities: level.abilities, limitPerTurn: level.limitPerTurn });
+  });
   return out;
 }
 
@@ -55,11 +65,17 @@ function queueFor(
         if (ability.filter.tag && !(filterCard.tags ?? []).includes(ability.filter.tag)) return;
         if (ability.filter.cardType && ability.filter.cardType !== filterCard.cardType) return;
       }
+      const key = `${event.seq}:${l.source.kind}:${l.source.uid ?? `slot${l.source.talentSlot}`}:${index}`;
+      if (l.limitPerTurn !== undefined) {
+        const slotState = ctx.state.players[playerId].hero.abilities[l.source.talentSlot!];
+        if (ctx.seenKeys.has(key) || slotState.uses >= l.limitPerTurn) return;
+        slotState.uses++;
+      }
       enqueue(ctx, {
         source: l.source,
         ability,
         triggerUnitUid: opts.triggerUnitUid,
-        key: `${event.seq}:${l.source.kind}:${l.source.uid}:${index}`,
+        key,
         depth: ctx.depth + 1,
       });
     });
@@ -162,6 +178,9 @@ export function runAbility(ctx: EngineContext, pending: Omit<PendingAbility, 'ke
   }
   if (source.kind !== 'spell' && source.kind !== 'hero') {
     pushEvent(ctx, { type: 'TRIGGER_RESOLVED', player: source.controller, sourceCardId: source.cardId, trigger: ability.trigger });
+  }
+  if (source.passive && source.talentSlot !== undefined) {
+    pushEvent(ctx, { type: 'HERO_ABILITY_TRIGGERED', player: source.controller, slot: source.talentSlot, abilityId: source.cardId });
   }
   consumeRelicCharge(ctx, source);
   return true;

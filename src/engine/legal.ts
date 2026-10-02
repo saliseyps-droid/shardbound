@@ -1,7 +1,6 @@
 import { getCard } from '@/data/cards';
-import { getHeroPower } from '@/data/heroPowers';
 import type { GameAction, GameState, PlayerId } from './types';
-import { attackTargets, canPlayCard, canUseHeroPower, validTargets } from './queries';
+import { activeLevelOf, attackTargets, canPlayCard, canUseHeroPower, validTargets } from './queries';
 
 /** Enumerates every legal action for a player (excluding mulligan). */
 export function getLegalActions(state: GameState, playerId: PlayerId): GameAction[] {
@@ -27,16 +26,17 @@ export function getLegalActions(state: GameState, playerId: PlayerId): GameActio
     }
   }
 
-  if (canUseHeroPower(state, playerId).ok) {
-    const power = getHeroPower(p.hero.heroPowerId!)!;
+  p.hero.abilities.forEach((_, slot) => {
+    if (!canUseHeroPower(state, playerId, slot).ok) return;
+    const power = activeLevelOf(state, playerId, slot)!;
     if (power.target) {
       const targets = validTargets(state, playerId, power.target, { spellLike: true });
-      for (const target of targets) actions.push({ type: 'HERO_POWER', player: playerId, target });
-      if (targets.length === 0) actions.push({ type: 'HERO_POWER', player: playerId });
+      for (const target of targets) actions.push({ type: 'HERO_POWER', player: playerId, slot, target });
+      if (targets.length === 0) actions.push({ type: 'HERO_POWER', player: playerId, slot });
     } else {
-      actions.push({ type: 'HERO_POWER', player: playerId });
+      actions.push({ type: 'HERO_POWER', player: playerId, slot });
     }
-  }
+  });
 
   actions.push({ type: 'END_TURN', player: playerId });
   return actions;

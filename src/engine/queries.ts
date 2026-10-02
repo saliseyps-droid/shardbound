@@ -1,6 +1,6 @@
 import { getCard, getCardSafe } from '@/data/cards';
 import type { CardDefinition, StaticKeyword, TargetFilter, TargetKind, TargetRequirement } from '@/game/types';
-import { getHeroPower } from '@/data/heroPowers';
+import { getTalent, type ActiveLevel } from '@/data/wardenTalents';
 import { GAME_RULES } from '@/config/gameRules';
 import type { CardInstance, GameState, PlayerId, PlayerState, TargetRef, UnitInstance } from './types';
 import { other } from './types';
@@ -212,12 +212,18 @@ export function canPlayCard(state: GameState, playerId: PlayerId, card: CardInst
   return { ok: true };
 }
 
-export function canUseHeroPower(state: GameState, playerId: PlayerId): { ok: boolean; reason?: string } {
+/** The rank definition of an active Warden ability in a slot (undefined for passives / empty slots). */
+export function activeLevelOf(state: GameState, playerId: PlayerId, slot: number): ActiveLevel | undefined {
+  const a = state.players[playerId].hero.abilities[slot];
+  const talent = a ? getTalent(a.id) : undefined;
+  return talent?.kind === 'ACTIVE' ? talent.levels[a.level] : undefined;
+}
+
+export function canUseHeroPower(state: GameState, playerId: PlayerId, slot: number): { ok: boolean; reason?: string } {
   if (state.phase !== 'MAIN' || state.activePlayer !== playerId) return { ok: false, reason: 'Not your turn' };
-  const hero = state.players[playerId].hero;
-  const power = hero.heroPowerId ? getHeroPower(hero.heroPowerId) : undefined;
-  if (!power) return { ok: false, reason: 'No Warden Sigil' };
-  if (hero.heroPowerUses >= (power.usesPerTurn ?? 1)) return { ok: false, reason: 'Already used this turn' };
+  const power = activeLevelOf(state, playerId, slot);
+  if (!power) return { ok: false, reason: 'No Warden ability to use' };
+  if (state.players[playerId].hero.abilities[slot].uses >= (power.usesPerTurn ?? 1)) return { ok: false, reason: 'Already used this turn' };
   if (state.players[playerId].energy < power.cost) return { ok: false, reason: 'Not enough energy' };
   if (power.target && !power.target.optional && validTargets(state, playerId, power.target, { spellLike: true }).length === 0) {
     return { ok: false, reason: 'No valid targets' };
