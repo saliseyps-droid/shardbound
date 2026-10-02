@@ -176,4 +176,10 @@ export const NEUTRAL_CARDS: CardDefinition[] = [
     ],
     flavorText: 'She has abandoned three ships, two crews and one kingdom. Never the treasure.',
   },
+  {
+    ...base, id: 'neu_meowchick', name: 'Meowchick', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'DEEP',
+    manaCost: 4, attack: 3, health: 4, keywords: ['BARRIER'], tags: ['Beast'],
+    abilities: [{ trigger: 'ON_ATTACK', effects: [{ type: 'BUFF', attack: 1, temporary: true, target: 'OTHER_ALLY_UNITS' }] }],
+    flavorText: 'Nobody knows where it came from. Everybody follows it into battle anyway.',
+  },
 ];

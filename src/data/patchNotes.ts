@@ -19,6 +19,16 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.9.2',
+    date: '2026-10-02',
+    title: 'Meowchick',
+    summary: 'A new Neutral Legendary joins the Fantasy Realms set.',
+    sections: [
+      { kind: 'new', items: ['Meowchick (Neutral Legendary, 4 energy, 3/4 Beast): Barrier. Whenever it attacks, your other units get +1 Attack this turn.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.9.1',
     date: '2026-10-02',
     title: 'Kingdoms at War & Fantasy Realms',

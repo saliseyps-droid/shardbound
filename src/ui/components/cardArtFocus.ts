@@ -71,6 +71,7 @@ export const CARD_ART_FOCUS: Record<string, number> = {
   irn_steamstride_walker: 35,
   neu_aegis_pilgrim: 22,
   neu_aeon_pale_wanderer: 22,
+  neu_meowchick: 18,
   neu_bog_toadcaller: 30,
   neu_bounty_stalker: 32,
   neu_captain_abandoneer: 12,
