@@ -144,7 +144,7 @@
 /* Draw pile on the left: a stack of card backs, thinner as the deck runs out. */
 .draw-pile-anchor { position: absolute; left: clamp(56px, 5vw, 110px); z-index: 12; }
 .self-side > .draw-pile-anchor { bottom: 42%; }
-.enemy-side > .draw-pile-anchor { top: 50%; transform: translateY(-50%); }
+.enemy-side > .draw-pile-anchor { top: 14px; }
 .draw-pile { display: grid; justify-items: center; gap: 6px; }
 .draw-pile-stack {
   position: relative; width: var(--pile-w); height: calc(var(--pile-w) * 1.4);

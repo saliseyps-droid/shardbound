@@ -383,7 +383,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           </div>
         </div>
         <div className="draw-pile-anchor">
-          <DrawPile count={opp.deck.length} label="the opponent's deck" player={AI} width={52} />
+          <DrawPile count={opp.deck.length} label="the opponent's deck" player={AI} width={104} />
         </div>
       </section>
 
@@ -413,7 +413,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           </div>
         </div>
         <div className="draw-pile-anchor">
-          <DrawPile count={me.deck.length} label="your deck" player={HUMAN} width={Math.round(cardW * 0.62)} />
+          <DrawPile count={me.deck.length} label="your deck" player={HUMAN} width={Math.round(cardW * 1.24)} />
         </div>
         <div className="hand" data-tutorial="hand" style={{ '--card-w': `${cardW}px`, '--n': handCount } as CSSProperties} aria-label="Your hand">
           {me.hand.map((c, i) => {
