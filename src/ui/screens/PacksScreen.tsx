@@ -48,9 +48,9 @@ export default function PacksScreen() {
           return (
             <section key={setId} className={`inventory-set panel ${count === 0 ? 'is-empty' : ''} ${highlight === setId ? 'is-highlight' : ''}`} aria-labelledby={`inv-${setId}`}>
               <button className="inventory-stack" onClick={() => count > 0 && start(setId)} disabled={count === 0} aria-label={count > 0 ? `Open a ${SET_INFO[setId].name} pack` : `No ${SET_INFO[setId].name} packs`}>
-                {count > 2 && <BoosterPack setId={setId} width={170} className="stack-layer stack-2" />}
-                {count > 1 && <BoosterPack setId={setId} width={170} className="stack-layer stack-1" />}
-                <BoosterPack setId={setId} width={170} className="stack-layer stack-0" />
+                {count > 2 && <BoosterPack setId={setId} width={190} className="stack-layer stack-2" />}
+                {count > 1 && <BoosterPack setId={setId} width={190} className="stack-layer stack-1" />}
+                <BoosterPack setId={setId} width={190} className="stack-layer stack-0" />
                 <span className="stack-count num">×{count}</span>
               </button>
               <div className="inventory-info">

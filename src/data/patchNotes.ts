@@ -30,6 +30,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Shardfall is now called Kingdoms at War and Tides of the Hollow Deep is now Fantasy Realms, each with a new illustrated booster pack in high resolution.',
           'Collection: the new Card backs button below Recycle surplus shows the card backs you own. Pick the one you want to use there.',
           'Shop: the Buy and Equip buttons of all card backs line up at the same height.',
+          'Booster packs: your unopened packs are shown as large as in the Shop, tilted the same way.',
         ],
       },
     ],

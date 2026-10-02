@@ -4,24 +4,25 @@
 
 .pack-inventory { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: var(--space-5); }
 @media (max-width: 1050px) { .pack-inventory { grid-template-columns: 1fr; } }
-.inventory-set { display: grid; grid-template-columns: 230px 1fr; gap: var(--space-5); align-items: center; }
+.inventory-set { display: grid; grid-template-columns: 250px 1fr; gap: var(--space-5); align-items: center; }
 .inventory-set.is-highlight { box-shadow: inset 0 0 0 2px var(--cyan), var(--shadow-lift); }
 .inventory-info h3 { margin-bottom: var(--space-1); }
 .inventory-info { display: grid; gap: var(--space-3); justify-items: start; }
 .inventory-info p { margin: 0; }
 
 .inventory-stack {
-  position: relative; width: 210px; height: 360px;
+  position: relative; width: 240px; height: 400px;
   background: none; border: 0; padding: 0; cursor: pointer;
 }
 .inventory-stack:disabled { cursor: default; }
 .inventory-set.is-empty .inventory-stack { filter: grayscale(0.8) brightness(0.55); }
 .stack-layer { position: absolute; left: 20px; top: 20px; transition: transform 0.3s var(--ease-spring); }
-.stack-2 { transform: rotate(-9deg) translate(-14px, 4px); opacity: 0.7; }
-.stack-1 { transform: rotate(-4deg) translate(-6px, 2px); opacity: 0.85; }
-.stack-0 { transform: rotate(3deg); }
-.inventory-stack:not(:disabled):hover .stack-0 { transform: rotate(0deg) translateY(-10px) scale(1.04); }
-.inventory-stack:not(:disabled):hover .stack-1 { transform: rotate(-7deg) translate(-12px, 2px); }
+.stack-2 { transform: rotate(-12deg) translate(-16px, 6px); opacity: 0.7; }
+.stack-1 { transform: rotate(-8deg) translate(-8px, 3px); opacity: 0.85; }
+/* Same tilt as the packs in the Shop. */
+.stack-0 { transform: rotate(-4deg); }
+.inventory-stack:not(:disabled):hover .stack-0 { transform: rotate(0deg) translateY(-6px) scale(1.03); }
+.inventory-stack:not(:disabled):hover .stack-1 { transform: rotate(-11deg) translate(-14px, 3px); }
 .stack-count {
   position: absolute; right: 4px; bottom: 8px;
   font-weight: 800; font-size: var(--t-xl); color: var(--parchment);
