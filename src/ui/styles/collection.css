@@ -117,3 +117,8 @@
 .variant-name.v-foil { color: var(--gold-bright); }
 .variant-name.v-prismatic { background: linear-gradient(90deg, #ff9a8a, #ffd27a, #7ef29a, #72dfe6, #c59bff); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .detail-foot { display: flex; justify-content: space-between; align-items: center; }
+
+/* Room above the first row so a lifted, glowing selected card is not clipped by the scroll edge;
+   the side panels move down by the same amount to stay level with the cards. */
+.vgrid.collection-grid { padding-top: 30px; }
+.collection-side, .editor-side { margin-top: 18px; }
