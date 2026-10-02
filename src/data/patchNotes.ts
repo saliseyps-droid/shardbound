@@ -19,6 +19,38 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.8.1',
+    date: '2026-10-02',
+    title: 'Talent balance',
+    summary: 'Warden abilities retuned so every faction lands close to an even win rate.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Hollow Summons III: summons Risen Bones, plus a Hollow Wisp only if a friendly unit died this turn (was always both).',
+          'Soul Harvest: twice per turn at ranks I and II (was 3); rank III keeps 3 but deals 1 damage (was 2).',
+          'Unending III: summons Risen Bones and restores 2 Health to your Warden (was Bones and a Wisp).',
+          'Barkskin: works on the first unit you summon each turn (rank III: the first two).',
+          'Wellspring: II restores 1 to everyone and 1 more to your Warden, III restores 2 (was 2 and 3).',
+          'Sap of the Root III: restores 4 Health for 2 energy (was 3 Health for 1).',
+          'Rivet Plating III and Reinforced Hull III: +1 Armor only while you control a Construct.',
+          'Assembly Protocol: twice per turn.',
+          'Kindled Fury: I gives +1 Attack permanently, II +1/+1, III +2/+1.',
+          'Starlit Insight: the Mote is no longer Fleeting; III also deals 1 damage to a random enemy.',
+          'Arcane Volley: 2 energy at every rank, 2 / 3 / 4 bolts.',
+          'Spellweave: +1/+1 from rank I; II adds 1 Health to your Warden; III gives +1/+1 twice.',
+          'Foresight: now checks at the end of your turn (1 / 2 / 3 or fewer cards in hand).',
+          'Rime Touch: deals 1 damage from rank I; II costs 1; III deals 2 damage.',
+          'Undertow: II costs 2, III reaches units costing up to 4.',
+          'Cold Snap: the Shard is not Fleeting from rank II (up to 4 cards in hand), III up to 6 cards.',
+          'Tidepool: II also Freezes a random enemy unit, III costs 1.',
+          'New default builds: Lumen Conclave Starlit Insight III + Spellweave II, Rimetide Court Rime Touch III + Tidepool II.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.8.0',
     date: '2026-10-02',
     title: 'Warden Talents',

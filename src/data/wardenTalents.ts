@@ -63,10 +63,10 @@ const EMBER: TalentAbility[] = [
     { cost: 1, target: { kind: 'ENEMY' }, effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'TARGET' }, { type: 'APPLY_STATUS', status: 'BURN', amount: 1, target: 'TARGET' }], description: 'Deal 1 damage to an enemy and apply Burn 1.' },
   ], ['Also applies Burn 1.', 'Cost 2 → 1.']),
   passive('EMBER', 'kindled_fury', 'Kindled Fury', [
-    { abilities: [{ trigger: 'TURN_START', effects: [{ type: 'BUFF', attack: 1, temporary: true, target: 'RANDOM_ALLY_UNIT' }] }], description: 'At the start of your turn, give a random friendly unit +1 Attack this turn.' },
     { abilities: [{ trigger: 'TURN_START', effects: [{ type: 'BUFF', attack: 1, target: 'RANDOM_ALLY_UNIT' }] }], description: 'At the start of your turn, give a random friendly unit +1 Attack.' },
     { abilities: [{ trigger: 'TURN_START', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'RANDOM_ALLY_UNIT' }] }], description: 'At the start of your turn, give a random friendly unit +1/+1.' },
-  ], ['The Attack is permanent.', '+1 Attack → +1/+1.']),
+    { abilities: [{ trigger: 'TURN_START', effects: [{ type: 'BUFF', attack: 2, health: 1, target: 'RANDOM_ALLY_UNIT' }] }], description: 'At the start of your turn, give a random friendly unit +2/+1.' },
+  ], ['+1 Attack → +1/+1.', '+1/+1 → +2/+1.']),
   active('EMBER', 'imp_summoning', 'Imp Summoning', [
     { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_ember_imp' }], description: 'Summon a 2/1 Ember Imp.' },
     { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_ember_imp' }], description: 'Summon a 2/1 Ember Imp.' },
@@ -88,8 +88,8 @@ const VERDANT: TalentAbility[] = [
   active('VERDANT', 'sap_of_the_root', 'Sap of the Root', [
     { cost: 2, target: { kind: 'ALLY' }, effects: [{ type: 'HEAL', amount: 2, target: 'TARGET' }], description: 'Restore 2 Health to a friendly character.' },
     { cost: 2, target: { kind: 'ALLY' }, effects: [{ type: 'HEAL', amount: 3, target: 'TARGET' }], description: 'Restore 3 Health to a friendly character.' },
-    { cost: 1, target: { kind: 'ALLY' }, effects: [{ type: 'HEAL', amount: 3, target: 'TARGET' }], description: 'Restore 3 Health to a friendly character.' },
-  ], ['Restores 3 instead of 2.', 'Cost 2 → 1.']),
+    { cost: 2, target: { kind: 'ALLY' }, effects: [{ type: 'HEAL', amount: 4, target: 'TARGET' }], description: 'Restore 4 Health to a friendly character.' },
+  ], ['Restores 3 instead of 2.', 'Restores 4 instead of 3.']),
   active('VERDANT', 'sprout', 'Sprout', [
     { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_sapling' }], description: 'Summon a 1/2 Sapling.' },
     { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_sapling' }, { type: 'HEAL', amount: 1, target: 'ALLY_HERO' }], description: 'Summon a 1/2 Sapling and restore 1 Health to your Warden.' },
@@ -97,14 +97,14 @@ const VERDANT: TalentAbility[] = [
   ], ['Also restores 1 Health to your Warden.', 'Cost 2 → 1.']),
   passive('VERDANT', 'wellspring', 'Wellspring', [
     { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'HEAL', amount: 1, target: 'ALL_ALLIES' }] }], description: 'At the end of your turn, restore 1 Health to all friendly characters.' },
+    { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'HEAL', amount: 1, target: 'ALL_ALLIES' }, { type: 'HEAL', amount: 1, target: 'ALLY_HERO' }] }], description: 'At the end of your turn, restore 1 Health to all friendly characters and 1 more to your Warden.' },
     { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'HEAL', amount: 2, target: 'ALL_ALLIES' }] }], description: 'At the end of your turn, restore 2 Health to all friendly characters.' },
-    { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'HEAL', amount: 3, target: 'ALL_ALLIES' }] }], description: 'At the end of your turn, restore 3 Health to all friendly characters.' },
-  ], ['Restores 2 instead of 1.', 'Restores 3 instead of 2.']),
+  ], ['Your Warden gets 1 extra Health.', 'Restores 2 to everyone.']),
   passive('VERDANT', 'barkskin', 'Barkskin', [
-    { abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', health: 1, target: 'TRIGGER_UNIT' }] }], description: 'Whenever you summon a unit, give it +0/+1.' },
-    { abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', health: 2, target: 'TRIGGER_UNIT' }] }], description: 'Whenever you summon a unit, give it +0/+2.' },
-    { abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', attack: 1, health: 2, target: 'TRIGGER_UNIT' }] }], description: 'Whenever you summon a unit, give it +1/+2.' },
-  ], ['+0/+1 → +0/+2.', '+0/+2 → +1/+2.']),
+    { limitPerTurn: 1, abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', health: 1, target: 'TRIGGER_UNIT' }] }], description: 'The first time you summon a unit each turn, give it +0/+1.' },
+    { limitPerTurn: 1, abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', health: 2, target: 'TRIGGER_UNIT' }] }], description: 'The first time you summon a unit each turn, give it +0/+2.' },
+    { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', attack: 1, health: 2, target: 'TRIGGER_UNIT' }] }], description: 'The first two times you summon a unit each turn, give it +1/+2.' },
+  ], ['+0/+1 → +0/+2.', '+1/+2, and works twice per turn.']),
   active('VERDANT', 'thornguard', 'Thornguard', [
     { cost: 3, target: { kind: 'ALLY_UNIT' }, effects: [{ type: 'BUFF', health: 2, target: 'TARGET' }, { type: 'GRANT_KEYWORD', keyword: 'GUARD', target: 'TARGET' }], description: 'Give a friendly unit +0/+2 and Guard.' },
     { cost: 2, target: { kind: 'ALLY_UNIT' }, effects: [{ type: 'BUFF', health: 2, target: 'TARGET' }, { type: 'GRANT_KEYWORD', keyword: 'GUARD', target: 'TARGET' }], description: 'Give a friendly unit +0/+2 and Guard.' },
@@ -116,8 +116,8 @@ const IRON: TalentAbility[] = [
   active('IRON', 'rivet_plating', 'Rivet Plating', [
     { cost: 2, effects: [{ type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }], description: 'Gain 2 Armor.' },
     { cost: 2, effects: [{ type: 'GAIN_ARMOR', amount: 3, target: 'ALLY_HERO' }], description: 'Gain 3 Armor.' },
-    { cost: 2, effects: [{ type: 'GAIN_ARMOR', amount: 4, target: 'ALLY_HERO' }], description: 'Gain 4 Armor.' },
-  ], ['Gain 3 Armor instead of 2.', 'Gain 4 Armor instead of 3.']),
+    { cost: 2, effects: [{ type: 'GAIN_ARMOR', amount: 3, target: 'ALLY_HERO' }, { type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO', condition: { kind: 'CONTROLS_TAG', tag: 'Construct' } }], description: 'Gain 3 Armor, or 4 if you control a Construct.' },
+  ], ['Gain 3 Armor instead of 2.', '+1 Armor while you control a Construct.']),
   active('IRON', 'assemble', 'Assemble', [
     { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot' }], description: 'Summon a 1/1 Scrapbot.' },
     { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot' }, { type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }], description: 'Summon a 1/1 Scrapbot and gain 1 Armor.' },
@@ -126,12 +126,12 @@ const IRON: TalentAbility[] = [
   passive('IRON', 'reinforced_hull', 'Reinforced Hull', [
     { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }] }], description: 'At the end of your turn, gain 1 Armor.' },
     { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }] }], description: 'At the end of your turn, gain 2 Armor.' },
-    { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'GAIN_ARMOR', amount: 3, target: 'ALLY_HERO' }] }], description: 'At the end of your turn, gain 3 Armor.' },
-  ], ['Gain 2 Armor instead of 1.', 'Gain 3 Armor instead of 2.']),
+    { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }, { type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO', condition: { kind: 'CONTROLS_TAG', tag: 'Construct' } }] }], description: 'At the end of your turn, gain 2 Armor, or 3 if you control a Construct.' },
+  ], ['Gain 2 Armor instead of 1.', '+1 Armor while you control a Construct.']),
   passive('IRON', 'assembly_protocol', 'Assembly Protocol', [
-    { abilities: [{ trigger: 'ALLY_SUMMONED', filter: { tag: 'Construct' }, effects: [{ type: 'BUFF', attack: 1, target: 'TRIGGER_UNIT' }] }], description: 'Whenever you summon a Construct, give it +1/+0.' },
-    { abilities: [{ trigger: 'ALLY_SUMMONED', filter: { tag: 'Construct' }, effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TRIGGER_UNIT' }] }], description: 'Whenever you summon a Construct, give it +1/+1.' },
-    { abilities: [{ trigger: 'ALLY_SUMMONED', filter: { tag: 'Construct' }, effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TRIGGER_UNIT' }, { type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever you summon a Construct, give it +1/+1 and gain 1 Armor.' },
+    { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_SUMMONED', filter: { tag: 'Construct' }, effects: [{ type: 'BUFF', attack: 1, target: 'TRIGGER_UNIT' }] }], description: 'Whenever you summon a Construct, give it +1/+0. Twice per turn.' },
+    { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_SUMMONED', filter: { tag: 'Construct' }, effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TRIGGER_UNIT' }] }], description: 'Whenever you summon a Construct, give it +1/+1. Twice per turn.' },
+    { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_SUMMONED', filter: { tag: 'Construct' }, effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TRIGGER_UNIT' }, { type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever you summon a Construct, give it +1/+1 and gain 1 Armor. Twice per turn.' },
   ], ['+1/+0 → +1/+1.', 'Also gain 1 Armor.']),
   active('IRON', 'overclock', 'Overclock', [
     { cost: 3, target: { kind: 'ALLY_UNIT' }, effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TARGET' }], description: 'Give a friendly unit +1/+1.' },
@@ -142,25 +142,25 @@ const IRON: TalentAbility[] = [
 
 const ASTRAL: TalentAbility[] = [
   active('ASTRAL', 'starlit_insight', 'Starlit Insight', [
-    { cost: 2, effects: [{ type: 'CREATE_CARD', cardId: 'token_mote_insight', destination: 'HAND', fleeting: true }], description: 'Add a Fleeting Mote of Insight to your hand.' },
-    { cost: 1, effects: [{ type: 'CREATE_CARD', cardId: 'token_mote_insight', destination: 'HAND', fleeting: true }], description: 'Add a Fleeting Mote of Insight to your hand.' },
+    { cost: 2, effects: [{ type: 'CREATE_CARD', cardId: 'token_mote_insight', destination: 'HAND' }], description: 'Add a Mote of Insight to your hand.' },
     { cost: 1, effects: [{ type: 'CREATE_CARD', cardId: 'token_mote_insight', destination: 'HAND' }], description: 'Add a Mote of Insight to your hand.' },
-  ], ['Cost 2 → 1.', 'The Mote is no longer Fleeting.']),
+    { cost: 1, effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY' }, { type: 'CREATE_CARD', cardId: 'token_mote_insight', destination: 'HAND' }], description: 'Deal 1 damage to a random enemy. Add a Mote of Insight to your hand.' },
+  ], ['Cost 2 → 1.', 'Also deals 1 damage to a random enemy.']),
   active('ASTRAL', 'arcane_volley', 'Arcane Volley', [
-    { cost: 3, effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY', repeat: 2 }], description: 'Deal 1 damage to a random enemy twice.' },
     { cost: 2, effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY', repeat: 2 }], description: 'Deal 1 damage to a random enemy twice.' },
     { cost: 2, effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY', repeat: 3 }], description: 'Deal 1 damage to a random enemy three times.' },
-  ], ['Cost 3 → 2.', 'Three bolts instead of two.']),
+    { cost: 2, effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY', repeat: 4 }], description: 'Deal 1 damage to a random enemy four times.' },
+  ], ['Three bolts instead of two.', 'Four bolts instead of three.']),
   passive('ASTRAL', 'spellweave', 'Spellweave', [
-    { abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, target: 'RANDOM_ALLY_UNIT' }] }], description: 'Whenever you cast a spell, give a random friendly unit +1/+0.' },
     { abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'RANDOM_ALLY_UNIT' }] }], description: 'Whenever you cast a spell, give a random friendly unit +1/+1.' },
     { abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'RANDOM_ALLY_UNIT' }, { type: 'HEAL', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever you cast a spell, give a random friendly unit +1/+1 and restore 1 Health to your Warden.' },
-  ], ['+1/+0 → +1/+1.', 'Also restores 1 Health to your Warden.']),
+    { abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'RANDOM_ALLY_UNIT', repeat: 2 }, { type: 'HEAL', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever you cast a spell, give a random friendly unit +1/+1 twice and restore 1 Health to your Warden.' },
+  ], ['Also restores 1 Health to your Warden.', 'The +1/+1 happens twice.']),
   passive('ASTRAL', 'foresight', 'Foresight', [
-    { abilities: [{ trigger: 'TURN_START', condition: { kind: 'HAND_SIZE_LTE', n: 2 }, effects: [{ type: 'DRAW_CARDS', amount: 1 }] }], description: 'At the start of your turn, draw a card if you have 2 or fewer cards in hand.' },
-    { abilities: [{ trigger: 'TURN_START', condition: { kind: 'HAND_SIZE_LTE', n: 3 }, effects: [{ type: 'DRAW_CARDS', amount: 1 }] }], description: 'At the start of your turn, draw a card if you have 3 or fewer cards in hand.' },
-    { abilities: [{ trigger: 'TURN_START', condition: { kind: 'HAND_SIZE_LTE', n: 4 }, effects: [{ type: 'DRAW_CARDS', amount: 1 }] }], description: 'At the start of your turn, draw a card if you have 4 or fewer cards in hand.' },
-  ], ['Works with up to 3 cards in hand.', 'Works with up to 4 cards in hand.']),
+    { abilities: [{ trigger: 'TURN_END', condition: { kind: 'HAND_SIZE_LTE', n: 1 }, effects: [{ type: 'DRAW_CARDS', amount: 1 }] }], description: 'At the end of your turn, draw a card if you have 1 or fewer cards in hand.' },
+    { abilities: [{ trigger: 'TURN_END', condition: { kind: 'HAND_SIZE_LTE', n: 2 }, effects: [{ type: 'DRAW_CARDS', amount: 1 }] }], description: 'At the end of your turn, draw a card if you have 2 or fewer cards in hand.' },
+    { abilities: [{ trigger: 'TURN_END', condition: { kind: 'HAND_SIZE_LTE', n: 3 }, effects: [{ type: 'DRAW_CARDS', amount: 1 }] }], description: 'At the end of your turn, draw a card if you have 3 or fewer cards in hand.' },
+  ], ['Works with up to 2 cards in hand.', 'Works with up to 3 cards in hand.']),
   active('ASTRAL', 'star_fragment', 'Star Fragment', [
     { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_star_fragment' }], description: 'Summon a 1/1 Star Fragment with Empower 1.' },
     { cost: 1, effects: [{ type: 'SUMMON', cardId: 'token_star_fragment' }], description: 'Summon a 1/1 Star Fragment with Empower 1.' },
@@ -172,13 +172,13 @@ const VOID: TalentAbility[] = [
   active('VOID', 'hollow_summons', 'Hollow Summons', [
     { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_hollow_wisp' }], description: 'Summon a 1/1 Hollow Wisp.' },
     { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }], description: 'Summon 2/2 Risen Bones.' },
-    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }, { type: 'SUMMON', cardId: 'token_hollow_wisp' }], description: 'Summon 2/2 Risen Bones and a 1/1 Hollow Wisp.' },
-  ], ['Summon 2/2 Risen Bones instead.', 'Also summon a Hollow Wisp.']),
+    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }, { type: 'SUMMON', cardId: 'token_hollow_wisp', condition: { kind: 'ALLY_DIED_THIS_TURN' } }], description: 'Summon 2/2 Risen Bones. If a friendly unit died this turn, also summon a 1/1 Hollow Wisp.' },
+  ], ['Summon 2/2 Risen Bones instead.', 'Also a Hollow Wisp if a friendly unit died this turn.']),
   passive('VOID', 'soul_harvest', 'Soul Harvest', [
-    { limitPerTurn: 3, abilities: [{ trigger: 'ALLY_DIED', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ENEMY_HERO' }] }], description: 'Whenever a friendly unit dies, deal 1 damage to the enemy Warden. Up to 3 times per turn.' },
+    { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_DIED', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ENEMY_HERO' }] }], description: 'Whenever a friendly unit dies, deal 1 damage to the enemy Warden. Twice per turn.' },
+    { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_DIED', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ENEMY_HERO' }, { type: 'HEAL', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever a friendly unit dies, deal 1 damage to the enemy Warden and restore 1 Health to yours. Twice per turn.' },
     { limitPerTurn: 3, abilities: [{ trigger: 'ALLY_DIED', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ENEMY_HERO' }, { type: 'HEAL', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever a friendly unit dies, deal 1 damage to the enemy Warden and restore 1 Health to yours. Up to 3 times per turn.' },
-    { limitPerTurn: 3, abilities: [{ trigger: 'ALLY_DIED', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ENEMY_HERO' }, { type: 'HEAL', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever a friendly unit dies, deal 2 damage to the enemy Warden and restore 1 Health to yours. Up to 3 times per turn.' },
-  ], ['Also restores 1 Health to your Warden.', 'Deals 2 damage instead of 1.']),
+  ], ['Also restores 1 Health to your Warden.', 'Up to 3 times per turn.']),
   active('VOID', 'blood_price', 'Blood Price', [
     { cost: 1, effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'ALLY_HERO' }, { type: 'DRAW_CARDS', amount: 1 }], description: 'Deal 3 damage to your Warden. Draw a card.' },
     { cost: 1, effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ALLY_HERO' }, { type: 'DRAW_CARDS', amount: 1 }], description: 'Deal 2 damage to your Warden. Draw a card.' },
@@ -192,31 +192,31 @@ const VOID: TalentAbility[] = [
   passive('VOID', 'unending', 'Unending', [
     { abilities: [{ trigger: 'TURN_END', condition: { kind: 'ALLY_DIED_THIS_TURN' }, effects: [{ type: 'SUMMON', cardId: 'token_hollow_wisp' }] }], description: 'At the end of your turn, if a friendly unit died this turn, summon a 1/1 Hollow Wisp.' },
     { abilities: [{ trigger: 'TURN_END', condition: { kind: 'ALLY_DIED_THIS_TURN' }, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }] }], description: 'At the end of your turn, if a friendly unit died this turn, summon 2/2 Risen Bones.' },
-    { abilities: [{ trigger: 'TURN_END', condition: { kind: 'ALLY_DIED_THIS_TURN' }, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }, { type: 'SUMMON', cardId: 'token_hollow_wisp' }] }], description: 'At the end of your turn, if a friendly unit died this turn, summon 2/2 Risen Bones and a 1/1 Hollow Wisp.' },
-  ], ['Summon Risen Bones instead of a Wisp.', 'Also summon a Hollow Wisp.']),
+    { abilities: [{ trigger: 'TURN_END', condition: { kind: 'ALLY_DIED_THIS_TURN' }, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }] }], description: 'At the end of your turn, if a friendly unit died this turn, summon 2/2 Risen Bones and restore 2 Health to your Warden.' },
+  ], ['Summon Risen Bones instead of a Wisp.', 'Also restores 2 Health to your Warden.']),
 ];
 
 const TIDE: TalentAbility[] = [
   active('TIDE', 'rime_touch', 'Rime Touch', [
-    { cost: 2, target: { kind: 'ENEMY_UNIT' }, effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'TARGET' }], description: 'Freeze an enemy unit.' },
     { cost: 2, target: { kind: 'ENEMY_UNIT' }, effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'TARGET' }, { type: 'APPLY_STATUS', status: 'FROZEN', target: 'TARGET' }], description: 'Deal 1 damage to an enemy unit and Freeze it.' },
     { cost: 1, target: { kind: 'ENEMY_UNIT' }, effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'TARGET' }, { type: 'APPLY_STATUS', status: 'FROZEN', target: 'TARGET' }], description: 'Deal 1 damage to an enemy unit and Freeze it.' },
-  ], ['Also deals 1 damage.', 'Cost 2 → 1.']),
+    { cost: 1, target: { kind: 'ENEMY_UNIT' }, effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'TARGET' }, { type: 'APPLY_STATUS', status: 'FROZEN', target: 'TARGET' }], description: 'Deal 2 damage to an enemy unit and Freeze it.' },
+  ], ['Cost 2 → 1.', 'Deals 2 damage instead of 1.']),
   active('TIDE', 'undertow', 'Undertow', [
     { cost: 3, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 3 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 3 or less to its owner's hand." },
-    { cost: 3, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 4 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 4 or less to its owner's hand." },
+    { cost: 2, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 3 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 3 or less to its owner's hand." },
     { cost: 2, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 4 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 4 or less to its owner's hand." },
-  ], ['Reaches units costing up to 4.', 'Cost 3 → 2.']),
+  ], ['Cost 3 → 2.', 'Reaches units costing up to 4.']),
   passive('TIDE', 'cold_snap', 'Cold Snap', [
     { abilities: [{ trigger: 'TURN_START', condition: { kind: 'HAND_SIZE_LTE', n: 3 }, effects: [{ type: 'CREATE_CARD', cardId: 'token_ice_shard', destination: 'HAND', fleeting: true }] }], description: 'At the start of your turn, if you have 3 or fewer cards in hand, add a Fleeting Rime Shard to your hand.' },
-    { abilities: [{ trigger: 'TURN_START', condition: { kind: 'HAND_SIZE_LTE', n: 5 }, effects: [{ type: 'CREATE_CARD', cardId: 'token_ice_shard', destination: 'HAND', fleeting: true }] }], description: 'At the start of your turn, if you have 5 or fewer cards in hand, add a Fleeting Rime Shard to your hand.' },
-    { abilities: [{ trigger: 'TURN_START', condition: { kind: 'HAND_SIZE_LTE', n: 5 }, effects: [{ type: 'CREATE_CARD', cardId: 'token_ice_shard', destination: 'HAND' }] }], description: 'At the start of your turn, if you have 5 or fewer cards in hand, add a Rime Shard to your hand.' },
-  ], ['Works with up to 5 cards in hand.', 'The Shard is no longer Fleeting.']),
+    { abilities: [{ trigger: 'TURN_START', condition: { kind: 'HAND_SIZE_LTE', n: 4 }, effects: [{ type: 'CREATE_CARD', cardId: 'token_ice_shard', destination: 'HAND' }] }], description: 'At the start of your turn, if you have 4 or fewer cards in hand, add a Rime Shard to your hand.' },
+    { abilities: [{ trigger: 'TURN_START', condition: { kind: 'HAND_SIZE_LTE', n: 6 }, effects: [{ type: 'CREATE_CARD', cardId: 'token_ice_shard', destination: 'HAND' }] }], description: 'At the start of your turn, if you have 6 or fewer cards in hand, add a Rime Shard to your hand.' },
+  ], ['Up to 4 cards in hand, and the Shard is no longer Fleeting.', 'Works with up to 6 cards in hand.']),
   active('TIDE', 'tidepool', 'Tidepool', [
     { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_tidepup' }], description: 'Summon a 1/2 Tidepup.' },
-    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_tidepup' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }], description: 'Summon a 1/2 Tidepup and restore 2 Health to your Warden.' },
     { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_tidepup' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }, { type: 'APPLY_STATUS', status: 'FROZEN', target: 'RANDOM_ENEMY_UNIT' }], description: 'Summon a 1/2 Tidepup, restore 2 Health to your Warden and Freeze a random enemy unit.' },
-  ], ['Also restores 2 Health to your Warden.', 'Also Freezes a random enemy unit.']),
+    { cost: 1, effects: [{ type: 'SUMMON', cardId: 'token_tidepup' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }, { type: 'APPLY_STATUS', status: 'FROZEN', target: 'RANDOM_ENEMY_UNIT' }], description: 'Summon a 1/2 Tidepup, restore 2 Health to your Warden and Freeze a random enemy unit.' },
+  ], ['Also restores 2 Health and Freezes a random enemy unit.', 'Cost 2 → 1.']),
   passive('TIDE', 'whirlpool', 'Whirlpool', [
     { limitPerTurn: 1, abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'RANDOM_ENEMY_UNIT' }] }], description: 'Whenever you cast a spell, Freeze a random enemy unit. Once per turn.' },
     { limitPerTurn: 1, abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'RANDOM_ENEMY_UNIT' }, { type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY_UNIT' }] }], description: 'Whenever you cast a spell, Freeze a random enemy unit and deal 1 damage to a random enemy unit. Once per turn.' },
@@ -258,9 +258,9 @@ export const DEFAULT_BUILD: Record<PlayableFaction, TalentPick[]> = {
   EMBER: [p('EMBER', 'cinder_bolt', 2), p('EMBER', 'kindled_fury', 1)],
   VERDANT: [p('VERDANT', 'sap_of_the_root', 2), p('VERDANT', 'barkskin', 1)],
   IRON: [p('IRON', 'rivet_plating', 2), p('IRON', 'assembly_protocol', 1)],
-  ASTRAL: [p('ASTRAL', 'starlit_insight', 2), p('ASTRAL', 'foresight', 1)],
+  ASTRAL: [p('ASTRAL', 'starlit_insight', 2), p('ASTRAL', 'spellweave', 1)],
   VOID: [p('VOID', 'hollow_summons', 2), p('VOID', 'soul_harvest', 1)],
-  TIDE: [p('TIDE', 'rime_touch', 2), p('TIDE', 'undertow', 1)],
+  TIDE: [p('TIDE', 'rime_touch', 2), p('TIDE', 'tidepool', 1)],
 };
 
 /** Fixed AI builds by personality (BALANCED uses the default build). */

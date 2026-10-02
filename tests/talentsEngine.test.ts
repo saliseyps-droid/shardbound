@@ -7,13 +7,13 @@ const t = (abilityId: string, level: 0 | 1 | 2): TalentPick => ({ abilityId, lev
 
 describe('Warden abilities in the engine', () => {
   it('uses both active slots in the same turn, each once', () => {
-    let s = newGame({ talents0: [t('wt_tide_rime_touch', 2), t('wt_tide_undertow', 1)], board1: ['token_treant', 'token_treant'] });
+    let s = newGame({ talents0: [t('wt_tide_rime_touch', 2), t('wt_tide_undertow', 1)], board1: ['token_treant', 'token_sentry'] });
     setEnergy(s, 0, 10);
     s = act(s, { type: 'HERO_POWER', player: 0, slot: 0, target: unitRef(unitAt(s, 1, 0)) });
     expect(s.players[0].energy).toBe(9);
     expect(unitAt(s, 1, 0).frozen).toBe(true);
     s = act(s, { type: 'HERO_POWER', player: 0, slot: 1, target: unitRef(unitAt(s, 1, 1)) });
-    expect(s.players[0].energy).toBe(6);
+    expect(s.players[0].energy).toBe(7);
     expect(s.players[1].board).toHaveLength(1);
     expect(tryAct(s, { type: 'HERO_POWER', player: 0, slot: 0, target: unitRef(unitAt(s, 1, 0)) }).error).toBe('Already used this turn');
   });
@@ -35,7 +35,7 @@ describe('Warden abilities in the engine', () => {
   it('resolves two passive slots independently', () => {
     let s = newGame({ talents0: [t('wt_iron_reinforced_hull', 2), t('wt_verdant_wellspring', 1)] });
     s = endTurn(s);
-    expect(s.players[0].hero.armor).toBe(3);
+    expect(s.players[0].hero.armor).toBe(2);
     const triggered = s.log.filter((e) => e.type === 'HERO_ABILITY_TRIGGERED' && e.player === 0).map((e) => (e as { slot: number }).slot);
     expect(triggered).toEqual(expect.arrayContaining([0, 1]));
   });
