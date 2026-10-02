@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.9.1',
+    date: '2026-10-02',
+    title: 'Kingdoms at War & Fantasy Realms',
+    summary: 'Both card sets have new names and new pack art, and your card backs live in the Collection.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Shardfall is now called Kingdoms at War and Tides of the Hollow Deep is now Fantasy Realms, each with a new illustrated booster pack.',
+          'Collection: the new Card backs button below Recycle surplus shows the card backs you own. Pick the one you want to use there.',
+          'Shop: the Buy and Equip buttons of all card backs line up at the same height.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.9.0',
     date: '2026-10-02',
     title: 'Card backs',

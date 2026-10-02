@@ -50,6 +50,6 @@ export const CRAFTING = {
 };
 
 export const SET_INFO: Record<SetId, { name: string; tagline: string; releaseOrder: number }> = {
-  CORE: { name: 'Shardfall', tagline: 'The Crown breaks. The Wardens rise.', releaseOrder: 1 },
-  DEEP: { name: 'Tides of the Hollow Deep', tagline: 'What sleeps beneath the Rimed Sea stirs.', releaseOrder: 2 },
+  CORE: { name: 'Kingdoms at War', tagline: 'Banners rise, crowns clash. The Wardens take the field.', releaseOrder: 1 },
+  DEEP: { name: 'Fantasy Realms', tagline: 'Dragons wake in the realms beyond the map.', releaseOrder: 2 },
 };

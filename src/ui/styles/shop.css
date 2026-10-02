@@ -8,19 +8,30 @@
   content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.35;
   background: radial-gradient(420px 260px at 12% 50%, var(--set-glow), transparent 70%);
 }
-.set-core { --set-glow: rgba(232, 176, 75, 0.45); }
-.set-deep { --set-glow: rgba(111, 224, 212, 0.4); }
+.set-core { --set-glow: rgba(233, 217, 176, 0.35); }
+.set-deep { --set-glow: rgba(224, 179, 74, 0.35); }
 .shop-set-art { position: relative; padding: var(--space-3); }
 .shop-set-body { position: relative; min-width: 0; }
 .shop-set-body h3 { margin-bottom: var(--space-1); }
 
-.booster { position: relative; aspect-ratio: 2 / 3; filter: drop-shadow(0 16px 22px rgba(4, 2, 16, 0.7)); }
-.booster svg { display: block; }
-.booster .booster-sheen { animation: booster-sheen 4.5s ease-in-out infinite; }
-@keyframes booster-sheen {
-  0%, 55% { transform: skewX(-18deg) translateX(0); }
-  100% { transform: skewX(-18deg) translateX(560px); }
+.booster { position: relative; filter: drop-shadow(0 16px 22px rgba(4, 2, 16, 0.7)); }
+.booster-art { display: block; width: 100%; height: auto; pointer-events: none; user-select: none; }
+/* A foil glint sweeping across the wrapper, masked to the pack's own shape. */
+.booster-sheen {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  -webkit-mask: var(--pack-art) center / 100% 100% no-repeat; mask: var(--pack-art) center / 100% 100% no-repeat;
 }
+.booster-sheen::before {
+  content: ''; position: absolute; top: -10%; bottom: -10%; left: -60%; width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+  transform: skewX(-18deg);
+  animation: booster-sheen 4.5s ease-in-out infinite;
+}
+@keyframes booster-sheen {
+  0%, 55% { left: -60%; }
+  100% { left: 130%; }
+}
+@media (prefers-reduced-motion: reduce) { .booster-sheen::before { animation: none; opacity: 0; } }
 .shop-pack { transition: transform 0.35s var(--ease-spring); transform: rotate(-4deg); }
 .shop-set:hover .shop-pack { transform: rotate(0deg) translateY(-6px) scale(1.03); }
 .shop-set.just-bought .shop-pack { animation: pack-bought 0.8s var(--ease-spring); }
@@ -69,24 +80,6 @@
 .odds-table .v-foil { color: var(--gold-bright); font-weight: 700; }
 .odds-table .v-prismatic { font-weight: 700; background: linear-gradient(90deg, #ff9a8a, #ffd27a, #7ef29a, #72dfe6, #c59bff); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-/* Card backs */
 .cardback-shop { margin-top: var(--space-5); }
 .cardback-shop-head h3 { margin-bottom: var(--space-1); }
 .cardback-shop-head p { margin: 0 0 var(--space-4); }
-.cardback-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-3); }
-.cardback-item {
-  display: grid; justify-items: center; align-content: start; gap: 6px; text-align: center;
-  padding: var(--space-3); background: rgba(10, 8, 26, 0.45); box-shadow: inset 0 0 0 1px var(--line);
-  clip-path: polygon(var(--facet) 0, 100% 0, 100% calc(100% - var(--facet)), calc(100% - var(--facet)) 100%, 0 100%, 0 var(--facet));
-}
-.cardback-item.is-equipped { box-shadow: inset 0 0 0 2px var(--gold), inset 0 0 24px rgba(232, 176, 75, 0.18); }
-.cardback-preview { position: relative; padding: 6px 0 4px; transition: transform 0.3s var(--ease-spring); }
-.cardback-item:hover .cardback-preview { transform: translateY(-4px) rotate(-2deg); }
-.cardback-item.just-bought .cardback-preview { animation: pack-bought 0.8s var(--ease-spring); }
-.cardback-badge {
-  position: absolute; left: 50%; bottom: -2px; transform: translateX(-50%);
-  font: 700 var(--t-xs) var(--font-body); color: var(--ink-0); background: var(--gold); padding: 1px 10px; border-radius: 999px; white-space: nowrap;
-}
-.cardback-name { font-family: var(--font-display); font-size: var(--t-md, 1rem); line-height: 1.15; }
-.cardback-desc { font-size: var(--t-xs); line-height: 1.35; min-height: 2.7em; }
-.cardback-action { width: 100%; margin-top: auto; display: inline-flex; justify-content: center; align-items: center; gap: 6px; }

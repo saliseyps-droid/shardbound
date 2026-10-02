@@ -8,8 +8,7 @@ import { audio } from '@/audio/audioService';
 import { confirmDialog, Gold, ScreenHeader } from '@/ui/components/common';
 import { GoldIcon } from '@/ui/components/Icons';
 import { BoosterPack } from '@/ui/components/packs/BoosterPack';
-import { CardBack } from '@/ui/components/CardView';
-import { CARD_BACKS, type CardBackDef } from '@/data/cardBacks';
+import { CardBackGrid } from '@/ui/components/CardBackGrid';
 import '@/ui/styles/shop.css';
 
 const SETS = (Object.keys(SET_INFO) as SetId[]).sort((a, b) => SET_INFO[a].releaseOrder - SET_INFO[b].releaseOrder);
@@ -115,76 +114,14 @@ function OfferButton({ offer, gold, busy, onBuy }: { offer: ShopOffer; gold: num
 }
 
 /** Cosmetic card backs: buy with Gold, then equip one. */
-function CardBackShop({ gold }: { gold: number }) {
-  const owned = useAccount((s) => s.save?.profile.cardBacks ?? []);
-  const equipped = useAccount((s) => s.save?.profile.cardBack);
-  const [justBought, setJustBought] = useState<string | null>(null);
-
-  const buy = async (b: CardBackDef) => {
-    const ok = await confirmDialog({
-      title: `Buy ${b.name}?`,
-      message: (
-        <p>
-          This spends <Gold amount={b.price} /> of your <Gold amount={gold} />. Card backs are cosmetic.
-        </p>
-      ),
-      confirmLabel: `Buy for ${b.price.toLocaleString()} Gold`,
-    });
-    if (!ok) return;
-    const res = gameService.buyCardBack(b.id);
-    if (!res.ok) {
-      audio.play('error');
-      toast(res.error, 'error');
-      return;
-    }
-    gameService.equipCardBack(b.id);
-    audio.play('coin');
-    toast(`${b.name} is yours and now in use.`, 'success');
-    setJustBought(b.id);
-    window.setTimeout(() => setJustBought(null), 900);
-  };
-
-  const equip = (b: CardBackDef) => {
-    const res = gameService.equipCardBack(b.id);
-    if (res.ok) {
-      audio.play('click');
-      toast(`Now using ${b.name}.`, 'success');
-    } else toast(res.error, 'error');
-  };
-
+function CardBackShop() {
   return (
     <section className="panel cardback-shop" aria-labelledby="cardbacks-title">
       <div className="cardback-shop-head">
         <h3 id="cardbacks-title">Card Backs</h3>
-        <p className="muted">Show off in every match: your deck on the table and the cards in your hand, as your opponent sees them, wear the back you choose.</p>
+        <p className="muted">Show off in every match: your deck on the table and the cards in your hand, as your opponent sees them, wear the back you choose. Switch between your backs in the Collection.</p>
       </div>
-      <ul className="cardback-grid">
-        {CARD_BACKS.map((b) => {
-          const has = owned.includes(b.id);
-          const using = equipped === b.id;
-          const affordable = gold >= b.price;
-          return (
-            <li key={b.id} className={`cardback-item ${using ? 'is-equipped' : ''} ${justBought === b.id ? 'just-bought' : ''}`}>
-              <div className="cardback-preview">
-                <CardBack width={132} design={b.id} />
-                {using && <span className="cardback-badge">In use</span>}
-              </div>
-              <strong className="cardback-name">{b.name}</strong>
-              <span className="cardback-desc faint">{b.description}</span>
-              {has ? (
-                <button className="btn btn-sm cardback-action" onClick={() => equip(b)} disabled={using} aria-label={using ? `${b.name} is in use` : `Use ${b.name}`}>
-                  {using ? 'Equipped' : 'Equip'}
-                </button>
-              ) : (
-                <button className="btn btn-sm btn-primary cardback-action" onClick={() => void buy(b)} disabled={!affordable} aria-label={`Buy ${b.name} for ${b.price} Gold`} title={affordable ? undefined : `Need ${(b.price - gold).toLocaleString()} more Gold`}>
-                  <GoldIcon size={16} />
-                  <span className="num">{b.price.toLocaleString()}</span>
-                </button>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+      <CardBackGrid mode="shop" />
     </section>
   );
 }
@@ -279,7 +216,7 @@ export default function ShopScreen() {
         })}
       </div>
       <OddsTable />
-      <CardBackShop gold={gold} />
+      <CardBackShop />
       {gold < 100 && <p className="muted shop-hint">Earn Gold by winning matches, completing quests and claiming daily rewards.</p>}
     </div>
   );

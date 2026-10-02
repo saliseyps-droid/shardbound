@@ -15,6 +15,9 @@ import { DEFAULT_FILTERS, filterCards, type CardFilterState } from '@/ui/compone
 import { CardDetailPanel, bestVariant } from '@/ui/components/collection/CardDetailPanel';
 import { CollectionStats } from '@/ui/components/collection/CollectionStats';
 import { useCardWidth } from '@/ui/components/collection/useCardWidth';
+import { CardBackGrid } from '@/ui/components/CardBackGrid';
+import { CARD_BACKS } from '@/data/cardBacks';
+import { useNavigate } from 'react-router-dom';
 import '@/ui/styles/collection.css';
 
 const BADGE_H = 34;
@@ -24,6 +27,8 @@ export default function CollectionScreen() {
   const collection = save?.collection;
   const [filters, setFilters] = useState<CardFilterState>(DEFAULT_FILTERS);
   const [selected, setSelected] = useState<string | null>(null);
+  const [view, setView] = useState<'cards' | 'backs'>('cards');
+  const navigate = useNavigate();
   const cardWidth = useCardWidth();
   const cardHeight = Math.round(cardWidth * 1.4) + BADGE_H;
 
@@ -119,12 +124,32 @@ export default function CollectionScreen() {
         actions={
           <>
             <Essence amount={save.profile.essence} />
-            <button className="btn btn-sm" disabled={surplus.cards === 0} onClick={() => void recycleSurplus()} title="Recycle copies beyond the playable limit">
-              Recycle surplus{surplus.cards > 0 ? ` (${surplus.cards})` : ''}
-            </button>
+            <div className="coll-action-stack">
+              <button className="btn btn-sm" disabled={surplus.cards === 0} onClick={() => void recycleSurplus()} title="Recycle copies beyond the playable limit">
+                Recycle surplus{surplus.cards > 0 ? ` (${surplus.cards})` : ''}
+              </button>
+              <button className={`btn btn-sm ${view === 'backs' ? 'btn-primary' : ''}`} onClick={() => setView(view === 'backs' ? 'cards' : 'backs')} aria-pressed={view === 'backs'}>
+                {view === 'backs' ? 'Back to cards' : `Card backs (${save.profile.cardBacks.length}/${CARD_BACKS.length})`}
+              </button>
+            </div>
           </>
         }
       />
+      {view === 'backs' ? (
+        <section className="panel coll-backs" aria-labelledby="coll-backs-title">
+          <div className="coll-backs-head">
+            <div>
+              <h3 id="coll-backs-title">Your card backs</h3>
+              <p className="muted">Pick the back your deck and hand show in every match.</p>
+            </div>
+            <button className="btn btn-sm btn-cyan" onClick={() => navigate('/shop')}>
+              Get more in the Shop
+            </button>
+          </div>
+          <CardBackGrid mode="owned" />
+        </section>
+      ) : (
+      <>
       <CardFilterBar value={filters} onChange={setFilters} factions={ALL_FACTIONS} />
       <div className="collection-body">
         <VirtualCardGrid
@@ -149,6 +174,8 @@ export default function CollectionScreen() {
           {selected ? <CardDetailPanel cardId={selected} onClose={() => setSelected(null)} /> : <CollectionStats collection={collection} />}
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }

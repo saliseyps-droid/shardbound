@@ -1,0 +1,26 @@
+/* Card backs */
+.cardback-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-3); }
+.cardback-item {
+  /* Flex column: the Buy / Equip button sits at the bottom, level across the whole row. */
+  display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
+  padding: var(--space-3); background: rgba(10, 8, 26, 0.45); box-shadow: inset 0 0 0 1px var(--line);
+  clip-path: polygon(var(--facet) 0, 100% 0, 100% calc(100% - var(--facet)), calc(100% - var(--facet)) 100%, 0 100%, 0 var(--facet));
+}
+.cardback-item.is-equipped { box-shadow: inset 0 0 0 2px var(--gold), inset 0 0 24px rgba(232, 176, 75, 0.18); }
+.cardback-preview { position: relative; padding: 6px 0 4px; background: none; border: 0; cursor: pointer; transition: transform 0.3s var(--ease-spring); }
+.cardback-preview:disabled { cursor: default; }
+.cardback-preview:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.cardback-item:hover .cardback-preview { transform: translateY(-4px) rotate(-2deg); }
+.cardback-item.just-bought .cardback-preview { animation: cardback-bought 0.8s var(--ease-spring); }
+.cardback-badge {
+  position: absolute; left: 50%; bottom: -2px; transform: translateX(-50%);
+  font: 700 var(--t-xs) var(--font-body); color: var(--ink-0); background: var(--gold); padding: 1px 10px; border-radius: 999px; white-space: nowrap;
+}
+.cardback-name { font-family: var(--font-display); font-size: var(--t-md, 1rem); line-height: 1.15; }
+.cardback-desc { font-size: var(--t-xs); line-height: 1.35; }
+.cardback-action { width: 100%; margin-top: auto; display: inline-flex; justify-content: center; align-items: center; gap: 6px; }
+@keyframes cardback-bought {
+  0% { transform: scale(1); }
+  35% { transform: rotate(3deg) scale(1.1); filter: drop-shadow(0 0 30px var(--gold)); }
+  100% { transform: scale(1); }
+}

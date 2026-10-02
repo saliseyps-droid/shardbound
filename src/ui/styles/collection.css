@@ -117,3 +117,11 @@
 .variant-name.v-foil { color: var(--gold-bright); }
 .variant-name.v-prismatic { background: linear-gradient(90deg, #ff9a8a, #ffd27a, #7ef29a, #72dfe6, #c59bff); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .detail-foot { display: flex; justify-content: space-between; align-items: center; }
+
+/* Recycle surplus with the Card backs switch below it */
+.coll-action-stack { display: grid; gap: 6px; }
+.coll-backs { overflow: auto; min-height: 0; }
+.coll-backs-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+.coll-backs-head h3 { margin: 0 0 var(--space-1); }
+.coll-backs-head p { margin: 0; }
+.collection-screen:has(> .coll-backs) { grid-template-rows: auto minmax(0, 1fr); }

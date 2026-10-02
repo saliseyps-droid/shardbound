@@ -11,7 +11,7 @@
 .inventory-info p { margin: 0; }
 
 .inventory-stack {
-  position: relative; width: 210px; height: 290px;
+  position: relative; width: 210px; height: 360px;
   background: none; border: 0; padding: 0; cursor: pointer;
 }
 .inventory-stack:disabled { cursor: default; }

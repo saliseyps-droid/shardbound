@@ -167,7 +167,7 @@ export default function DebugScreen() {
               Grant Essence
             </button>
             <button className="btn btn-sm" onClick={() => gameService.debugGrantPacks('CORE', 10)}>
-              +10 Shardfall packs
+              +10 Kingdoms at War packs
             </button>
             <button className="btn btn-sm" onClick={() => gameService.debugGrantPacks('DEEP', 10)}>
               +10 Deep packs
@@ -205,8 +205,8 @@ export default function DebugScreen() {
           <div className="panel-title">Pack simulation</div>
           <div className="btn-row">
             <select className="select" value={simSet} onChange={(e) => setSimSet(e.target.value as SetId)} aria-label="Set">
-              <option value="CORE">Shardfall</option>
-              <option value="DEEP">Hollow Deep</option>
+              <option value="CORE">Kingdoms at War</option>
+              <option value="DEEP">Fantasy Realms</option>
             </select>
             <button className="btn btn-sm btn-cyan" onClick={() => setSim(simulatePacks(simSet, 1000))}>
               Simulate 1000 packs
