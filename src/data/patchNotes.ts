@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.8.2',
+    date: '2026-10-02',
+    title: 'Draw pile',
+    summary: 'Your deck sits on the table, End turn is back on the right.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Both decks now lie on the left side of the board as a stack of cards that gets thinner as you draw. Drawn cards fly from the deck into your hand.',
+          'End turn and Concede are back on the right side.',
+          'Warden abilities sit on both sides of the portrait: the first on the left, the second on the right.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.8.1',
     date: '2026-10-02',
     title: 'Talent balance',

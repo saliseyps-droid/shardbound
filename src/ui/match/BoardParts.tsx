@@ -6,6 +6,7 @@ import { KEYWORDS } from '@/data/keywords';
 import type { GameState, PlayerId, UnitInstance } from '@/engine/types';
 import { canAttack, canUseHeroPower, currentHealth, empower, hasKeyword, maxHealth, unitAttack } from '@/engine/queries';
 import { cardArtUri } from '@/ui/components/cardArt';
+import { CardBack } from '@/ui/components/CardView';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait, portraitUrl } from '@/ui/components/WardenPortrait';
 import type { Faction } from '@/game/types';
@@ -220,13 +221,14 @@ export function EnergyBar({ game, player }: { game: GameState; player: PlayerId 
 }
 
 /** The Warden's two talent abilities: active ones are clicked and aimed like a spell, passive ones only glow when they trigger. */
-export function HeroAbilities({ game, player }: { game: GameState; player: PlayerId }) {
+export function HeroAbilities({ game, player, slots }: { game: GameState; player: PlayerId; slots?: number[] }) {
   const abilities = game.players[player].hero.abilities;
-  if (abilities.length === 0) return null;
+  const shown = (slots ?? abilities.map((_, i) => i)).filter((i) => abilities[i]);
+  if (shown.length === 0) return null;
   const firstActive = abilities.findIndex((a) => getTalent(a.id)?.kind === 'ACTIVE');
   return (
     <div className="hero-abilities">
-      {abilities.map((_, slot) => (
+      {shown.map((slot) => (
         <HeroAbilitySlot key={slot} game={game} player={player} slot={slot} tutorial={player === HUMAN && slot === firstActive} />
       ))}
     </div>
@@ -306,11 +308,19 @@ export function PermanentsRow({ game, player, onHover }: { game: GameState; play
   );
 }
 
-export function DeckPile({ count, label }: { count: number; label: string }) {
+/** The draw pile: a stack of card backs that gets thinner as cards are drawn from it. */
+export function DrawPile({ count, label, player, width }: { count: number; label: string; player: PlayerId; width: number }) {
+  // One visible layer per ~3 cards, so the stack visibly shrinks over the game.
+  const layers = count === 0 ? 0 : Math.min(10, Math.ceil(count / 3));
   return (
-    <div className="deck-pile" title={`${count} cards in ${label}`} aria-label={`${count} cards in ${label}`}>
-      <span className="deck-pile-stack" aria-hidden />
-      <span className="num">{count}</span>
+    <div className={`draw-pile ${count === 0 ? 'is-empty' : ''}`} data-draw-pile={player} title={`${count} cards in ${label}`} aria-label={`${count} cards in ${label}`} style={{ '--pile-w': `${width}px`, '--layers': layers } as CSSProperties}>
+      <div className="draw-pile-stack" aria-hidden>
+        {count === 0 && <span className="draw-pile-slot">Empty</span>}
+        {Array.from({ length: layers }, (_, i) => (
+          <CardBack key={i} width={width} className="draw-pile-card" style={{ '--layer': i } as CSSProperties} />
+        ))}
+      </div>
+      <span className="draw-pile-count num">{count}</span>
     </div>
   );
 }

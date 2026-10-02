@@ -141,12 +141,31 @@
 }
 .crystal.full { background: linear-gradient(160deg, #bff8ff, #3aa6d8); filter: drop-shadow(0 0 3px #3aa6d8); }
 
-.deck-pile { display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--parchment-dim); }
-.deck-pile-stack {
-  width: 16px; height: 22px; border-radius: 2px;
-  background: linear-gradient(160deg, #3b2f6e, #15122a);
-  box-shadow: 2px 2px 0 #0b0916, 4px 4px 0 #0b0916, inset 0 0 0 1px var(--gold-deep);
+/* Draw pile on the left: a stack of card backs, thinner as the deck runs out. */
+.draw-pile-anchor { position: absolute; left: clamp(56px, 5vw, 110px); z-index: 12; }
+.self-side > .draw-pile-anchor { bottom: 42%; }
+.enemy-side > .draw-pile-anchor { top: 50%; transform: translateY(-50%); }
+.draw-pile { display: grid; justify-items: center; gap: 6px; }
+.draw-pile-stack {
+  position: relative; width: var(--pile-w); height: calc(var(--pile-w) * 1.4);
+  margin-top: calc(var(--layers) * 2px); margin-left: calc(var(--layers) * 2px);
 }
+.draw-pile-card {
+  position: absolute; left: 0; top: 0;
+  transform: translate(calc(var(--layer) * -2px), calc(var(--layer) * -2px));
+  box-shadow: 1px 1px 0 #0b0916;
+}
+.draw-pile-slot {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  border: 2px dashed rgba(232, 176, 75, 0.35); border-radius: 6px;
+  font-size: var(--t-xs); color: var(--parchment-faint);
+}
+.draw-pile-count {
+  min-width: 34px; padding: 1px 8px; text-align: center; font-weight: 800; color: var(--parchment);
+  background: rgba(10, 8, 22, 0.75); border: 1px solid var(--gold-deep); border-radius: 999px;
+}
+.draw-pile.is-empty .draw-pile-count { color: var(--damage); }
+.hero-col-left { display: flex; align-items: center; gap: 10px; }
 .empower-chip { color: var(--gold-bright); }
 
 .permanents { display: flex; gap: 6px; }
@@ -346,7 +365,11 @@
 }
 .hand-card.is-dragging { opacity: 0.25; }
 .hand-card.is-new { animation: draw-in 0.6s var(--ease-out); }
-@keyframes draw-in { from { transform: translateX(40vw) translateY(-20vh) rotate(25deg) scale(0.6); opacity: 0; } }
+/* From the draw pile (--dx/--dy are set when the card arrives) into its slot in the hand. */
+@keyframes draw-in {
+  from { transform: translateX(calc(-50% + var(--o) * var(--spread))) translate(var(--dx, -40vw), var(--dy, -10vh)) rotate(-12deg) scale(0.55); opacity: 0.2; }
+  30% { opacity: 1; }
+}
 .fleeting-tag {
   position: absolute; top: -8px; left: 50%; transform: translateX(-50%); z-index: 8;
   font: 700 var(--t-xs) var(--font-body); color: var(--ink-0); background: var(--cyan); padding: 0 6px; border-radius: 999px;
@@ -357,7 +380,7 @@
 .drag-ghost { position: fixed; z-index: 500; pointer-events: none; transform: translate(-50%, -60%) rotate(-4deg) scale(1.1); filter: drop-shadow(0 20px 20px #000); }
 
 /* Turn controls -------------------------------------------------------- */
-.turn-controls { position: absolute; left: clamp(56px, 5vw, 110px); bottom: 42%; display: grid; justify-items: center; gap: var(--space-2); z-index: 12; }
+.turn-controls { position: absolute; right: clamp(56px, 5vw, 110px); bottom: 42%; display: grid; justify-items: center; gap: var(--space-2); z-index: 12; }
 .end-turn {
   min-width: 150px; height: 58px; padding: 0 24px; cursor: pointer; border: 0;
   font: 700 var(--t-lg) var(--font-display); color: var(--parchment-faint);
@@ -479,10 +502,9 @@
 }
 
 /* Labels that sit directly on the play-mat stay legible on light boards. */
-.energy-count, .deck-pile, .hero-name, .board-empty, .turn-timer, .empower-chip {
+.energy-count, .draw-pile-count, .hero-name, .board-empty, .turn-timer, .empower-chip {
   text-shadow: 0 1px 2px #000, 0 0 6px rgba(0, 0, 0, 0.85);
 }
-.deck-pile { color: var(--parchment); }
 
 /* ------------------------------------------------------------------ */
 /* Thin gold frame around the Warden, the Warden Sigil and relic /     */

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { getCardSafe } from '@/data/cards';
 import { effectiveCost, canPlayCard } from '@/engine/queries';
@@ -10,7 +10,7 @@ import { toast, useUi } from '@/state/uiStore';
 import { CardBack, CardView } from '@/ui/components/CardView';
 import { confirmDialog, Spinner } from '@/ui/components/common';
 import { audio } from '@/audio/audioService';
-import { DeckPile, EmpowerBadge, EnergyBar, HeroAbilities, HeroPanel, PermanentsRow, UnitView } from './BoardParts';
+import { DrawPile, EmpowerBadge, EnergyBar, HeroAbilities, HeroPanel, PermanentsRow, UnitView } from './BoardParts';
 import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
 import { useT } from '@/i18n';
 import { pickBoardBackground } from './boardBackgrounds';
@@ -123,6 +123,24 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const opp = game.players[AI];
   const myTurn = game.activePlayer === HUMAN && game.phase === 'MAIN';
   const interactive = myTurn && !busy && phase === 'playing';
+
+  // Newly drawn cards fly in from the draw pile: offset from the pile to their place in the hand.
+  useLayoutEffect(() => {
+    if (newCards.size === 0) return;
+    const pile = document.querySelector('[data-draw-pile="0"] .draw-pile-stack')?.getBoundingClientRect();
+    if (!pile) return;
+    for (const uid of newCards) {
+      const el = document.querySelector<HTMLElement>(`[data-hand-uid="${uid}"]`);
+      if (!el) continue;
+      // Measure the card's resting place without the fly-in transform, then restart the animation.
+      el.style.animation = 'none';
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--dx', `${pile.left + pile.width / 2 - (r.left + r.width / 2)}px`);
+      el.style.setProperty('--dy', `${pile.top + pile.height / 2 - (r.top + r.height / 2)}px`);
+      void el.offsetWidth;
+      el.style.animation = '';
+    }
+  }, [newCards]);
 
   // Highlight newly drawn cards.
   useEffect(() => {
@@ -354,15 +372,18 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         <div className="hero-area hero-enemy-area">
           <div className="hero-col-left">
             <PermanentsRow game={game} player={AI} onHover={setHoverCard} />
+            <HeroAbilities game={game} player={AI} slots={[0]} />
           </div>
           <div data-tutorial="enemy-hero">
             <HeroPanel game={game} player={AI} targetable={targets.includes('h:1')} onClick={() => store.getState().clickHero(AI)} />
           </div>
           <div className="hero-side-info">
-            <HeroAbilities game={game} player={AI} />
+            <HeroAbilities game={game} player={AI} slots={[1]} />
             <EnergyBar game={game} player={AI} />
-            <DeckPile count={opp.deck.length} label="the opponent's deck" />
           </div>
+        </div>
+        <div className="draw-pile-anchor">
+          <DrawPile count={opp.deck.length} label="the opponent's deck" player={AI} width={52} />
         </div>
       </section>
 
@@ -380,16 +401,19 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         <div className="hero-area hero-self-area">
           <div className="hero-col-left">
             <PermanentsRow game={game} player={HUMAN} onHover={setHoverCard} />
+            <HeroAbilities game={game} player={HUMAN} slots={[0]} />
           </div>
           <div data-tutorial="my-hero">
             <HeroPanel game={game} player={HUMAN} targetable={targets.includes('h:0')} onClick={() => store.getState().clickHero(HUMAN)} />
           </div>
           <div className="hero-side-info">
-            <HeroAbilities game={game} player={HUMAN} />
+            <HeroAbilities game={game} player={HUMAN} slots={[1]} />
             <EnergyBar game={game} player={HUMAN} />
-            <DeckPile count={me.deck.length} label="your deck" />
             <EmpowerBadge game={game} player={HUMAN} />
           </div>
+        </div>
+        <div className="draw-pile-anchor">
+          <DrawPile count={me.deck.length} label="your deck" player={HUMAN} width={Math.round(cardW * 0.62)} />
         </div>
         <div className="hand" data-tutorial="hand" style={{ '--card-w': `${cardW}px`, '--n': handCount } as CSSProperties} aria-label="Your hand">
           {me.hand.map((c, i) => {
