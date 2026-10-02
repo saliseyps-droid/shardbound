@@ -20,6 +20,7 @@ const DeckEditorScreen = lazy(() => import('@/ui/screens/DeckEditorScreen'));
 const PacksScreen = lazy(() => import('@/ui/screens/PacksScreen'));
 const ShopScreen = lazy(() => import('@/ui/screens/ShopScreen'));
 const CardBacksScreen = lazy(() => import('@/ui/screens/CardBacksScreen'));
+const ArenaScreen = lazy(() => import('@/ui/screens/ArenaScreen'));
 const QuestsScreen = lazy(() => import('@/ui/screens/QuestsScreen'));
 const ProfileScreen = lazy(() => import('@/ui/screens/ProfileScreen'));
 const MatchHistoryScreen = lazy(() => import('@/ui/screens/MatchHistoryScreen'));
@@ -52,6 +53,7 @@ function Shell() {
               <Route path="/packs" element={<PacksScreen />} />
               <Route path="/shop" element={<ShopScreen />} />
               <Route path="/card-backs" element={<CardBacksScreen />} />
+              <Route path="/arena" element={<ArenaScreen />} />
               <Route path="/quests" element={<QuestsScreen />} />
               <Route path="/profile" element={<ProfileScreen />} />
               <Route path="/history" element={<MatchHistoryScreen />} />

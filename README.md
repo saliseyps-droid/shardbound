@@ -133,6 +133,10 @@ Play → *Play a friend online* creates a match link (`#/join/CODE`). The friend
 
 Play → *Ranked* → *Find match*. Without a server, searching players meet through a fixed pool of public matchmaking slots (`src/net/matchmaking.ts`): a searcher joins anyone already waiting, otherwise claims a free slot and waits, then rescans. Ratings are Elo (K = 32, start 1000) with tiers Bronze → Crown (`src/domain/ranked.ts`), stored on the account.
 
+### Arena
+
+Play → *Arena* (entry 300 Gold): pick one of two factions, draft 30 cards one of three at a time (that faction + Neutral, rarity rolled per pick), set up the Warden talents, then fight up to 4 AI opponents (Normal, Normal, Hard, Expert) until the first loss. Rewards scale with wins (`src/config/arena.ts`); the run is stored in the save and its offers are seeded, so reloading never re-rolls (`src/domain/arena.ts`).
+
 ### Tournament
 
 Play → *Tournament*: one player creates a tournament and shares the code; 2–4 humans join and bots fill the empty seats of a 4-player knockout (semi-finals → final). The organizer's browser keeps the bracket (`src/domain/tournament.ts`, `src/state/tournamentStore.ts`); human-vs-human matches run over their own 1v1 connection, human-vs-bot matches locally, bot-vs-bot matches are simulated with the real engine. Champion +250 Gold, runner-up +100 Gold, plus normal match rewards.

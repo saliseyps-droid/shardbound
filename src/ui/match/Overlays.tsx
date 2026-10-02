@@ -222,7 +222,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
     <div className={`match-overlay results ${win ? 'is-win' : draw ? 'is-draw' : 'is-loss'}`} role="dialog" aria-label={win ? 'Victory' : draw ? 'Draw' : 'Defeat'}>
       <h1 className="results-title">{win ? 'Victory' : draw ? 'Draw' : 'Defeat'}</h1>
       <p className="muted">
-        {config?.mode === 'TOURNAMENT' ? `Tournament match against ${config.opponent.name}` : config?.mode === 'RANKED' ? `Ranked match against ${config.opponent.name}` : config?.online ? `Online match against ${config.opponent.name}` : `Against ${config?.opponent.name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`}
+        {config?.mode === 'ARENA' ? `Arena match against ${config.opponent.name}` : config?.mode === 'TOURNAMENT' ? `Tournament match against ${config.opponent.name}` : config?.mode === 'RANKED' ? `Ranked match against ${config.opponent.name}` : config?.online ? `Online match against ${config.opponent.name}` : `Against ${config?.opponent.name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`}
         {game.endReason === 'CONCEDE' ? ', by concession' : ''}
       </p>
       <div className="results-grid">
@@ -307,6 +307,12 @@ export function ResultsOverlay({ game }: { game: GameState }) {
           </button>
         ) : (
           <>
+            {config?.mode === 'ARENA' ? (
+              <button className="btn btn-primary btn-lg" onClick={() => exit('/arena')} autoFocus>
+                Back to Arena
+              </button>
+            ) : (
+            <>
             <button className="btn btn-ghost" onClick={() => exit(config?.mode === 'PVE' ? '/campaign' : config?.mode === 'TOURNAMENT' ? '/tournament' : config?.mode === 'RANKED' ? '/ranked' : config?.online ? '/online' : '/play')}>
               {config?.mode === 'PVE' ? 'Back to campaign' : config?.mode === 'TOURNAMENT' ? 'Back to bracket' : config?.mode === 'RANKED' ? 'Ranked' : config?.online ? 'New online match' : 'Choose opponent'}
             </button>
@@ -318,6 +324,8 @@ export function ResultsOverlay({ game }: { game: GameState }) {
             <button className="btn btn-primary btn-lg" onClick={() => exit(config?.mode === 'TOURNAMENT' ? '/tournament' : '/')} autoFocus>
               Continue
             </button>
+            </>
+            )}
           </>
         )}
       </div>

@@ -19,6 +19,25 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.10.0',
+    date: '2026-10-02',
+    title: 'The Arena',
+    summary: 'A new mode: draft a deck one card at a time and see how far it gets you.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Arena (Play → Arena, entry 300 Gold): choose one of two Wardens, then draft 30 cards by picking one of three each time, from that faction and Neutral.',
+          'Set up your Warden abilities, then fight up to 4 AI opponents that get tougher with every win. Your first loss ends the run.',
+          'Rewards by wins: 0 – 1 pack and 50 Gold, 1 – 1 pack and 150 Gold, 2 – 2 packs and 250 Gold, 3 – 2 packs and 400 Gold, 4 – 3 packs, 600 Gold and a card back you don’t own yet.',
+          'Drafted cards are only for the run: you don’t need to own them. Your run is saved, so you can leave and come back; Retire ends it early with the reward for your wins.',
+        ],
+      },
+      { kind: 'fixed', items: ['Collection and deck editor: a selected card in the first row is no longer cut off at the top.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.9.2',
     date: '2026-10-02',
     title: 'Meowchick',

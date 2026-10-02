@@ -1,3 +1,4 @@
+import { arenaDeck, arenaOpponent, arenaPhase } from '@/domain/arena';
 import { create } from 'zustand';
 import { randomSeed } from '@/core/rng';
 import { applyAction, createGame } from '@/engine/game';
@@ -445,7 +446,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     audio.play(result === 'WIN' ? 'victory' : 'defeat');
     if (!cfg) return;
     const save = useAccount.getState().save;
-    const deck = save?.decks.find((d) => d.id === cfg.deckId);
+    const deck = cfg.mode === 'ARENA' && save?.arena.run ? arenaDeck(save.arena.run) : save?.decks.find((d) => d.id === cfg.deckId);
     try {
       const rewards = gameService.recordMatch({
         mode: cfg.mode === 'ONLINE' ? 'PVP' : cfg.mode,
@@ -518,6 +519,15 @@ export const useMatch = create<MatchStore>((set, get) => {
         pendingInitial = null;
       } else if (config.mode === 'TUTORIAL') {
         setup = tutorialSetup(save.profile.username, save.profile.avatar);
+      } else if (config.mode === 'ARENA') {
+        // The drafted deck lives in the Arena run; ownership does not matter there.
+        const run = save.arena.run;
+        if (!run || arenaPhase(run) !== 'PLAYING') throw new Error('There is no Arena match to play.');
+        const deck = arenaDeck(run);
+        const issues = validateDeck(deck);
+        if (issues.length) throw new Error(`Arena deck is not valid: ${issues[0].message}`);
+        deckName = 'Arena deck';
+        setup = { seed: config.seed ?? randomSeed(), players: [playerSide(save.profile.username, save.profile.avatar, deck, save.profile.cardBack), opponentSide(arenaOpponent(run))] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
       } else {
         const deck = save.decks.find((d) => d.id === config.deckId);
         if (!deck) throw new Error('Deck not found');

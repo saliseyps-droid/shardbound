@@ -469,7 +469,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         </div>
         <BattleLog game={game} />
         <div className="match-meta faint">
-          {config?.mode === 'PVE' ? 'Campaign' : config?.mode === 'TUTORIAL' ? 'Tutorial' : config?.online ? 'Online' : 'Practice'} vs {game.players[AI].hero.name}
+          {config?.mode === 'ARENA' ? 'Arena' : config?.mode === 'PVE' ? 'Campaign' : config?.mode === 'TUTORIAL' ? 'Tutorial' : config?.online ? 'Online' : 'Practice'} vs {game.players[AI].hero.name}
         </div>
       </aside>
 

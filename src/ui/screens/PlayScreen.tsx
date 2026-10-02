@@ -95,6 +95,17 @@ export default function PlayScreen() {
           </button>
           {!validDeck && <p className="deckbox-issue">Choose a valid 30-card deck to play.</p>}
 
+          <div className="tutorial-card online-card arena-card">
+            <Glyph name="sword" size={28} />
+            <div>
+              <strong>Arena</strong>
+              <span className="muted">Draft a deck one card at a time and win up to 4 matches for packs, Gold and card backs. Entry 300 Gold.</span>
+            </div>
+            <Link className="btn btn-sm btn-primary" to="/arena">
+              Enter
+            </Link>
+          </div>
+
           <div className="tutorial-card online-card">
             <Glyph name="trophy" size={28} />
             <div>

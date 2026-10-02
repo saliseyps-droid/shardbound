@@ -6,6 +6,7 @@ import { LEVELS } from '@/config/progression';
 import type { PlayableFaction, SetId, Variant } from '@/game/types';
 import { maxCopiesFor, type Deck } from '@/domain/decks';
 import { defaultBuild, type TalentPick } from '@/data/wardenTalents';
+import { chooseArenaFaction, pickArenaCard, recordArenaMatch, retireArena, setArenaTalents, startArena } from '@/domain/arena';
 import { buyCardBack, buyOffer, craftCard, equipCardBack, openPack, recycleAllSurplus, recycleCard } from '@/domain/economy';
 import { claimDaily } from '@/domain/daily';
 import { applyMatchResult, type MatchRewards, type MatchSummary } from '@/domain/matchResults';
@@ -332,9 +333,37 @@ export class GameService {
   // -------------------------------------------------------------------------
 
   recordMatch(summary: MatchSummary): MatchRewards {
-    const { save, rewards } = applyMatchResult(this.require(), summary, this.now());
+    let { save, rewards } = applyMatchResult(this.require(), summary, this.now());
+    if (summary.mode === 'ARENA') {
+      const res = recordArenaMatch(save, summary.result, this.now());
+      if (res.ok) save = res.value;
+    }
     this.commit(save);
     return rewards;
+  }
+
+  // -------------------------------------------------------------------------
+  // Arena
+  // -------------------------------------------------------------------------
+
+  private applyArena(res: Result<GameSave>): Result<GameSave> {
+    if (res.ok) this.commit(res.value);
+    return res;
+  }
+  arenaStart(): Result<GameSave> {
+    return this.applyArena(startArena(this.require(), this.now(), randomSeed()));
+  }
+  arenaChooseFaction(faction: PlayableFaction): Result<GameSave> {
+    return this.applyArena(chooseArenaFaction(this.require(), faction));
+  }
+  arenaPick(cardId: string): Result<GameSave> {
+    return this.applyArena(pickArenaCard(this.require(), cardId));
+  }
+  arenaSetTalents(talents: TalentPick[]): Result<GameSave> {
+    return this.applyArena(setArenaTalents(this.require(), talents));
+  }
+  arenaRetire(): Result<GameSave> {
+    return this.applyArena(retireArena(this.require(), this.now()));
   }
 
   // -------------------------------------------------------------------------

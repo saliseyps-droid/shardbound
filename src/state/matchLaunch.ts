@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import type { OpponentDef } from '@/data/opponents';
 
 export interface MatchConfig {
-  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE' | 'RANKED' | 'TOURNAMENT';
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE' | 'RANKED' | 'TOURNAMENT' | 'ARENA';
   /** Ranked: the opponent's rating when the match was found. */
   opponentRating?: number;
   /** Tournament: which bracket match this is. */

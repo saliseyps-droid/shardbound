@@ -1,0 +1,72 @@
+/* Arena: lobby, faction pick, draft, talents, matches, run summary. */
+.arena-screen { display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 100%; }
+
+.arena-lobby { align-self: start; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: var(--space-5); align-items: start; }
+@media (max-width: 900px) { .arena-lobby { grid-template-columns: 1fr; } }
+.arena-intro { display: grid; justify-items: center; gap: var(--space-3); text-align: center; color: var(--gold-bright); }
+.arena-intro h3 { margin: 0; color: var(--parchment); }
+.arena-steps { text-align: left; color: var(--parchment); margin: 0; padding-left: 1.4em; display: grid; gap: 6px; max-width: 520px; }
+.arena-intro .btn-xl { display: inline-flex; align-items: center; gap: 8px; }
+
+.arena-rewards { width: 100%; border-collapse: collapse; }
+.arena-rewards th, .arena-rewards td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.arena-rewards thead th { color: var(--parchment-faint); font-weight: 600; font-size: var(--t-sm); }
+.arena-rewards tbody th { font-size: var(--t-lg); color: var(--gold-bright); width: 3em; }
+.arena-rewards tr.is-current { background: rgba(232, 176, 75, 0.1); box-shadow: inset 3px 0 0 var(--gold); }
+.arena-reward-line { display: flex; flex-wrap: wrap; gap: 6px; }
+.arena-reward-chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; background: rgba(0, 0, 0, 0.28); box-shadow: inset 0 0 0 1px var(--line); font-weight: 700; }
+.arena-reward-chip.is-back { color: var(--cyan); }
+.arena-reward-chip.big { padding: 6px 14px; font-size: var(--t-lg); }
+
+.arena-factions { align-self: start; display: grid; grid-template-columns: repeat(2, minmax(0, 360px)); justify-content: center; gap: var(--space-6); align-items: stretch; }
+@media (max-width: 760px) { .arena-factions { grid-template-columns: 1fr; } }
+.arena-faction {
+  --fc: var(--gold);
+  display: grid; justify-items: center; gap: var(--space-2); text-align: center; cursor: pointer; font: inherit; color: inherit;
+  border: 0; padding: var(--space-6) var(--space-5);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fc) 26%, transparent), rgba(10, 8, 26, 0.6));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fc) 55%, transparent);
+  transition: transform 0.2s var(--ease-spring), box-shadow 0.2s;
+}
+.arena-faction:hover { transform: translateY(-6px); box-shadow: inset 0 0 0 2px var(--fc), 0 0 30px color-mix(in srgb, var(--fc) 40%, transparent); }
+.arena-faction-name { font-family: var(--font-display); font-size: var(--t-xl); }
+.arena-faction-identity { color: var(--parchment-dim); font-size: var(--t-sm); margin-bottom: var(--space-2); }
+
+.arena-play { display: grid; grid-template-columns: minmax(0, 1fr) clamp(260px, 22vw, 330px); gap: var(--space-5); min-height: 0; align-items: start; }
+@media (max-width: 900px) { .arena-play { grid-template-columns: 1fr; } }
+.arena-offer-wrap { display: grid; gap: var(--space-4); justify-items: center; padding-top: var(--space-3); }
+.arena-offer-head { display: flex; align-items: baseline; gap: var(--space-4); flex-wrap: wrap; justify-content: center; }
+.arena-pick-count { font-family: var(--font-display); font-size: var(--t-xl); }
+.arena-pick-count strong { color: var(--gold-bright); }
+.arena-rarity { font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; font-size: var(--t-sm); }
+.arena-offer { display: flex; gap: var(--space-5); flex-wrap: wrap; justify-content: center; padding: 18px 0 24px; }
+.arena-offer-card { animation: arena-deal 0.45s var(--ease-spring) both; animation-delay: calc(var(--i) * 90ms); }
+.arena-offer-card .card { transition: transform 0.18s var(--ease-out), filter 0.18s; }
+.arena-offer-card .card:hover { transform: translateY(-10px) scale(1.04); filter: drop-shadow(0 0 10px var(--gold)) drop-shadow(0 14px 18px rgba(4, 2, 16, 0.7)); }
+@keyframes arena-deal { from { opacity: 0; transform: translateY(30px) rotate(-4deg) scale(0.92); } }
+
+.arena-deck { display: grid; gap: var(--space-3); max-height: calc(100vh - 220px); overflow-y: auto; }
+.arena-deck-head { display: flex; align-items: center; gap: var(--space-3); }
+.arena-deck-head > div { display: grid; }
+.arena-curve { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; height: 70px; align-items: end; }
+.arena-curve-col { display: grid; grid-template-rows: 1fr auto; height: 100%; align-items: end; justify-items: center; font-size: var(--t-xs); }
+.arena-curve-bar { width: 100%; min-height: 2px; background: linear-gradient(180deg, #bff8ff, #3aa6d8); border-radius: 2px 2px 0 0; }
+.arena-deck .deck-row { cursor: default; }
+
+.arena-talents { display: grid; gap: var(--space-4); }
+.arena-talents-foot { display: flex; justify-content: flex-end; }
+
+.arena-matches { display: grid; gap: var(--space-4); justify-items: center; text-align: center; }
+.arena-record { display: flex; gap: var(--space-3); }
+.arena-pip { width: 52px; height: 58px; display: grid; place-items: center; color: var(--parchment-faint); background: rgba(0, 0, 0, 0.3); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+.arena-pip.is-win { color: #2b2210; background: linear-gradient(160deg, var(--gold-bright), var(--gold-deep)); }
+.arena-next { --fc: var(--gold); display: grid; justify-items: center; gap: var(--space-2); padding: var(--space-4) var(--space-6); background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--fc) 22%, transparent), transparent 70%); }
+.arena-diff { font-weight: 800; }
+.arena-diff.diff-normal { color: var(--cyan); }
+.arena-diff.diff-hard { color: var(--gold-bright); }
+.arena-diff.diff-expert { color: var(--damage); }
+
+.arena-summary { align-self: start; align-content: start; display: grid; justify-items: center; gap: var(--space-3); text-align: center; max-width: 640px; margin: var(--space-6) auto 0; color: var(--gold-bright); animation: arena-deal 0.5s var(--ease-spring); }
+.arena-summary h3 { margin: 0; font-size: 2.4rem; color: var(--parchment); }
+.arena-summary-rewards { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center; align-items: center; color: var(--parchment); }
+.arena-reward-back { display: grid; justify-items: center; gap: 6px; font-weight: 700; }
