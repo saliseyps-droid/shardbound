@@ -15,6 +15,7 @@ import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, TurnBanner, Tu
 import { useT } from '@/i18n';
 import { BrandLogo } from '@/ui/components/BrandLogo';
 import { Glyph } from '@/ui/components/Icons';
+import { enterGameFullscreen, fullscreenSupported, maybeAutoFullscreen, startMatchFullscreen } from './fullscreen';
 import { pickBoardBackground } from './boardBackgrounds';
 import '@/ui/styles/board.css';
 
@@ -126,6 +127,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const prevHand = useRef<number[]>([]);
   const boardRef = useRef<HTMLDivElement>(null);
   const longPress = useRef<{ timer?: number }>({});
+  useEffect(() => startMatchFullscreen(), []);
   /** Touch: the hand card shown enlarged above the hand (tap it again to play it). */
   const [peek, setPeek] = useState<number | null>(null);
   const peekRef = useRef<number | null>(null);
@@ -389,6 +391,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         // Right-click inspects a card in hand or a unit on the battlefield.
         inspectAt(e.target as HTMLElement);
       }}
+      onPointerUpCapture={(e) => e.pointerType === 'touch' && maybeAutoFullscreen()}
       onPointerDownCapture={(e) => {
         // Touch: press and hold a card or unit to inspect it (phones have no right click).
         if (e.pointerType !== 'touch') return;
@@ -568,6 +571,11 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         <Glyph name="deck" size={48} />
         <strong>Turn your phone sideways</strong>
         <span className="muted">The battlefield needs a landscape screen.</span>
+        {fullscreenSupported() && (
+          <button className="btn btn-primary" onClick={() => void enterGameFullscreen()}>
+            Play fullscreen
+          </button>
+        )}
       </div>
       <CastPreview />
       <TurnBanner />

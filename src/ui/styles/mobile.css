@@ -148,3 +148,21 @@ body .hand-peek-hint {
 }
 @keyframes hand-peek-in { from { opacity: 0; transform: translateX(-50%) translateY(30px) scale(0.8); } }
 body .hand-card.is-peek .card { filter: drop-shadow(0 0 6px var(--gold-bright)) drop-shadow(0 0 12px rgba(232, 176, 75, 0.6)); }
+
+/* Phones sideways: the Wardens move to the corners (yours bottom-left, the opponent's top-right)
+   so the battlefield in the middle stays clear. */
+@media (max-height: 520px) {
+  body .match { grid-template-rows: minmax(34px, 9vh) minmax(0, 1fr) minmax(0, 23vh); }
+  body .hero-area { width: auto; gap: 6px; grid-template-columns: auto auto auto; transform: none; }
+  body .hero-self-area { left: 8px; right: auto; bottom: 6px; }
+  body .hero-enemy-area { left: auto; right: 8px; top: 4px; bottom: auto; z-index: 15; }
+  body .hero-area .hero-name { display: none; }
+  body .hero-col-left:empty { display: none; }
+  body .self-side > .draw-pile-anchor { bottom: auto; top: -150%; }
+  body .enemy-side > .draw-pile-anchor { top: 4px; }
+  body .turn-controls { bottom: 12px; }
+}
+@media (max-height: 520px) {
+  body .enemy-side > .draw-pile-anchor { left: 48px; }
+  body .match { --unit-w: clamp(46px, 15vh, 84px); }
+}

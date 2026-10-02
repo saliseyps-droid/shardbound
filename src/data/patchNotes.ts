@@ -31,6 +31,8 @@ export const PATCH_NOTES: PatchNote[] = [
           'Matches on phones are played with the phone held sideways: smaller cards, the battle log tucked away, and a reminder to rotate when you hold it upright.',
           'Touch controls: tap a card in your hand to see it large (even on your opponent’s turn), tap it again to play it, or drag it straight onto the board. Drag a unit onto a target to attack, and press and hold a card or unit to inspect it.',
           'Collection on phones: tapping a card opens its details in a panel that slides up from the bottom.',
+          'Phones held sideways: your Warden and its abilities sit in the bottom-left corner and your opponent’s in the top-right, so the battlefield stays clear.',
+          'Fullscreen on phones: on Android the match switches to fullscreen on your first tap with the phone sideways (or use Play fullscreen on the rotate reminder, which also turns the screen). Add Shardbound to your home screen to play without browser bars, also on iPhone.',
         ],
       },
     ],
