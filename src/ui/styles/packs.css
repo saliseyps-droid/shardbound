@@ -4,19 +4,20 @@
 
 .pack-inventory { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: var(--space-5); }
 @media (max-width: 1050px) { .pack-inventory { grid-template-columns: 1fr; } }
-.inventory-set { display: grid; grid-template-columns: 250px 1fr; gap: var(--space-5); align-items: center; }
+.inventory-set { display: grid; grid-template-columns: 250px minmax(0, 1fr); justify-items: center; gap: var(--space-5); align-items: center; }
 .inventory-set.is-highlight { box-shadow: inset 0 0 0 2px var(--cyan), var(--shadow-lift); }
 .inventory-info h3 { margin-bottom: var(--space-1); }
-.inventory-info { display: grid; gap: var(--space-3); justify-items: start; }
+.inventory-info { display: grid; gap: var(--space-3); justify-items: start; width: 100%; }
 .inventory-info p { margin: 0; }
 
 .inventory-stack {
-  position: relative; width: 240px; height: 400px;
-  background: none; border: 0; padding: 0; cursor: pointer;
+  position: relative; width: 240px; padding: 16px 0;
+  display: grid; place-items: center;
+  background: none; border: 0; cursor: pointer;
 }
 .inventory-stack:disabled { cursor: default; }
 .inventory-set.is-empty .inventory-stack { filter: grayscale(0.8) brightness(0.55); }
-.stack-layer { position: absolute; left: 20px; top: 20px; transition: transform 0.3s var(--ease-spring); }
+.stack-layer { position: relative; transition: transform 0.3s var(--ease-spring); }
 /* Same tilt as the packs in the Shop. */
 .stack-0 { transform: rotate(-4deg); }
 .inventory-stack:not(:disabled):hover .stack-0 { transform: rotate(0deg) translateY(-6px) scale(1.03); }
