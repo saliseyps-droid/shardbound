@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.0': {
+    title: 'Portréty Strážců',
+    summary: '16 nových portrétů Strážců ke koupi v obchodě, které můžeš nastavit pro frakci nebo jednotlivý deck.',
+    sections: [
+      [
+        'Obchod → Portréty Strážců: 16 nových portrétů, dva nebo tři pro každou frakci, za 400–600 zlata.',
+        'Profil → Portréty Strážců: vyber portrét, který ukazují všechny decky dané frakce. V editoru může jednotlivý deck dostat vlastní portrét (nebo si nechat volbu z Profilu či výchozího Strážce).',
+        'Tvůj portrét se ukazuje na úvodní obrazovce, v seznamech decků a na bojišti v zápasech, i soupeři online. Počítačoví soupeři se teď také objevují s různými portréty.',
+      ],
+    ],
+  },
   '0.17.3': {
     title: 'Balanc: Curse of the Abyss',
     summary: 'Konkláve Lumenu a Kruh Trnoboru jsou o něco slabší, Prázdný chór o něco silnější.',

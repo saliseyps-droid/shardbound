@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.0',
+    date: '2026-10-03',
+    title: 'Warden portraits',
+    summary: '16 new Warden portraits to buy in the shop and show for a faction or a single deck.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Shop → Warden portraits: 16 new portraits, two or three for every faction, for 400–600 Gold.',
+          'Profile → Warden portraits: pick the portrait every deck of a faction shows. The deck editor can give a single deck its own portrait (or keep the Profile choice or the default Warden).',
+          'Your portrait shows on the home screen, in your deck lists and on the board in matches, including to your opponent online. Computer opponents now appear with different portraits too.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.17.3',
     date: '2026-10-03',
     title: 'Balance: Curse of the Abyss',

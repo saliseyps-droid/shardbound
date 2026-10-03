@@ -13,6 +13,7 @@ import { opponentSide, playerSide } from '@/domain/matchSetup';
 import { PRACTICE_OPPONENTS, DIFFICULTY_POOLS } from '@/data/opponents';
 import { getCard } from '@/data/cards';
 import { SHOP_OFFERS } from '@/config/economy';
+const prof = (username: string, avatar: string, cardBack?: string) => ({ username, avatar, cardBack: cardBack as string, portraits: [], factionPortraits: {} });
 
 function playMatch(state: GameState, seed: number): GameState {
   const cfg = makeAiConfig('NORMAL');
@@ -106,7 +107,7 @@ describe('end-to-end gameplay loop (definition of done)', () => {
     // Play a match against an AI bot with a starter deck.
     const deck = save.decks[0];
     const opponent = { ...PRACTICE_OPPONENTS.VERDANT, difficulty: 'EASY' as const, rarities: DIFFICULTY_POOLS.EASY };
-    const game = createGame({ seed: 17, players: [playerSide(save.profile.username, 'leaf', deck), opponentSide(opponent)] }).state;
+    const game = createGame({ seed: 17, players: [playerSide(prof(save.profile.username, 'leaf'), deck), opponentSide(opponent)] }).state;
     const ended = playMatch(game, 1);
     expect(ended.phase).toBe('ENDED');
     const result = ended.winner === 0 ? 'WIN' : ended.winner === 1 ? 'LOSS' : 'DRAW';
@@ -162,7 +163,7 @@ describe('end-to-end gameplay loop (definition of done)', () => {
     // Start another match: the new card is present in the deck and can be drawn and played.
     const savedDeck = svc.current!.decks.find((d) => d.id === deck.id)!;
     expect(savedDeck.cards[newCard!]).toBe(1);
-    const side = playerSide('Wren', 'leaf', savedDeck);
+    const side = playerSide(prof('Wren', 'leaf'), savedDeck);
     expect(side.deck).toContain(newCard);
     // A unit on each side so targeted cards always have a legal target.
     let g2 = createGame({ seed: 5, skipMulligan: true, firstPlayer: 0, players: [{ ...side, startingBoard: ['token_recruit'] }, { ...opponentSide(opponent), startingBoard: ['token_recruit'] }] }).state;

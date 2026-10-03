@@ -527,7 +527,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         const issues = validateDeck(deck);
         if (issues.length) throw new Error(`Arena deck is not valid: ${issues[0].message}`);
         deckName = 'Arena deck';
-        setup = { seed: config.seed ?? randomSeed(), players: [playerSide(save.profile.username, save.profile.avatar, deck, save.profile.cardBack), opponentSide(arenaOpponent(run))] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
+        setup = { seed: config.seed ?? randomSeed(), players: [playerSide(save.profile, deck), opponentSide(arenaOpponent(run))] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
       } else {
         const deck = save.decks.find((d) => d.id === config.deckId);
         if (!deck) throw new Error('Deck not found');
@@ -536,7 +536,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         deckName = deck.name;
         const opponent = config.online === 'host' ? netSession.remoteSide : opponentSide(config.opponent);
         if (!opponent) throw new Error('Your opponent is no longer connected.');
-        setup = { seed: config.seed ?? randomSeed(), players: [playerSide(save.profile.username, save.profile.avatar, deck, save.profile.cardBack), opponent] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
+        setup = { seed: config.seed ?? randomSeed(), players: [playerSide(save.profile, deck), opponent] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
       }
       const state = initialState ?? createGame(setup!).state;
       if (config.online === 'host') netSession.send({ t: 'state', state: guestView(state), events: [], initial: true });

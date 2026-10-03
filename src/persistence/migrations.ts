@@ -4,6 +4,7 @@ import { STARTER_DECKS, starterDeckCards } from '@/data/starterDecks';
 import { PLAYABLE_FACTIONS, VARIANTS, type PlayableFaction } from '@/game/types';
 import { defaultBuild, isWellFormedBuild, type TalentPick } from '@/data/wardenTalents';
 import { DEFAULT_CARD_BACK, getCardBack } from '@/data/cardBacks';
+import { getPortrait } from '@/data/portraits';
 import type { Deck } from '@/domain/decks';
 import { CURRENT_SAVE_VERSION, emptyVariants, type GameSave } from '@/domain/save';
 import { createNewSave } from '@/domain/newAccount';
@@ -84,6 +85,13 @@ export function migrateSave(input: Raw): MigrationReport {
   const backs = Array.isArray(p.cardBacks) ? p.cardBacks.filter((b: unknown) => typeof b === 'string' && getCardBack(b)) : [];
   p.cardBacks = [DEFAULT_CARD_BACK, ...new Set(backs.filter((b: string) => b !== DEFAULT_CARD_BACK))];
   if (!p.cardBacks.includes(p.cardBack)) p.cardBack = DEFAULT_CARD_BACK;
+  // Portraits: keep known ones; a faction choice must be an owned portrait of that faction.
+  p.portraits = Array.isArray(p.portraits) ? [...new Set(p.portraits.filter((id: unknown) => typeof id === 'string' && getPortrait(id)))] : [];
+  const fp: Record<string, string> = {};
+  for (const [f, id] of Object.entries(p.factionPortraits && typeof p.factionPortraits === 'object' ? p.factionPortraits : {})) {
+    if (typeof id === 'string' && getPortrait(id)?.faction === f && p.portraits.includes(id)) fp[f] = id;
+  }
+  p.factionPortraits = fp;
   const r = p.ranked && typeof p.ranked === 'object' ? p.ranked : newRanked();
   p.ranked = { rating: num(r.rating, 1000, 100), peak: num(r.peak, 1000, 100), wins: Math.floor(num(r.wins, 0)), losses: Math.floor(num(r.losses, 0)) };
 

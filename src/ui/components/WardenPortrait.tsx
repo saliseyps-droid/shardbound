@@ -11,12 +11,21 @@ for (const [path, url] of Object.entries(modules)) {
   BY_FACTION[name] = url;
 }
 
-export function portraitUrl(faction: Faction | null | undefined): string | undefined {
+/** Alternative portraits: src/assets/portraits/<id>.webp */
+const altModules = import.meta.glob('../../assets/portraits/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const BY_ID: Record<string, string> = {};
+for (const [path, url] of Object.entries(altModules)) BY_ID[path.split('/').pop()!.replace('.webp', '')] = url;
+
+/** The faction's default portrait, or a chosen alternative when given and known. */
+export function portraitUrl(faction: Faction | null | undefined, portrait?: string | null): string | undefined {
+  if (portrait && BY_ID[portrait]) return BY_ID[portrait];
   return faction ? BY_FACTION[faction] : undefined;
 }
 
 interface Props {
   faction: Faction | null | undefined;
+  /** Alternative portrait id (src/data/portraits.ts); null/undefined = the faction default. */
+  portrait?: string | null;
   /** Width in px for the standalone hexagon (height follows the hexagon ratio). */
   size?: number;
   /** Fill a parent that already draws a hexagon frame (the image is clipped inside it). */
@@ -29,8 +38,8 @@ interface Props {
 }
 
 /** A Warden portrait clipped to the game's hexagon, never exceeding its edges. */
-export function WardenPortrait({ faction, size = 64, fill, inset = 3, className = '', fallbackGlyph }: Props) {
-  const url = portraitUrl(faction);
+export function WardenPortrait({ faction, portrait, size = 64, fill, inset = 3, className = '', fallbackGlyph }: Props) {
+  const url = portraitUrl(faction, portrait);
   const info = faction ? FACTIONS[faction] : undefined;
   if (!url) {
     const glyph = fallbackGlyph ?? info?.sigil ?? 'crystal';

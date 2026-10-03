@@ -16,6 +16,8 @@ import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { TalentTree } from '@/ui/components/TalentTree';
 import { ShareDeckModal } from '@/ui/components/DeckCodeDialogs';
+import { PortraitPicker, portraitName } from '@/ui/components/PortraitPicker';
+import { DEFAULT_PORTRAIT, effectivePortrait } from '@/domain/portraits';
 import { VirtualCardGrid } from '@/ui/components/collection/VirtualCardGrid';
 import { CardFilterBar } from '@/ui/components/collection/CardFilterBar';
 import { DEFAULT_FILTERS, filterCards, type CardFilterState } from '@/ui/components/collection/cardFilters';
@@ -59,6 +61,7 @@ export default function DeckEditorScreen() {
   const [filters, setFilters] = useState<CardFilterState>({ ...DEFAULT_FILTERS, ownership: 'OWNED' });
   const [tab, setTab] = useState<'cards' | 'talents'>('cards');
   const [sharing, setSharing] = useState(false);
+  const profileForPortraits = useAccount((st) => st.save!.profile);
   const cardWidth = useCardWidth(0.86);
 
   // Adopt the saved deck when it first becomes available (or after a save elsewhere).
@@ -293,12 +296,24 @@ export default function DeckEditorScreen() {
             </select>
           </label>
           <button type="button" className="talent-summary" style={{ '--f1': hero.colors.primary } as CSSProperties} onClick={() => setTab('talents')}>
-            <WardenPortrait faction={draft.heroFaction} size={44} />
+            <WardenPortrait faction={draft.heroFaction} portrait={effectivePortrait(draft, profileForPortraits)} size={44} />
             <span className="talent-summary-text">
               <strong>{t('Warden abilities')}</strong>
               <span>{draft.talents.length ? talentSummary(draft.talents) : t('None chosen yet')}</span>
             </span>
           </button>
+          <details className="deck-portrait">
+            <summary>
+              {t('Portrait')}: <strong>{portraitName(effectivePortrait(draft, profileForPortraits))}</strong>
+            </summary>
+            <PortraitPicker
+              faction={draft.heroFaction}
+              owned={profileForPortraits.portraits}
+              value={draft.portrait === DEFAULT_PORTRAIT ? null : (draft.portrait ?? 'profile')}
+              leading={[{ value: 'profile', portrait: profileForPortraits.factionPortraits[draft.heroFaction] ?? null, label: t('Same as in Profile') }]}
+              onChange={(v) => setDraft({ ...draft, portrait: v === 'profile' ? null : v === null ? DEFAULT_PORTRAIT : v })}
+            />
+          </details>
           <div className="deck-meta">
             <span className={`deck-size ${size === DECK_RULES.deckSize ? 'ok' : ''}`}>
               <span className="num">

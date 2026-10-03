@@ -14,6 +14,7 @@ import { talentSummary } from '@/data/wardenTalents';
 import { Essence, Gold, ProgressBar } from '../common';
 import { EssenceIcon, Glyph, GoldIcon, PackIcon } from '../Icons';
 import { WardenPortrait } from '../WardenPortrait';
+import { effectivePortrait } from '@/domain/portraits';
 import { t, tn } from '@/i18n';
 
 export function factionStyle(faction: keyof typeof FACTIONS): CSSProperties {
@@ -33,7 +34,7 @@ export function DeckBox({ deck, save, selected, onSelect, compact }: { deck: Dec
   const content = (
     <>
       <span className="deckbox-sigil" aria-hidden>
-        <WardenPortrait faction={deck.heroFaction} size={compact ? 34 : 46} />
+        <WardenPortrait faction={deck.heroFaction} portrait={effectivePortrait(deck, save.profile)} size={compact ? 34 : 46} />
       </span>
       <span className="deckbox-text">
         <strong>

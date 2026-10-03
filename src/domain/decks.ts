@@ -20,6 +20,8 @@ export interface Deck {
   isStarter?: boolean;
   /** Warden talent build: 2 abilities, one at rank III and one at rank II. */
   talents: TalentPick[];
+  /** Portrait for this deck: a portrait id, 'default', or missing to follow the Profile's choice. */
+  portrait?: string | null;
 }
 
 export type DeckIssueCode =

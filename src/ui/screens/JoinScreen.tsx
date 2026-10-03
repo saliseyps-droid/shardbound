@@ -29,7 +29,7 @@ export default function JoinScreen() {
     setBusy(true);
     setError(null);
     try {
-      await netSession.join(code, playerSide(save.profile.username, save.profile.avatar, deck, save.profile.cardBack), deck.name);
+      await netSession.join(code, playerSide(save.profile, deck), deck.name);
       // Host faction isn't known yet; the board shows the real Warden once the state arrives.
       launchMatch({ mode: 'ONLINE', online: 'guest', deckId: deck.id, opponent: onlineOpponent(netSession.remoteName, netSession.remoteAvatar, 'EMBER') }, navigate);
     } catch (e) {

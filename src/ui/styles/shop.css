@@ -83,3 +83,10 @@
 .cardback-shop { margin-top: var(--space-5); }
 .cardback-shop-head h3 { margin-bottom: var(--space-1); }
 .cardback-shop-head p { margin: 0 0 var(--space-4); }
+
+.portrait-shop { display: grid; gap: var(--space-4); }
+.portrait-shop-faction { display: grid; gap: var(--space-2); }
+.portrait-shop-row { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+.portrait-tile { display: grid; justify-items: center; gap: 6px; width: 120px; text-align: center; }
+.portrait-tile strong { font-size: 13px; line-height: 1.2; min-height: 2.4em; }
+.portrait-owned { color: var(--cyan); font-size: 12px; }

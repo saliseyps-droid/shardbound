@@ -7,6 +7,7 @@ import { playerSide } from '@/domain/matchSetup';
 import { createNewSave } from '@/domain/newAccount';
 import { starterDeckCards } from '@/data/starterDecks';
 import { deckToList } from '@/domain/decks';
+const prof = (username: string, avatar: string, cardBack?: string) => ({ username, avatar, cardBack: cardBack as string, portraits: [], factionPortraits: {} });
 
 function game() {
   return createGame({
@@ -64,7 +65,7 @@ describe('online views', () => {
 
   it('host validates the guest deck', () => {
     const save = createNewSave('G', 'b', 0, 'g');
-    const side = playerSide('G', 'b', save.decks[0]);
+    const side = playerSide(prof('G', 'b'), save.decks[0]);
     expect(validateRemoteSide(side)).toBeNull();
     expect(validateRemoteSide({ ...side, deck: side.deck.slice(0, 10) })).toMatch(/not valid/);
     expect(validateRemoteSide({ ...side, heroHealth: 99 })).toBe('Invalid match setup.');

@@ -13,6 +13,8 @@ import { PLAYABLE_FACTIONS, RARITIES } from '@/game/types';
 import { Essence, Gold, ProgressBar, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
+import { PortraitPicker } from '@/ui/components/PortraitPicker';
+import { effectivePortrait } from '@/domain/portraits';
 import { DeckBox, factionStyle } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
 import { t, tn } from '@/i18n';
@@ -72,7 +74,8 @@ export default function ProfileScreen() {
   const cosmetic = Object.values(save.collection.cards).reduce((a, v) => a + v.FOIL + v.PRISMATIC, 0);
   const fav = save.decks.find((d) => d.id === p.favoriteDeckId);
   // The portrait follows the Warden of the deck you play (selected, else favourite, else first).
-  const playingFaction = (save.decks.find((d) => d.id === p.selectedDeckId) ?? fav ?? save.decks[0])?.heroFaction;
+  const playingDeck = save.decks.find((d) => d.id === p.selectedDeckId) ?? fav ?? save.decks[0];
+  const playingFaction = playingDeck?.heroFaction;
   const need = xpToNext(p.level);
 
   const saveName = () => {
@@ -102,7 +105,7 @@ export default function ProfileScreen() {
         <section className="panel profile-card">
           <div className="profile-id">
             <span className="warden-sigil large" aria-hidden title={t('The Warden of the deck you play')}>
-              <WardenPortrait faction={playingFaction} fill />
+              <WardenPortrait faction={playingFaction} portrait={playingDeck ? effectivePortrait(playingDeck, p) : null} fill />
             </span>
             <div>
               {editing ? (
@@ -207,6 +210,32 @@ export default function ProfileScreen() {
               );
             })}
           </ul>
+        </section>
+
+        <section className="panel profile-portraits">
+          <div className="panel-title">
+            <span>{t('Warden portraits')}</span>
+            <Link to="/shop" className="small-link">
+              {t('More in the Shop')}
+            </Link>
+          </div>
+          <p className="faint">{t('The portrait every deck of that faction shows. A deck can still pick its own in the deck editor.')}</p>
+          {PLAYABLE_FACTIONS.map((f) => (
+            <div key={f} className="profile-portrait-row">
+              <span className="faint" style={{ color: FACTIONS[f].colors.primary }}>
+                {FACTIONS[f].name}
+              </span>
+              <PortraitPicker
+                faction={f}
+                owned={p.portraits}
+                value={p.factionPortraits[f] ?? null}
+                onChange={(v) => {
+                  const res = gameService.choosePortrait(f, v);
+                  if (!res.ok) toast(res.error, 'error');
+                }}
+              />
+            </div>
+          ))}
         </section>
 
         <section className="panel">

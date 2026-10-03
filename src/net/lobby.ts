@@ -4,6 +4,7 @@ import { factionOfList, validateDeck } from '@/domain/decks';
 import type { SideSetup } from '@/engine/types';
 import { validateBuild } from '@/data/wardenTalents';
 import { getCardBack } from '@/data/cardBacks';
+import { getPortrait } from '@/data/portraits';
 import { PLAYABLE_FACTIONS } from '@/game/types';
 
 /** Display-only opponent definition for an online match. */
@@ -36,6 +37,7 @@ export function validateRemoteSide(side: SideSetup): string | null {
   if (side.heroHealth || side.bonusStartingEnergy || side.startingBoard?.length || side.startingRelics?.length || side.startingLocation) return 'Invalid match setup.';
   if (validateBuild(faction, side.talents) !== null) return 'Invalid Warden abilities.';
   if (side.cardBack != null && !getCardBack(side.cardBack)) return 'Invalid card back.';
+  if (side.portrait != null && getPortrait(side.portrait)?.faction !== faction) return 'Invalid Warden portrait.';
   if (side.faction != null && !(PLAYABLE_FACTIONS as readonly string[]).includes(side.faction)) return 'Invalid Warden.';
   return null;
 }

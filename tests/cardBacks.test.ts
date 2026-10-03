@@ -8,6 +8,7 @@ import { opponentSide, playerSide } from '@/domain/matchSetup';
 import { PRACTICE_OPPONENTS } from '@/data/opponents';
 import { validateRemoteSide } from '@/net/lobby';
 import { starterDeckCards } from '@/data/starterDecks';
+const prof = (username: string, avatar: string, cardBack?: string) => ({ username, avatar, cardBack: cardBack as string, portraits: [], factionPortraits: {} });
 
 const fresh = (gold = 5000) => {
   const s = createNewSave('A', 'flame', 1, 'p');
@@ -63,12 +64,12 @@ describe('card backs', () => {
   it('match sides carry the back: player choice, AI random', () => {
     const s = fresh();
     const deck = { ...s.decks[0], cards: starterDeckCards(s.decks[0].heroFaction) };
-    expect(playerSide('A', 'flame', deck, 'moonlit_night').cardBack).toBe('moonlit_night');
+    expect(playerSide(prof('A', 'flame', 'moonlit_night'), deck).cardBack).toBe('moonlit_night');
     const opp = { ...PRACTICE_OPPONENTS.IRON, difficulty: 'EASY' as const, rarities: ['COMMON' as const] };
     expect(getCardBack(opponentSide(opp).cardBack)).toBeTruthy();
     expect(opponentSide(opp, () => 0).cardBack).toBe(CARD_BACKS[0].id);
     expect(opponentSide(opp, () => 0.99).cardBack).toBe(CARD_BACKS[15].id);
-    const side = playerSide('A', 'flame', deck, 'moonlit_night');
+    const side = playerSide(prof('A', 'flame', 'moonlit_night'), deck);
     expect(validateRemoteSide(side)).toBeNull();
     expect(validateRemoteSide({ ...side, cardBack: 'hacked' })).toBe('Invalid card back.');
   });

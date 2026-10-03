@@ -58,6 +58,8 @@ export function createNewSave(username: string, avatar: string, now: number, id:
       ranked: newRanked(),
       cardBacks: [DEFAULT_CARD_BACK],
       cardBack: DEFAULT_CARD_BACK,
+      portraits: [],
+      factionPortraits: {},
     },
     collection: { cards, unseen: [] },
     decks,

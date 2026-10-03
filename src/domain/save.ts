@@ -40,6 +40,10 @@ export interface PlayerProfile {
   /** Owned cosmetic card backs and the one in use. */
   cardBacks: string[];
   cardBack: string;
+  /** Owned alternative Warden portraits (src/data/portraits.ts). */
+  portraits: string[];
+  /** Portrait per faction for all its decks; missing = the faction's default Warden. */
+  factionPortraits: Partial<Record<PlayableFaction, string>>;
 }
 
 export type VariantCounts = Record<Variant, number>;

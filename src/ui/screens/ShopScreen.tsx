@@ -9,6 +9,7 @@ import { confirmDialog, Gold, ScreenHeader } from '@/ui/components/common';
 import { GoldIcon } from '@/ui/components/Icons';
 import { BoosterPack } from '@/ui/components/packs/BoosterPack';
 import { CardBackGrid } from '@/ui/components/CardBackGrid';
+import { PortraitShop } from '@/ui/components/PortraitShop';
 import { t, tn } from '@/i18n';
 import '@/ui/styles/shop.css';
 
@@ -218,6 +219,7 @@ export default function ShopScreen() {
         })}
       </div>
       <OddsTable />
+      <PortraitShop />
       <CardBackShop />
       {gold < 100 && <p className="muted shop-hint">{t('Earn Gold by winning matches, completing quests and claiming daily rewards.')}</p>}
     </div>

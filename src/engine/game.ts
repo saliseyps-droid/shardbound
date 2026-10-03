@@ -46,7 +46,7 @@ function createPlayer(id: PlayerId, side: SideSetup): PlayerState {
   const health = side.heroHealth ?? GAME_RULES.heroStartingHealth;
   return {
     id,
-    hero: { name: side.name, avatar: side.avatar, faction: side.faction ?? null, health, maxHealth: health, armor: 0, abilities: (side.talents ?? []).filter((t) => getTalent(t.abilityId)?.levels[t.level]).map((t) => ({ id: t.abilityId, level: t.level, uses: 0 })), cardBack: side.cardBack ?? null },
+    hero: { name: side.name, avatar: side.avatar, faction: side.faction ?? null, health, maxHealth: health, armor: 0, abilities: (side.talents ?? []).filter((t) => getTalent(t.abilityId)?.levels[t.level]).map((t) => ({ id: t.abilityId, level: t.level, uses: 0 })), cardBack: side.cardBack ?? null, portrait: side.portrait ?? null },
     energy: 0,
     maxEnergy: GAME_RULES.startingMaxEnergy + (side.bonusStartingEnergy ?? 0),
     deck: [],

@@ -13,6 +13,7 @@ import type { SetId } from '@/game/types';
 import { ProgressBar } from '@/ui/components/common';
 import { Glyph, PackIcon } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
+import { effectivePortrait } from '@/domain/portraits';
 import { DailyTrack, DeckBox, QuestRow, RewardSummary, timeAgo, DIFFICULTY_INFO } from '@/ui/components/meta/MetaWidgets';
 import { campaignProgress, nextEncounter } from '@/ui/components/meta/campaign';
 import { audio } from '@/audio/audioService';
@@ -44,7 +45,7 @@ export default function HomeScreen() {
       <section className="home-hero" style={faction ? ({ '--f1': faction.colors.primary, '--fglow': faction.colors.glow } as React.CSSProperties) : undefined}>
         <div className="home-hero-warden">
           <span className="warden-sigil" aria-hidden>
-            <WardenPortrait faction={deck?.heroFaction} fill />
+            <WardenPortrait faction={deck?.heroFaction} portrait={deck ? effectivePortrait(deck, p) : null} fill />
           </span>
           <div>
             <h1 className="home-name">{p.username}</h1>

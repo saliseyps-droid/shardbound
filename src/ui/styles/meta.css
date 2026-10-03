@@ -340,3 +340,14 @@ label.toggle-row { cursor: pointer; }
 .level-road li.milestone .chip { border-color: var(--gold, #f6cf7a); color: var(--gold, #f6cf7a); }
 .level-road-rewards { display: flex; flex-wrap: wrap; gap: 4px; }
 .level-gem.small { width: 26px; height: 26px; font-size: 12px; }
+
+/* Warden portraits: pickers (Profile, deck editor) and the shop */
+.portrait-picker { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.portrait-option { display: grid; justify-items: center; gap: 2px; padding: 4px 6px; background: none; border: 1px solid transparent; border-radius: 8px; color: inherit; cursor: pointer; font: inherit; width: 78px; }
+.portrait-option:hover { border-color: var(--line); }
+.portrait-option.is-selected { border-color: var(--gold, #f6cf7a); background: rgba(246, 207, 122, 0.08); }
+.portrait-option-label { font-size: 11px; line-height: 1.2; text-align: center; opacity: 0.85; }
+.profile-portrait-row { display: grid; gap: 4px; margin-top: var(--space-3); }
+.deck-portrait { margin: var(--space-2) 0; }
+.deck-portrait summary { cursor: pointer; }
+.deck-portrait .portrait-picker { margin-top: var(--space-2); }

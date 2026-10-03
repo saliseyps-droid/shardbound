@@ -1,5 +1,8 @@
 import { aiBuild } from '@/data/wardenTalents';
 import { randomCardBack } from '@/data/cardBacks';
+import { randomPortrait } from '@/data/portraits';
+import { effectivePortrait } from './portraits';
+import type { PlayerProfile } from './save';
 import { DIFFICULTY_POOLS, type OpponentDef } from '@/data/opponents';
 import type { MatchSetup, SideSetup } from '@/engine/types';
 import { hashString } from '@/core/rng';
@@ -29,6 +32,7 @@ export function opponentSide(opponent: OpponentDef, random: () => number = Math.
     deck: buildOpponentDeck(opponent),
     talents: s?.talents ?? aiBuild(opponent.faction, opponent.personality),
     cardBack: randomCardBack(random),
+    portrait: randomPortrait(opponent.faction, random),
     heroHealth: s?.heroHealth,
     bonusStartingEnergy: s?.bonusStartingEnergy,
     startingBoard: s?.startingBoard,
@@ -37,8 +41,16 @@ export function opponentSide(opponent: OpponentDef, random: () => number = Math.
   };
 }
 
-export function playerSide(name: string, avatar: string, deck: Deck, cardBack?: string): SideSetup {
-  return { name, avatar, faction: deck.heroFaction, deck: deckToList(deck), talents: deck.talents, cardBack: cardBack ?? null };
+export function playerSide(profile: Pick<PlayerProfile, 'username' | 'avatar' | 'cardBack' | 'portraits' | 'factionPortraits'>, deck: Deck): SideSetup {
+  return {
+    name: profile.username,
+    avatar: profile.avatar,
+    faction: deck.heroFaction,
+    deck: deckToList(deck),
+    talents: deck.talents,
+    cardBack: profile.cardBack ?? null,
+    portrait: effectivePortrait(deck, profile),
+  };
 }
 
 export function buildMatchSetup(player: SideSetup, opponent: SideSetup, seed: number): MatchSetup {

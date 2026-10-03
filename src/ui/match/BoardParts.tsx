@@ -183,8 +183,8 @@ export function HeroPanel({
       onClick={onClick}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onClick())}
     >
-      {portraitUrl(p.hero.faction as Faction) ? (
-        <WardenPortrait faction={p.hero.faction as Faction} fill inset={4} />
+      {portraitUrl(p.hero.faction as Faction, p.hero.portrait) ? (
+        <WardenPortrait faction={p.hero.faction as Faction} portrait={p.hero.portrait} fill inset={4} />
       ) : (
         <div className="hero-portrait">
           <Glyph name={p.hero.avatar} size={44} />

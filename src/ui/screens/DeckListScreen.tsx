@@ -11,6 +11,7 @@ import { audio } from '@/audio/audioService';
 import { confirmDialog, Modal, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
+import { effectivePortrait } from '@/domain/portraits';
 import { ImportDeckModal, ShareDeckModal } from '@/ui/components/DeckCodeDialogs';
 import { t } from '@/i18n';
 import '@/ui/styles/decks.css';
@@ -86,6 +87,7 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
   const navigate = useNavigate();
   const [sharing, setSharing] = useState(false);
   const collection = useAccount((s) => s.save!.collection);
+  const profile = useAccount((s) => s.save!.profile);
   const issues = validateDeck(deck, (id) => ownedCopies(collection, id));
   const valid = issues.length === 0;
   const hero = FACTIONS[deck.heroFaction];
@@ -119,7 +121,7 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
     >
       <button className="deck-box-face" onClick={() => navigate(`/decks/${deck.id}`)} aria-label={t('Edit {name}', { name: deck.name })}>
         <span className="deck-sigil" aria-hidden>
-          <WardenPortrait faction={deck.heroFaction} fill />
+          <WardenPortrait faction={deck.heroFaction} portrait={effectivePortrait(deck, profile)} fill />
           {second && <Glyph name={FACTIONS[second].sigil} size={22} className="deck-sigil-second" />}
         </span>
         <span className="deck-name">{deck.name}</span>

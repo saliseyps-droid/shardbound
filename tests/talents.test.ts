@@ -9,6 +9,7 @@ import { opponentSide, playerSide } from '@/domain/matchSetup';
 import { CURRENT_SAVE_VERSION } from '@/domain/save';
 import { migrateSave } from '@/persistence/migrations';
 import { validateRemoteSide } from '@/net/lobby';
+const prof = (username: string, avatar: string, cardBack?: string) => ({ username, avatar, cardBack: cardBack as string, portraits: [], factionPortraits: {} });
 
 const pick = (abilityId: string, level: 0 | 1 | 2): TalentPick => ({ abilityId, level });
 
@@ -120,7 +121,7 @@ describe('Warden talents in decks, saves, bosses and online play', () => {
   it('the host rejects an online guest with an invalid build', () => {
     const save = createNewSave('G', 'wave', 1, 'g');
     const deck = { ...save.decks[0], cards: starterDeckCards(save.decks[0].heroFaction) };
-    const side = playerSide('G', 'wave', deck);
+    const side = playerSide(prof('G', 'wave'), deck);
     expect(validateRemoteSide(side)).toBeNull();
     expect(validateRemoteSide({ ...side, talents: [] })).toBe('Invalid Warden abilities.');
     expect(validateRemoteSide({ ...side, talents: undefined })).toBe('Invalid Warden abilities.');

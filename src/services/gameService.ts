@@ -16,6 +16,7 @@ import { grantXp, type LevelUp } from '@/domain/progression';
 import { applyQuestProgress, claimQuest, refreshQuests, rerollQuest } from '@/domain/quests';
 import { emptyVariants, pushReward, type GameSave, type Quest } from '@/domain/save';
 import { decodeDeck } from '@/domain/deckCode';
+import { buyPortrait, choosePortrait } from '@/domain/portraits';
 import { applyRedeem, findCode } from '@/domain/redeem';
 import { migrateSave } from '@/persistence/migrations';
 import { SaveGateway } from '@/persistence/repositories';
@@ -248,6 +249,18 @@ export class GameService {
     const deck: Deck = { id: uid('deck'), name: name.trim().slice(0, DECK_RULES.maxDeckNameLength) || 'New Deck', heroFaction, cards, talents, favorite: false, createdAt: now, updatedAt: now };
     this.commit({ ...save, decks: [...save.decks, deck] });
     return ok(deck);
+  }
+
+  buyPortrait(id: string): Result<GameSave> {
+    const res = buyPortrait(this.require(), id, this.now());
+    if (res.ok) this.commit(res.value);
+    return res;
+  }
+
+  choosePortrait(faction: PlayableFaction, id: string | null): Result<GameSave> {
+    const res = choosePortrait(this.require(), faction, id);
+    if (res.ok) this.commit(res.value);
+    return res;
   }
 
   /** Adds a deck from a shared deck code. Cards you don't own stay in the deck and are flagged in the editor. */
