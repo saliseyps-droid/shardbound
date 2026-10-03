@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.8': {
+    title: 'Jemnější otevírání balíčků',
+    summary: 'Otevírání balíčků a odhalování karet zní mnohem tišeji a jemněji.',
+    sections: [['Otevření balíčku je tiché zašustění a každá odhalená karta jemné otočení. Vzácné, epické a legendární karty přidají jeden, dva nebo tři tiché tóny místo hlasitých fanfár.']],
+  },
   '0.18.7': {
     title: 'Jemnější konec tahu',
     summary: 'Tišší zvuk konce tahu a žádný zvuk při spuštění zápasu.',

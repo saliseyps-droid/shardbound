@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.8',
+    date: '2026-10-03',
+    title: 'Gentler pack opening',
+    summary: 'Opening packs and revealing cards sound much quieter and softer.',
+    sections: [{ kind: 'improved', items: ['Opening a pack is a quiet rustle, and each revealed card is a soft card flip. Rare, Epic and Legendary cards add one, two or three gentle tones instead of loud fanfares.'] }],
+    commits: [],
+  },
+  {
     version: '0.18.7',
     date: '2026-10-03',
     title: 'Softer end of turn',

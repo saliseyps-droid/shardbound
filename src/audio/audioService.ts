@@ -51,20 +51,17 @@ const RECIPES: Record<SoundEvent, Tone[]> = {
   buff: [{ freq: 440, to: 880, dur: 0.18, type: 'triangle', gain: 0.18 }],
   freeze: [{ freq: 1800, to: 2600, dur: 0.25, type: 'sine', gain: 0.08 }, { noise: true, freq: 6000, dur: 0.25, gain: 0.08 }],
   shield: [{ freq: 1200, to: 900, dur: 0.2, type: 'triangle', gain: 0.15 }],
-  packOpen: [{ noise: true, freq: 2200, dur: 0.4, gain: 0.25 }, { freq: 200, to: 600, dur: 0.5, type: 'sine', gain: 0.2 }],
-  reveal: [{ freq: 600, to: 900, dur: 0.12, type: 'triangle', gain: 0.18 }],
-  rareReveal: [{ freq: 660, dur: 0.15, type: 'triangle', gain: 0.2 }, { freq: 990, dur: 0.25, type: 'triangle', gain: 0.18, delay: 0.1 }],
+  packOpen: [{ noise: true, freq: 2200, dur: 0.25, gain: 0.06 }],
+  reveal: [{ noise: true, freq: 3000, dur: 0.06, gain: 0.04 }],
+  rareReveal: [{ freq: 880, dur: 0.45, type: 'sine', gain: 0.05 }],
   epicReveal: [
-    { freq: 523, dur: 0.18, type: 'sine', gain: 0.2 },
-    { freq: 659, dur: 0.18, type: 'sine', gain: 0.2, delay: 0.1 },
-    { freq: 784, dur: 0.35, type: 'sine', gain: 0.22, delay: 0.2 },
+    { freq: 660, dur: 0.5, type: 'sine', gain: 0.05 },
+    { freq: 990, dur: 0.6, type: 'sine', gain: 0.045, delay: 0.09 },
   ],
   legendaryReveal: [
-    { freq: 130, to: 65, dur: 0.9, type: 'sawtooth', gain: 0.12 },
-    { freq: 523, dur: 0.25, type: 'triangle', gain: 0.2, delay: 0.15 },
-    { freq: 659, dur: 0.25, type: 'triangle', gain: 0.2, delay: 0.3 },
-    { freq: 784, dur: 0.25, type: 'triangle', gain: 0.2, delay: 0.45 },
-    { freq: 1046, dur: 0.8, type: 'sine', gain: 0.25, delay: 0.6 },
+    { freq: 523, dur: 0.7, type: 'sine', gain: 0.05 },
+    { freq: 784, dur: 0.8, type: 'sine', gain: 0.05, delay: 0.1 },
+    { freq: 1046, dur: 1.0, type: 'sine', gain: 0.045, delay: 0.2 },
   ],
   victory: [
     { freq: 523, dur: 0.2, type: 'triangle', gain: 0.22 },
@@ -107,7 +104,12 @@ const SAMPLES: Partial<Record<SoundEvent, { prefix: string; gain: number; layer?
   coin: { prefix: 'coin', gain: 0.3 },
   endTurn: { prefix: 'endturn', gain: 0.2 },
   death: { prefix: 'death', gain: 0.4, layer: true },
-  packOpen: { prefix: 'pack', gain: 0.4, layer: true },
+  packOpen: { prefix: 'pack', gain: 0.3 },
+  // Card reveals in packs: a quiet card flip; rarer cards add a soft chime underneath.
+  reveal: { prefix: 'draw', gain: 0.18 },
+  rareReveal: { prefix: 'draw', gain: 0.18, layer: true },
+  epicReveal: { prefix: 'draw', gain: 0.18, layer: true },
+  legendaryReveal: { prefix: 'draw', gain: 0.2, layer: true },
 };
 
 /** Ambient generative music: slow pads over a minor pentatonic scale. */
