@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.10',
+    date: '2026-10-03',
+    title: 'Volume sliders',
+    summary: 'Volume sliders start at full and the game is about half as loud at full volume.',
+    sections: [{ kind: 'improved', items: ['The volume sliders now start at Master 100, Music 80 and Sound effects 100, and full volume is about half as loud as before. Your volume settings were reset once to these new defaults.'] }],
+    commits: [],
+  },
+  {
     version: '0.18.9',
     date: '2026-10-03',
     title: 'Softer card play',

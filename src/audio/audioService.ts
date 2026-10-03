@@ -113,6 +113,9 @@ const SAMPLES: Partial<Record<SoundEvent, { prefix: string; gain: number; layer?
   legendaryReveal: { prefix: 'draw', gain: 0.2, layer: true },
 };
 
+/** Loudness at full sliders, relative to the raw sounds. */
+const VOLUME_SCALE = 0.5;
+
 /** Ambient generative music: slow pads over a minor pentatonic scale. */
 const SCALE = [220, 261.63, 293.66, 329.63, 392, 440, 523.25];
 
@@ -198,7 +201,8 @@ class AudioService {
   private applyVolumes() {
     if (!this.ctx || !this.sfxGain || !this.musicGain) return;
     const s = useSettings.getState();
-    const master = s.muted ? 0 : s.masterVolume;
+    // Full sliders play at about half the raw loudness (see DEFAULT_SETTINGS).
+    const master = s.muted ? 0 : s.masterVolume * VOLUME_SCALE;
     this.sfxGain.gain.setTargetAtTime(master * s.sfxVolume, this.ctx.currentTime, 0.02);
     this.musicGain.gain.setTargetAtTime(master * s.musicVolume * 0.35, this.ctx.currentTime, 0.2);
   }

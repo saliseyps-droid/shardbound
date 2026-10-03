@@ -13,12 +13,15 @@ export interface Settings {
   turnTimer: boolean;
   language: string;
   showDamageNumbers: boolean;
+  /** Volume scale the sliders were saved under (2 = full slider is about half the old loudness). */
+  volumeScale?: number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  masterVolume: 0.8,
-  musicVolume: 0.45,
-  sfxVolume: 0.8,
+  // Full sliders: src/audio/audioService.ts plays them at about half the raw loudness.
+  masterVolume: 1,
+  musicVolume: 0.8,
+  sfxVolume: 1,
   muted: false,
   animationSpeed: 1,
   reducedMotion: false,
@@ -27,6 +30,7 @@ export const DEFAULT_SETTINGS: Settings = {
   turnTimer: true,
   language: 'en',
   showDamageNumbers: true,
+  volumeScale: 2,
 };
 
 const KEY = 'shardbound.settings.v1';
@@ -40,6 +44,11 @@ function load(): Settings {
       return { ...DEFAULT_SETTINGS, reducedMotion: prefersReduced };
     }
     const parsed = JSON.parse(raw) as Partial<Settings>;
+    // Volumes saved under the old scale would now be half as loud: start them from the new defaults once.
+    if (parsed.volumeScale !== DEFAULT_SETTINGS.volumeScale) {
+      const { masterVolume, musicVolume, sfxVolume, volumeScale } = DEFAULT_SETTINGS;
+      return { ...DEFAULT_SETTINGS, ...parsed, masterVolume, musicVolume, sfxVolume, volumeScale };
+    }
     return { ...DEFAULT_SETTINGS, ...parsed };
   } catch {
     return { ...DEFAULT_SETTINGS };

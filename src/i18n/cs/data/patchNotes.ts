@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.10': {
+    title: 'Posuvníky hlasitosti',
+    summary: 'Posuvníky hlasitosti začínají na maximu a plná hlasitost je zhruba poloviční.',
+    sections: [['Posuvníky hlasitosti teď začínají na hodnotách Celková 100, Hudba 80 a Zvukové efekty 100 a plná hlasitost je zhruba o polovinu tišší než dřív. Tvoje nastavení hlasitosti se jednou nastavilo na tyto nové výchozí hodnoty.']],
+  },
   '0.18.9': {
     title: 'Jemnější zahrání karty',
     summary: 'Zahrání karty zní jako jemné otočení karty.',
