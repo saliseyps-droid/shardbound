@@ -113,7 +113,7 @@ const talents: TalentsOverlay = {
       'Vyvolej Šrotobota 1/1 a získej 1 brnění.',
       'Vyvolej dva Šrotoboty 1/1.',
     ],
-    upgradeNotes: ['Navíc získáš 1 brnění.', 'Místo toho vyvolá dva Šrotoboty (bez brnění).'],
+    upgradeNotes: ['Navíc získáš 1 brnění.', 'Místo toho vyvolá dva Šrotoboty (bez brnění); cena 3 → 4.'],
   },
   wt_iron_reinforced_hull: {
     name: 'Zesílený trup',
@@ -128,10 +128,10 @@ const talents: TalentsOverlay = {
     name: 'Montážní protokol',
     levels: [
       'Kdykoli vyvoláš Konstrukt, dej mu +1/+0. Dvakrát za tah.',
-      'Kdykoli vyvoláš Konstrukt, dej mu +1/+1. Dvakrát za tah.',
+      'Kdykoli vyvoláš Konstrukt, dej mu +1/+0 a získej 1 brnění. Dvakrát za tah.',
       'Kdykoli vyvoláš Konstrukt, dej mu +1/+1 a získej 1 brnění. Dvakrát za tah.',
     ],
-    upgradeNotes: ['+1/+0 → +1/+1.', 'Navíc získáš 1 brnění.'],
+    upgradeNotes: ['Navíc získáš 1 brnění.', '+1/+0 → +1/+1.'],
   },
   wt_iron_overclock: {
     name: 'Přetaktování',
@@ -196,9 +196,9 @@ const talents: TalentsOverlay = {
     levels: [
       'Vyvolej Prázdnou světlušku 1/1.',
       'Vyvolej Povstalé kosti 2/2.',
-      'Vyvolej Povstalé kosti 2/2. Pokud v tomto tahu zemřela spřátelená jednotka, vyvolej navíc Prázdnou světlušku 1/1.',
+      'Vyvolej Povstalé kosti 2/2. Pokud v tomto tahu zemřela spřátelená jednotka, obnov 2 životy tvému Strážci.',
     ],
-    upgradeNotes: ['Místo toho vyvolá Povstalé kosti 2/2.', 'Navíc Prázdnou světlušku, pokud v tomto tahu zemřela spřátelená jednotka.'],
+    upgradeNotes: ['Místo toho vyvolá Povstalé kosti 2/2.', 'Navíc obnoví 2 životy tvému Strážci, pokud v tomto tahu zemřela spřátelená jednotka.'],
   },
   wt_void_soul_harvest: {
     name: 'Žeň duší',
@@ -231,10 +231,10 @@ const talents: TalentsOverlay = {
     name: 'Nekonečný',
     levels: [
       'Na konci tvého tahu, pokud v tomto tahu zemřela spřátelená jednotka, vyvolej Prázdnou světlušku 1/1.',
-      'Na konci tvého tahu, pokud v tomto tahu zemřela spřátelená jednotka, vyvolej Povstalé kosti 2/2.',
+      'Na konci tvého tahu, pokud v tomto tahu zemřela spřátelená jednotka, vyvolej Prázdnou světlušku 1/1 a obnov 2 životy tvému Strážci.',
       'Na konci tvého tahu, pokud v tomto tahu zemřela spřátelená jednotka, vyvolej Povstalé kosti 2/2 a obnov 2 životy tvému Strážci.',
     ],
-    upgradeNotes: ['Místo světlušky vyvolá Povstalé kosti.', 'Navíc obnoví 2 životy tvému Strážci.'],
+    upgradeNotes: ['Navíc obnoví 2 životy tvému Strážci.', 'Místo světlušky vyvolá Povstalé kosti.'],
   },
 
   // Rimetide Court

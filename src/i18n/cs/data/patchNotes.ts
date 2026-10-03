@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.13.5': {
+    title: 'Balanc talentů: vyvolávání',
+    summary: 'Vyvolávací talenty Prázdného chóru a Mosazného dominia jsou o něco slabší.',
+    sections: [
+      [
+        'Prázdné vyvolání III: místo další Prázdné světlušky, když v tomto tahu zemřela spřátelená jednotka, obnoví 2 životy tvému Strážci.',
+        'Nekonečný: Povstalé kosti až na úrovni III. Úroveň II vyvolá Prázdnou světlušku a obnoví 2 životy tvému Strážci.',
+        'Sestavení III (dva Šrotoboti) teď stojí 4 energie (dřív 3).',
+        'Montážní protokol II: +1/+0 a 1 brnění za každý Konstrukt (dřív +1/+1). +1/+1 s brněním zůstává na úrovni III.',
+      ],
+    ],
+  },
   '0.13.4': {
     title: 'Viditelné umlčení',
     summary: 'Umlčené jednotky to teď ukazují, když se na ně podíváš.',

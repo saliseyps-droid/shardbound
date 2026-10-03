@@ -121,8 +121,8 @@ const IRON: TalentAbility[] = [
   active('IRON', 'assemble', 'Assemble', [
     { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot' }], description: 'Summon a 1/1 Scrapbot.' },
     { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot' }, { type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }], description: 'Summon a 1/1 Scrapbot and gain 1 Armor.' },
-    { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot', count: 2 }], description: 'Summon two 1/1 Scrapbots.' },
-  ], ['Also gain 1 Armor.', 'Summon two Scrapbots instead (no Armor).']),
+    { cost: 4, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot', count: 2 }], description: 'Summon two 1/1 Scrapbots.' },
+  ], ['Also gain 1 Armor.', 'Summon two Scrapbots instead (no Armor); cost 3 → 4.']),
   passive('IRON', 'reinforced_hull', 'Reinforced Hull', [
     { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }] }], description: 'At the end of your turn, gain 1 Armor.' },
     { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }] }], description: 'At the end of your turn, gain 2 Armor.' },
@@ -130,9 +130,9 @@ const IRON: TalentAbility[] = [
   ], ['Gain 2 Armor instead of 1.', '+1 Armor while you control a Construct.']),
   passive('IRON', 'assembly_protocol', 'Assembly Protocol', [
     { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_SUMMONED', filter: { tag: 'Construct' }, effects: [{ type: 'BUFF', attack: 1, target: 'TRIGGER_UNIT' }] }], description: 'Whenever you summon a Construct, give it +1/+0. Twice per turn.' },
-    { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_SUMMONED', filter: { tag: 'Construct' }, effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TRIGGER_UNIT' }] }], description: 'Whenever you summon a Construct, give it +1/+1. Twice per turn.' },
+    { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_SUMMONED', filter: { tag: 'Construct' }, effects: [{ type: 'BUFF', attack: 1, target: 'TRIGGER_UNIT' }, { type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever you summon a Construct, give it +1/+0 and gain 1 Armor. Twice per turn.' },
     { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_SUMMONED', filter: { tag: 'Construct' }, effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TRIGGER_UNIT' }, { type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever you summon a Construct, give it +1/+1 and gain 1 Armor. Twice per turn.' },
-  ], ['+1/+0 → +1/+1.', 'Also gain 1 Armor.']),
+  ], ['Also gain 1 Armor.', '+1/+0 → +1/+1.']),
   active('IRON', 'overclock', 'Overclock', [
     { cost: 3, target: { kind: 'ALLY_UNIT' }, effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TARGET' }], description: 'Give a friendly unit +1/+1.' },
     { cost: 2, target: { kind: 'ALLY_UNIT' }, effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TARGET' }], description: 'Give a friendly unit +1/+1.' },
@@ -172,8 +172,8 @@ const VOID: TalentAbility[] = [
   active('VOID', 'hollow_summons', 'Hollow Summons', [
     { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_hollow_wisp' }], description: 'Summon a 1/1 Hollow Wisp.' },
     { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }], description: 'Summon 2/2 Risen Bones.' },
-    { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }, { type: 'SUMMON', cardId: 'token_hollow_wisp', condition: { kind: 'ALLY_DIED_THIS_TURN' } }], description: 'Summon 2/2 Risen Bones. If a friendly unit died this turn, also summon a 1/1 Hollow Wisp.' },
-  ], ['Summon 2/2 Risen Bones instead.', 'Also a Hollow Wisp if a friendly unit died this turn.']),
+    { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO', condition: { kind: 'ALLY_DIED_THIS_TURN' } }], description: 'Summon 2/2 Risen Bones. If a friendly unit died this turn, restore 2 Health to your Warden.' },
+  ], ['Summon 2/2 Risen Bones instead.', 'Also restores 2 Health to your Warden if a friendly unit died this turn.']),
   passive('VOID', 'soul_harvest', 'Soul Harvest', [
     { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_DIED', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ENEMY_HERO' }] }], description: 'Whenever a friendly unit dies, deal 1 damage to the enemy Warden. Twice per turn.' },
     { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_DIED', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ENEMY_HERO' }, { type: 'HEAL', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever a friendly unit dies, deal 1 damage to the enemy Warden and restore 1 Health to yours. Twice per turn.' },
@@ -191,9 +191,9 @@ const VOID: TalentAbility[] = [
   ], ['Also deals 2 damage to a random enemy.', 'Cost 2 → 1.']),
   passive('VOID', 'unending', 'Unending', [
     { abilities: [{ trigger: 'TURN_END', condition: { kind: 'ALLY_DIED_THIS_TURN' }, effects: [{ type: 'SUMMON', cardId: 'token_hollow_wisp' }] }], description: 'At the end of your turn, if a friendly unit died this turn, summon a 1/1 Hollow Wisp.' },
-    { abilities: [{ trigger: 'TURN_END', condition: { kind: 'ALLY_DIED_THIS_TURN' }, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }] }], description: 'At the end of your turn, if a friendly unit died this turn, summon 2/2 Risen Bones.' },
+    { abilities: [{ trigger: 'TURN_END', condition: { kind: 'ALLY_DIED_THIS_TURN' }, effects: [{ type: 'SUMMON', cardId: 'token_hollow_wisp' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }] }], description: 'At the end of your turn, if a friendly unit died this turn, summon a 1/1 Hollow Wisp and restore 2 Health to your Warden.' },
     { abilities: [{ trigger: 'TURN_END', condition: { kind: 'ALLY_DIED_THIS_TURN' }, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }] }], description: 'At the end of your turn, if a friendly unit died this turn, summon 2/2 Risen Bones and restore 2 Health to your Warden.' },
-  ], ['Summon Risen Bones instead of a Wisp.', 'Also restores 2 Health to your Warden.']),
+  ], ['Also restores 2 Health to your Warden.', 'Summon Risen Bones instead of a Wisp.']),
 ];
 
 const TIDE: TalentAbility[] = [

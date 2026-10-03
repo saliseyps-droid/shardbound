@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.13.5',
+    date: '2026-10-03',
+    title: 'Talent balance: summoning',
+    summary: 'The Hollow Choir and Brass Dominion summoning talents are a little weaker.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Hollow Summons III: instead of an extra Hollow Wisp when a friendly unit died this turn, it restores 2 Health to your Warden.',
+          'Unending: Risen Bones only at rank III. Rank II summons a Hollow Wisp and restores 2 Health to your Warden.',
+          'Assemble III (two Scrapbots) now costs 4 energy (was 3).',
+          'Assembly Protocol II: +1/+0 and 1 Armor per Construct (was +1/+1). +1/+1 with Armor stays at rank III.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.13.4',
     date: '2026-10-03',
     title: 'Silence you can see',
