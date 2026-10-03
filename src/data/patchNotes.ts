@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.15.0',
+    date: '2026-10-03',
+    title: 'Accounts and cloud save',
+    summary: 'Sign in to keep your progress in an account and continue on any device.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Sign in with Google or with e-mail and password: in Settings under Cloud save, or on the welcome screen of a new device.',
+          'While you are signed in, your collection, decks, Gold, quests and progress are saved to your account a few seconds after every change. The game still works offline and catches up later.',
+          'On a new device, signing in loads your progress. If a device and your account both have different progress, you choose which one to keep.',
+          'Only one device saves to your account at a time. When you sign in somewhere else, the previous device shows a notice and can continue with the latest progress.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.14.0',
     date: '2026-10-03',
     title: 'Third-place match',

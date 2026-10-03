@@ -67,6 +67,8 @@ export function authErrorMessage(e: unknown): string {
       return 'The browser blocked the sign-in window. Allow pop-ups for this site and try again.';
     case 'auth/network-request-failed':
       return 'No connection to the sign-in service. Check your internet connection.';
+    case 'auth/operation-not-allowed':
+      return 'This sign-in method is not enabled yet.';
     case 'auth/too-many-requests':
       return 'Too many attempts. Wait a moment and try again.';
     default:

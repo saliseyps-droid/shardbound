@@ -109,7 +109,8 @@ Rules text is generated from the data (`describe.ts`). Invalid cards are rejecte
   - `economy` (unopened packs, pity counters)
   - `quests`, `daily`, `pve`, `matchHistory`, `recentRewards`
 - All mutations are pure domain functions returning a new save or a `Result` error. `GameService` applies them, notifies the Zustand mirror, and persists only the changed slices in one IndexedDB transaction. Writes are serialized, and a failed write is retried in full on the next change.
-- Separate repositories exist for Player, Collection, Deck, Match and Progress. Replacing `GameService`'s internals with HTTP calls gives cloud saves and server-side packs or economy without UI changes.
+- Separate repositories exist for Player, Collection, Deck, Match and Progress.
+- Cloud save (optional, Firebase): signed-in players get every changed save slice mirrored to Firestore a few seconds later, and can continue on another device. The device store stays the working copy, so the game works offline. See `src/cloud/`, `firestore.rules` and `docs/firebase-setup.md`. Economy is still computed in the browser; server-side packs would need Cloud Functions.
 - **Save versioning**: `saveVersion` plus ordered migrations (`persistence/migrations.ts`). Loading also repairs data field by field: unknown cards are dropped, invalid numbers are clamped, and missing decks are restored. A corrupted save is backed up and the player is offered a fresh start instead of a crash.
 
 ### Packs (`domain/packs.ts`, odds in `config/economy.ts`)

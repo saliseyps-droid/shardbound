@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.15.0': {
+    title: 'Účty a ukládání do účtu',
+    summary: 'Přihlas se, ať se tvůj postup ukládá do účtu a můžeš pokračovat na jakémkoli zařízení.',
+    sections: [
+      [
+        'Přihlášení přes Google nebo e-mailem a heslem: v Nastavení v části Uložení do účtu, nebo na úvodní obrazovce nového zařízení.',
+        'Když jsi přihlášený, tvoje sbírka, balíčky, zlato, úkoly a postup se uloží do účtu pár sekund po každé změně. Hra dál funguje i offline a dožene to později.',
+        'Na novém zařízení se po přihlášení načte tvůj postup. Když má zařízení i účet každý jiný postup, vybereš si, který si necháš.',
+        'Do účtu ukládá vždy jen jedno zařízení. Když se přihlásíš jinde, předchozí zařízení ukáže upozornění a může pokračovat s nejnovějším postupem.',
+      ],
+    ],
+  },
   '0.14.0': {
     title: 'Zápas o třetí místo',
     summary: 'Turnaje mají nově zápas o třetí místo.',

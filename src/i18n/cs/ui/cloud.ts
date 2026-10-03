@@ -41,6 +41,7 @@ const d: Record<string, string> = {
   'The browser blocked the sign-in window. Allow pop-ups for this site and try again.': 'Prohlížeč zablokoval přihlašovací okno. Povol pro tento web vyskakovací okna a zkus to znovu.',
   'No connection to the sign-in service. Check your internet connection.': 'Nedaří se spojit se službou pro přihlášení. Zkontroluj připojení k internetu.',
   'Too many attempts. Wait a moment and try again.': 'Příliš mnoho pokusů. Chvíli počkej a zkus to znovu.',
+  'This sign-in method is not enabled yet.': 'Tento způsob přihlášení zatím není zapnutý.',
   'Sign-in failed. Try again.': 'Přihlášení se nepovedlo. Zkus to znovu.',
 };
 export default d;
