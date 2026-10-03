@@ -9,6 +9,7 @@ import { ErrorBoundary } from '@/ui/components/ErrorBoundary';
 import { ConfirmHost, Spinner, ToastHost } from '@/ui/components/common';
 import { TooltipLayer } from '@/ui/components/Tooltip';
 import { CardInspector } from '@/ui/components/CardInspector';
+import { CloudDialogs } from '@/ui/components/CloudAccount';
 import { BootScreen, CorruptedSaveScreen, WelcomeScreen } from '@/ui/screens/BootScreens';
 
 const HomeScreen = lazyWithReload(() => import('@/ui/screens/HomeScreen'));
@@ -107,6 +108,7 @@ export default function App() {
       {status === 'CORRUPTED' && <CorruptedSaveScreen />}
       {status === 'READY' && <Shell />}
       <CardInspector />
+      <CloudDialogs />
       <ConfirmHost />
       <ToastHost />
       <TooltipLayer />

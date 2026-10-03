@@ -5,6 +5,7 @@ import { WORLD_LORE } from '@/data/factions';
 import { Spinner } from '@/ui/components/common';
 import { audio } from '@/audio/audioService';
 import { currentLocale, setLanguage, t, type Locale } from '@/i18n';
+import { CloudAccountPanel } from '@/ui/components/CloudAccount';
 
 export function BootScreen() {
   return (
@@ -61,6 +62,7 @@ export function WelcomeScreen() {
         <button className="btn btn-primary btn-lg" type="submit" disabled={!valid || busy}>
           {busy ? t('Binding shards…') : t('Begin')}
         </button>
+        <CloudAccountPanel compact />
       </form>
     </div>
   );

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { GameSave } from '@/domain/save';
 import { ownedCopies } from '@/domain/save';
 import { GameService, type InitStatus } from '@/services/gameService';
+import { MirroredStore } from '@/cloud/sync';
 import { toast } from './uiStore';
 
 /**
@@ -9,7 +10,9 @@ import { toast } from './uiStore';
  * through `gameService` methods; the store just re-renders subscribers.
  * Components should select narrow slices (profile, collection, decks...).
  */
-export const gameService = GameService.createDefault();
+/** Writes go to the device first; when signed in, src/state/cloudStore.ts mirrors them to the cloud. */
+export const saveStore = new MirroredStore(GameService.defaultStore());
+export const gameService = new GameService(saveStore);
 
 interface AccountStore {
   status: 'BOOTING' | 'NEW' | 'READY' | 'CORRUPTED';

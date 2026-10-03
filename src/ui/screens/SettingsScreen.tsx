@@ -5,6 +5,8 @@ import { gameService } from '@/state/accountStore';
 import { toast } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
 import { confirmDialog, ScreenHeader } from '@/ui/components/common';
+import { useCloud } from '@/state/cloudStore';
+import { CloudAccountPanel } from '@/ui/components/CloudAccount';
 import '@/ui/styles/meta.css';
 
 import { currentLocale, LANGUAGES, setLanguage, t, type Locale } from '@/i18n';
@@ -35,6 +37,8 @@ function Toggle({ label, hint, checked, onChange }: { label: string; hint?: stri
 }
 
 export default function SettingsScreen() {
+  const cloudOn = useCloud((c) => c.configured);
+  const signedIn = useCloud((c) => !!c.user);
   const s = useSettings();
   const navigate = useNavigate();
   const [fullscreen, setFullscreen] = useState(!!document.fullscreenElement);
@@ -120,9 +124,16 @@ export default function SettingsScreen() {
           </button>
         </section>
 
+        {cloudOn && (
+          <section className="panel">
+            <div className="panel-title">{t('Cloud save')}</div>
+            <CloudAccountPanel />
+          </section>
+        )}
+
         <section className="panel danger-zone">
           <div className="panel-title">{t('Account')}</div>
-          <p className="muted">{t('Resetting deletes all progress stored on this device.')}</p>
+          <p className="muted">{signedIn ? t('Resetting deletes all your progress, on this device and in your account.') : t('Resetting deletes all progress stored on this device.')}</p>
           <button className="btn btn-danger" onClick={resetAccount}>
             {t('Reset account')}
           </button>

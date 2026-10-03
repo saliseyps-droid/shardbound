@@ -1,0 +1,29 @@
+.cloud-account { display: grid; gap: var(--space-3); justify-items: start; }
+.cloud-account p { margin: 0; }
+.cloud-email { display: grid; gap: var(--space-2); width: 100%; max-width: 360px; }
+.cloud-links { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.link-btn { background: none; border: 0; padding: 0; color: var(--cyan); cursor: pointer; font: inherit; text-decoration: underline; }
+.link-btn:disabled { opacity: 0.5; cursor: default; }
+.cloud-status { font-size: 0.9em; }
+.cloud-status.status-error,
+.cloud-status.status-paused { color: var(--danger, #e66); }
+.cloud-choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-3); margin: var(--space-3) 0; }
+.cloud-choice-card { display: grid; gap: 4px; }
+.cloud-banner {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  max-width: calc(100vw - 32px);
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(20, 14, 34, 0.95);
+  border: 1px solid var(--danger, #e66);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+.welcome-form .cloud-account { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid rgba(255, 255, 255, 0.12); width: 100%; }
+.cloud-account .online-error { color: var(--danger, #e66); margin: 0; }

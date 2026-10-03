@@ -47,7 +47,12 @@ export class GameService {
   }
 
   static createDefault(): GameService {
-    return new GameService(IndexedDbStore.isAvailable() ? new IndexedDbStore() : new MemoryStore());
+    return new GameService(GameService.defaultStore());
+  }
+
+  /** The device's own store: IndexedDB, or memory when the browser blocks it. */
+  static defaultStore(): KeyValueStore {
+    return IndexedDbStore.isAvailable() ? new IndexedDbStore() : new MemoryStore();
   }
 
   // -------------------------------------------------------------------------

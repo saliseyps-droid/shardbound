@@ -1,0 +1,27 @@
+rules_version = '2';
+
+// Cloud save (src/cloud/firestore.ts): every player can read and write only their own documents.
+//   users/{uid}             { updatedAt, saveVersion, session }
+//   users/{uid}/save/{key}  { json }
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    match /users/{uid} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['updatedAt', 'saveVersion', 'session']);
+
+      match /save/{key} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid)
+          && key in ['meta', 'profile', 'collection', 'decks', 'matches', 'progress']
+          && request.resource.data.keys().hasOnly(['json'])
+          && request.resource.data.json is string
+          && request.resource.data.json.size() < 900000;
+      }
+    }
+  }
+}
