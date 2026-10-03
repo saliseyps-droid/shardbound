@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.12': {
+    title: 'Tišší hudba v zápase',
+    summary: 'Hudba v pozadí hraje v zápase o polovinu tišeji a dvě nová tlačítka vypínají hudbu nebo zvuky.',
+    sections: [
+      [
+        'V zápase hraje hudba v pozadí poloviční hlasitostí.',
+        'Dvě tlačítka v levém dolním rohu hrací plochy vypínají a zapínají hudbu (nahoře) a zvukové efekty (dole).',
+        'Stejné přepínače najdeš i v Nastavení vedle Ztlumit vše.',
+      ],
+    ],
+  },
   '0.18.11': {
     title: 'Jeden zvuk pro zahrání karty',
     summary: 'Každá zahraná karta zní stejně jemně; výroba karty je potichu.',

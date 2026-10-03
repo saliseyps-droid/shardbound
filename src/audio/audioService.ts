@@ -115,6 +115,8 @@ const SAMPLES: Partial<Record<SoundEvent, { prefix: string; gain: number; layer?
 
 /** Loudness at full sliders, relative to the raw sounds. */
 const VOLUME_SCALE = 0.5;
+/** The background music plays at half volume during matches. */
+const MATCH_MUSIC = 0.5;
 
 /** Ambient generative music: slow pads over a minor pentatonic scale. */
 const SCALE = [220, 261.63, 293.66, 329.63, 392, 440, 523.25];
@@ -130,6 +132,7 @@ class AudioService {
   /** Decoded recorded effects by event (filled in the background after unlock). */
   private buffers = new Map<SoundEvent, AudioBuffer[]>();
   private samplesRequested = false;
+  private inMatch = false;
 
   private loadSamples() {
     if (this.samplesRequested || !this.ctx) return;
@@ -203,14 +206,16 @@ class AudioService {
     const s = useSettings.getState();
     // Full sliders play at about half the raw loudness (see DEFAULT_SETTINGS).
     const master = s.muted ? 0 : s.masterVolume * VOLUME_SCALE;
-    this.sfxGain.gain.setTargetAtTime(master * s.sfxVolume, this.ctx.currentTime, 0.02);
-    this.musicGain.gain.setTargetAtTime(master * s.musicVolume * 0.35, this.ctx.currentTime, 0.2);
+    const sfx = s.sfxMuted ? 0 : master * s.sfxVolume;
+    const music = s.musicMuted ? 0 : master * s.musicVolume * 0.35 * (this.inMatch ? MATCH_MUSIC : 1);
+    this.sfxGain.gain.setTargetAtTime(sfx, this.ctx.currentTime, 0.02);
+    this.musicGain.gain.setTargetAtTime(music, this.ctx.currentTime, 0.2);
   }
 
   play(event: SoundEvent) {
     if (!this.ctx || !this.sfxGain) return;
     const s = useSettings.getState();
-    if (s.muted || s.masterVolume === 0 || s.sfxVolume === 0) return;
+    if (s.muted || s.sfxMuted || s.masterVolume === 0 || s.sfxVolume === 0) return;
     // Throttle identical sounds (e.g. area damage) to avoid clipping.
     const nowMs = performance.now();
     if (nowMs - (this.lastPlayed.get(event) ?? 0) < 45) return;
@@ -249,6 +254,12 @@ class AudioService {
     }
   }
 
+  /** Matches play the music quieter (see MATCH_MUSIC). */
+  setInMatch(inMatch: boolean) {
+    this.inMatch = inMatch;
+    this.applyVolumes();
+  }
+
   startMusic() {
     this.musicWanted = true;
     if (this.ctx) this.startMusicLoop();
@@ -266,7 +277,7 @@ class AudioService {
     const playChord = () => {
       if (!this.ctx || !this.musicGain) return;
       const s = useSettings.getState();
-      if (s.muted || s.musicVolume === 0) return;
+      if (s.muted || s.musicMuted || s.musicVolume === 0) return;
       const t0 = this.ctx.currentTime;
       const root = SCALE[(step * 3) % SCALE.length] / 2;
       for (const [i, mult] of [1, 1.5, 2.0, 2.5].entries()) {

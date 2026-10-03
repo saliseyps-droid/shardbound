@@ -543,3 +543,8 @@
 .rating-change .down { color: var(--damage); }
 /* Emblem in the empty card-preview slot above the battle log. */
 .hover-preview .sidebar-logo { align-self: center; width: min(200px, 80%); height: auto; opacity: 0.92; filter: drop-shadow(0 0 18px rgba(255, 90, 180, 0.35)); }
+
+/* Music / sound switches in the bottom-left corner of the board */
+.audio-toggles { position: absolute; left: 10px; bottom: 10px; z-index: 50; display: grid; gap: 6px; }
+.audio-toggle { width: 36px; height: 36px; display: grid; place-items: center; }
+.audio-toggle.is-off { opacity: 0.55; }

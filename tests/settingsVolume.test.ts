@@ -28,3 +28,19 @@ describe('volume settings', () => {
     expect([s.masterVolume, s.musicVolume, s.sfxVolume]).toEqual([0.6, 0.3, 0.9]);
   });
 });
+
+describe('separate music / sound switches', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('are on by default and survive older saves', async () => {
+    localStorage.setItem(KEY, JSON.stringify({ volumeScale: 2, muted: false }));
+    const s = await load();
+    expect([s.musicMuted, s.sfxMuted]).toEqual([false, false]);
+  });
+
+  it('are remembered', async () => {
+    (await load()).update({ musicMuted: true });
+    const s = await load();
+    expect([s.musicMuted, s.sfxMuted]).toEqual([true, false]);
+  });
+});

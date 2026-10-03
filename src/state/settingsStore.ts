@@ -5,6 +5,9 @@ export interface Settings {
   musicVolume: number;
   sfxVolume: number;
   muted: boolean;
+  /** Separate switches for the background music and the sound effects. */
+  musicMuted: boolean;
+  sfxMuted: boolean;
   /** 0.5 = fast, 1 = normal, 1.5 = slow. */
   animationSpeed: number;
   reducedMotion: boolean;
@@ -23,6 +26,8 @@ export const DEFAULT_SETTINGS: Settings = {
   musicVolume: 0.8,
   sfxVolume: 1,
   muted: false,
+  musicMuted: false,
+  sfxMuted: false,
   animationSpeed: 1,
   reducedMotion: false,
   confirmEndTurn: false,

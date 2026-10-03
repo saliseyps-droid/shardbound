@@ -80,6 +80,8 @@ export default function SettingsScreen() {
           <Slider label={t('Music')} value={s.musicVolume} onChange={(v) => set({ musicVolume: v })} />
           <Slider label={t('Sound effects')} value={s.sfxVolume} onChange={(v) => set({ sfxVolume: v })} />
           <Toggle label={t('Mute all')} checked={s.muted} onChange={(v) => set({ muted: v })} />
+          <Toggle label={t('Mute music')} checked={s.musicMuted} onChange={(v) => set({ musicMuted: v })} />
+          <Toggle label={t('Mute sound effects')} checked={s.sfxMuted} onChange={(v) => set({ sfxMuted: v })} />
         </section>
 
         <section className="panel">

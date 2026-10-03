@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.12',
+    date: '2026-10-04',
+    title: 'Quieter match music',
+    summary: 'The background music is half as loud during matches, and two new buttons turn music or sounds off.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'During a match the background music plays at half volume.',
+          'Two buttons in the bottom-left corner of the board turn the music (top) and the sound effects (bottom) off and on.',
+          'The same switches are also in Settings, next to Mute all.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.18.11',
     date: '2026-10-04',
     title: 'One sound for playing cards',

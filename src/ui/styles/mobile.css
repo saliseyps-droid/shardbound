@@ -215,3 +215,9 @@ body .leave-btn { top: calc(10px + var(--safe-top)); left: calc(10px + var(--saf
 @media (max-height: 520px) {
   body .leave-btn { top: calc(4px + var(--safe-top)); left: calc(4px + var(--safe-left)); }
 }
+body .audio-toggles { left: calc(10px + var(--safe-left)); bottom: calc(10px + var(--safe-bottom)); }
+@media (max-height: 520px) {
+  /* Sideways your Warden sits in the corner, so the switches go between your deck and the board. */
+  body .audio-toggles { left: calc(14px + 26vh + var(--safe-left)); bottom: calc(23vh + 2px); gap: 4px; }
+  body .audio-toggle { width: 30px; height: 30px; }
+}

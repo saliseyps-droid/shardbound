@@ -10,6 +10,7 @@ import { toast, useUi } from '@/state/uiStore';
 import { CardBack, CardView } from '@/ui/components/CardView';
 import { confirmDialog, Spinner } from '@/ui/components/common';
 import { audio } from '@/audio/audioService';
+import { AudioToggles } from './AudioToggles';
 import { DrawPile, EmpowerBadge, EnergyBar, HeroAbilities, HeroPanel, PermanentsRow, UnitView } from './BoardParts';
 import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
 import { t, tn, useT } from '@/i18n';
@@ -68,13 +69,15 @@ export default function MatchScreen() {
 
   useEffect(() => {
     mountedBoards++;
-    // The ambient music keeps playing under the match.
+    // The ambient music keeps playing under the match, at half volume.
+    audio.setInMatch(true);
     audio.startMusic();
     return () => {
       mountedBoards--;
       // Deferred so React StrictMode's dev re-mount doesn't count as leaving.
       setTimeout(() => {
         if (mountedBoards > 0) return;
+        audio.setInMatch(false);
         audio.startMusic();
         // Leaving an unfinished match counts as conceding (prevents reward exploits and stray AI turns).
         const st = useMatch.getState();
@@ -587,6 +590,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       <TutorialOverlay />
       {phase === 'mulligan' && <MulliganOverlay game={game} />}
       {phase === 'ended' && <ResultsOverlay game={game} />}
+      <AudioToggles />
       {phase !== 'ended' && config?.mode !== 'TUTORIAL' && (
         <button className="leave-btn icon-btn" aria-label={t('Leave match (concede)')} onClick={() => void concede()}>
           ✕
