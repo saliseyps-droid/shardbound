@@ -22,8 +22,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.18.9',
     date: '2026-10-03',
     title: 'Softer card play',
-    summary: 'Playing a card makes a soft card flip, and ending your turn is quieter.',
-    sections: [{ kind: 'improved', items: ['Playing a card now makes the same soft card flip as revealing cards from a pack.', 'The end-turn knock is quieter.'] }],
+    summary: 'Playing a card makes a soft card flip.',
+    sections: [{ kind: 'improved', items: ['Playing a card now makes the same soft card flip as revealing cards from a pack.'] }],
     commits: [],
   },
   {

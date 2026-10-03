@@ -103,7 +103,7 @@ const SAMPLES: Partial<Record<SoundEvent, { prefix: string; gain: number; layer?
   spell: { prefix: 'spell', gain: 0.3 },
   shield: { prefix: 'shield', gain: 0.22 },
   coin: { prefix: 'coin', gain: 0.3 },
-  endTurn: { prefix: 'endturn', gain: 0.12 },
+  endTurn: { prefix: 'endturn', gain: 0.2 },
   death: { prefix: 'death', gain: 0.4, layer: true },
   packOpen: { prefix: 'pack', gain: 0.3 },
   // Card reveals in packs: a quiet card flip; rarer cards add a soft chime underneath.
