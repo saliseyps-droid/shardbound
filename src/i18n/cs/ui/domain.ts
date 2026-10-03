@@ -150,6 +150,7 @@ const d: Record<string, string> = {
   'Semi-final 1': 'Semifinále 1',
   'Semi-final 2': 'Semifinále 2',
   'Final': 'Finále',
+  'Third-place match': 'Zápas o třetí místo',
   'At least {n} players are needed.': 'Jsou potřeba alespoň {n} hráči.',
 
   // --- Warden talents (src/data/wardenTalents.ts) ---

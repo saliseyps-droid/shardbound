@@ -23,9 +23,38 @@ describe('tournament bracket', () => {
     const f = t.matches.find((m) => m.id === 'F')!;
     expect([f.a, f.b]).toEqual([sf1.a, sf2.b]);
     t = reportResult(t, 'F', f.b!);
+    // The final is over, but the third-place match is still to be played.
+    expect(t.phase).toBe('running');
+    expect(t.championId).toBe(f.b);
+    const p3 = t.matches.find((m) => m.id === 'P3')!;
+    expect([p3.a, p3.b]).toEqual([sf1.b, sf2.a]);
+    t = reportResult(t, 'P3', p3.a!);
     expect(t.phase).toBe('done');
     expect(placementOf(t, f.b!)).toBe(1);
     expect(placementOf(t, f.a!)).toBe(2);
+    expect(placementOf(t, p3.a!)).toBe(3);
+    expect(placementOf(t, p3.b!)).toBe(4);
+  });
+
+  it('plays the third-place match between the semi-final losers alongside the final', () => {
+    let t = startTournament({ ...newTournament('Q', human('p0')), players: [human('p0'), human('p1'), human('p2'), human('p3')] }, bots, () => 0.5);
+    const [sf1, sf2] = t.matches;
+    expect(t.matches.find((m) => m.id === 'P3')!.status).toBe('waiting');
+    t = reportResult(t, 'SF1', sf1.a!);
+    t = reportResult(t, 'SF2', sf2.a!);
+    expect(readyMatches(t).map((m) => m.id).sort()).toEqual(['F', 'P3']);
+    expect(t.matches.find((m) => m.id === 'P3')!.room).toBe('TQP3');
+  });
+
+  it('awards third place to the opponent of a semi-final loser who already left', () => {
+    let t = startTournament({ ...newTournament('Q', human('p0')), players: [human('p0'), human('p1'), human('p2'), human('p3')] }, bots, () => 0.5);
+    const [sf1, sf2] = t.matches;
+    t = reportResult(t, 'SF1', sf1.a!);
+    t = forfeitPlayer(t, sf1.b!); // lost, then closed the browser before the other semi-final ended
+    t = reportResult(t, 'SF2', sf2.a!);
+    const p3 = t.matches.find((m) => m.id === 'P3')!;
+    expect(p3.status).toBe('done');
+    expect(p3.winner).toBe(sf2.b);
   });
 
   it('assigns a host and room for human-vs-human matches', () => {

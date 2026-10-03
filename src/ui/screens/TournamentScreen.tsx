@@ -65,7 +65,7 @@ export default function TournamentScreen() {
             </form>
             {!valid && <p className="deckbox-issue">{tr('Choose a valid 30-card deck first.')}</p>}
             {t.error && <p className="online-error">{tr(t.error)}</p>}
-            <p className="faint">{tr('Every match gives the usual Gold, XP and quest progress. Champion +{champion} Gold, runner-up +{runnerUp} Gold.', { champion: TOURNAMENT_CONFIG.prizes.champion, runnerUp: TOURNAMENT_CONFIG.prizes.runnerUp })}</p>
+            <p className="faint">{tr('Every match gives the usual Gold, XP and quest progress. Champion +{champion} Gold, runner-up +{runnerUp} Gold, third place +{third} Gold.', { champion: TOURNAMENT_CONFIG.prizes.champion, runnerUp: TOURNAMENT_CONFIG.prizes.runnerUp, third: TOURNAMENT_CONFIG.prizes.third })}</p>
           </section>
         </div>
       </div>
@@ -203,8 +203,9 @@ function Bracket({ tour }: { tour: Tournament }) {
     if (countdown === 0) void t.playMyMatch(navigate);
   }, [countdown]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const sf = tour.matches.filter((m) => m.id !== 'F');
+  const sf = tour.matches.filter((m) => m.id === 'SF1' || m.id === 'SF2');
   const final = tour.matches.find((m) => m.id === 'F')!;
+  const third = tour.matches.find((m) => m.id === 'P3');
   const champion = playerById(tour, tour.championId);
   return (
     <>
@@ -213,7 +214,7 @@ function Bracket({ tour }: { tour: Tournament }) {
           <WardenPortrait faction={champion.faction} size={90} />
           <div>
             <h3>{champion.id === t.myId ? tr('You are the champion!') : tr('{name} wins the tournament', { name: champion.name })}</h3>
-            <p className="muted">{place === 1 ? tr('+{n} Gold prize.', { n: TOURNAMENT_CONFIG.prizes.champion }) : place === 2 ? tr('Runner-up: +{n} Gold prize.', { n: TOURNAMENT_CONFIG.prizes.runnerUp }) : tr('Better luck next time.')}</p>
+            <p className="muted">{place === 1 ? tr('+{n} Gold prize.', { n: TOURNAMENT_CONFIG.prizes.champion }) : place === 2 ? tr('Runner-up: +{n} Gold prize.', { n: TOURNAMENT_CONFIG.prizes.runnerUp }) : place === 3 ? tr('Third place: +{n} Gold prize.', { n: TOURNAMENT_CONFIG.prizes.third }) : tr('Better luck next time.')}</p>
           </div>
         </section>
       )}
@@ -243,6 +244,12 @@ function Bracket({ tour }: { tour: Tournament }) {
         <div className="t-round t-final">
           <span className="faint">{tr('Final')}</span>
           <MatchCard tour={tour} m={final} />
+          {third && (
+            <>
+              <span className="faint">{tr('Third place')}</span>
+              <MatchCard tour={tour} m={third} />
+            </>
+          )}
         </div>
       </div>
     </>
