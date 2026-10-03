@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.7',
+    date: '2026-10-03',
+    title: 'Softer end of turn',
+    summary: 'A quieter end-turn sound and no sound when starting a match.',
+    sections: [{ kind: 'improved', items: ['Ending your turn makes a soft wooden knock instead of the book closing, and it is quieter.', 'Starting a match from Play or the campaign no longer makes a sound.'] }],
+    commits: [],
+  },
+  {
     version: '0.18.6',
     date: '2026-10-03',
     title: 'Turn sounds',

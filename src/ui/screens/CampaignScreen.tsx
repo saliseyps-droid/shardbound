@@ -46,7 +46,6 @@ export default function CampaignScreen() {
 
   const fight = () => {
     if (!enc || !unlocked || !validDeck) return;
-    audio.play('play');
     launchMatch({ mode: 'PVE', deckId, opponent: enc, encounterId: enc.id }, navigate);
   };
 

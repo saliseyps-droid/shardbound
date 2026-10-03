@@ -29,7 +29,6 @@ export default function PlayScreen() {
 
   const start = () => {
     if (!validDeck) return;
-    audio.play('play');
     launchMatch({ mode: 'PRACTICE', deckId, opponent: { ...opp, difficulty, rarities: DIFFICULTY_POOLS[difficulty] } }, navigate);
   };
 

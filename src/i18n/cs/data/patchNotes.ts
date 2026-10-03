@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.7': {
+    title: 'Jemnější konec tahu',
+    summary: 'Tišší zvuk konce tahu a žádný zvuk při spuštění zápasu.',
+    sections: [['Konec tahu teď zní jako tiché dřevěné ťuknutí místo zaklapnutí knihy a je tišší.', 'Spuštění zápasu z obrazovky Hrát nebo z kampaně už nevydává zvuk.']],
+  },
   '0.18.6': {
     title: 'Zvuky tahu',
     summary: 'Nové zvuky pro zahrání karty a konec tahu; zvonění na začátku tahu zmizelo.',
