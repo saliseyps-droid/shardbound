@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.13.3': {
+    title: 'Spolehlivější připojení do turnaje',
+    summary: 'Připojení do turnaje z jiné sítě teď čeká déle a samo to zkusí znovu.',
+    sections: [
+      [
+        'Připojení do turnaje teď udělá až 3 pokusy po 20 sekundách, než to vzdá (dřív jeden pokus na 15 sekund). Přímé spojení mezi některými sítěmi projde až na další pokus.',
+        'Když se to přesto nepovede, hláška řekne, že se sítě nedokázaly spojit, a poradí zkusit to znovu nebo přepnout síť. Dřív jen psala „Turnaj neodpovídá“.',
+        'Turnajové zápasy mezi dvěma hráči čekají na každý pokus o spojení déle.',
+      ],
+    ],
+  },
   '0.13.2': {
     title: 'Curse of the Abyss: třetí vlna',
     summary: 'Do setu Curse of the Abyss přibývá dalších 15 Rytířů, set má teď 45 karet.',

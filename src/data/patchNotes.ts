@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.13.3',
+    date: '2026-10-03',
+    title: 'Steadier tournament connections',
+    summary: 'Joining a tournament from another network now waits longer and tries again by itself.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          'Joining a tournament now makes up to 3 attempts of 20 seconds each before giving up (was one attempt of 15 seconds). Direct connections between some networks only succeed on a later try.',
+          'If it still fails, the message says the networks could not connect and suggests trying again or switching networks, instead of only "The tournament did not answer".',
+          'Tournament matches between two players wait longer for each connection attempt.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.13.2',
     date: '2026-10-03',
     title: 'Curse of the Abyss: third wave',

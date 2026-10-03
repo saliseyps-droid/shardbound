@@ -321,7 +321,7 @@ const d: Record<string, string> = {
   'The organizer left, so the tournament has ended.': 'Pořadatel odešel, takže turnaj skončil.',
   'No tournament with that code is open.': 'Žádný otevřený turnaj s tímto kódem neexistuje.',
   'That tournament code is taken.': 'Tento kód turnaje je obsazený.',
-  'The tournament did not answer.': 'Turnaj neodpovídá.',
+  'Could not connect to the tournament. Your networks may not allow a direct connection: try again, or switch networks (for example Wi-Fi instead of mobile data).': 'K turnaji se nepodařilo připojit. Vaše sítě možná nedovolují přímé spojení: zkus to znovu, nebo přepni síť (třeba Wi-Fi místo mobilních dat).',
   'You are running a different version of the game. Reload the page.': 'Máš jinou verzi hry. Znovu načti stránku.',
   'This tournament has already started.': 'Tento turnaj už začal.',
   'This tournament is full.': 'Tento turnaj je plný.',

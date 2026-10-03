@@ -23,6 +23,7 @@ import {
 } from '@/domain/tournament';
 import { CONTENT_HASH, PROTOCOL_VERSION, makeRoomCode, netSession, roomPeerId } from '@/net/session';
 import { onlineOpponent, validateRemoteSide } from '@/net/lobby';
+import { ConnectTimeout, withRetries } from '@/net/retry';
 import { simulateBotMatch } from '@/ai/simulate';
 import { gameService, useAccount } from './accountStore';
 import { launchMatch } from './matchLaunch';
@@ -47,6 +48,10 @@ type TMsg =
   | { t: 'bye' };
 
 const HEARTBEAT_MS = 4000;
+/** Joining: each attempt waits this long, and a timed-out attempt is retried (see src/net/retry.ts). */
+const JOIN_ATTEMPT_MS = 20000;
+const JOIN_ATTEMPTS = 3;
+const NO_CONNECTION = "Could not connect to the tournament. Your networks may not allow a direct connection: try again, or switch networks (for example Wi-Fi instead of mobile data).";
 const TIMEOUT_MS = 15000;
 
 interface TournamentStore {
@@ -241,6 +246,55 @@ export const useTournament = create<TournamentStore>((set, get) => {
     });
   }
 
+  /** One attempt to reach the organizer. Times out with ConnectTimeout so the caller can retry. */
+  async function connectToOrganizer(code: string, deck: Deck) {
+    const save = useAccount.getState().save!;
+    peer = await makePeer();
+    const conn = peer.connect(roomPeerId(`T${code.toUpperCase()}`), { reliable: true });
+    await new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(() => reject(new ConnectTimeout(NO_CONNECTION)), JOIN_ATTEMPT_MS);
+      peer!.on('error', (e: Error & { type?: string }) => {
+        if (e.type === 'peer-unavailable') {
+          clearTimeout(timer);
+          reject(new Error('No tournament with that code is open.'));
+        }
+      });
+      conn.on('open', () =>
+        conn.send({ t: 't-join', protocol: PROTOCOL_VERSION, content: CONTENT_HASH, name: save.profile.username, avatar: save.profile.avatar, side: playerSide(save.profile.username, save.profile.avatar, deck, save.profile.cardBack) } satisfies TMsg),
+      );
+      conn.on('data', (raw) => {
+        const msg = raw as TMsg;
+        lastSeen.set('host', Date.now());
+        if (msg.t === 't-welcome') {
+          clearTimeout(timer);
+          hostConn = conn;
+          set({ role: 'member', status: 'active', code: code.toUpperCase(), myId: msg.youAre });
+          setTournamentMatchHandler(report);
+          startHeartbeat();
+          resolve();
+        } else if (msg.t === 't-reject') {
+          clearTimeout(timer);
+          reject(new Error(msg.reason));
+        } else if (msg.t === 't-state') {
+          if (hostConn === conn) {
+            set({ tournament: msg.tournament });
+            onStateChanged();
+          }
+        } else if (msg.t === 'bye') {
+          if (hostConn === conn) organizerLost();
+        }
+      });
+      conn.on('close', () => {
+        // A connection from an earlier, abandoned attempt must not end the current one.
+        if (hostConn === conn) organizerLost();
+        else {
+          clearTimeout(timer);
+          reject(new ConnectTimeout(NO_CONNECTION));
+        }
+      });
+    });
+  }
+
   return {
     role: 'none',
     status: 'idle',
@@ -315,44 +369,20 @@ export const useTournament = create<TournamentStore>((set, get) => {
 
     join: async (code, deck) => {
       teardown();
-      const save = useAccount.getState().save!;
       set({ status: 'connecting', error: null, deckId: deck.id, prizeGiven: false });
       try {
-        peer = await makePeer();
-        const conn = peer.connect(roomPeerId(`T${code.toUpperCase()}`), { reliable: true });
-        await new Promise<void>((resolve, reject) => {
-          const timer = setTimeout(() => reject(new Error('The tournament did not answer.')), 15000);
-          peer!.on('error', (e: Error & { type?: string }) => {
-            if (e.type === 'peer-unavailable') {
-              clearTimeout(timer);
-              reject(new Error('No tournament with that code is open.'));
-            }
-          });
-          conn.on('open', () =>
-            conn.send({ t: 't-join', protocol: PROTOCOL_VERSION, content: CONTENT_HASH, name: save.profile.username, avatar: save.profile.avatar, side: playerSide(save.profile.username, save.profile.avatar, deck, save.profile.cardBack) } satisfies TMsg),
-          );
-          conn.on('data', (raw) => {
-            const msg = raw as TMsg;
-            lastSeen.set('host', Date.now());
-            if (msg.t === 't-welcome') {
-              clearTimeout(timer);
-              hostConn = conn;
-              set({ role: 'member', status: 'active', code: code.toUpperCase(), myId: msg.youAre });
-              setTournamentMatchHandler(report);
-              startHeartbeat();
-              resolve();
-            } else if (msg.t === 't-reject') {
-              clearTimeout(timer);
-              reject(new Error(msg.reason));
-            } else if (msg.t === 't-state') {
-              set({ tournament: msg.tournament });
-              onStateChanged();
-            } else if (msg.t === 'bye') {
-              organizerLost();
-            }
-          });
-          conn.on('close', () => organizerLost());
-        });
+        await withRetries(async () => {
+          try {
+            await connectToOrganizer(code, deck);
+          } catch (e) {
+            // Start the next attempt from a clean slate (new peer, new port mappings).
+            hostConn = null;
+            const p = peer;
+            peer = null;
+            p?.destroy();
+            throw e;
+          }
+        }, { attempts: JOIN_ATTEMPTS });
       } catch (e) {
         teardown();
         set({ status: 'error', error: (e as Error).message });
@@ -410,7 +440,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
           const until = Date.now() + 90000;
           for (;;) {
             try {
-              await netSession.join(m.room!, side, deck.name, { timeoutMs: 8000 });
+              await netSession.join(m.room!, side, deck.name, { timeoutMs: 15000 });
               break;
             } catch (e) {
               lastErr = e as Error;
