@@ -3,15 +3,15 @@ import { cardsBy, getCard } from '@/data/cards';
 import { SET_INFO, SHOP_OFFERS } from '@/config/economy';
 import { generatePack } from '@/domain/packs';
 import { createRng } from '@/core/rng';
-import { act, giveCard, hero, newGame, setEnergy } from './helpers';
+import { act, giveCard, hero, newGame, setEnergy, unitRef } from './helpers';
 
 describe('Curse of the Abyss set', () => {
-  it('has 15 collectible Knights across every faction', () => {
+  it('has 30 collectible Knights across every faction', () => {
     const cards = cardsBy({ set: 'ABYSS' }).filter((c) => c.collectible);
-    expect(cards).toHaveLength(15);
+    expect(cards).toHaveLength(30);
     expect(cards.every((c) => c.cardType === 'UNIT' && c.tags?.includes('Knight'))).toBe(true);
     expect(new Set(cards.map((c) => c.faction))).toEqual(new Set(['EMBER', 'VERDANT', 'IRON', 'ASTRAL', 'VOID', 'TIDE', 'NEUTRAL']));
-    expect(cards.filter((c) => c.rarity === 'LEGENDARY')).toHaveLength(4);
+    expect(cards.filter((c) => c.rarity === 'LEGENDARY')).toHaveLength(6);
   });
 
   it('is sold in the shop and opens packs of its own cards', () => {
@@ -38,6 +38,32 @@ describe('Curse of the Abyss set', () => {
     s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: uid });
     expect(s.players[1].hero.health).toBe(before - 2);
     expect(s.players[1].board[0].damage).toBe(2);
+  });
+});
+
+describe('Curse of the Abyss: second wave', () => {
+  it('Scarlet Oathbreaker gives each Knight you summon +1/+1', () => {
+    let s = newGame({ board0: ['neu_scarlet_oathbreaker'] });
+    setEnergy(s, 0, 2);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'ver_thornmail_knight') });
+    const knight = s.players[0].board.find((u) => u.cardId === 'ver_thornmail_knight')!;
+    expect([knight.attackBuff, knight.healthBuff]).toEqual([1, 1]);
+  });
+
+  it('Brannoch gains 2 Armor for each unit you control', () => {
+    let s = newGame({ board0: ['token_treant', 'token_treant'] });
+    setEnergy(s, 0, 7);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'irn_brannoch_bronze_bastion') });
+    expect(s.players[0].hero.armor).toBe(6);
+  });
+
+  it('Ashroad Sellsword can attack at once next to another Knight', () => {
+    let s = newGame({ board0: ['ver_thornmail_knight'], board1: ['token_treant'] });
+    setEnergy(s, 0, 4);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'neu_ashroad_sellsword') });
+    const sell = s.players[0].board.find((u) => u.cardId === 'neu_ashroad_sellsword')!;
+    s = act(s, { type: 'ATTACK', player: 0, attackerUid: sell.uid, target: unitRef(s.players[1].board[0]) });
+    expect(s.players[1].board[0]?.damage ?? 99).toBeGreaterThan(0);
   });
 });
 

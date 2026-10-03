@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.13.1',
+    date: '2026-10-03',
+    title: 'Curse of the Abyss: second wave',
+    summary: '15 more Knights join Curse of the Abyss, bringing the set to 30 cards.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          '15 new Knights in Curse of the Abyss: 2 for every faction and 3 Neutral (6 Common, 3 Rare, 4 Epic, 2 Legendary).',
+          'More Knight synergy: Scarlet Oathbreaker gives every Knight you summon +1/+1, Gloomwing Squire draws a Knight when it dies, and Ashroad Sellsword and Ironvow Axeman get stronger next to another Knight.',
+          'Legendaries: Sylvara, the Thornwinged (Thornweald Circle, 6 energy 4/6): At the end of your turn, give your other units +1/+1. Brannoch, the Bronze Bastion (Brass Dominion, 7 energy 6/8): Guard. On Deploy: Gain 2 Armor for each unit you control.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.13.0',
     date: '2026-10-03',
     title: 'Curse of the Abyss',

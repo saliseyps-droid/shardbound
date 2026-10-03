@@ -28,7 +28,7 @@ Aethra's Sundered Crown has shattered into ten thousand Shards. Six factions rac
 | Rimetide Court | Tempo, Freeze, bounce, delayed effects | Deep Freeze, Undertow |
 | Wanderers (Neutral) | Flexible utility | — |
 
-The collection holds 180 collectible cards: 25 per faction (26 for the Hollow Choir) plus 29 neutral, across 3 sets (Kingdoms at War, Fantasy Realms, Curse of the Abyss). There are also tokens, and 18 keywords, each with a tooltip and tests: Guard, Rush, Swift, Drain, Barrier, Ambush, Ward, Frenzy, Venom, Regenerate, Empower, Echo, Fleeting, On Deploy, Last Breath, Overcharge, Burn and Freeze.
+The collection holds 195 collectible cards: 27 per faction (28 for the Hollow Choir) plus 32 neutral, across 3 sets (Kingdoms at War, Fantasy Realms, Curse of the Abyss). There are also tokens, and 18 keywords, each with a tooltip and tests: Guard, Rush, Swift, Drain, Barrier, Ambush, Ward, Frenzy, Venom, Regenerate, Empower, Echo, Fleeting, On Deploy, Last Breath, Overcharge, Burn and Freeze.
 
 ## Match rules (`src/config/gameRules.ts`)
 

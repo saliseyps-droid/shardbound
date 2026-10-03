@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.13.1': {
+    title: 'Curse of the Abyss: druhá vlna',
+    summary: 'Do setu Curse of the Abyss přibývá 15 dalších Rytířů, set má teď 30 karet.',
+    sections: [
+      [
+        '15 nových Rytířů v Curse of the Abyss: 2 pro každou frakci a 3 Poutníci (6 běžných, 3 vzácní, 4 epičtí, 2 legendární).',
+        'Víc souhry Rytířů: Šarlatový zrádce přísah dá každému vyvolanému Rytíři +1/+1, Panoš šerých křídel si při smrti lízne Rytíře a Žoldnéř z Popelavé cesty se Sekerníkem železné přísahy zesílí vedle jiného Rytíře.',
+        'Legendárky: Sylvara Trnokřídlá (Kruh Trnoboru, 6 energie 4/6): Na konci tvého tahu dej svým ostatním jednotkám +1/+1. Brannoch, Bronzová bašta (Mosazné dominium, 7 energie 6/8): Stráž. Při nasazení: Získej 2 brnění za každou jednotku, kterou ovládáš.',
+      ],
+    ],
+  },
   '0.13.0': {
     title: 'Curse of the Abyss',
     summary: 'Nový set 15 Rytířů ze všech frakcí, včetně nové legendárky Liu Kano.',

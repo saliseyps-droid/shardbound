@@ -15,6 +15,21 @@ const cards: CardsOverlay = {
   irn_bastion_dreadknight: { name: 'Baštový rytíř hrůzy', description: 'Stráž. Při nasazení: Dej svým ostatním jednotkám +0/+2.', flavorText: 'Postav se za něj. Je tam místo. Vždycky je tam místo.' },
   emb_vorgrath_the_burning_oath: { name: 'Vorgrath, Hořící přísaha', description: 'Při nasazení: Způsob 2 poškození všem nepřátelům.', flavorText: 'Přísahal, že bude hořet, dokud se Propast neuzavře. Pořád hoří.' },
   tid_azhrel_drowned_champion: { name: 'Azhrel, Utonulý šampion', description: 'Při nasazení: Zmraz všechny nepřátelské jednotky. Lízni si kartu.', flavorText: 'Moře vzalo Dvoru jeho šampiona. Propast ho vrátila, planoucího chladem.' },
+  tid_palehood_sentry: { name: 'Hlídka v bledé kápi', description: 'Při nasazení: Zmraz náhodnou nepřátelskou jednotku.', flavorText: 'Pod bledou kápí je jen mráz. A ten se dívá.' },
+  ast_moonlit_duelist: { name: 'Duelantka měsíčního svitu', description: 'Při nasazení: Pokud jsi v tomto tahu seslal kouzlo, získá +1/+1.', flavorText: 'Bojuje jen za úplňku. Konkláve se stará, aby byl úplněk vždycky.' },
+  ver_mossguard_knight: { name: 'Rytíř mechové stráže', description: 'Stráž. Při nasazení: Obnov 3 životy svému Strážci.', flavorText: 'Jeho štít udržuje naživu stejný kousek mechu už sto let.' },
+  emb_pyrebrand_knight: { name: 'Rytíř s cejchem hranice', description: 'Poslední dech: Způsob 1 poškození náhodnému nepříteli.', flavorText: 'Pohřební hranice ho označila a on nese její poslední jiskru do každého boje.' },
+  neu_gloomwing_squire: { name: 'Panoš šerých křídel', description: 'Poslední dech: Lízni si z balíčku Rytíře.', flavorText: 'Každý panoš sní o ostruhách. Tenhle umírá, aby je mohl získat rytíř.' },
+  neu_ashroad_sellsword: { name: 'Žoldnéř z Popelavé cesty', description: 'Při nasazení: Pokud ovládáš jiného Rytíře, získá Výpad.', flavorText: 'Na Popelavé cestě bojuje za peníze. Když se dívají jiní rytíři, útočí první.' },
+  irn_ironvow_axeman: { name: 'Sekerník železné přísahy', description: 'Stráž. Při nasazení: Pokud ovládáš jiného Rytíře, získej 3 brnění.', flavorText: 'Jeho přísaha byla ukována ze železa. On prý taky.' },
+  vod_hornwing_despoiler: { name: 'Plenitel s rohatými křídly', description: 'Při nasazení: Způsob 3 poškození svému Strážci.', flavorText: 'Chór mu půjčuje sílu. A vždycky si ji vybere zpátky.' },
+  tid_brinehair_duelist: { name: 'Duelantka se slanými vlasy', description: 'Při nasazení: Způsob 3 poškození zmrazené nepřátelské jednotce.', flavorText: 'Soupeře má nejradši zmrazené. Méně se hádají.' },
+  neu_scarlet_oathbreaker: { name: 'Šarlatový zrádce přísah', description: 'Kdykoli vyvoláš jiného Rytíře, dej mu +1/+1.', flavorText: 'Porušil každou přísahu, kterou složil, a každý rytíř, který ho následoval, složil novou.' },
+  ast_isera_of_the_violet_blade: { name: 'Isera s fialovou čepelí', description: 'Při nasazení: Lízni si kouzlo. Když sešleš kouzlo, získá +1/+0.', flavorText: 'Její čepel zabzučí při každém kouzlu vysloveném poblíž a každé si zapamatuje.' },
+  emb_phoenixguard_zealot: { name: 'Fanatik fénixovy stráže', description: 'Spěch. Při nasazení: Uděl náhodné nepřátelské jednotce Hoření 2.', flavorText: 'Do fénixovy hranice vešel jako panoš a vyšel z ní jako fanatik.' },
+  vod_horned_revenant: { name: 'Rohatý navrátilec', description: 'Poslední dech: Oživ náhodnou spřátelenou jednotku za 5 nebo méně, která v této hře zemřela.', flavorText: 'Když padne, Propast otevře dveře. Vždycky jimi něco přijde zpátky.' },
+  ver_sylvara_the_thornwinged: { name: 'Sylvara Trnokřídlá', description: 'Na konci tvého tahu dej svým ostatním jednotkám +1/+1.', flavorText: 'Křídla má z ostružiní a kopí z mladého stromku. Za ní Kruh roste.' },
+  irn_brannoch_bronze_bastion: { name: 'Brannoch, Bronzová bašta', description: 'Stráž. Při nasazení: Získej 2 brnění za každou jednotku, kterou ovládáš.', flavorText: 'Dominium postavilo pevnost a pak jí dalo nohy.' },
 };
 
 export default cards;
