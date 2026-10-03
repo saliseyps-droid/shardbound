@@ -19,6 +19,37 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.13.2',
+    date: '2026-10-03',
+    title: 'Curse of the Abyss: third wave',
+    summary: '15 more Knights join Curse of the Abyss, bringing the set to 45 cards.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          '15 new Knights in Curse of the Abyss: 2 for every faction and 3 Neutral (6 Common, 3 Rare, 4 Epic, 2 Legendary).',
+          "Legendaries: Rendoslav (Neutral, 7 energy 6/6): On Deploy: Draw 2 Knights from your deck. Give your other units +1/+1. Kaelthar, Pyre of Souls (Hollow Choir, 6 energy 5/5): Drain. On Deploy: Deal 1 damage to all enemy units for each friendly unit that died this game (up to 5).",
+        ],
+      },
+      {
+        kind: 'fixed',
+        items: [
+          'The Curse of the Abyss pack art no longer has its top-right and bottom-right corners cut off.',
+          'Booster packs: the sets sit two per row, so the third one moves to the next row instead of squeezing all three together.',
+          'Computer opponents playing the Hollow Choir build stronger decks again now that the new Knights are in the card pool.',
+        ],
+      },
+      {
+        kind: 'balance',
+        items: [
+          'Sylvara, the Thornwinged now costs 7 energy (was 6).',
+          'Verdigris Knight now restores 1 Health to all friendly characters at the end of your turn (was 2).',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.13.1',
     date: '2026-10-03',
     title: 'Curse of the Abyss: second wave',

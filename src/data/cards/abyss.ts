@@ -50,7 +50,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...knight, id: 'vod_gravecloak_knight', name: 'Gravecloak Knight', faction: 'VOID', rarity: 'RARE',
-    manaCost: 4, attack: 4, health: 3, archetypes: ['Requiem'],
+    manaCost: 4, attack: 4, health: 3,
     abilities: [{ trigger: 'LAST_BREATH', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'RANDOM_ENEMY' }] }],
     flavorText: 'He was buried with his blade. It was a mistake to bury him at all.',
   },
@@ -76,7 +76,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   {
     ...knight, id: 'ver_verdigris_knight', name: 'Verdigris Knight', faction: 'VERDANT', rarity: 'EPIC',
     manaCost: 5, attack: 4, health: 6, archetypes: ['Wellspring'],
-    abilities: [{ trigger: 'TURN_END', effects: [{ type: 'HEAL', amount: 2, target: 'ALL_ALLIES' }] }],
+    abilities: [{ trigger: 'TURN_END', effects: [{ type: 'HEAL', amount: 1, target: 'ALL_ALLIES' }] }],
     flavorText: 'Moss took his armour long ago. He let it, and it has kept him alive since.',
   },
   {
@@ -187,14 +187,14 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...knight, id: 'vod_horned_revenant', name: 'Horned Revenant', faction: 'VOID', rarity: 'EPIC',
-    manaCost: 6, attack: 5, health: 5, archetypes: ['Requiem'],
+    manaCost: 6, attack: 5, health: 5,
     abilities: [{ trigger: 'LAST_BREATH', effects: [{ type: 'RESURRECT', count: 1, maxCost: 5 }] }],
     flavorText: 'When he falls, the Abyss opens a door. Something always walks back through it.',
   },
   // ----- Legendaries -----
   {
     ...knight, id: 'ver_sylvara_the_thornwinged', name: 'Sylvara, the Thornwinged', faction: 'VERDANT', rarity: 'LEGENDARY',
-    manaCost: 6, attack: 4, health: 6, archetypes: ['Overgrowth'],
+    manaCost: 7, attack: 4, health: 6, archetypes: ['Overgrowth'],
     abilities: [{ trigger: 'TURN_END', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'OTHER_ALLY_UNITS' }] }],
     flavorText: 'Her wings are bramble and her spear is a sapling. Behind her, the Circle grows.',
   },
@@ -204,5 +204,105 @@ export const ABYSS_CARDS: CardDefinition[] = [
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'GAIN_ARMOR', amount: { kind: 'ALLY_UNIT_COUNT', times: 2 }, target: 'ALLY_HERO' }] }],
     description: 'Guard. On Deploy: Gain 2 Armor for each unit you control.',
     flavorText: 'The Dominion built a fortress, then gave it legs.',
+  },
+
+  // ===== Third wave =====
+  // ----- Commons -----
+  {
+    ...knight, id: 'ver_briarhelm_knight', name: 'Briarhelm Knight', faction: 'VERDANT', rarity: 'COMMON',
+    manaCost: 3, attack: 3, health: 3, archetypes: ['Overgrowth'],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'RANDOM_OTHER_ALLY_UNIT' }] }],
+    flavorText: 'Wherever he plants his blade, something nearby starts to grow.',
+  },
+  {
+    ...knight, id: 'vod_bloodcape_zealot', name: 'Bloodcape Zealot', faction: 'VOID', rarity: 'COMMON',
+    manaCost: 2, attack: 3, health: 3, archetypes: ['Offering'],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ALLY_HERO' }] }],
+    flavorText: 'His cape was white once. He offered that too.',
+  },
+  {
+    ...knight, id: 'neu_redscarf_lancer', name: 'Redscarf Lancer', faction: 'NEUTRAL', rarity: 'COMMON',
+    manaCost: 3, attack: 3, health: 2, keywords: ['RUSH'],
+    flavorText: 'The red scarf is so the others know where the charge begins.',
+  },
+  {
+    ...knight, id: 'tid_undertow_halberdier', name: 'Undertow Halberdier', faction: 'TIDE', rarity: 'COMMON',
+    manaCost: 3, attack: 2, health: 3, archetypes: ['Undertow'],
+    target: { kind: 'ENEMY_UNIT', optional: true, filter: { maxCost: 2 } },
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }] }],
+    description: "On Deploy: Return an enemy unit that costs 2 or less to its owner's hand.",
+    flavorText: 'One sweep of the halberd, and the tide carries the small ones home.',
+  },
+  {
+    ...knight, id: 'irn_steelwatch_knight', name: 'Steelwatch Knight', faction: 'IRON', rarity: 'COMMON',
+    manaCost: 2, attack: 1, health: 3, keywords: ['GUARD'], archetypes: ['Bulwark'],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }] }],
+    flavorText: 'The Steelwatch never sleeps. It just leans on its shield with its eyes closed.',
+  },
+  {
+    ...knight, id: 'neu_emberward_shieldbearer', name: 'Emberward Shieldbearer', faction: 'NEUTRAL', rarity: 'COMMON',
+    manaCost: 2, attack: 2, health: 3, keywords: ['GUARD'],
+    flavorText: 'Her shield was forged from a city gate that refused to burn.',
+  },
+  // ----- Rares -----
+  {
+    ...knight, id: 'tid_frostspine_knight', name: 'Frostspine Knight', faction: 'TIDE', rarity: 'RARE',
+    manaCost: 4, attack: 3, health: 5, archetypes: ['Deep Freeze'],
+    abilities: [{ trigger: 'ON_DAMAGED', effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'RANDOM_ENEMY_UNIT' }] }],
+    flavorText: 'Strike him and the cold strikes back.',
+  },
+  {
+    ...knight, id: 'ver_antlerhelm_knight', name: 'Antlerhelm Knight', faction: 'VERDANT', rarity: 'RARE',
+    manaCost: 3, attack: 2, health: 4, archetypes: ['Wellspring'],
+    abilities: [{ trigger: 'ALLY_HEALED', effects: [{ type: 'BUFF', attack: 1, target: 'SELF' }] }],
+    flavorText: 'The stag gave him its crown. Every wound the Circle mends sharpens it.',
+  },
+  {
+    ...knight, id: 'ast_duskstar_sentinel', name: 'Duskstar Sentinel', faction: 'ASTRAL', rarity: 'RARE',
+    manaCost: 4, attack: 3, health: 4, archetypes: ['Spellweave'],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DRAW_CARDS', amount: 1, condition: { kind: 'SPELLS_CAST_THIS_TURN_GTE', n: 1 } }] }],
+    description: 'On Deploy: If you cast a spell this turn, draw a card.',
+    flavorText: 'He keeps watch for the first star of dusk, and writes down what it says.',
+  },
+  // ----- Epics -----
+  {
+    ...knight, id: 'emb_gildflame_champion', name: 'Gildflame Champion', faction: 'EMBER', rarity: 'EPIC',
+    manaCost: 4, attack: 3, health: 4, keywords: ['EMPOWER'], keywordValues: { EMPOWER: 1 }, archetypes: ['Pyromancy'],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ALL_ENEMY_UNITS' }] }],
+    flavorText: 'His armour was gilded for parades. The Legion found better uses for him.',
+  },
+  {
+    ...knight, id: 'emb_hellshield_marauder', name: 'Hellshield Marauder', faction: 'EMBER', rarity: 'EPIC',
+    manaCost: 5, attack: 4, health: 5, keywords: ['GUARD'], archetypes: ['Blitz'],
+    abilities: [{ trigger: 'ON_DAMAGED', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ENEMY_HERO' }] }],
+    flavorText: 'Every blow on his shield sends sparks across the field, straight at the one who ordered it.',
+  },
+  {
+    ...knight, id: 'irn_gearspike_commander', name: 'Gearspike Commander', faction: 'IRON', rarity: 'EPIC',
+    manaCost: 5, attack: 4, health: 4, archetypes: ['Assembly Line'],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'SUMMON', cardId: 'token_sentry' }] }],
+    flavorText: 'He never rides into battle without a sentry at his side. He builds a new one each time.',
+  },
+  {
+    ...knight, id: 'ast_starbound_inquisitor', name: 'Starbound Inquisitor', faction: 'ASTRAL', rarity: 'EPIC',
+    manaCost: 5, attack: 4, health: 4, keywords: ['WARD'], archetypes: ['Starlit Control'],
+    target: { kind: 'ENEMY_UNIT', optional: true },
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'SILENCE', target: 'TARGET' }] }],
+    flavorText: 'The stars have already judged you. He is only here to read the verdict.',
+  },
+  // ----- Legendaries -----
+  {
+    ...knight, id: 'neu_rendoslav', name: 'Rendoslav', faction: 'NEUTRAL', rarity: 'LEGENDARY',
+    manaCost: 7, attack: 6, health: 6,
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DRAW_CARDS', amount: 2, filter: { tag: 'Knight' } }, { type: 'BUFF', attack: 1, health: 1, target: 'OTHER_ALLY_UNITS' }] }],
+    description: 'On Deploy: Draw 2 Knights from your deck. Give your other units +1/+1.',
+    flavorText: 'The Abyss crowned him king of every knight who swore to it. All of them still answer.',
+  },
+  {
+    ...knight, id: 'vod_kaelthar_pyre_of_souls', name: 'Kaelthar, Pyre of Souls', faction: 'VOID', rarity: 'LEGENDARY',
+    manaCost: 6, attack: 5, health: 5, keywords: ['DRAIN'], archetypes: ['Requiem'],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: { kind: 'ALLY_DEATHS_THIS_GAME', max: 5 }, target: 'ALL_ENEMY_UNITS' }] }],
+    description: 'Drain. On Deploy: Deal 1 damage to all enemy units for each friendly unit that died this game (up to 5).',
+    flavorText: 'Every soul the Choir has lost burns in him. He lets them out one at a time.',
   },
 ];

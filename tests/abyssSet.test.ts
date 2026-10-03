@@ -6,12 +6,12 @@ import { createRng } from '@/core/rng';
 import { act, giveCard, hero, newGame, setEnergy, unitRef } from './helpers';
 
 describe('Curse of the Abyss set', () => {
-  it('has 30 collectible Knights across every faction', () => {
+  it('has 45 collectible Knights across every faction', () => {
     const cards = cardsBy({ set: 'ABYSS' }).filter((c) => c.collectible);
-    expect(cards).toHaveLength(30);
+    expect(cards).toHaveLength(45);
     expect(cards.every((c) => c.cardType === 'UNIT' && c.tags?.includes('Knight'))).toBe(true);
     expect(new Set(cards.map((c) => c.faction))).toEqual(new Set(['EMBER', 'VERDANT', 'IRON', 'ASTRAL', 'VOID', 'TIDE', 'NEUTRAL']));
-    expect(cards.filter((c) => c.rarity === 'LEGENDARY')).toHaveLength(6);
+    expect(cards.filter((c) => c.rarity === 'LEGENDARY')).toHaveLength(8);
   });
 
   it('is sold in the shop and opens packs of its own cards', () => {
@@ -64,6 +64,34 @@ describe('Curse of the Abyss: second wave', () => {
     const sell = s.players[0].board.find((u) => u.cardId === 'neu_ashroad_sellsword')!;
     s = act(s, { type: 'ATTACK', player: 0, attackerUid: sell.uid, target: unitRef(s.players[1].board[0]) });
     expect(s.players[1].board[0]?.damage ?? 99).toBeGreaterThan(0);
+  });
+});
+
+describe('Curse of the Abyss: third wave', () => {
+  it('Rendoslav draws 2 Knights and gives your other units +1/+1', () => {
+    const deck = [...Array(20).fill('token_recruit'), 'ver_thornmail_knight', 'tid_tidewrack_knight', ...Array(8).fill('token_recruit')];
+    let s = newGame({ deck0: deck, board0: ['token_treant'] });
+    setEnergy(s, 0, 7);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'neu_rendoslav') });
+    const hand = s.players[0].hand.map((c) => c.cardId);
+    expect(hand).toContain('ver_thornmail_knight');
+    expect(hand).toContain('tid_tidewrack_knight');
+    expect(s.players[0].board.find((u) => u.cardId === 'token_treant')!.attackBuff).toBe(1);
+  });
+
+  it('Kaelthar hits every enemy unit once per friendly death this game', () => {
+    let s = newGame({ board1: ['token_golem'] });
+    s.players[0].allyDeathsThisGame = 3;
+    setEnergy(s, 0, 6);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'vod_kaelthar_pyre_of_souls') });
+    expect(s.players[1].board[0].damage).toBe(3);
+  });
+
+  it('Undertow Halberdier returns a cheap enemy unit to its hand', () => {
+    let s = newGame({ board1: ['token_recruit'] });
+    setEnergy(s, 0, 3);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'tid_undertow_halberdier'), target: unitRef(s.players[1].board[0]) });
+    expect(s.players[1].board).toHaveLength(0);
   });
 });
 

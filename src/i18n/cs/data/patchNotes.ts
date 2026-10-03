@@ -1,6 +1,25 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.13.2': {
+    title: 'Curse of the Abyss: třetí vlna',
+    summary: 'Do setu Curse of the Abyss přibývá dalších 15 Rytířů, set má teď 45 karet.',
+    sections: [
+      [
+        '15 nových Rytířů v Curse of the Abyss: 2 pro každou frakci a 3 Poutníci (6 běžných, 3 vzácní, 4 epičtí, 2 legendární).',
+        'Legendárky: Rendoslav (Poutníci, 7 energie 6/6): Při nasazení: Lízni si z balíčku 2 Rytíře. Dej svým ostatním jednotkám +1/+1. Kaelthar, Hranice duší (Prázdný chór, 6 energie 5/5): Vysátí. Při nasazení: Způsob všem nepřátelským jednotkám 1 poškození za každou spřátelenou jednotku, která v této hře zemřela (nejvýš 5).',
+      ],
+      [
+        'Obrázek balíčku Curse of the Abyss už nemá useknutý pravý horní a pravý dolní roh.',
+        'Booster balíčky: sety jsou po dvou v řadě, takže třetí se přesune na další řádek a nemačkají se všechny tři vedle sebe.',
+        'Počítačoví soupeři za Prázdný chór si po příchodu nových Rytířů zase skládají silnější balíčky.',
+      ],
+      [
+        'Sylvara Trnokřídlá teď stojí 7 energie (dřív 6).',
+        'Měděnkový rytíř teď na konci tvého tahu obnoví všem spřáteleným postavám 1 život (dřív 2).',
+      ],
+    ],
+  },
   '0.13.1': {
     title: 'Curse of the Abyss: druhá vlna',
     summary: 'Do setu Curse of the Abyss přibývá 15 dalších Rytířů, set má teď 30 karet.',

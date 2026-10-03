@@ -2,7 +2,7 @@
 /* Pack inventory                                                      */
 /* ------------------------------------------------------------------ */
 
-.pack-inventory { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: var(--space-5); }
+.pack-inventory { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
 @media (max-width: 1050px) { .pack-inventory { grid-template-columns: 1fr; } }
 .inventory-set { display: grid; grid-template-columns: 250px minmax(0, 1fr); justify-items: center; gap: var(--space-5); align-items: center; }
 .inventory-set.is-highlight { box-shadow: inset 0 0 0 2px var(--cyan), var(--shadow-lift); }
