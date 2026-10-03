@@ -270,7 +270,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
                   {t('Level {n} reached!', { n: lu.level })}{' '}
                   {lu.rewards.map((r, i) => (
                     <span key={i} className="chip">
-                      {r.kind === 'GOLD' ? t('{n} Gold', { n: r.amount }) : r.kind === 'ESSENCE' ? t('{n} Essence', { n: r.amount }) : r.kind === 'PACK' ? tn(r.amount, '{n} pack', '{n} packs') : t('Title: {title}', { title: t(r.title) })}
+                      {r.kind === 'GOLD' ? t('{n} Gold', { n: r.amount }) : r.kind === 'ESSENCE' ? t('{n} Essence', { n: r.amount }) : r.kind === 'PACK' ? tn(r.amount, '{n} pack', '{n} packs') : r.kind === 'CARD_BACK' ? t('New card back') : t('Title: {title}', { title: t(r.title) })}
                     </span>
                   ))}
                 </div>

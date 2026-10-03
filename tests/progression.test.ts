@@ -30,8 +30,9 @@ describe('levels', () => {
     expect(res.save.profile.level).toBe(3);
     expect(res.save.profile.xp).toBe(5);
     expect(res.levelUps.map((l) => l.level)).toEqual([2, 3]);
-    // Level 3 grants a pack in configuration.
-    expect((res.save.economy.packs.CORE ?? 0)).toBeGreaterThan(save.economy.packs.CORE ?? 0);
+    // Level 3 grants a pack in configuration (the set rotates by level).
+    const total = (s: typeof save) => Object.values(s.economy.packs).reduce((a, n) => a + (n ?? 0), 0);
+    expect(total(res.save)).toBeGreaterThan(total(save));
   });
 });
 

@@ -30,6 +30,16 @@ export const QUEST_CONFIG = {
   rerollsPerDay: 1,
 };
 
+/** One of these is the quest of the week; each also gives a booster pack of the newest set. */
+export const WEEKLY_QUEST_TEMPLATES: QuestTemplate[] = [
+  { id: 'w_win_10', type: 'WIN_MATCHES', name: 'Warlord of the Week', description: 'Win 10 matches.', target: 10, gold: 150, xp: 400 },
+  { id: 'w_play_15', type: 'PLAY_MATCHES', name: 'Seasoned Campaigner', description: 'Play 15 matches.', target: 15, gold: 150, xp: 400 },
+  { id: 'w_destroy_60', type: 'DESTROY_UNITS', name: 'Scourge of the Field', description: 'Destroy 60 enemy units.', target: 60, gold: 150, xp: 400 },
+  { id: 'w_cards_120', type: 'PLAY_CARDS', name: 'Master of the Deck', description: 'Play 120 cards.', target: 120, gold: 150, xp: 400 },
+  { id: 'w_damage_300', type: 'DEAL_DAMAGE', name: 'Unstoppable', description: 'Deal 300 damage.', target: 300, gold: 150, xp: 400 },
+];
+export const WEEKLY_QUEST_PACKS = { setId: 'ABYSS' as const, amount: 1 };
+
 export const QUEST_TEMPLATES: QuestTemplate[] = [
   { id: 'q_play_cards', type: 'PLAY_CARDS', name: 'Card Slinger', description: 'Play 20 cards.', target: 20, gold: 50, xp: 120 },
   { id: 'q_win_3', type: 'WIN_MATCHES', name: 'Triumphant', description: 'Win 3 matches.', target: 3, gold: 80, xp: 180 },

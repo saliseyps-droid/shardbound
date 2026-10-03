@@ -332,3 +332,11 @@ label.toggle-row { cursor: pointer; }
 .home-hero-warden .warden-sigil { width: clamp(120px, 9.5vw, 170px); height: calc(clamp(120px, 9.5vw, 170px) * 1.14); }
 /* Containers that host a filled Warden portrait must be positioning parents. */
 .enc-portrait, .enc-sigil { position: relative; }
+
+/* Profile: rewards of the next levels */
+.level-road ul { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; gap: 6px; }
+.level-road li { display: flex; align-items: center; gap: var(--space-2); }
+.level-road li.major .chip { border-color: rgba(246, 207, 122, 0.5); }
+.level-road li.milestone .chip { border-color: var(--gold, #f6cf7a); color: var(--gold, #f6cf7a); }
+.level-road-rewards { display: flex; flex-wrap: wrap; gap: 4px; }
+.level-gem.small { width: 26px; height: 26px; font-size: 12px; }

@@ -5,7 +5,8 @@ import { toast } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
 import { collectibleCards } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
-import { MAX_LEVEL } from '@/config/progression';
+import { LEVELS, MAX_LEVEL, type LevelReward } from '@/config/progression';
+import { SET_INFO } from '@/config/economy';
 import { xpToNext } from '@/domain/progression';
 import { ownedCopies } from '@/domain/save';
 import { PLAYABLE_FACTIONS, RARITIES } from '@/game/types';
@@ -14,8 +15,48 @@ import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { DeckBox, factionStyle } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
-import { t } from '@/i18n';
+import { t, tn } from '@/i18n';
 
+
+function rewardLabel(r: LevelReward): string {
+  switch (r.kind) {
+    case 'GOLD':
+      return t('{n} Gold', { n: r.amount });
+    case 'ESSENCE':
+      return t('{n} Essence', { n: r.amount });
+    case 'PACK':
+      return tn(r.amount, '{n} {set} pack', '{n} {set} packs', { set: SET_INFO[r.setId].name });
+    case 'CARD_BACK':
+      return t('New card back');
+    case 'TITLE':
+      return t('Title: {title}', { title: t(r.title) });
+  }
+}
+
+/** What the next few levels give, so levelling up has a visible goal. */
+function LevelRoad({ level }: { level: number }) {
+  if (level >= MAX_LEVEL) return null;
+  const next = LEVELS.slice(level, Math.min(MAX_LEVEL, level + 5));
+  return (
+    <div className="level-road">
+      <div className="faint">{t('Next level rewards')}</div>
+      <ul>
+        {next.map((l) => (
+          <li key={l.level} className={l.level % 10 === 0 ? 'milestone' : l.level % 5 === 0 ? 'major' : ''}>
+            <span className="level-gem small num">{l.level}</span>
+            <span className="level-road-rewards">
+              {l.rewards.map((r, i) => (
+                <span key={i} className="chip">
+                  {rewardLabel(r)}
+                </span>
+              ))}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export default function ProfileScreen() {
   const save = useAccount((s) => s.save);
@@ -113,6 +154,7 @@ export default function ProfileScreen() {
               <span className="faint">{t('{progress}, {total} total', { progress: p.level >= MAX_LEVEL ? t('Max level') : t('{xp} / {need} XP', { xp: p.xp, need }), total: p.totalXp.toLocaleString() })}</span>
             </div>
           </div>
+          <LevelRoad level={p.level} />
           <div className="profile-wallet">
             <Gold amount={p.gold} size={22} />
             <Essence amount={p.essence} size={22} />

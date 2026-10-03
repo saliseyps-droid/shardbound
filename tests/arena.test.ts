@@ -1,3 +1,4 @@
+import { dayKey } from '@/core/utils';
 import { describe, expect, it } from 'vitest';
 import { ARENA } from '@/config/arena';
 import { getCard } from '@/data/cards';
@@ -40,9 +41,10 @@ function drafted(seed = 7): GameSave {
 }
 
 describe('arena', () => {
-  it('costs the entry fee and offers two different factions', () => {
-    expect(startArena(rich(299), 1, 1).ok).toBe(false);
-    const s = ok(startArena(rich(1000), 1, 1));
+  it('costs the entry fee (after the daily free run) and offers two different factions', () => {
+    const usedFree = (s: ReturnType<typeof rich>) => ({ ...s, arena: { ...s.arena, freeEntryDay: dayKey(1) } });
+    expect(startArena(usedFree(rich(299)), 1, 1).ok).toBe(false);
+    const s = ok(startArena(usedFree(rich(1000)), 1, 1));
     expect(s.profile.gold).toBe(1000 - ARENA.entryGold);
     const [a, b] = s.arena.run!.factionChoices;
     expect(a).not.toBe(b);
@@ -152,7 +154,7 @@ describe('arena', () => {
 
   it('repairs saves without arena data or with a broken run', () => {
     const base = { saveVersion: CURRENT_SAVE_VERSION, profile: { username: 'Old' }, decks: [] };
-    expect(migrateSave(base).save.arena).toEqual({ run: null, last: null, runsPlayed: 0, bestWins: 0 });
+    expect(migrateSave(base).save.arena).toEqual({ run: null, last: null, runsPlayed: 0, bestWins: 0, freeEntryDay: null });
     const broken = migrateSave({ ...base, arena: { run: { id: 'x', picks: 'nope' }, last: null, runsPlayed: 2, bestWins: 3 } }).save.arena;
     expect(broken.run).toBeNull();
     expect(broken.runsPlayed).toBe(2);

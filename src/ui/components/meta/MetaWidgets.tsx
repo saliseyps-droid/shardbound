@@ -166,7 +166,7 @@ export function QuestRow({ quest, save, allowReroll = true }: { quest: Quest; sa
     const res = gameService.claimQuest(quest.id);
     if (res.ok) {
       audio.play('coin');
-      toast(`Quest complete: +${res.value.gold} Gold, +${res.value.xp} XP`, 'reward');
+      toast(res.value.packs ? `Quest complete: +${res.value.gold} Gold, +${res.value.xp} XP and a booster pack` : `Quest complete: +${res.value.gold} Gold, +${res.value.xp} XP`, 'reward');
       for (const l of res.value.levelUps) {
         audio.play('levelUp');
         toast(`Level up! You reached level ${l.level}`, 'reward');
@@ -191,6 +191,12 @@ export function QuestRow({ quest, save, allowReroll = true }: { quest: Quest; sa
           <strong>{t(quest.name)}</strong>
           <span className="quest-reward">
             <Gold amount={quest.gold} size={15} /> <span className="num faint">+{quest.xp} XP</span>
+            {quest.packs && (
+              <span className="num faint">
+                {' '}
+                <PackIcon size={14} /> {t('{n} {set} pack', { n: quest.packs.amount, set: SET_INFO[quest.packs.setId].name })}
+              </span>
+            )}
           </span>
         </div>
         <span className="muted quest-desc">{t(quest.description)}</span>

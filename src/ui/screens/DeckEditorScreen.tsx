@@ -15,6 +15,7 @@ import { confirmDialog, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { TalentTree } from '@/ui/components/TalentTree';
+import { ShareDeckModal } from '@/ui/components/DeckCodeDialogs';
 import { VirtualCardGrid } from '@/ui/components/collection/VirtualCardGrid';
 import { CardFilterBar } from '@/ui/components/collection/CardFilterBar';
 import { DEFAULT_FILTERS, filterCards, type CardFilterState } from '@/ui/components/collection/cardFilters';
@@ -57,6 +58,7 @@ export default function DeckEditorScreen() {
   const [draft, setDraft] = useState<Deck | null>(saved ?? null);
   const [filters, setFilters] = useState<CardFilterState>({ ...DEFAULT_FILTERS, ownership: 'OWNED' });
   const [tab, setTab] = useState<'cards' | 'talents'>('cards');
+  const [sharing, setSharing] = useState(false);
   const cardWidth = useCardWidth(0.86);
 
   // Adopt the saved deck when it first becomes available (or after a save elsewhere).
@@ -208,6 +210,7 @@ export default function DeckEditorScreen() {
 
   return (
     <div className="screen deck-editor-screen" style={{ '--fc': hero.colors.primary } as CSSProperties}>
+      {sharing && <ShareDeckModal deck={draft} onClose={() => setSharing(false)} />}
       <ScreenHeader
         title={draft.name || t('Untitled deck')}
         subtitle={
@@ -220,6 +223,9 @@ export default function DeckEditorScreen() {
           <>
             <button className="btn btn-ghost" onClick={() => void leave('/decks')}>
               {t('Back to decks')}
+            </button>
+            <button className="btn" onClick={() => setSharing(true)}>
+              {t('Share')}
             </button>
             <button className="btn btn-cyan" onClick={() => void playWith()}>
               {t('Play with this deck')}

@@ -62,7 +62,7 @@ export function createNewSave(username: string, avatar: string, now: number, id:
     collection: { cards, unseen: [] },
     decks,
     economy: { packs: { ...STARTING_CURRENCY.packs }, pity: {} },
-    quests: { active: [], lastRefreshDay: null, rerollDay: null, rerollsUsed: 0, totalCompleted: 0 },
+    quests: { active: [], lastRefreshDay: null, rerollDay: null, rerollsUsed: 0, totalCompleted: 0, weekly: null, weekKey: null },
     daily: { nextIndex: 0, lastClaimDay: null, lastClaimAt: 0, totalClaims: 0 },
     pve: { completed: {} },
     matchHistory: [],

@@ -11,6 +11,7 @@ import { audio } from '@/audio/audioService';
 import { confirmDialog, Modal, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
+import { ImportDeckModal, ShareDeckModal } from '@/ui/components/DeckCodeDialogs';
 import { t } from '@/i18n';
 import '@/ui/styles/decks.css';
 
@@ -83,6 +84,7 @@ function NameModal({ title, initial, confirmLabel, withFaction, onSubmit, onClos
 
 function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; onRename: () => void }) {
   const navigate = useNavigate();
+  const [sharing, setSharing] = useState(false);
   const collection = useAccount((s) => s.save!.collection);
   const issues = validateDeck(deck, (id) => ownedCopies(collection, id));
   const valid = issues.length === 0;
@@ -166,11 +168,15 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
         <button className="text-btn" onClick={duplicate} aria-label={t('Duplicate {name}', { name: deck.name })}>
           {t('Copy')}
         </button>
+        <button className="text-btn" onClick={() => setSharing(true)} aria-label={t('Share {name}', { name: deck.name })}>
+          {t('Share')}
+        </button>
         <button className="text-btn danger" onClick={() => void remove()} aria-label={t('Delete {name}', { name: deck.name })}>
           {t('Delete')}
         </button>
         </span>
       </div>
+      {sharing && <ShareDeckModal deck={deck} onClose={() => setSharing(false)} />}
     </article>
   );
 }
@@ -181,6 +187,7 @@ export default function DeckListScreen() {
   const selectedId = useAccount((s) => s.save?.profile.selectedDeckId);
   const [creating, setCreating] = useState(false);
   const [renaming, setRenaming] = useState<Deck | null>(null);
+  const [importing, setImporting] = useState(false);
   const full = decks.length >= DECK_RULES.maxDecks;
   const sorted = [...decks].sort((a, b) => Number(b.favorite) - Number(a.favorite) || a.createdAt - b.createdAt);
 
@@ -190,9 +197,14 @@ export default function DeckListScreen() {
         title={t('Decks')}
         subtitle={t('{n} / {max} decks. Decks hold {size} cards from your Warden faction and Neutral.', { n: decks.length, max: DECK_RULES.maxDecks, size: DECK_RULES.deckSize })}
         actions={
-          <button className="btn btn-primary" disabled={full} onClick={() => setCreating(true)} title={full ? t('Deck limit reached') : undefined}>
-            {t('New deck')}
-          </button>
+          <>
+            <button className="btn" disabled={full} onClick={() => setImporting(true)} title={full ? t('Deck limit reached') : undefined}>
+              {t('Import deck')}
+            </button>
+            <button className="btn btn-primary" disabled={full} onClick={() => setCreating(true)} title={full ? t('Deck limit reached') : undefined}>
+              {t('New deck')}
+            </button>
+          </>
         }
       />
       <div className="deck-grid">
@@ -208,6 +220,7 @@ export default function DeckListScreen() {
           </button>
         )}
       </div>
+      {importing && <ImportDeckModal onClose={() => setImporting(false)} />}
       {creating && (
         <NameModal
           title={t('New deck')}

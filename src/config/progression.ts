@@ -29,7 +29,9 @@ export type LevelReward =
   | { kind: 'GOLD'; amount: number }
   | { kind: 'ESSENCE'; amount: number }
   | { kind: 'PACK'; setId: SetId; amount: number }
-  | { kind: 'TITLE'; title: string };
+  | { kind: 'TITLE'; title: string }
+  /** A card back the player does not own yet (Gold when they own them all). */
+  | { kind: 'CARD_BACK' };
 
 export interface LevelDefinition {
   level: number;
@@ -41,15 +43,20 @@ export interface LevelDefinition {
 
 const TITLES = ['Shardseeker', 'Crownbreaker', 'Aether Warden', 'Sovereign of Shards'];
 
+/** Pack rewards cycle through the sets so every set shows up while levelling. */
+const PACK_ROTATION: SetId[] = ['CORE', 'DEEP', 'ABYSS'];
+const rotatingSet = (n: number): SetId => PACK_ROTATION[n % PACK_ROTATION.length];
+
 function levelReward(level: number): LevelReward[] {
   if (level % 10 === 0) {
     return [
-      { kind: 'PACK', setId: 'DEEP', amount: 3 },
+      { kind: 'PACK', setId: rotatingSet(level / 10 + 1), amount: 3 },
+      { kind: 'CARD_BACK' },
       { kind: 'TITLE', title: TITLES[level / 10 - 1] ?? 'Veteran' },
     ];
   }
-  if (level % 5 === 0) return [{ kind: 'PACK', setId: 'CORE', amount: 2 }, { kind: 'ESSENCE', amount: 100 }];
-  if (level % 3 === 0) return [{ kind: 'PACK', setId: 'CORE', amount: 1 }];
+  if (level % 5 === 0) return [{ kind: 'PACK', setId: rotatingSet(level / 5), amount: 2 }, { kind: 'ESSENCE', amount: 100 }];
+  if (level % 3 === 0) return [{ kind: 'PACK', setId: rotatingSet(level / 3), amount: 1 }];
   if (level % 2 === 0) return [{ kind: 'ESSENCE', amount: 60 }];
   return [{ kind: 'GOLD', amount: 50 + level * 5 }];
 }

@@ -14,7 +14,8 @@ import { createNewSave } from '@/domain/newAccount';
 import type { PackCard } from '@/domain/packs';
 import { grantXp, type LevelUp } from '@/domain/progression';
 import { applyQuestProgress, claimQuest, refreshQuests, rerollQuest } from '@/domain/quests';
-import { emptyVariants, pushReward, type GameSave } from '@/domain/save';
+import { emptyVariants, pushReward, type GameSave, type Quest } from '@/domain/save';
+import { decodeDeck } from '@/domain/deckCode';
 import { applyRedeem, findCode } from '@/domain/redeem';
 import { migrateSave } from '@/persistence/migrations';
 import { SaveGateway } from '@/persistence/repositories';
@@ -249,6 +250,23 @@ export class GameService {
     return ok(deck);
   }
 
+  /** Adds a deck from a shared deck code. Cards you don't own stay in the deck and are flagged in the editor. */
+  importDeck(code: string): Result<{ deck: Deck; missingCopies: number; unknownCards: number }> {
+    const decoded = decodeDeck(code);
+    if (!decoded.ok) return decoded;
+    const { name, heroFaction, cards, talents, unknownCards } = decoded.value;
+    const created = this.createDeck(name, heroFaction, cards, talents);
+    if (!created.ok) return created;
+    const collection = this.require().collection;
+    let missingCopies = 0;
+    for (const [id, n] of Object.entries(cards)) {
+      const v = collection.cards[id];
+      const have = v ? v.NORMAL + v.FOIL + v.PRISMATIC : 0;
+      missingCopies += Math.max(0, n - have);
+    }
+    return ok({ deck: created.value, missingCopies, unknownCards: unknownCards.length });
+  }
+
   updateDeck(deck: Deck): Result<Deck> {
     const save = this.require();
     if (!save.decks.some((d) => d.id === deck.id)) return err('Deck not found.');
@@ -296,11 +314,11 @@ export class GameService {
   // Quests & daily
   // -------------------------------------------------------------------------
 
-  claimQuest(questId: string): Result<{ gold: number; xp: number; levelUps: LevelUp[] }> {
+  claimQuest(questId: string): Result<{ gold: number; xp: number; packs?: Quest['packs']; levelUps: LevelUp[] }> {
     const res = claimQuest(this.require(), questId, this.now());
     if (!res.ok) return res;
     this.commit(res.value.save);
-    return ok({ gold: res.value.quest.gold, xp: res.value.quest.xp, levelUps: res.value.levelUps });
+    return ok({ gold: res.value.quest.gold, xp: res.value.quest.xp, packs: res.value.quest.packs, levelUps: res.value.levelUps });
   }
 
   rerollQuest(questId: string): Result<GameSave> {

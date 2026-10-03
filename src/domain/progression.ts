@@ -1,6 +1,10 @@
 import { LEVELS, MAX_LEVEL, type LevelDefinition, type LevelReward } from '@/config/progression';
 import type { GameSave } from './save';
 import { pushReward } from './save';
+import { CARD_BACKS } from '@/data/cardBacks';
+
+/** Gold instead of a card back when the player already owns every one. */
+export const CARD_BACK_FALLBACK_GOLD = 300;
 
 export interface LevelUp {
   level: number;
@@ -25,6 +29,11 @@ export function applyLevelReward(save: GameSave, reward: LevelReward): GameSave 
     case 'PACK': {
       const packs = { ...save.economy.packs, [reward.setId]: (save.economy.packs[reward.setId] ?? 0) + reward.amount };
       return { ...save, economy: { ...save.economy, packs } };
+    }
+    case 'CARD_BACK': {
+      const next = CARD_BACKS.find((b) => !save.profile.cardBacks.includes(b.id));
+      if (!next) return { ...save, profile: { ...save.profile, gold: save.profile.gold + CARD_BACK_FALLBACK_GOLD } };
+      return { ...save, profile: { ...save.profile, cardBacks: [...save.profile.cardBacks, next.id] } };
     }
     case 'TITLE': {
       const titles = save.profile.titles.includes(reward.title) ? save.profile.titles : [...save.profile.titles, reward.title];

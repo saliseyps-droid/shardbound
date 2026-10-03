@@ -1,4 +1,4 @@
-import { QUEST_CONFIG, QUEST_TEMPLATES, type QuestTemplate, type QuestType } from '@/config/quests';
+import { QUEST_CONFIG, QUEST_TEMPLATES, WEEKLY_QUEST_PACKS, WEEKLY_QUEST_TEMPLATES, type QuestTemplate, type QuestType } from '@/config/quests';
 import type { RngState } from '@/core/rng';
 import { pickOne } from '@/core/rng';
 import { dayKey, err, ok, type Result } from '@/core/utils';
@@ -35,9 +35,30 @@ function pickTemplate(active: Quest[], rng: RngState, exclude: string[] = []): Q
   return pickOne(rng, QUEST_TEMPLATES.filter((t) => !used.has(t.id))) ?? pickOne(rng, QUEST_TEMPLATES);
 }
 
+/** dayKey of the Monday of the week containing `now` (local time). */
+export function weekKey(now: number): string {
+  const d = new Date(now);
+  d.setHours(12, 0, 0, 0);
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+  return dayKey(d.getTime());
+}
+
+/** A new weekly quest each week. A finished one waits until its reward is claimed. */
+function refreshWeekly(save: GameSave, now: number, rng: RngState): GameSave {
+  const week = weekKey(now);
+  const q = save.quests;
+  if (q.weekKey === week && q.weekly) return save;
+  if (q.weekly && q.weekly.completed && !q.weekly.claimed) return save;
+  const previous = q.weekly?.templateId;
+  const t = pickOne(rng, WEEKLY_QUEST_TEMPLATES.filter((x) => x.id !== previous)) ?? WEEKLY_QUEST_TEMPLATES[0];
+  const weekly: Quest = { ...fromTemplate(t, now, 0), id: `weekly_${week}_${t.id}`, packs: { ...WEEKLY_QUEST_PACKS } };
+  return { ...save, quests: { ...q, weekly, weekKey: week } };
+}
+
 /** Daily refresh: grants new quests (up to the maximum) once per calendar day. */
 export function refreshQuests(save: GameSave, now: number, rng: RngState): GameSave {
   const today = dayKey(now);
+  save = refreshWeekly(save, now, rng);
   const q = save.quests;
   if (q.lastRefreshDay === today) return save;
   // Remove claimed quests, keep unfinished ones.
@@ -53,7 +74,7 @@ export function refreshQuests(save: GameSave, now: number, rng: RngState): GameS
 
 export function applyQuestProgress(save: GameSave, events: QuestProgressEvent[]): { save: GameSave; completed: Quest[] } {
   const completed: Quest[] = [];
-  const active = save.quests.active.map((quest) => {
+  const advance = (quest: Quest): Quest => {
     if (quest.completed) return quest;
     let progress = quest.progress;
     for (const e of events) {
@@ -68,26 +89,32 @@ export function applyQuestProgress(save: GameSave, events: QuestProgressEvent[])
     const next = { ...quest, progress, completed: done };
     if (done && !quest.completed) completed.push(next);
     return next;
-  });
-  return { save: { ...save, quests: { ...save.quests, active } }, completed };
+  };
+  const active = save.quests.active.map(advance);
+  const weekly = save.quests.weekly ? advance(save.quests.weekly) : null;
+  return { save: { ...save, quests: { ...save.quests, active, weekly } }, completed };
 }
 
 export function claimQuest(save: GameSave, questId: string, now: number): Result<{ save: GameSave; quest: Quest; levelUps: LevelUp[] }> {
-  const quest = save.quests.active.find((q) => q.id === questId);
+  const isWeekly = save.quests.weekly?.id === questId;
+  const quest = isWeekly ? save.quests.weekly! : save.quests.active.find((q) => q.id === questId);
   if (!quest) return err('Quest not found.');
   if (!quest.completed) return err('Quest is not complete yet.');
   if (quest.claimed) return err('Reward already claimed.');
+  const packs = quest.packs ? { ...save.economy.packs, [quest.packs.setId]: (save.economy.packs[quest.packs.setId] ?? 0) + quest.packs.amount } : save.economy.packs;
   let next: GameSave = {
     ...save,
     profile: { ...save.profile, gold: save.profile.gold + quest.gold },
+    economy: { ...save.economy, packs },
     quests: {
       ...save.quests,
-      active: save.quests.active.map((q) => (q.id === questId ? { ...q, claimed: true } : q)),
+      active: isWeekly ? save.quests.active : save.quests.active.map((q) => (q.id === questId ? { ...q, claimed: true } : q)),
+      weekly: isWeekly ? { ...quest, claimed: true } : save.quests.weekly,
       totalCompleted: save.quests.totalCompleted + 1,
     },
   };
   const xp = grantXp(next, quest.xp, now);
-  next = pushReward(xp.save, { source: `Quest: ${quest.name}`, gold: quest.gold, xp: quest.xp }, now);
+  next = pushReward(xp.save, { source: `Quest: ${quest.name}`, gold: quest.gold, xp: quest.xp, packs: quest.packs }, now);
   return ok({ save: next, quest, levelUps: xp.levelUps });
 }
 

@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.16.0',
+    date: '2026-10-03',
+    title: 'Weekly quest, free Arena and deck codes',
+    summary: 'A bigger quest every week, one free Arena run a day, shareable deck codes and better level rewards.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Weekly quest: one bigger quest each week (for example "Win 10 matches") worth 150 Gold, 400 XP and a Curse of the Abyss pack. A new one arrives every Monday; a finished one waits until you claim it.',
+          'Arena: your first run each day is free. Further runs cost 300 Gold as before.',
+          'Deck codes: Share on a deck (in Decks or the deck editor) gives a code with the cards and Warden abilities. Decks → Import deck adds a deck from a code; cards you don\'t own yet stay in it and are marked.',
+          'Level rewards: Profile shows what the next five levels give. Pack rewards now rotate through all three sets, and every 10th level also gives a card back you don\'t own yet.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.15.1',
     date: '2026-10-03',
     title: 'Sharper booster packs',

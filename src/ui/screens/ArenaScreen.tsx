@@ -6,7 +6,7 @@ import { getCard } from '@/data/cards';
 import { getCardBack } from '@/data/cardBacks';
 import { FACTIONS } from '@/data/factions';
 import { defaultBuild, talentSummary, type TalentPick } from '@/data/wardenTalents';
-import { arenaDeck, arenaOpponent, arenaPhase, arenaWins, currentOffer, type ArenaRun, type ArenaSummary } from '@/domain/arena';
+import { arenaDeck, arenaOpponent, arenaPhase, arenaWins, currentOffer, hasFreeArenaEntry, type ArenaRun, type ArenaSummary } from '@/domain/arena';
 import type { CardDefinition } from '@/game/types';
 import { gameService, useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
@@ -68,7 +68,7 @@ export default function ArenaScreen() {
       {showSummary ? (
         <RunSummary last={last!} onDone={() => gameService.arenaAcknowledge()} />
       ) : !run ? (
-        <ArenaLobby gold={save.profile.gold} runsPlayed={save.arena.runsPlayed} bestWins={save.arena.bestWins} />
+        <ArenaLobby gold={save.profile.gold} runsPlayed={save.arena.runsPlayed} bestWins={save.arena.bestWins} free={hasFreeArenaEntry(save, Date.now())} />
       ) : arenaPhase(run) === 'FACTION' ? (
         <FactionPick run={run} />
       ) : arenaPhase(run) === 'DRAFT' ? (
@@ -117,8 +117,8 @@ function RewardTable({ highlight }: { highlight?: number }) {
   );
 }
 
-function ArenaLobby({ gold, runsPlayed, bestWins }: { gold: number; runsPlayed: number; bestWins: number }) {
-  const canEnter = gold >= ARENA.entryGold;
+function ArenaLobby({ gold, runsPlayed, bestWins, free }: { gold: number; runsPlayed: number; bestWins: number; free: boolean }) {
+  const canEnter = free || gold >= ARENA.entryGold;
   return (
     <div className="arena-lobby">
       <section className="panel arena-intro">
@@ -132,8 +132,9 @@ function ArenaLobby({ gold, runsPlayed, bestWins }: { gold: number; runsPlayed: 
         </ol>
         <p className="muted small">{t('Drafted cards are only for this run. You don’t need to own them, and they don’t go into your collection.')}</p>
         <button className="btn btn-primary btn-xl" disabled={!canEnter} onClick={() => report(gameService.arenaStart(), 'coin')}>
-          {t('Enter for')} <Gold amount={ARENA.entryGold} />
+          {free ? t('Enter for free') : <>{t('Enter for')} <Gold amount={ARENA.entryGold} /></>}
         </button>
+        <p className="faint small">{free ? t('Your first Arena run each day is free.') : t('Your free run for today is used. A new one is ready tomorrow.')}</p>
         {!canEnter && <p className="deckbox-issue">{t('You need {n} more Gold.', { n: ARENA.entryGold - gold })}</p>}
         {runsPlayed > 0 && (
           <p className="faint small">

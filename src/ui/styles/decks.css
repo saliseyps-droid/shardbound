@@ -265,3 +265,4 @@
 .talent-node.is-learned .talent-cost { color: #12324a; }
 .talent-desc { margin: 0; color: var(--parchment-dim); text-align: center; line-height: 1.35; }
 .talent-desc-rank { color: var(--gold-bright); font-weight: 800; }
+.deck-code { width: 100%; font-family: ui-monospace, monospace; font-size: 12px; word-break: break-all; resize: vertical; margin: var(--space-3) 0; }

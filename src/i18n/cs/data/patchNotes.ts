@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.16.0': {
+    title: 'Týdenní úkol, Aréna zdarma a kódy decků',
+    summary: 'Větší úkol každý týden, jeden vstup do Arény denně zdarma, sdílení decků kódem a lepší odměny za úrovně.',
+    sections: [
+      [
+        'Týdenní úkol: jeden větší úkol na týden (třeba „Vyhraj 10 zápasů“) za 150 zlata, 400 XP a booster Curse of the Abyss. Nový přijde každé pondělí, splněný počká, dokud si odměnu nevyzvedneš.',
+        'Aréna: první vstup každý den je zdarma. Další vstupy stojí 300 zlata jako dřív.',
+        'Kódy decků: tlačítko Sdílet u decku (v Deckách i v editoru) dá kód s kartami a schopnostmi Strážce. Decky → Importovat deck přidá deck z kódu; karty, které ještě nemáš, v něm zůstanou a budou označené.',
+        'Odměny za úrovně: v Profilu je vidět, co dá dalších pět úrovní. Balíčky v odměnách se střídají ze všech tří setů a každá 10. úroveň dá navíc rub karet, který ještě nemáš.',
+      ],
+    ],
+  },
   '0.15.1': {
     title: 'Ostřejší balíčky',
     summary: 'Obrázky balíčků jsou čistě vystřižené.',

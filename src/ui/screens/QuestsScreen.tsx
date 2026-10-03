@@ -35,6 +35,17 @@ export default function QuestsScreen() {
             </div>
           )}
         </section>
+        {save.quests.weekly && (
+          <section className="panel" aria-labelledby="q-weekly">
+            <div className="panel-title">
+              <span id="q-weekly">{t('Weekly quest')}</span>
+              <span className="faint">{t('A new one every Monday')}</span>
+            </div>
+            <div className="quest-list">
+              <QuestRow quest={save.quests.weekly} save={save} allowReroll={false} />
+            </div>
+          </section>
+        )}
         <section className="panel" aria-labelledby="q-daily">
           <div className="panel-title">
             <span id="q-daily">{t('Login rewards')}</span>

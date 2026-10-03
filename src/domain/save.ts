@@ -67,6 +67,8 @@ export interface Quest {
   gold: number;
   xp: number;
   faction?: PlayableFaction;
+  /** Weekly quests also reward booster packs. */
+  packs?: { setId: SetId; amount: number };
   completed: boolean;
   claimed: boolean;
   createdAt: number;
@@ -78,6 +80,10 @@ export interface QuestState {
   rerollDay: string | null;
   rerollsUsed: number;
   totalCompleted: number;
+  /** One bigger quest per week (Monday to Sunday). */
+  weekly: Quest | null;
+  /** dayKey of the Monday the weekly quest belongs to. */
+  weekKey: string | null;
 }
 
 export interface DailyState {

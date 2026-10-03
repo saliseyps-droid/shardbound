@@ -4,7 +4,7 @@ import { collectibleCards, getCard } from '@/data/cards';
 import { CARD_BACKS } from '@/data/cardBacks';
 import { validateBuild, type TalentPick } from '@/data/wardenTalents';
 import { createRng, hashString, nextFloat, pickWeighted, shuffleInPlace } from '@/core/rng';
-import { err, ok, type Result } from '@/core/utils';
+import { dayKey, err, ok, type Result } from '@/core/utils';
 import { PLAYABLE_FACTIONS, RARITIES, type PlayableFaction, type Rarity, type SetId } from '@/game/types';
 import { maxCopiesFor, type Deck } from './decks';
 import { pushReward, type GameSave } from './save';
@@ -42,12 +42,14 @@ export interface ArenaState {
   last: ArenaSummary | null;
   runsPlayed: number;
   bestWins: number;
+  /** dayKey of the last free entry (one free run per day). */
+  freeEntryDay: string | null;
 }
 
 export type ArenaPhase = 'FACTION' | 'DRAFT' | 'TALENTS' | 'PLAYING';
 
 export function emptyArena(): ArenaState {
-  return { run: null, last: null, runsPlayed: 0, bestWins: 0 };
+  return { run: null, last: null, runsPlayed: 0, bestWins: 0, freeEntryDay: null };
 }
 
 export function arenaPhase(run: ArenaRun): ArenaPhase {
@@ -62,13 +64,20 @@ export const arenaWins = (run: ArenaRun) => run.results.filter((r) => r === 'WIN
 /** Deterministic random numbers for one step of a run (reloading never re-rolls). */
 const rngFor = (run: ArenaRun, step: string) => createRng(hashString(`${run.seed}:${step}`));
 
+/** The first Arena run of each day is free. */
+export function hasFreeArenaEntry(save: GameSave, now: number): boolean {
+  return save.arena.freeEntryDay !== dayKey(now);
+}
+
 export function startArena(save: GameSave, now: number, seed: number): Result<GameSave> {
   if (save.arena.run) return err('You already have an Arena run in progress.');
-  if (save.profile.gold < ARENA.entryGold) return err(`The Arena costs ${ARENA.entryGold} Gold to enter.`);
+  const free = hasFreeArenaEntry(save, now);
+  if (!free && save.profile.gold < ARENA.entryGold) return err(`The Arena costs ${ARENA.entryGold} Gold to enter.`);
   const rng = createRng(seed);
   const factions = shuffleInPlace(rng, [...PLAYABLE_FACTIONS]);
   const run: ArenaRun = { id: `arena_${now}_${seed >>> 0}`, seed: seed >>> 0, startedAt: now, factionChoices: [factions[0], factions[1]], faction: null, picks: [], talents: null, results: [] };
-  return ok({ ...save, profile: { ...save.profile, gold: save.profile.gold - ARENA.entryGold }, arena: { ...save.arena, run } });
+  const gold = free ? save.profile.gold : save.profile.gold - ARENA.entryGold;
+  return ok({ ...save, profile: { ...save.profile, gold }, arena: { ...save.arena, run, freeEntryDay: free ? dayKey(now) : save.arena.freeEntryDay } });
 }
 
 export function chooseArenaFaction(save: GameSave, faction: PlayableFaction): Result<GameSave> {
@@ -176,6 +185,7 @@ function finish(save: GameSave, run: ArenaRun, now: number): GameSave {
     },
     economy: { ...save.economy, packs },
     arena: {
+      ...save.arena,
       run: null,
       last: { wins, faction: run.faction, finishedAt: now, reward, seen: false },
       runsPlayed: save.arena.runsPlayed + 1,
@@ -207,6 +217,7 @@ export function repairArena(raw: unknown): ArenaState {
     last: a.last && typeof a.last === 'object' && typeof (a.last as ArenaSummary).wins === 'number' ? { ...(a.last as ArenaSummary), seen: (a.last as ArenaSummary).seen !== false } : null,
     runsPlayed: Number.isFinite(a.runsPlayed) ? Math.max(0, Math.floor(a.runsPlayed as number)) : 0,
     bestWins: Number.isFinite(a.bestWins) ? Math.max(0, Math.min(ARENA.maxWins, Math.floor(a.bestWins as number))) : 0,
+    freeEntryDay: typeof a.freeEntryDay === 'string' ? a.freeEntryDay : null,
   };
   const r = a.run as ArenaRun | null | undefined;
   const isFaction = (f: unknown): f is PlayableFaction => (PLAYABLE_FACTIONS as readonly unknown[]).includes(f);
