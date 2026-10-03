@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.11',
+    date: '2026-10-04',
+    title: 'One sound for playing cards',
+    summary: 'Every card you play makes the same soft card sound; crafting is silent.',
+    sections: [{ kind: 'improved', items: ['Spells, relics and locations now make the same soft card sound as units when played, instead of the magic sound.', 'Crafting a card no longer plays a sound.'] }],
+    commits: [],
+  },
+  {
     version: '0.18.10',
     date: '2026-10-03',
     title: 'Volume sliders',

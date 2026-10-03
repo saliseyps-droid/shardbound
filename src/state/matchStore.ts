@@ -140,11 +140,9 @@ function soundsFor(events: GameEvent[]): SoundEvent[] {
       case 'CARD_DRAWN':
         if (e.player === HUMAN) out.add('draw');
         break;
-      case 'UNIT_SUMMONED':
+      // Every card played from hand (unit, spell, relic, location) makes the same card sound.
+      case 'CARD_PLAYED':
         out.add('play');
-        break;
-      case 'SPELL_CAST':
-        out.add('spell');
         break;
       case 'DAMAGE_DEALT':
         out.add('hit');

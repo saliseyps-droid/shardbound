@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.11': {
+    title: 'Jeden zvuk pro zahrání karty',
+    summary: 'Každá zahraná karta zní stejně jemně; výroba karty je potichu.',
+    sections: [['Kouzla, relikvie a lokace teď při zahrání zní stejně jemně jako jednotky, místo magického zvuku.', 'Výroba karty už nevydává zvuk.']],
+  },
   '0.18.10': {
     title: 'Posuvníky hlasitosti',
     summary: 'Posuvníky hlasitosti začínají na maximu a plná hlasitost je zhruba poloviční.',

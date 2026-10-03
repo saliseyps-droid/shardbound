@@ -48,7 +48,6 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
   const craft = (variant: Variant) => {
     const res = gameService.craft(cardId, variant);
     if (res.ok) {
-      audio.play(card.rarity === 'LEGENDARY' ? 'legendaryReveal' : card.rarity === 'EPIC' ? 'epicReveal' : 'reveal');
       toast(t(CRAFTED[variant], { name: card.name }), 'success');
     } else {
       audio.play('error');
