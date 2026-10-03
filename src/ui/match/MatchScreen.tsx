@@ -68,7 +68,8 @@ export default function MatchScreen() {
 
   useEffect(() => {
     mountedBoards++;
-    audio.stopMusic();
+    // The ambient music keeps playing under the match.
+    audio.startMusic();
     return () => {
       mountedBoards--;
       // Deferred so React StrictMode's dev re-mount doesn't count as leaving.

@@ -35,7 +35,7 @@ interface Tone {
   noise?: boolean;
 }
 
-/** Sound recipes: all audio is synthesized locally (no external or copyrighted assets). */
+/** Synthesized recipes: used for events without recorded samples, as a fallback, and as layers. */
 const RECIPES: Record<SoundEvent, Tone[]> = {
   click: [{ freq: 660, to: 520, dur: 0.05, type: 'triangle', gain: 0.25 }],
   hover: [{ freq: 900, dur: 0.025, type: 'sine', gain: 0.06 }],
@@ -86,6 +86,26 @@ const RECIPES: Record<SoundEvent, Tone[]> = {
   ],
 };
 
+/**
+ * Recorded effects (CC0, see src/assets/sfx/CREDITS.md): sword swings, slashes, cards, coins.
+ * Each event picks a random variant at a slightly random pitch so repeats don't sound identical.
+ * `layer` also plays the synthesized recipe underneath (e.g. a low tone under a body falling).
+ * Events without samples, or before the samples have loaded, use the synthesized recipe.
+ */
+const SAMPLE_URLS = import.meta.glob('../assets/sfx/*.wav', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const SAMPLES: Partial<Record<SoundEvent, { prefix: string; gain: number; layer?: boolean }>> = {
+  attack: { prefix: 'attack', gain: 0.75 },
+  hit: { prefix: 'hit', gain: 0.7 },
+  draw: { prefix: 'draw', gain: 0.55 },
+  play: { prefix: 'play', gain: 0.8 },
+  spell: { prefix: 'spell', gain: 0.55 },
+  shield: { prefix: 'shield', gain: 0.45 },
+  coin: { prefix: 'coin', gain: 0.6 },
+  death: { prefix: 'death', gain: 0.8, layer: true },
+  packOpen: { prefix: 'pack', gain: 0.8, layer: true },
+  click: { prefix: 'click', gain: 0.35 },
+};
+
 /** Ambient generative music: slow pads over a minor pentatonic scale. */
 const SCALE = [220, 261.63, 293.66, 329.63, 392, 440, 523.25];
 
@@ -97,6 +117,45 @@ class AudioService {
   private noiseBuffer: AudioBuffer | null = null;
   private musicWanted = false;
   private lastPlayed = new Map<SoundEvent, number>();
+  /** Decoded recorded effects by event (filled in the background after unlock). */
+  private buffers = new Map<SoundEvent, AudioBuffer[]>();
+  private samplesRequested = false;
+
+  private loadSamples() {
+    if (this.samplesRequested || !this.ctx) return;
+    this.samplesRequested = true;
+    const ctx = this.ctx;
+    for (const [event, def] of Object.entries(SAMPLES) as [SoundEvent, { prefix: string }][]) {
+      const urls = Object.entries(SAMPLE_URLS)
+        .filter(([path]) => new RegExp(`/${def.prefix}\\d+\\.wav$`).test(path))
+        .map(([, url]) => url);
+      void Promise.all(
+        urls.map((url) =>
+          fetch(url)
+            .then((r) => r.arrayBuffer())
+            .then((data) => ctx.decodeAudioData(data))
+            .catch(() => null),
+        ),
+      ).then((decoded) => {
+        const ok = decoded.filter((b): b is AudioBuffer => !!b);
+        if (ok.length) this.buffers.set(event, ok);
+      });
+    }
+  }
+
+  private playSample(event: SoundEvent): boolean {
+    const def = SAMPLES[event];
+    const list = this.buffers.get(event);
+    if (!def || !list?.length || !this.ctx || !this.sfxGain) return false;
+    const src = this.ctx.createBufferSource();
+    src.buffer = list[Math.floor(Math.random() * list.length)];
+    src.playbackRate.value = 0.94 + Math.random() * 0.12;
+    const gain = this.ctx.createGain();
+    gain.gain.value = def.gain;
+    src.connect(gain).connect(this.sfxGain);
+    src.start();
+    return !def.layer;
+  }
 
   constructor() {
     useSettings.subscribe(() => this.applyVolumes());
@@ -121,6 +180,7 @@ class AudioService {
       const data = this.noiseBuffer.getChannelData(0);
       for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
       this.applyVolumes();
+      this.loadSamples();
       if (this.musicWanted) this.startMusicLoop();
     } catch (e) {
       console.warn('[audio] unavailable', e);
@@ -144,6 +204,7 @@ class AudioService {
     const nowMs = performance.now();
     if (nowMs - (this.lastPlayed.get(event) ?? 0) < 45) return;
     this.lastPlayed.set(event, nowMs);
+    if (this.playSample(event)) return;
     const t0 = this.ctx.currentTime;
     for (const tone of RECIPES[event]) this.playTone(tone, t0, this.sfxGain);
   }

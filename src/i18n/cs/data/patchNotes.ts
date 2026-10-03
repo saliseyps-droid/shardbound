@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.4': {
+    title: 'Lepší zvuky',
+    summary: 'V boji jsou skutečné zvukové efekty a hudba v pozadí hraje i během zápasu.',
+    sections: [
+      [
+        'Útok teď zní jako máchnutí mečem a zásah jako seknutí, místo poskakujícího pípnutí. Líznutí karty zašustí, zahraná karta dopadne na stůl a vlastní nahrávky dostala i kouzla, Bariéra, mince, umírající jednotky a otevírání balíčků (nahrávky ve volném užití).',
+        'Každý zvuk má několik variant s trochu jinou výškou, takže opakované útoky nezní pořád stejně.',
+        'Hudba v pozadí teď hraje i během zápasu a neztichne.',
+      ],
+    ],
+  },
   '0.18.3': {
     title: 'Opravy pro iPhone a telefony',
     summary: 'Menu na iPhonu zase funguje a obchod se vejde na displej telefonu.',

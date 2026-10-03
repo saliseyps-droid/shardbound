@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.4',
+    date: '2026-10-03',
+    title: 'Better sounds',
+    summary: 'Real sound effects in battle, and the ambient music keeps playing during matches.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Attacks now sound like a sword swing and hits like a slash instead of a bouncing beep. Drawing a card rustles, playing one lands on the table, and spells, Barrier, coins, dying units and opening packs got recorded sounds too (public-domain recordings).',
+          'Each sound has a few variants at a slightly different pitch, so repeated attacks don\'t sound identical.',
+          'The ambient background music now keeps playing during matches instead of going silent.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.18.3',
     date: '2026-10-03',
     title: 'iPhone and phone fixes',
