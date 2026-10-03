@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.17.0': {
+    title: 'Turnaje až pro 32 hráčů',
+    summary: 'Velikost turnaje si vybereš při jeho vytvoření; čím větší turnaj, tím větší ceny.',
+    sections: [
+      [
+        'Velikost turnaje: pořadatel před vytvořením vybere 4, 8, 16 nebo 32 hráčů. Připojit se může až tolik přátel, prázdná místa obsadí boti.',
+        'Pavouk ukazuje všechna kola: šestnáctifinále, osmifinále, čtvrtfinále, semifinále, finále a zápas o třetí místo.',
+        'Ceny rostou s velikostí. 4 hráči: 250 / 100 / 50 zlata. 8: 400 zlata a booster Curse of the Abyss / 200 / 100. 16: 600 zlata a 2 boostery / 300 zlata a 1 booster / 150. 32: 1000 zlata a 3 boostery / 500 zlata a 2 boostery / 250 zlata a 1 booster.',
+      ],
+      ['Turnajové zápasy botů proti sobě se už neplánují dvakrát a víc takových zápasů najednou už pořadateli nezasekne hru.'],
+    ],
+  },
   '0.16.0': {
     title: 'Týdenní úkol, Aréna zdarma a kódy decků',
     summary: 'Větší úkol každý týden, jeden vstup do Arény denně zdarma, sdílení decků kódem a lepší odměny za úrovně.',

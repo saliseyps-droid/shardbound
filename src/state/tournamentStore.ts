@@ -15,11 +15,13 @@ import {
   readyMatches,
   reportResult,
   startTournament,
-  TOURNAMENT_CONFIG,
+  sizeOf,
+  tournamentPrizes,
   type Tournament,
   type TournamentMatch,
   type TournamentMatchId,
   type TournamentPlayer,
+  type TournamentSize,
 } from '@/domain/tournament';
 import { CONTENT_HASH, PROTOCOL_VERSION, makeRoomCode, netSession, roomPeerId } from '@/net/session';
 import { onlineOpponent, validateRemoteSide } from '@/net/lobby';
@@ -67,7 +69,7 @@ interface TournamentStore {
   activeMatch: TournamentMatchId | null;
   connectingMatch: string | null;
   prizeGiven: boolean;
-  create: (deck: Deck, botDifficulty: Difficulty) => Promise<void>;
+  create: (deck: Deck, botDifficulty: Difficulty, size?: TournamentSize) => Promise<void>;
   join: (code: string, deck: Deck) => Promise<void>;
   start: () => void;
   leave: () => void;
@@ -112,11 +114,14 @@ export const useTournament = create<TournamentStore>((set, get) => {
   function runBotMatches() {
     const t = get().tournament;
     if (!t || get().role !== 'organizer') return;
-    for (const m of readyMatches(t)) {
+    const botMatches = readyMatches(t).filter((m) => playerById(t, m.a)?.bot && playerById(t, m.b)?.bot);
+    if (botMatches.length === 0) return;
+    // Mark them all at once (one state update), then simulate one after another so a
+    // 32-player first round doesn't freeze the organizer's browser.
+    update(botMatches.reduce((cur, m) => markPlaying(cur, m.id), t));
+    botMatches.forEach((m, i) => {
       const a = playerById(t, m.a)!;
       const b = playerById(t, m.b)!;
-      if (!a.bot || !b.bot) continue;
-      update(markPlaying(t, m.id));
       setTimeout(() => {
         const cur = get().tournament;
         if (!cur || cur.matches.find((x) => x.id === m.id)?.status === 'done') return;
@@ -126,8 +131,8 @@ export const useTournament = create<TournamentStore>((set, get) => {
         }) as [SideSetup, SideSetup];
         const winner = simulateBotMatch(sides[0], sides[1], [a.difficulty ?? 'NORMAL', b.difficulty ?? 'NORMAL'], (Math.random() * 1e9) | 0);
         update(reportResult(get().tournament!, m.id, winner === 0 ? a.id : b.id));
-      }, 2500);
-    }
+      }, 2500 + i * 400);
+    });
   }
 
   function handleOrganizerMessage(playerId: string, msg: TMsg) {
@@ -183,15 +188,17 @@ export const useTournament = create<TournamentStore>((set, get) => {
     if (!t || !myId) return;
     if (t.phase === 'done' && !prizeGiven) {
       set({ prizeGiven: true });
+      const prizes = tournamentPrizes(sizeOf(t));
+      const packs = (n: number) => (n > 0 ? ` and ${n} booster pack${n > 1 ? 's' : ''}` : '');
       if (t.championId === myId) {
-        gameService.grantTournamentPrize(TOURNAMENT_CONFIG.prizes.champion, 'Tournament champion');
-        toast(`You won the tournament! +${TOURNAMENT_CONFIG.prizes.champion} Gold`, 'reward');
+        gameService.grantTournamentPrize(prizes.champion.gold, 'Tournament champion', prizes.champion.packs);
+        toast(`You won the tournament! +${prizes.champion.gold} Gold${packs(prizes.champion.packs)}`, 'reward');
       } else if (t.runnerUpId === myId) {
-        gameService.grantTournamentPrize(TOURNAMENT_CONFIG.prizes.runnerUp, 'Tournament runner-up');
-        toast(`Runner-up! +${TOURNAMENT_CONFIG.prizes.runnerUp} Gold`, 'reward');
+        gameService.grantTournamentPrize(prizes.runnerUp.gold, 'Tournament runner-up', prizes.runnerUp.packs);
+        toast(`Runner-up! +${prizes.runnerUp.gold} Gold${packs(prizes.runnerUp.packs)}`, 'reward');
       } else if (t.thirdId === myId) {
-        gameService.grantTournamentPrize(TOURNAMENT_CONFIG.prizes.third, 'Tournament third place');
-        toast(`Third place! +${TOURNAMENT_CONFIG.prizes.third} Gold`, 'reward');
+        gameService.grantTournamentPrize(prizes.third.gold, 'Tournament third place', prizes.third.packs);
+        toast(`Third place! +${prizes.third.gold} Gold${packs(prizes.third.packs)}`, 'reward');
       }
     }
   }
@@ -311,7 +318,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
     connectingMatch: null,
     prizeGiven: false,
 
-    create: async (deck, botDifficulty) => {
+    create: async (deck, botDifficulty, size = 4) => {
       teardown();
       const save = useAccount.getState().save!;
       set({ status: 'connecting', error: null, botDifficulty, deckId: deck.id, prizeGiven: false });
@@ -328,7 +335,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
         }
       }
       const me: TournamentPlayer = { id: 'p0', name: save.profile.username, avatar: save.profile.avatar, faction: deck.heroFaction, bot: false, side: playerSide(save.profile.username, save.profile.avatar, deck, save.profile.cardBack), connected: true };
-      set({ role: 'organizer', status: 'active', code, myId: 'p0', tournament: newTournament(code, me) });
+      set({ role: 'organizer', status: 'active', code, myId: 'p0', tournament: newTournament(code, me, size) });
       setTournamentMatchHandler(report);
       startHeartbeat();
       let nextId = 1;
@@ -351,7 +358,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
             };
             if (msg.protocol !== PROTOCOL_VERSION || msg.content !== CONTENT_HASH) return reject('You are running a different version of the game. Reload the page.');
             if (t.phase !== 'lobby') return reject('This tournament has already started.');
-            if (t.players.filter((p) => !p.bot).length >= TOURNAMENT_CONFIG.size) return reject('This tournament is full.');
+            if (t.players.filter((p) => !p.bot).length >= sizeOf(t)) return reject('This tournament is full.');
             const problem = validateRemoteSide(msg.side);
             if (problem) return reject(problem);
             const id = `p${nextId++}`;

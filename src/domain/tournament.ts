@@ -3,9 +3,11 @@ import type { PlayableFaction } from '@/game/types';
 import type { SideSetup } from '@/engine/types';
 
 /**
- * Four-player single-elimination tournament: two semi-finals, then the final and
- * a third-place match between the semi-final losers, played at the same time.
- * Empty seats are filled with bots. Pure data + transitions (no networking).
+ * Single-elimination tournament for 4, 8, 16 or 32 players. Empty seats are filled with
+ * bots. The two semi-final losers play a third-place match alongside the final.
+ * Pure data + transitions (no networking).
+ *
+ * Match ids name the round: R32-n, R16-n, QF n, SF n, F (final) and P3 (third place).
  */
 
 export interface TournamentPlayer {
@@ -21,7 +23,9 @@ export interface TournamentPlayer {
   connected: boolean;
 }
 
-export type TournamentMatchId = 'SF1' | 'SF2' | 'F' | 'P3';
+export type TournamentMatchId = string;
+export type TournamentSize = 4 | 8 | 16 | 32;
+export const TOURNAMENT_SIZES: TournamentSize[] = [4, 8, 16, 32];
 
 export interface TournamentMatch {
   id: TournamentMatchId;
@@ -36,6 +40,8 @@ export interface TournamentMatch {
 
 export interface Tournament {
   code: string;
+  /** Seats in the bracket (older saves/peers without it are 4). */
+  size?: TournamentSize;
   players: TournamentPlayer[];
   matches: TournamentMatch[];
   phase: 'lobby' | 'running' | 'done';
@@ -45,23 +51,93 @@ export interface Tournament {
 }
 
 export const TOURNAMENT_CONFIG = {
-  size: 4,
   minHumans: 2,
-  prizes: { champion: 250, runnerUp: 100, third: 50 },
 };
 
-export const MATCH_LABEL: Record<TournamentMatchId, string> = { SF1: 'Semi-final 1', SF2: 'Semi-final 2', F: 'Final', P3: 'Third-place match' };
+export interface PlacePrize {
+  gold: number;
+  /** Curse of the Abyss packs. */
+  packs: number;
+}
 
-export function newTournament(code: string, organizer: TournamentPlayer): Tournament {
-  return { code, players: [organizer], matches: [], phase: 'lobby', championId: null, runnerUpId: null };
+/** Bigger tournaments pay more: more rounds to win and more players to beat. */
+export function tournamentPrizes(size: TournamentSize): { champion: PlacePrize; runnerUp: PlacePrize; third: PlacePrize } {
+  switch (size) {
+    case 4:
+      return { champion: { gold: 250, packs: 0 }, runnerUp: { gold: 100, packs: 0 }, third: { gold: 50, packs: 0 } };
+    case 8:
+      return { champion: { gold: 400, packs: 1 }, runnerUp: { gold: 200, packs: 0 }, third: { gold: 100, packs: 0 } };
+    case 16:
+      return { champion: { gold: 600, packs: 2 }, runnerUp: { gold: 300, packs: 1 }, third: { gold: 150, packs: 0 } };
+    case 32:
+      return { champion: { gold: 1000, packs: 3 }, runnerUp: { gold: 500, packs: 2 }, third: { gold: 250, packs: 1 } };
+  }
+}
+
+export const sizeOf = (t: Tournament): TournamentSize => t.size ?? 4;
+
+// ---------------------------------------------------------------------------
+// Rounds and match ids. "Depth" counts rounds back from the final (final = 0).
+// ---------------------------------------------------------------------------
+
+const PREFIX = ['F', 'SF', 'QF', 'R16-', 'R32-'];
+
+function idFor(depth: number, index: number): TournamentMatchId {
+  return depth === 0 ? 'F' : `${PREFIX[depth]}${index}`;
+}
+
+function parseId(id: TournamentMatchId): { depth: number; index: number } | null {
+  if (id === 'F') return { depth: 0, index: 1 };
+  for (let depth = PREFIX.length - 1; depth >= 1; depth--) {
+    if (id.startsWith(PREFIX[depth])) {
+      const index = Number(id.slice(PREFIX[depth].length));
+      if (Number.isInteger(index) && index >= 1) return { depth, index };
+    }
+  }
+  return null;
+}
+
+/** English label of a whole round (depth from the final). */
+export function roundLabel(depth: number): string {
+  return ['Final', 'Semi-finals', 'Quarter-finals', 'Round of 16', 'Round of 32'][depth] ?? 'Round';
+}
+
+/** English label of one match. */
+export function matchLabel(id: TournamentMatchId): string {
+  if (id === 'P3') return 'Third-place match';
+  const p = parseId(id);
+  if (!p) return id;
+  if (p.depth === 0) return 'Final';
+  if (p.depth === 1) return `Semi-final ${p.index}`;
+  if (p.depth === 2) return `Quarter-final ${p.index}`;
+  return `${roundLabel(p.depth)}, match ${p.index}`;
+}
+
+const roundsOf = (size: TournamentSize) => Math.log2(size);
+
+/** Matches of one round, in bracket order. */
+export function roundMatches(t: Tournament, depth: number): TournamentMatch[] {
+  return t.matches.filter((m) => parseId(m.id)?.depth === depth).sort((x, y) => parseId(x.id)!.index - parseId(y.id)!.index);
+}
+
+/** Rounds from the first one to the final (depths, high to low). */
+export function roundDepths(t: Tournament): number[] {
+  return Array.from({ length: roundsOf(sizeOf(t)) }, (_, i) => roundsOf(sizeOf(t)) - 1 - i);
+}
+
+// ---------------------------------------------------------------------------
+
+export function newTournament(code: string, organizer: TournamentPlayer, size: TournamentSize = 4): Tournament {
+  return { code, size, players: [organizer], matches: [], phase: 'lobby', championId: null, runnerUpId: null, thirdId: null };
 }
 
 /** Fills empty seats with bots and draws the bracket. */
 export function startTournament(t: Tournament, bots: Omit<TournamentPlayer, 'id' | 'connected' | 'bot'>[], random: () => number = Math.random): Tournament {
-  const humans = t.players.filter((p) => !p.bot);
+  const size = sizeOf(t);
+  const humans = t.players.filter((p) => !p.bot).slice(0, size);
   if (humans.length < TOURNAMENT_CONFIG.minHumans) throw new Error(`At least ${TOURNAMENT_CONFIG.minHumans} players are needed.`);
   const players = [...humans];
-  for (let i = 0; players.length < TOURNAMENT_CONFIG.size; i++) {
+  for (let i = 0; players.length < size; i++) {
     const b = bots[i % bots.length];
     players.push({ ...b, id: `bot${i + 1}`, bot: true, connected: true });
   }
@@ -71,12 +147,22 @@ export function startTournament(t: Tournament, bots: Omit<TournamentPlayer, 'id'
     const j = Math.floor(random() * (i + 1));
     [seeds[i], seeds[j]] = [seeds[j], seeds[i]];
   }
-  const matches: TournamentMatch[] = [
-    { id: 'SF1', a: seeds[0].id, b: seeds[3].id, winner: null, status: 'ready' },
-    { id: 'SF2', a: seeds[1].id, b: seeds[2].id, winner: null, status: 'ready' },
-    { id: 'F', a: null, b: null, winner: null, status: 'waiting' },
-    { id: 'P3', a: null, b: null, winner: null, status: 'waiting' },
-  ];
+  const rounds = roundsOf(size);
+  const matches: TournamentMatch[] = [];
+  for (let depth = rounds - 1; depth >= 0; depth--) {
+    const count = 2 ** depth;
+    for (let i = 1; i <= count; i++) {
+      const first = depth === rounds - 1;
+      matches.push({
+        id: idFor(depth, i),
+        a: first ? seeds[(i - 1) * 2].id : null,
+        b: first ? seeds[(i - 1) * 2 + 1].id : null,
+        winner: null,
+        status: first ? 'ready' : 'waiting',
+      });
+    }
+  }
+  matches.push({ id: 'P3', a: null, b: null, winner: null, status: 'waiting' });
   return assignRooms({ ...t, players, matches, phase: 'running' });
 }
 
@@ -102,29 +188,32 @@ export function markPlaying(t: Tournament, matchId: TournamentMatchId): Tourname
   return { ...t, matches: t.matches.map((m) => (m.id === matchId && m.status === 'ready' ? { ...m, status: 'playing' } : m)) };
 }
 
+/** Puts a player into a slot of a later match; the match becomes ready when both slots are filled. */
+function seat(matches: TournamentMatch[], id: TournamentMatchId, slot: 'a' | 'b', playerId: string | null): TournamentMatch[] {
+  return matches.map((m) => {
+    if (m.id !== id) return m;
+    const next = { ...m, [slot]: playerId };
+    return next.a && next.b && next.status === 'waiting' ? { ...next, status: 'ready' as const } : next;
+  });
+}
+
 /** Records a result and advances the bracket. Ignores results for finished matches. */
 export function reportResult(t: Tournament, matchId: TournamentMatchId, winnerId: string): Tournament {
   const match = t.matches.find((m) => m.id === matchId);
-  if (!match || match.status === 'done' || (winnerId !== match.a && winnerId !== match.b)) return t;
-  const matches = t.matches.map((m) => (m.id === matchId ? { ...m, winner: winnerId, status: 'done' as const } : m));
-  const loserOf = (m: TournamentMatch) => (m.winner === m.a ? m.b : m.a);
+  if (!match || match.status === 'done' || !match.a || !match.b || (winnerId !== match.a && winnerId !== match.b)) return t;
+  const loserId = winnerId === match.a ? match.b : match.a;
+  let matches = t.matches.map((m) => (m.id === matchId ? { ...m, winner: winnerId, status: 'done' as const } : m));
   let next: Tournament = { ...t, matches };
-  if (matchId === 'SF1' || matchId === 'SF2') {
-    const sf1 = matches.find((m) => m.id === 'SF1')!;
-    const sf2 = matches.find((m) => m.id === 'SF2')!;
-    if (sf1.winner && sf2.winner) {
-      next = assignRooms({
-        ...next,
-        matches: matches.map((m) =>
-          m.id === 'F' ? { ...m, a: sf1.winner, b: sf2.winner, status: 'ready' as const } : m.id === 'P3' ? { ...m, a: loserOf(sf1), b: loserOf(sf2), status: 'ready' as const } : m,
-        ),
-      });
-      return resolveAbsent(next);
-    }
-  } else if (matchId === 'F') {
-    next = { ...next, championId: winnerId, runnerUpId: winnerId === match.a ? match.b : match.a };
-  } else {
+  const pos = parseId(matchId);
+  if (matchId === 'P3') {
     next = { ...next, thirdId: winnerId };
+  } else if (pos && pos.depth === 0) {
+    next = { ...next, championId: winnerId, runnerUpId: loserId };
+  } else if (pos) {
+    const slot = pos.index % 2 === 1 ? 'a' : 'b';
+    matches = seat(matches, idFor(pos.depth - 1, Math.ceil(pos.index / 2)), slot, winnerId);
+    if (pos.depth === 1) matches = seat(matches, 'P3', slot, loserId);
+    next = resolveAbsent(assignRooms({ ...next, matches }));
   }
   const unfinished = next.matches.some((m) => (m.id === 'F' || m.id === 'P3') && m.status !== 'done');
   return unfinished ? next : { ...next, phase: 'done' };
@@ -156,6 +245,7 @@ export function readyMatches(t: Tournament): TournamentMatch[] {
   return t.matches.filter((m) => m.status === 'ready' && m.a && m.b);
 }
 
+/** 1-3 for the medals, 4 for everyone else (once the tournament is over). */
 export function placementOf(t: Tournament, playerId: string): 1 | 2 | 3 | 4 | null {
   if (t.phase !== 'done') return null;
   if (t.championId === playerId) return 1;

@@ -334,9 +334,10 @@ export class GameService {
   }
 
   /** Tournament placement prize (awarded once per finished tournament by the tournament store). */
-  grantTournamentPrize(gold: number, source: string) {
+  grantTournamentPrize(gold: number, source: string, packs = 0) {
     const save = this.require();
-    this.commit(pushReward({ ...save, profile: { ...save.profile, gold: save.profile.gold + gold } }, { source, gold }, this.now()));
+    const economy = packs > 0 ? { ...save.economy, packs: { ...save.economy.packs, ABYSS: (save.economy.packs.ABYSS ?? 0) + packs } } : save.economy;
+    this.commit(pushReward({ ...save, economy, profile: { ...save.profile, gold: save.profile.gold + gold } }, { source, gold, packs: packs > 0 ? { setId: 'ABYSS', amount: packs } : undefined }, this.now()));
   }
 
   // -------------------------------------------------------------------------

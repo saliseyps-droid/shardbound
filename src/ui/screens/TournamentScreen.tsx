@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { useTournament, myMatch } from '@/state/tournamentStore';
 import { toast } from '@/state/uiStore';
 import { DIFFICULTIES, type Difficulty } from '@/config/progression';
-import { MATCH_LABEL, TOURNAMENT_CONFIG, playerById, placementOf, type Tournament, type TournamentMatch } from '@/domain/tournament';
+import { TOURNAMENT_CONFIG, TOURNAMENT_SIZES, matchLabel, playerById, placementOf, roundDepths, roundLabel, roundMatches, sizeOf, tournamentPrizes, type PlacePrize, type Tournament, type TournamentMatch, type TournamentSize } from '@/domain/tournament';
 import { ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
@@ -14,12 +14,28 @@ import '@/ui/styles/online.css';
 
 const DIFF_LABEL: Record<Difficulty, string> = { EASY: 'Easy', NORMAL: 'Normal', HARD: 'Hard', EXPERT: 'Expert' };
 
+function prizeText(p: PlacePrize): string {
+  return p.packs > 0 ? tr('{gold} Gold and {packs}× Curse of the Abyss pack', { gold: p.gold, packs: p.packs }) : tr('{gold} Gold', { gold: p.gold });
+}
+
+function PrizeList({ size }: { size: TournamentSize }) {
+  const p = tournamentPrizes(size);
+  return (
+    <ul className="t-prizes">
+      <li>🥇 {prizeText(p.champion)}</li>
+      <li>🥈 {prizeText(p.runnerUp)}</li>
+      <li>🥉 {prizeText(p.third)}</li>
+    </ul>
+  );
+}
+
 export default function TournamentScreen() {
   const save = useAccount((s) => s.save);
   const t = useTournament();
   const [deckId, setDeckId] = useState<string | null>(() => (save ? firstValidDeck(save, save.profile.selectedDeckId) : null));
   const [joinCode, setJoinCode] = useState('');
   const [difficulty, setDifficulty] = useState<Difficulty>('NORMAL');
+  const [size, setSize] = useState<TournamentSize>(8);
   if (!save) return null;
   const deck = save.decks.find((d) => d.id === deckId);
   const valid = !!deck && deckId === firstValidDeck(save, deckId);
@@ -27,7 +43,7 @@ export default function TournamentScreen() {
   if (t.role === 'none') {
     return (
       <div className="screen online-screen">
-        <ScreenHeader title={tr('Tournament')} subtitle={tr('Play a {size}-player knockout with 2–{size} friends. Empty seats are filled with bots.', { size: TOURNAMENT_CONFIG.size })} />
+        <ScreenHeader title={tr('Tournament')} subtitle={tr('A knockout for 4 to 32 players. Empty seats are filled with bots.')} />
         <div className="online-grid">
           <section className="panel">
             <div className="panel-title">{tr('Your deck')}</div>
@@ -36,6 +52,20 @@ export default function TournamentScreen() {
           <section className="panel online-host" aria-live="polite">
             <div className="panel-title">{tr('Create a tournament')}</div>
             <p className="muted">{tr('You organise it: share the code, start when your friends are in. Keep this browser open until the tournament ends.')}</p>
+            <div className="field">
+              <span className="faint">{tr('Players')}</span>
+              <div className="segmented" role="group" aria-label={tr('Players')}>
+                {TOURNAMENT_SIZES.map((n) => (
+                  <button key={n} aria-pressed={size === n} onClick={() => setSize(n)}>
+                    {n}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="field">
+              <span className="faint">{tr('Prizes')}</span>
+              <PrizeList size={size} />
+            </div>
             <div className="field">
               <span className="faint">{tr('Bot difficulty')}</span>
               <div className="segmented" role="group" aria-label={tr('Bot difficulty')}>
@@ -46,7 +76,7 @@ export default function TournamentScreen() {
                 ))}
               </div>
             </div>
-            <button className="btn btn-primary btn-lg" disabled={!valid || t.status === 'connecting'} onClick={() => deck && void t.create(deck, difficulty)}>
+            <button className="btn btn-primary btn-lg" disabled={!valid || t.status === 'connecting'} onClick={() => deck && void t.create(deck, difficulty, size)}>
               {t.status === 'connecting' ? tr('Creating…') : tr('Create tournament')}
             </button>
             <hr className="divider" />
@@ -65,7 +95,7 @@ export default function TournamentScreen() {
             </form>
             {!valid && <p className="deckbox-issue">{tr('Choose a valid 30-card deck first.')}</p>}
             {t.error && <p className="online-error">{tr(t.error)}</p>}
-            <p className="faint">{tr('Every match gives the usual Gold, XP and quest progress. Champion +{champion} Gold, runner-up +{runnerUp} Gold, third place +{third} Gold.', { champion: TOURNAMENT_CONFIG.prizes.champion, runnerUp: TOURNAMENT_CONFIG.prizes.runnerUp, third: TOURNAMENT_CONFIG.prizes.third })}</p>
+            <p className="faint">{tr('Every match also gives the usual Gold, XP and quest progress. Bigger tournaments pay bigger prizes.')}</p>
           </section>
         </div>
       </div>
@@ -100,7 +130,9 @@ export default function TournamentScreen() {
 function Lobby({ tour }: { tour: Tournament }) {
   const t = useTournament();
   const humans = tour.players.filter((p) => !p.bot);
-  const seats = Array.from({ length: TOURNAMENT_CONFIG.size }, (_, i) => humans[i]);
+  const size = sizeOf(tour);
+  // Big tournaments list only who joined; the remaining seats are summarised.
+  const seats = size <= 8 ? Array.from({ length: size }, (_, i) => humans[i]) : humans;
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(tour.code);
@@ -124,6 +156,9 @@ function Lobby({ tour }: { tour: Tournament }) {
             </li>
           ))}
         </ul>
+        {size > 8 && <p className="faint">{tr('{n} open seats. Bots take the seats nobody joins.', { n: size - humans.length })}</p>}
+        <div className="faint" style={{ marginTop: 'var(--space-3)' }}>{tr('Prizes')}</div>
+        <PrizeList size={size} />
       </section>
       <section className="panel online-host" aria-live="polite">
         <div className="panel-title">{tr('Tournament code')}</div>
@@ -137,7 +172,7 @@ function Lobby({ tour }: { tour: Tournament }) {
         {t.role === 'organizer' ? (
           <>
             <p className="faint">
-              {tr('{n} / {size} players. Bots: {difficulty}.', { n: humans.length, size: TOURNAMENT_CONFIG.size, difficulty: tr(DIFF_LABEL[t.botDifficulty]) })}
+              {tr('{n} / {size} players. Bots: {difficulty}.', { n: humans.length, size, difficulty: tr(DIFF_LABEL[t.botDifficulty]) })}
             </p>
             <button className="btn btn-primary btn-lg" disabled={humans.length < TOURNAMENT_CONFIG.minHumans} onClick={() => t.start()}>
               {tr('Start tournament')}
@@ -176,7 +211,7 @@ function MatchCard({ tour, m }: { tour: Tournament; m: TournamentMatch }) {
   return (
     <div className={`t-match panel-tight ${m.status}`}>
       <div className="t-match-head">
-        <strong>{tr(MATCH_LABEL[m.id])}</strong>
+        <strong>{tr(matchLabel(m.id))}</strong>
         <span className="faint">{m.status === 'done' ? tr('Finished') : m.status === 'playing' ? tr('In progress') : m.status === 'ready' ? tr('Ready') : tr('Waiting')}</span>
       </div>
       <PlayerLine tour={tour} id={m.a} winner={m.winner} />
@@ -203,10 +238,9 @@ function Bracket({ tour }: { tour: Tournament }) {
     if (countdown === 0) void t.playMyMatch(navigate);
   }, [countdown]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const sf = tour.matches.filter((m) => m.id === 'SF1' || m.id === 'SF2');
-  const final = tour.matches.find((m) => m.id === 'F')!;
   const third = tour.matches.find((m) => m.id === 'P3');
   const champion = playerById(tour, tour.championId);
+  const prizes = tournamentPrizes(sizeOf(tour));
   return (
     <>
       {tour.phase === 'done' && champion && (
@@ -214,13 +248,13 @@ function Bracket({ tour }: { tour: Tournament }) {
           <WardenPortrait faction={champion.faction} size={90} />
           <div>
             <h3>{champion.id === t.myId ? tr('You are the champion!') : tr('{name} wins the tournament', { name: champion.name })}</h3>
-            <p className="muted">{place === 1 ? tr('+{n} Gold prize.', { n: TOURNAMENT_CONFIG.prizes.champion }) : place === 2 ? tr('Runner-up: +{n} Gold prize.', { n: TOURNAMENT_CONFIG.prizes.runnerUp }) : place === 3 ? tr('Third place: +{n} Gold prize.', { n: TOURNAMENT_CONFIG.prizes.third }) : tr('Better luck next time.')}</p>
+            <p className="muted">{place === 1 ? tr('Prize: {prize}.', { prize: prizeText(prizes.champion) }) : place === 2 ? tr('Runner-up prize: {prize}.', { prize: prizeText(prizes.runnerUp) }) : place === 3 ? tr('Third place prize: {prize}.', { prize: prizeText(prizes.third) }) : tr('Better luck next time.')}</p>
           </div>
         </section>
       )}
       {mine && tour.phase === 'running' && (
         <section className="panel t-ready" aria-live="assertive">
-          <strong>{tr(`Your ${MATCH_LABEL[mine.id].toLowerCase()} is ready.`)}</strong>
+          <strong>{tr('Your match is ready: {label}.', { label: tr(matchLabel(mine.id)) })}</strong>
           {t.connectingMatch ? (
             <span className="muted">{tr('Connecting to your opponent…')}</span>
           ) : t.activeMatch ? (
@@ -234,22 +268,32 @@ function Bracket({ tour }: { tour: Tournament }) {
         </section>
       )}
       {!mine && tour.phase === 'running' && <p className="muted">{tr('Waiting for the other matches to finish…')}</p>}
-      <div className="t-bracket">
-        <div className="t-round">
-          <span className="faint">{tr('Semi-finals')}</span>
-          {sf.map((m) => (
+      <div className="t-bracket" style={{ '--t-rounds': roundDepths(tour).length } as CSSProperties}>
+        {roundDepths(tour)
+          .filter((d) => d > 0)
+          .map((d) => (
+            <div key={d} className="t-round">
+              <span className="faint t-round-label">{tr(roundLabel(d))}</span>
+              <div className="t-round-body">
+                {roundMatches(tour, d).map((m) => (
+                  <MatchCard key={m.id} tour={tour} m={m} />
+                ))}
+              </div>
+            </div>
+          ))}
+        <div className="t-round t-final">
+          <span className="faint t-round-label">{tr('Final')}</span>
+          <div className="t-round-body">
+          {roundMatches(tour, 0).map((m) => (
             <MatchCard key={m.id} tour={tour} m={m} />
           ))}
-        </div>
-        <div className="t-round t-final">
-          <span className="faint">{tr('Final')}</span>
-          <MatchCard tour={tour} m={final} />
           {third && (
             <>
               <span className="faint">{tr('Third place')}</span>
               <MatchCard tour={tour} m={third} />
             </>
           )}
+          </div>
         </div>
       </div>
     </>

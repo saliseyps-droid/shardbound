@@ -19,6 +19,27 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.17.0',
+    date: '2026-10-03',
+    title: 'Tournaments up to 32 players',
+    summary: 'Choose the tournament size when you create it; bigger tournaments pay bigger prizes.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Tournament size: the organizer picks 4, 8, 16 or 32 players before creating it. Up to that many friends can join; bots fill the empty seats.',
+          'The bracket shows every round: Round of 32, Round of 16, Quarter-finals, Semi-finals, the Final and the third-place match.',
+          'Prizes grow with the size. 4 players: 250 / 100 / 50 Gold. 8: 400 Gold and a Curse of the Abyss pack / 200 / 100. 16: 600 Gold and 2 packs / 300 Gold and 1 pack / 150. 32: 1000 Gold and 3 packs / 500 Gold and 2 packs / 250 Gold and 1 pack.',
+        ],
+      },
+      {
+        kind: 'fixed',
+        items: ['Bot-against-bot tournament matches are no longer scheduled twice, and many of them at once no longer freeze the organizer\'s game.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.16.0',
     date: '2026-10-03',
     title: 'Weekly quest, free Arena and deck codes',

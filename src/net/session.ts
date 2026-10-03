@@ -10,7 +10,7 @@ import type { GameAction, GameEvent, GameState, SideSetup } from '@/engine/types
  * mirrored views. The guest only sends actions.
  */
 
-export const PROTOCOL_VERSION = 3;
+export const PROTOCOL_VERSION = 4;
 export const ID_PREFIX = 'shardbound-v1-';
 const HEARTBEAT_MS = 4000;
 const TIMEOUT_MS = 15000;
