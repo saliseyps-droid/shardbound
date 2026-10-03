@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.5': {
+    title: 'Tišší zvuky',
+    summary: 'Zvukové efekty jsou zhruba o polovinu tišší a tlačítka už necvakají.',
+    sections: [['Nahrané zvukové efekty jsou zhruba o polovinu tišší.', 'Klikání na tlačítka v menu už nevydává zvuk.']],
+  },
   '0.18.4': {
     title: 'Lepší zvuky',
     summary: 'V boji jsou skutečné zvukové efekty a hudba v pozadí hraje i během zápasu.',

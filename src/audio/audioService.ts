@@ -37,7 +37,8 @@ interface Tone {
 
 /** Synthesized recipes: used for events without recorded samples, as a fallback, and as layers. */
 const RECIPES: Record<SoundEvent, Tone[]> = {
-  click: [{ freq: 660, to: 520, dur: 0.05, type: 'triangle', gain: 0.25 }],
+  // Button clicks are silent on purpose (players found them noisy).
+  click: [],
   hover: [{ freq: 900, dur: 0.025, type: 'sine', gain: 0.06 }],
   draw: [{ freq: 380, to: 760, dur: 0.12, type: 'triangle', gain: 0.18 }, { noise: true, freq: 4000, dur: 0.08, gain: 0.05 }],
   play: [{ freq: 220, to: 140, dur: 0.18, type: 'sine', gain: 0.35 }, { noise: true, freq: 900, dur: 0.12, gain: 0.12 }],
@@ -94,16 +95,15 @@ const RECIPES: Record<SoundEvent, Tone[]> = {
  */
 const SAMPLE_URLS = import.meta.glob('../assets/sfx/*.wav', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 const SAMPLES: Partial<Record<SoundEvent, { prefix: string; gain: number; layer?: boolean }>> = {
-  attack: { prefix: 'attack', gain: 0.75 },
-  hit: { prefix: 'hit', gain: 0.7 },
-  draw: { prefix: 'draw', gain: 0.55 },
-  play: { prefix: 'play', gain: 0.8 },
-  spell: { prefix: 'spell', gain: 0.55 },
-  shield: { prefix: 'shield', gain: 0.45 },
-  coin: { prefix: 'coin', gain: 0.6 },
-  death: { prefix: 'death', gain: 0.8, layer: true },
-  packOpen: { prefix: 'pack', gain: 0.8, layer: true },
-  click: { prefix: 'click', gain: 0.35 },
+  attack: { prefix: 'attack', gain: 0.4 },
+  hit: { prefix: 'hit', gain: 0.35 },
+  draw: { prefix: 'draw', gain: 0.25 },
+  play: { prefix: 'play', gain: 0.4 },
+  spell: { prefix: 'spell', gain: 0.3 },
+  shield: { prefix: 'shield', gain: 0.22 },
+  coin: { prefix: 'coin', gain: 0.3 },
+  death: { prefix: 'death', gain: 0.4, layer: true },
+  packOpen: { prefix: 'pack', gain: 0.4, layer: true },
 };
 
 /** Ambient generative music: slow pads over a minor pentatonic scale. */

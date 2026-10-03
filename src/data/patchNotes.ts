@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.5',
+    date: '2026-10-03',
+    title: 'Quieter sounds',
+    summary: 'Sound effects are about half as loud and buttons no longer click.',
+    sections: [{ kind: 'improved', items: ['The recorded sound effects are about half as loud.', 'Clicking buttons in the menus no longer makes a sound.'] }],
+    commits: [],
+  },
+  {
     version: '0.18.4',
     date: '2026-10-03',
     title: 'Better sounds',
