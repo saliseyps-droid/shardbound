@@ -6,16 +6,16 @@ import { createRng } from '@/core/rng';
 import { act, giveCard, hero, newGame, setEnergy, unitRef } from './helpers';
 
 describe('Curse of the Abyss set', () => {
-  it('has 45 Knights and 15 spells across every faction', () => {
+  it('has 45 Knights and 30 spells across every faction', () => {
     const cards = cardsBy({ set: 'ABYSS' }).filter((c) => c.collectible);
-    expect(cards).toHaveLength(60);
+    expect(cards).toHaveLength(75);
     const units = cards.filter((c) => c.cardType === 'UNIT');
     const spells = cards.filter((c) => c.cardType === 'SPELL');
     expect(units).toHaveLength(45);
     expect(units.every((c) => c.tags?.includes('Knight'))).toBe(true);
-    expect(spells).toHaveLength(15);
+    expect(spells).toHaveLength(30);
     expect(new Set(cards.map((c) => c.faction))).toEqual(new Set(['EMBER', 'VERDANT', 'IRON', 'ASTRAL', 'VOID', 'TIDE', 'NEUTRAL']));
-    expect(cards.filter((c) => c.rarity === 'LEGENDARY')).toHaveLength(10);
+    expect(cards.filter((c) => c.rarity === 'LEGENDARY')).toHaveLength(12);
   });
 
   it('is sold in the shop and opens packs of its own cards', () => {
@@ -130,6 +130,25 @@ describe('Curse of the Abyss: spells', () => {
     expect(bastion).toBeTruthy();
     expect(s.players[0].hand.some((c) => c.cardId === 'ver_thornmail_knight')).toBe(true);
     expect(bastion.costMod).toBe(-1);
+  });
+});
+
+describe('Curse of the Abyss: second spell wave', () => {
+  it('Sigil of the Abyss Lord takes an enemy unit that costs 5 or less', () => {
+    let s = newGame({ board1: ['token_treant'] });
+    setEnergy(s, 0, 10);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'neu_sigil_of_the_abyss_lord'), target: unitRef(s.players[1].board[0]) });
+    expect(s.players[1].board).toHaveLength(0);
+    expect(s.players[0].board.some((u) => u.cardId === 'token_treant')).toBe(true);
+  });
+
+  it('Pentacle of Souls destroys an enemy unit and hurts your Warden', () => {
+    let s = newGame({ board1: ['token_golem'] });
+    setEnergy(s, 0, 10);
+    const hp = s.players[0].hero.health;
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'vod_pentacle_of_souls'), target: unitRef(s.players[1].board[0]) });
+    expect(s.players[1].board).toHaveLength(0);
+    expect(s.players[0].hero.health).toBe(hp - 3);
   });
 });
 

@@ -12,7 +12,8 @@ import { CardBackGrid } from '@/ui/components/CardBackGrid';
 import { t, tn } from '@/i18n';
 import '@/ui/styles/shop.css';
 
-const SETS = (Object.keys(SET_INFO) as SetId[]).sort((a, b) => SET_INFO[a].releaseOrder - SET_INFO[b].releaseOrder);
+/** Newest set first. */
+const SETS = (Object.keys(SET_INFO) as SetId[]).sort((a, b) => SET_INFO[b].releaseOrder - SET_INFO[a].releaseOrder);
 const RARITY_LABEL: Record<Rarity, string> = { COMMON: 'Common', RARE: 'Rare', EPIC: 'Epic', LEGENDARY: 'Legendary' };
 const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic' };
 

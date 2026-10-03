@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.17.2': {
+    title: 'Curse of the Abyss: další kouzla',
+    summary: 'Do setu Curse of the Abyss přibývá dalších 15 kouzel, set má teď 75 karet. Obchod ukazuje nejnovější set jako první.',
+    sections: [
+      [
+        'Dalších 15 kouzel v Curse of the Abyss (6 běžných, 4 vzácná, 3 epická, 2 legendární).',
+        'Legendárky: Pečeť Pána Propasti (Poutníci, 6 energie): Převezmi kontrolu nad nepřátelskou jednotkou s cenou 5 nebo méně. Úmluva slunečního zášlehu (Konkláve Lumenu, 6 energie): Způsob 3 poškození všem nepřátelům. Obnov 3 životy všem spřáteleným postavám.',
+      ],
+      ['Obchod řadí balíčky od nejnovějšího setu.'],
+    ],
+  },
   '0.17.1': {
     title: 'Curse of the Abyss: kouzla',
     summary: 'Do setu Curse of the Abyss přibývá 15 kouzel, set má teď 60 karet.',

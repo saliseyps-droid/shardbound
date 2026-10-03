@@ -413,4 +413,113 @@ export const ABYSS_CARDS: CardDefinition[] = [
     description: 'Give your units +2/+2 and Ward.',
     flavorText: 'The last light of the Conclave spread its wings over everyone still standing.',
   },
+
+  // ===== Spells, second wave: sigils and pillars =====
+  // ----- Commons -----
+  {
+    ...spell, id: 'emb_cinder_kiss', name: 'Cinder Kiss', faction: 'EMBER', rarity: 'COMMON',
+    manaCost: 1, target: { kind: 'ANY' }, archetypes: ['Blitz'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'TARGET' }, { type: 'DRAW_CARDS', amount: 1, condition: { kind: 'CONTROLS_TAG', tag: 'Knight' } }] }],
+    description: 'Deal 1 damage to a character. If you control a Knight, draw a card.',
+    flavorText: 'A kiss from the pyre. Knights learn to welcome it.',
+  },
+  {
+    ...spell, id: 'irn_gild_the_blade', name: 'Gild the Blade', faction: 'IRON', rarity: 'COMMON',
+    manaCost: 2, target: { kind: 'ALLY_UNIT' }, archetypes: ['Bulwark'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'BUFF', attack: 1, health: 2, target: 'TARGET' }, { type: 'GRANT_KEYWORD', keyword: 'GUARD', target: 'TARGET' }] }],
+    description: 'Give a friendly unit +1/+2 and Guard.',
+    flavorText: 'Gold over the blade, gold over the shield, and a promise to stand in front.',
+  },
+  {
+    ...spell, id: 'tid_frostspear_volley', name: 'Frostspear Volley', faction: 'TIDE', rarity: 'COMMON',
+    manaCost: 2, archetypes: ['Deep Freeze'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'RANDOM_ENEMY_UNIT', repeat: 2 }] }],
+    description: 'Freeze a random enemy unit, twice.',
+    flavorText: 'Two spears of ice, thrown blind into the dark. The deep is crowded; they rarely miss.',
+  },
+  {
+    ...spell, id: 'emb_crimson_surge', name: 'Crimson Surge', faction: 'EMBER', rarity: 'COMMON',
+    manaCost: 2, target: { kind: 'ALLY_UNIT' }, archetypes: ['Blitz'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'BUFF', attack: 3, target: 'TARGET' }, { type: 'GRANT_KEYWORD', keyword: 'RUSH', target: 'TARGET' }] }],
+    description: 'Give a friendly unit +3/+0 and Rush.',
+    flavorText: 'The red fire does not warm. It pushes.',
+  },
+  {
+    ...spell, id: 'ast_violet_vigil', name: 'Violet Vigil', faction: 'ASTRAL', rarity: 'COMMON',
+    manaCost: 1, archetypes: ['Spellweave'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DRAW_CARDS', amount: 1, filter: { cardType: 'SPELL' } }] }],
+    description: 'Draw a spell from your deck.',
+    flavorText: 'Keep the violet lamp lit through the night, and by morning it will have written a new spell.',
+  },
+  {
+    ...spell, id: 'tid_riptide_flow', name: 'Riptide Flow', faction: 'TIDE', rarity: 'COMMON',
+    manaCost: 3, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 3 } }, archetypes: ['Undertow'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }, { type: 'DRAW_CARDS', amount: 1 }] }],
+    description: "Return an enemy unit that costs 3 or less to its owner's hand. Draw a card.",
+    flavorText: 'The current takes what is light enough to carry.',
+  },
+  // ----- Rares -----
+  {
+    ...spell, id: 'emb_pyre_spiral', name: 'Pyre Spiral', faction: 'EMBER', rarity: 'RARE',
+    manaCost: 3, target: { kind: 'ANY_UNIT' }, archetypes: ['Pyromancy'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'TARGET' }, { type: 'APPLY_STATUS', status: 'BURN', amount: 2, target: 'TARGET' }] }],
+    description: 'Deal 3 damage to a unit and apply Burn 2 to it.',
+    flavorText: 'It coils once around its target, then tightens.',
+  },
+  {
+    ...spell, id: 'vod_crystal_requiem', name: 'Crystal Requiem', faction: 'VOID', rarity: 'RARE',
+    manaCost: 4, archetypes: ['Requiem'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'RESURRECT', count: 2, maxCost: 3 }] }],
+    description: 'Resurrect 2 random friendly units that cost 3 or less and died this game.',
+    flavorText: 'Each crystal petal holds one name. The Choir sings two of them back.',
+  },
+  {
+    ...spell, id: 'ver_emerald_ward', name: 'Emerald Ward', faction: 'VERDANT', rarity: 'RARE',
+    manaCost: 3, target: { kind: 'ALLY_UNIT' }, archetypes: ['Overgrowth'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'BUFF', attack: 2, health: 3, target: 'TARGET' }, { type: 'GRANT_KEYWORD', keyword: 'REGENERATE', target: 'TARGET' }] }],
+    description: 'Give a friendly unit +2/+3 and Regenerate.',
+    flavorText: 'A ring of green fire, and inside it, something that will not stay wounded.',
+  },
+  {
+    ...spell, id: 'ast_azure_maelstrom', name: 'Azure Maelstrom', faction: 'ASTRAL', rarity: 'RARE',
+    manaCost: 4, archetypes: ['Starlit Control'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ALL_ENEMY_UNITS' }, { type: 'DRAW_CARDS', amount: 1 }] }],
+    flavorText: 'The sky folds into a whirlpool and pours itself onto the battlefield.',
+  },
+  // ----- Epics -----
+  {
+    ...spell, id: 'irn_forgefire_ring', name: 'Forgefire Ring', faction: 'IRON', rarity: 'EPIC',
+    manaCost: 4, archetypes: ['Bulwark'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'GAIN_ARMOR', amount: 5, target: 'ALLY_HERO' }, { type: 'BUFF', attack: 1, health: 1, target: 'ALL_ALLY_UNITS' }] }],
+    flavorText: 'Inside the ring of forge-fire, everything comes out harder than it went in.',
+  },
+  {
+    ...spell, id: 'tid_glacial_thornwings', name: 'Glacial Thornwings', faction: 'TIDE', rarity: 'EPIC',
+    manaCost: 4, archetypes: ['Deep Freeze'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'ALL_ENEMY_UNITS' }, { type: 'DEAL_DAMAGE', amount: 1, target: 'ALL_ENEMY_UNITS' }] }],
+    description: 'Freeze all enemy units and deal 1 damage to them.',
+    flavorText: 'Thorns of ice unfold like wings, and everything they touch stops.',
+  },
+  {
+    ...spell, id: 'vod_pentacle_of_souls', name: 'Pentacle of Souls', faction: 'VOID', rarity: 'EPIC',
+    manaCost: 4, target: { kind: 'ENEMY_UNIT' }, archetypes: ['Offering'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DESTROY', target: 'TARGET' }, { type: 'DEAL_DAMAGE', amount: 3, target: 'ALLY_HERO' }] }],
+    description: 'Destroy an enemy unit. Deal 3 damage to your Warden.',
+    flavorText: 'Five points, five prices. The Choir always pays the last one itself.',
+  },
+  // ----- Legendaries -----
+  {
+    ...spell, id: 'ast_sunburst_covenant', name: 'Sunburst Covenant', faction: 'ASTRAL', rarity: 'LEGENDARY',
+    manaCost: 6, archetypes: ['Starlit Control'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'ALL_ENEMIES' }, { type: 'HEAL', amount: 3, target: 'ALL_ALLIES' }] }],
+    description: 'Deal 3 damage to all enemies. Restore 3 Health to all friendly characters.',
+    flavorText: 'The oldest covenant of the Conclave: the sun burns the dark and heals the light.',
+  },
+  {
+    ...spell, id: 'neu_sigil_of_the_abyss_lord', name: 'Sigil of the Abyss Lord', faction: 'NEUTRAL', rarity: 'LEGENDARY',
+    manaCost: 6, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 5 } },
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'TAKE_CONTROL', target: 'TARGET' }] }],
+    description: 'Take control of an enemy unit that costs 5 or less.',
+    flavorText: 'Burn the winged sigil into the ground, and whoever stands on it swears to you.',
+  },
 ];

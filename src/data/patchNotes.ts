@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.17.2',
+    date: '2026-10-03',
+    title: 'Curse of the Abyss: more spells',
+    summary: '15 more spells join Curse of the Abyss, bringing the set to 75 cards. The shop lists the newest set first.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          '15 more spells in Curse of the Abyss (6 Common, 4 Rare, 3 Epic, 2 Legendary).',
+          'Legendaries: Sigil of the Abyss Lord (Neutral, 6 energy): Take control of an enemy unit that costs 5 or less. Sunburst Covenant (Lumen Conclave, 6 energy): Deal 3 damage to all enemies. Restore 3 Health to all friendly characters.',
+        ],
+      },
+      { kind: 'improved', items: ['The shop lists booster packs newest set first.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.17.1',
     date: '2026-10-03',
     title: 'Curse of the Abyss: spells',

@@ -60,6 +60,21 @@ const cards: CardsOverlay = {
   neu_abyssal_pyre: { name: 'Hranice Propasti', description: 'Způsob 3 poškození nepřátelské jednotce a jednotkám vedle ní.', flavorText: 'Zapal v Propasti jednu hranici a vzplanou i ty vedle.' },
   neu_crown_of_the_abyss: { name: 'Koruna Propasti', description: 'Lízni si z balíčku 2 Rytíře. Rytíři v tvé ruce stojí o (1) méně.', flavorText: 'Kdo zapálí zlatou pánev, je korunován. Každý Rytíř v hlubinách odpoví.' },
   ast_wings_of_the_last_light: { name: 'Křídla posledního světla', description: 'Dej svým jednotkám +2/+2 a Ochranu.', flavorText: 'Poslední světlo Konkláve roztáhlo křídla nad všemi, kdo ještě stáli.' },
+  emb_cinder_kiss: { name: 'Polibek žhavého uhlíku', description: 'Způsob 1 poškození postavě. Pokud ovládáš Rytíře, lízni si kartu.', flavorText: 'Polibek z hranice. Rytíři se ho naučí vítat.' },
+  irn_gild_the_blade: { name: 'Pozlacení čepele', description: 'Dej spřátelené jednotce +1/+2 a Stráž.', flavorText: 'Zlato na čepel, zlato na štít a slib, že bude stát vepředu.' },
+  tid_frostspear_volley: { name: 'Salva mrazivých kopí', description: 'Dvakrát Zmraz náhodnou nepřátelskou jednotku.', flavorText: 'Dvě ledová kopí vržená naslepo do tmy. Hlubina je přeplněná, málokdy minou.' },
+  emb_crimson_surge: { name: 'Karmínový příval', description: 'Dej spřátelené jednotce +3/+0 a Výpad.', flavorText: 'Rudý oheň nehřeje. Tlačí.' },
+  ast_violet_vigil: { name: 'Fialová hlídka', description: 'Lízni si z balíčku kouzlo.', flavorText: 'Nech fialovou lampu svítit celou noc a ráno v ní najdeš nové kouzlo.' },
+  tid_riptide_flow: { name: 'Proud zpětného vlnobití', description: 'Vrať nepřátelskou jednotku s cenou 3 nebo méně do ruky jejího vlastníka. Lízni si kartu.', flavorText: 'Proud si vezme, co je dost lehké.' },
+  emb_pyre_spiral: { name: 'Spirála hranice', description: 'Způsob 3 poškození jednotce a uděl jí Hoření 2.', flavorText: 'Jednou se kolem cíle ovine, pak se utáhne.' },
+  vod_crystal_requiem: { name: 'Křišťálové rekviem', description: 'Oživ 2 náhodné spřátelené jednotky za 3 nebo méně, které v této hře zemřely.', flavorText: 'Každý křišťálový lístek nese jedno jméno. Chór dvě z nich vyzpívá zpátky.' },
+  ver_emerald_ward: { name: 'Smaragdová ochrana', description: 'Dej spřátelené jednotce +2/+3 a Regeneraci.', flavorText: 'Kruh zeleného ohně a v něm něco, co nezůstane zraněné.' },
+  ast_azure_maelstrom: { name: 'Azurový vír', description: 'Způsob 2 poškození všem nepřátelským jednotkám. Lízni si kartu.', flavorText: 'Nebe se složí do víru a vylije se na bojiště.' },
+  irn_forgefire_ring: { name: 'Kruh výhňového ohně', description: 'Získej 5 brnění. Dej svým jednotkám +1/+1.', flavorText: 'Uvnitř kruhu výhně vyjde všechno tvrdší, než do něj vešlo.' },
+  tid_glacial_thornwings: { name: 'Ledová trnitá křídla', description: 'Zmraz všechny nepřátelské jednotky a způsob jim 1 poškození.', flavorText: 'Ledové trny se rozevřou jako křídla a vše, čeho se dotknou, se zastaví.' },
+  vod_pentacle_of_souls: { name: 'Pentakl duší', description: 'Znič nepřátelskou jednotku. Způsob 3 poškození svému Strážci.', flavorText: 'Pět cípů, pět cen. Tu poslední Chór platí vždycky sám.' },
+  ast_sunburst_covenant: { name: 'Úmluva slunečního zášlehu', description: 'Způsob 3 poškození všem nepřátelům. Obnov 3 životy všem spřáteleným postavám.', flavorText: 'Nejstarší úmluva Konkláve: slunce spálí tmu a uzdraví světlo.' },
+  neu_sigil_of_the_abyss_lord: { name: 'Pečeť Pána Propasti', description: 'Převezmi kontrolu nad nepřátelskou jednotkou s cenou 5 nebo méně.', flavorText: 'Vypal okřídlenou pečeť do země a kdo na ní stojí, přísahá tobě.' },
 };
 
 export default cards;
