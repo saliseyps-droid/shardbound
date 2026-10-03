@@ -34,5 +34,5 @@ describe('online compatibility across languages', () => {
     const english = contentHash();
     applyLocale('cs');
     expect(contentHash()).toBe(english);
-  });
+  }, 30_000); // importing the whole game takes a while when the suite runs in parallel
 });
