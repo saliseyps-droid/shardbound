@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.13',
+    date: '2026-10-04',
+    title: 'More titles',
+    summary: 'Titles now come every 5 levels instead of every 10, with four new ones.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'You now earn a title every 5 levels: Wayfarer (5), Bladebound (15), Stormcaller (25) and Rift Marshal (35) join the existing ones.',
+          'If you are already past those levels, the new titles are waiting in your Profile.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.18.12',
     date: '2026-10-04',
     title: 'Quieter match music',

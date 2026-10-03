@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.13': {
+    title: 'Více titulů',
+    summary: 'Tituly teď získáváš každých 5 úrovní místo 10 a přibyly čtyři nové.',
+    sections: [
+      [
+        'Titul teď získáš každých 5 úrovní: k dosavadním přibyli Poutník (5), Spjatý s čepelí (15), Vyvolávač bouří (25) a Maršál trhlin (35).',
+        'Pokud už jsi tyto úrovně přeskočil, nové tituly na tebe čekají v Profilu.',
+      ],
+    ],
+  },
   '0.18.12': {
     title: 'Tišší hudba v zápase',
     summary: 'Hudba v pozadí hraje v zápase o polovinu tišeji a dvě nová tlačítka vypínají hudbu nebo zvuky.',

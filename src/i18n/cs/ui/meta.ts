@@ -204,7 +204,7 @@ const d: Record<string, string> = {
   'Your portrait is the Warden of the deck you play.': 'Tvůj portrét je Strážce balíčku, se kterým hraješ.',
   Title: 'Titul',
   'No title': 'Bez titulu',
-  'Earn titles every 10 levels': 'Tituly získáváš každých 10 úrovní',
+  'Earn titles every 5 levels': 'Tituly získáváš každých 5 úrovní',
   '{progress}, {total} total': '{progress}, celkem {total}',
   'Battle record': 'Bojová bilance',
   Losses: 'Prohry',

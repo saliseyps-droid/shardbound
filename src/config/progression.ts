@@ -41,7 +41,23 @@ export interface LevelDefinition {
   rewards: LevelReward[];
 }
 
-const TITLES = ['Shardseeker', 'Crownbreaker', 'Aether Warden', 'Sovereign of Shards'];
+/** One title every 5 levels (levels 5, 10, ... 40). */
+const TITLES = [
+  'Wayfarer',
+  'Shardseeker',
+  'Bladebound',
+  'Crownbreaker',
+  'Stormcaller',
+  'Aether Warden',
+  'Rift Marshal',
+  'Sovereign of Shards',
+];
+const titleFor = (level: number) => TITLES[level / 5 - 1] ?? 'Veteran';
+
+/** Every title earned on the way to `level`. */
+export function titlesUpTo(level: number): string[] {
+  return TITLES.filter((_, i) => (i + 1) * 5 <= level);
+}
 
 /** Pack rewards cycle through the sets so every set shows up while levelling. */
 const PACK_ROTATION: SetId[] = ['CORE', 'DEEP', 'ABYSS'];
@@ -52,10 +68,12 @@ function levelReward(level: number): LevelReward[] {
     return [
       { kind: 'PACK', setId: rotatingSet(level / 10 + 1), amount: 3 },
       { kind: 'CARD_BACK' },
-      { kind: 'TITLE', title: TITLES[level / 10 - 1] ?? 'Veteran' },
+      { kind: 'TITLE', title: titleFor(level) },
     ];
   }
-  if (level % 5 === 0) return [{ kind: 'PACK', setId: rotatingSet(level / 5), amount: 2 }, { kind: 'ESSENCE', amount: 100 }];
+  if (level % 5 === 0) {
+    return [{ kind: 'PACK', setId: rotatingSet(level / 5), amount: 2 }, { kind: 'ESSENCE', amount: 100 }, { kind: 'TITLE', title: titleFor(level) }];
+  }
   if (level % 3 === 0) return [{ kind: 'PACK', setId: rotatingSet(level / 3), amount: 1 }];
   if (level % 2 === 0) return [{ kind: 'ESSENCE', amount: 60 }];
   return [{ kind: 'GOLD', amount: 50 + level * 5 }];

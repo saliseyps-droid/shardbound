@@ -142,7 +142,7 @@ export default function ProfileScreen() {
           <label className="field">
             <span>{t('Title')}</span>
             <select className="select" value={p.title ?? ''} onChange={(e) => gameService.updateProfile({ title: e.target.value || null })} disabled={p.titles.length === 0}>
-              <option value="">{p.titles.length ? t('No title') : t('Earn titles every 10 levels')}</option>
+              <option value="">{p.titles.length ? t('No title') : t('Earn titles every 5 levels')}</option>
               {p.titles.map((ti) => (
                 <option key={ti} value={ti}>
                   {t(ti)}

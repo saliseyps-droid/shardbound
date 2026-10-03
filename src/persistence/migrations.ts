@@ -1,3 +1,4 @@
+import { titlesUpTo } from '@/config/progression';
 import { repairArena } from '@/domain/arena';
 import { hasCard } from '@/data/cards';
 import { STARTER_DECKS, starterDeckCards } from '@/data/starterDecks';
@@ -81,6 +82,8 @@ export function migrateSave(input: Raw): MigrationReport {
     p[k] = fixed;
   }
   if (!Array.isArray(p.titles)) p.titles = [];
+  // Titles moved from every 10 to every 5 levels: grant the ones already passed.
+  p.titles = [...new Set([...p.titles, ...titlesUpTo(p.level)])];
   // Card backs: keep known ones, always own the default, and only use an owned one.
   const backs = Array.isArray(p.cardBacks) ? p.cardBacks.filter((b: unknown) => typeof b === 'string' && getCardBack(b)) : [];
   p.cardBacks = [DEFAULT_CARD_BACK, ...new Set(backs.filter((b: string) => b !== DEFAULT_CARD_BACK))];

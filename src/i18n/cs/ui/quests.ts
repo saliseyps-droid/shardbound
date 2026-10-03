@@ -36,6 +36,10 @@ const d: Record<string, string> = {
   'Crownbreaker': 'Lamač korun',
   'Aether Warden': 'Strážce Éteru',
   'Sovereign of Shards': 'Vladař Střepů',
+  'Wayfarer': 'Poutník',
+  'Bladebound': 'Spjatý s čepelí',
+  'Stormcaller': 'Vyvolávač bouří',
+  'Rift Marshal': 'Maršál trhlin',
   'Veteran': 'Veterán',
 };
 
