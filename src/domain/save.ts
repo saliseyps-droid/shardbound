@@ -44,6 +44,8 @@ export interface PlayerProfile {
   portraits: string[];
   /** Portrait per faction for all its decks; missing = the faction's default Warden. */
   factionPortraits: Partial<Record<PlayableFaction, string>>;
+  /** One-time shop bundles already bought (src/config/economy.ts BUNDLES). */
+  bundlesBought: string[];
 }
 
 export type VariantCounts = Record<Variant, number>;

@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.1': {
+    title: 'Balíček Curse of the Abyss',
+    summary: 'Jednorázový balíček k nejnovějšímu setu: 10 boosterů, rub karet a portrét Strážce o 30 % levněji.',
+    sections: [
+      [
+        'Obchod: Balíček Curse of the Abyss obsahuje 10 boosterů Curse of the Abyss, rub karet Hollow Vortex a portrét Strážce Mrazivý lich za 1300 zlata místo 1850. Jednou na účet.',
+        'Pokud rub nebo portrét už máš, neplatíš za něj: cena počítá jen to, co ještě dostaneš, stále se slevou 30 %.',
+      ],
+    ],
+  },
   '0.18.0': {
     title: 'Portréty Strážců',
     summary: '16 nových portrétů Strážců ke koupi v obchodě, které můžeš nastavit pro frakci nebo jednotlivý deck.',

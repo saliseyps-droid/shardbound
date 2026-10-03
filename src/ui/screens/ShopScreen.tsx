@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PACK_CONFIG, SET_INFO, SHOP_BONUS_PACKS, SHOP_OFFERS, type ShopOffer } from '@/config/economy';
+import { BUNDLES, PACK_CONFIG, SET_INFO, SHOP_BONUS_PACKS, SHOP_OFFERS, type ShopOffer } from '@/config/economy';
 import type { Rarity, SetId, Variant } from '@/game/types';
 import { gameService, useAccount } from '@/state/accountStore';
 import { toast } from '@/state/uiStore';
@@ -10,6 +10,7 @@ import { GoldIcon } from '@/ui/components/Icons';
 import { BoosterPack } from '@/ui/components/packs/BoosterPack';
 import { CardBackGrid } from '@/ui/components/CardBackGrid';
 import { PortraitShop } from '@/ui/components/PortraitShop';
+import { BundleOffer } from '@/ui/components/BundleOffer';
 import { t, tn } from '@/i18n';
 import '@/ui/styles/shop.css';
 
@@ -181,6 +182,9 @@ export default function ShopScreen() {
           </>
         }
       />
+      {BUNDLES.map((b) => (
+        <BundleOffer key={b.id} bundle={b} />
+      ))}
       <div className="shop-sets">
         {SETS.map((setId) => {
           const info = SET_INFO[setId];

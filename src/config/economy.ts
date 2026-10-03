@@ -27,6 +27,22 @@ export const SHOP_OFFERS: ShopOffer[] = [
   { id: 'abyss_10', setId: 'ABYSS', packs: 10, price: 1000, label: '10 Packs', badge: '+1 Bonus Pack' },
 ];
 
+/** One-time bundles for a set: packs plus cosmetics for less than buying them apart. */
+export interface Bundle {
+  id: string;
+  setId: SetId;
+  name: string;
+  packs: number;
+  cardBack?: string;
+  portrait?: string;
+  /** Share taken off the value of what the player still gets (0.3 = 30% off). */
+  discount: number;
+}
+
+export const BUNDLES: Bundle[] = [
+  { id: 'abyss_bundle', setId: 'ABYSS', name: 'Curse of the Abyss Bundle', packs: 10, cardBack: 'hollow_vortex', portrait: 'tide_frost_lich', discount: 0.3 },
+];
+
 /** Offers with a bonus badge grant this many extra packs. */
 export const SHOP_BONUS_PACKS: Record<string, number> = { core_10: 1, deep_10: 1, abyss_10: 1 };
 

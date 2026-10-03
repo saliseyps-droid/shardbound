@@ -17,6 +17,7 @@ import { applyQuestProgress, claimQuest, refreshQuests, rerollQuest } from '@/do
 import { emptyVariants, pushReward, type GameSave, type Quest } from '@/domain/save';
 import { decodeDeck } from '@/domain/deckCode';
 import { buyPortrait, choosePortrait } from '@/domain/portraits';
+import { buyBundle } from '@/domain/bundles';
 import { applyRedeem, findCode } from '@/domain/redeem';
 import { migrateSave } from '@/persistence/migrations';
 import { SaveGateway } from '@/persistence/repositories';
@@ -249,6 +250,12 @@ export class GameService {
     const deck: Deck = { id: uid('deck'), name: name.trim().slice(0, DECK_RULES.maxDeckNameLength) || 'New Deck', heroFaction, cards, talents, favorite: false, createdAt: now, updatedAt: now };
     this.commit({ ...save, decks: [...save.decks, deck] });
     return ok(deck);
+  }
+
+  buyBundle(id: string): Result<GameSave> {
+    const res = buyBundle(this.require(), id, this.now());
+    if (res.ok) this.commit(res.value);
+    return res;
   }
 
   buyPortrait(id: string): Result<GameSave> {

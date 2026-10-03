@@ -60,6 +60,7 @@ export function createNewSave(username: string, avatar: string, now: number, id:
       cardBack: DEFAULT_CARD_BACK,
       portraits: [],
       factionPortraits: {},
+      bundlesBought: [],
     },
     collection: { cards, unseen: [] },
     decks,

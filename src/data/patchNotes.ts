@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.1',
+    date: '2026-10-03',
+    title: 'Curse of the Abyss Bundle',
+    summary: 'A one-time bundle for the newest set: 10 packs, a card back and a Warden portrait for 30% less.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Shop: the Curse of the Abyss Bundle has 10 Curse of the Abyss packs, the Hollow Vortex card back and the Frost Lich Warden portrait for 1300 Gold instead of 1850. One per account.',
+          'If you already own the card back or the portrait, it isn\'t charged: the price only counts what you still get, still with 30% off.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.18.0',
     date: '2026-10-03',
     title: 'Warden portraits',

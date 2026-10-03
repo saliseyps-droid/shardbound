@@ -92,6 +92,7 @@ export function migrateSave(input: Raw): MigrationReport {
     if (typeof id === 'string' && getPortrait(id)?.faction === f && p.portraits.includes(id)) fp[f] = id;
   }
   p.factionPortraits = fp;
+  p.bundlesBought = Array.isArray(p.bundlesBought) ? p.bundlesBought.filter((id: unknown) => typeof id === 'string') : [];
   const r = p.ranked && typeof p.ranked === 'object' ? p.ranked : newRanked();
   p.ranked = { rating: num(r.rating, 1000, 100), peak: num(r.peak, 1000, 100), wins: Math.floor(num(r.wins, 0)), losses: Math.floor(num(r.losses, 0)) };
 
