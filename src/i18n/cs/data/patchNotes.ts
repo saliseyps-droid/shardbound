@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.15.1': {
+    title: 'Ostřejší balíčky',
+    summary: 'Obrázky balíčků jsou čistě vystřižené.',
+    sections: [['Balíčky Kingdoms at War, Fantasy Realms a Curse of the Abyss mají teď čisté rovné okraje a celé zalepené pruhy nahoře i dole, bez zbytků tmavého pozadí a roztřepených rohů.']],
+  },
   '0.15.0': {
     title: 'Účty a ukládání do účtu',
     summary: 'Přihlas se, ať se tvůj postup ukládá do účtu a můžeš pokračovat na jakémkoli zařízení.',

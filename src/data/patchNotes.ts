@@ -19,6 +19,21 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.15.1',
+    date: '2026-10-03',
+    title: 'Sharper booster packs',
+    summary: 'The booster pack artwork is cut out cleanly.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          'Kingdoms at War, Fantasy Realms and Curse of the Abyss packs now have clean, straight edges and complete crimped seals at the top and bottom, without leftover dark background or ragged corners.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.15.0',
     date: '2026-10-03',
     title: 'Accounts and cloud save',
