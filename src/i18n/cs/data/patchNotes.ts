@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.9': {
+    title: 'Jemnější zahrání karty',
+    summary: 'Zahrání karty zní jako jemné otočení karty a konec tahu je tišší.',
+    sections: [['Zahrání karty teď zní stejně jemně jako otočení karty při odhalování z balíčku.', 'Ťuknutí na konci tahu je tišší.']],
+  },
   '0.18.8': {
     title: 'Jemnější otevírání balíčků',
     summary: 'Otevírání balíčků a odhalování karet zní mnohem tišeji a jemněji.',

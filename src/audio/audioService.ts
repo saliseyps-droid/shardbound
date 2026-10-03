@@ -98,11 +98,12 @@ const SAMPLES: Partial<Record<SoundEvent, { prefix: string; gain: number; layer?
   attack: { prefix: 'attack', gain: 0.4 },
   hit: { prefix: 'hit', gain: 0.35 },
   draw: { prefix: 'draw', gain: 0.25 },
-  play: { prefix: 'play', gain: 0.4 },
+  // Playing a card: the same soft card flip as the pack reveals.
+  play: { prefix: 'draw', gain: 0.22 },
   spell: { prefix: 'spell', gain: 0.3 },
   shield: { prefix: 'shield', gain: 0.22 },
   coin: { prefix: 'coin', gain: 0.3 },
-  endTurn: { prefix: 'endturn', gain: 0.2 },
+  endTurn: { prefix: 'endturn', gain: 0.12 },
   death: { prefix: 'death', gain: 0.4, layer: true },
   packOpen: { prefix: 'pack', gain: 0.3 },
   // Card reveals in packs: a quiet card flip; rarer cards add a soft chime underneath.
