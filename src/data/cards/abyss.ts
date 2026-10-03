@@ -57,7 +57,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...knight, id: 'vod_hornmoon_reaver', name: 'Hornmoon Reaver', faction: 'VOID', rarity: 'RARE',
-    manaCost: 5, attack: 5, health: 4, keywords: ['DRAIN'], archetypes: ['Offering'],
+    manaCost: 4, attack: 4, health: 4, keywords: ['DRAIN'], archetypes: ['Offering'],
     abilities: [{ trigger: 'ON_KILL', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'SELF' }] }],
     flavorText: 'He rides out only under a horned moon, and comes back heavier.',
   },
@@ -77,7 +77,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   {
     ...knight, id: 'ver_verdigris_knight', name: 'Verdigris Knight', faction: 'VERDANT', rarity: 'EPIC',
     manaCost: 5, attack: 4, health: 6, archetypes: ['Wellspring'],
-    abilities: [{ trigger: 'TURN_END', effects: [{ type: 'HEAL', amount: 1, target: 'ALL_ALLIES' }] }],
+    abilities: [{ trigger: 'TURN_END', effects: [{ type: 'HEAL', amount: 2, target: 'ALLY_HERO' }] }],
     flavorText: 'Moss took his armour long ago. He let it, and it has kept him alive since.',
   },
   {
@@ -211,7 +211,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   // ----- Commons -----
   {
     ...knight, id: 'ver_briarhelm_knight', name: 'Briarhelm Knight', faction: 'VERDANT', rarity: 'COMMON',
-    manaCost: 3, attack: 3, health: 3, archetypes: ['Overgrowth'],
+    manaCost: 3, attack: 2, health: 3, archetypes: ['Overgrowth'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'RANDOM_OTHER_ALLY_UNIT' }] }],
     flavorText: 'Wherever he plants his blade, something nearby starts to grow.',
   },
@@ -301,7 +301,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...knight, id: 'vod_kaelthar_pyre_of_souls', name: 'Kaelthar, Pyre of Souls', faction: 'VOID', rarity: 'LEGENDARY',
-    manaCost: 6, attack: 5, health: 5, keywords: ['DRAIN'], archetypes: ['Requiem'],
+    manaCost: 5, attack: 5, health: 5, keywords: ['DRAIN'], archetypes: ['Requiem'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: { kind: 'ALLY_DEATHS_THIS_GAME', max: 5 }, target: 'ALL_ENEMY_UNITS' }] }],
     description: 'Drain. On Deploy: Deal 1 damage to all enemy units for each friendly unit that died this game (up to 5).',
     flavorText: 'Every soul the Choir has lost burns in him. He lets them out one at a time.',
@@ -483,7 +483,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   {
     ...spell, id: 'ast_azure_maelstrom', name: 'Azure Maelstrom', faction: 'ASTRAL', rarity: 'RARE',
     manaCost: 4, archetypes: ['Starlit Control'],
-    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ALL_ENEMY_UNITS' }, { type: 'DRAW_CARDS', amount: 1 }] }],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ALL_ENEMY_UNITS' }] }],
     flavorText: 'The sky folds into a whirlpool and pours itself onto the battlefield.',
   },
   // ----- Epics -----
@@ -510,7 +510,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   // ----- Legendaries -----
   {
     ...spell, id: 'ast_sunburst_covenant', name: 'Sunburst Covenant', faction: 'ASTRAL', rarity: 'LEGENDARY',
-    manaCost: 6, archetypes: ['Starlit Control'],
+    manaCost: 7, archetypes: ['Starlit Control'],
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'ALL_ENEMIES' }, { type: 'HEAL', amount: 3, target: 'ALL_ALLIES' }] }],
     description: 'Deal 3 damage to all enemies. Restore 3 Health to all friendly characters.',
     flavorText: 'The oldest covenant of the Conclave: the sun burns the dark and heals the light.',

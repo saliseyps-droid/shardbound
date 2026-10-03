@@ -19,6 +19,26 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.17.3',
+    date: '2026-10-03',
+    title: 'Balance: Curse of the Abyss',
+    summary: 'The Lumen Conclave and Thornweald Circle get a little weaker, the Hollow Choir a little stronger.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Azure Maelstrom no longer draws a card (still 4 energy: deal 2 damage to all enemy units).',
+          'Sunburst Covenant now costs 7 energy (was 6).',
+          'Verdigris Knight: at the end of your turn, restore 2 Health to your Warden (was 1 Health to every friendly character).',
+          'Briarhelm Knight is now 2/3 (was 3/3).',
+          'Kaelthar, Pyre of Souls now costs 5 energy (was 6).',
+          'Hornmoon Reaver is now 4 energy 4/4 (was 5 energy 5/4).',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.17.2',
     date: '2026-10-03',
     title: 'Curse of the Abyss: more spells',

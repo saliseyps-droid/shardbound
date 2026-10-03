@@ -1,6 +1,20 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.17.3': {
+    title: 'Balanc: Curse of the Abyss',
+    summary: 'Konkláve Lumenu a Kruh Trnoboru jsou o něco slabší, Prázdný chór o něco silnější.',
+    sections: [
+      [
+        'Azurový vír už nelíže kartu (dál stojí 4 energie: způsob 2 poškození všem nepřátelským jednotkám).',
+        'Úmluva slunečního zášlehu teď stojí 7 energie (dřív 6).',
+        'Měděnkový rytíř: na konci tvého tahu obnoví 2 životy tvému Strážci (dřív 1 život všem spřáteleným postavám).',
+        'Rytíř s trnitou přilbou je teď 2/3 (dřív 3/3).',
+        'Kaelthar, Hranice duší teď stojí 5 energie (dřív 6).',
+        'Žnec rohatého měsíce je teď 4 energie 4/4 (dřív 5 energie 5/4).',
+      ],
+    ],
+  },
   '0.17.2': {
     title: 'Curse of the Abyss: další kouzla',
     summary: 'Do setu Curse of the Abyss přibývá dalších 15 kouzel, set má teď 75 karet. Obchod ukazuje nejnovější set jako první.',
