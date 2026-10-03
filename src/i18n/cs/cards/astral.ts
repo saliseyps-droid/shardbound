@@ -22,6 +22,7 @@ const cards: CardsOverlay = {
   ast_collapse_of_heaven: { name: 'Zhroucení nebes', description: 'Způsob 4 poškození všem jednotkám.', flavorText: 'Astromanti tomu říkají „přepsání mapy“. Všichni ostatní tomu říkají konec.' },
   ast_conduit_of_lumen: { name: 'Vodič Lumenu', description: 'Tvá kouzla stojí o (1) méně.', flavorText: 'Mřížka čoček, která pije hvězdné světlo a levně ho vlévá do kouzel.' },
   ast_pilfered_constellation: { name: 'Ukradené souhvězdí', description: 'Ukradni 2 náhodné karty z balíčku protivníka.', flavorText: 'Čti nepřítelovy hvězdy dost pozorně a stanou se tvými.' },
+  ast_liu_kano: { name: 'Liu Kano', description: 'Ochrana. Když sešleš kouzlo, způsob 2 poškození náhodnému nepříteli.', flavorText: 'Opustil světlo Konkláve, aby lovil to, co se skrývá ve tmě. Světlo si vzal s sebou.' },
   ast_selenne: { name: 'Selenne, Strážkyně oběžnic', description: 'Když sešleš kouzlo, vyvolej Hvězdný úlomek 1/1.', flavorText: 'Každé její kouzlo zanechá na oběžné dráze kolem ní novou hvězdu. Už ztratila přehled.' },
   ast_oruvael: { name: 'Oruvael, Poslední hvězda', description: 'Ochrana. Při nasazení: Umlč všechny nepřátelské jednotky. Lízni si 2 karty.', flavorText: 'Až na mapě Konkláve vyhasne poslední hvězda, bude to tahle.' },
 };

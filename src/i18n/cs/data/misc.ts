@@ -22,6 +22,7 @@ const v: MiscOverlay = {
   sets: {
     CORE: { tagline: 'Prapory stoupají, koruny se střetávají. Strážci vstupují do boje.' },
     DEEP: { tagline: 'V říších za okrajem mapy se probouzejí draci.' },
+    ABYSS: { tagline: 'Rytíři pod všemi prapory, přísahající temnotě pod světem.' },
   },
   titles: ['Hledač Střepů', 'Lamač korun', 'Strážce Éteru', 'Vladař Střepů'],
   tutorial: {

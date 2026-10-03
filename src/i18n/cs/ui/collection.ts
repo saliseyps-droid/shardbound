@@ -372,6 +372,7 @@ const d: Record<string, string> = {
   Drake: 'Drak',
   Druid: 'Druid',
   Elemental: 'Elementál',
+  Knight: 'Rytíř',
   Leviathan: 'Leviatan',
   Mage: 'Mág',
   Pirate: 'Pirát',

@@ -156,8 +156,8 @@ export const VOID_CARDS: CardDefinition[] = [
     flavorText: 'The last note of every song belongs to it.',
   },
   {
-    ...base, id: 'vod_tallys_the_menace', name: 'Tallys the Menace', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'DEEP',
-    manaCost: 6, attack: 5, health: 5, keywords: ['GUARD'], tags: ['Undead'], archetypes: ['Offering'],
+    ...base, id: 'vod_tallys_the_menace', name: 'Tallys the Menace', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'ABYSS',
+    manaCost: 6, attack: 5, health: 5, keywords: ['GUARD'], tags: ['Undead', 'Knight'], archetypes: ['Offering'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DESTROY', target: 'RANDOM_ENEMY_UNIT' }] }],
     flavorText: 'Where the Choir sings, he walks ahead. Nothing walks behind him.',
   },

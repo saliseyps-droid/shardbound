@@ -22,10 +22,13 @@ export const SHOP_OFFERS: ShopOffer[] = [
   { id: 'deep_1', setId: 'DEEP', packs: 1, price: 100, label: '1 Pack' },
   { id: 'deep_5', setId: 'DEEP', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
   { id: 'deep_10', setId: 'DEEP', packs: 10, price: 1000, label: '10 Packs', badge: '+1 Bonus Pack' },
+  { id: 'abyss_1', setId: 'ABYSS', packs: 1, price: 100, label: '1 Pack' },
+  { id: 'abyss_5', setId: 'ABYSS', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
+  { id: 'abyss_10', setId: 'ABYSS', packs: 10, price: 1000, label: '10 Packs', badge: '+1 Bonus Pack' },
 ];
 
 /** Offers with a bonus badge grant this many extra packs. */
-export const SHOP_BONUS_PACKS: Record<string, number> = { core_10: 1, deep_10: 1 };
+export const SHOP_BONUS_PACKS: Record<string, number> = { core_10: 1, deep_10: 1, abyss_10: 1 };
 
 export const PACK_CONFIG = {
   cardsPerPack: 5,
@@ -52,4 +55,5 @@ export const CRAFTING = {
 export const SET_INFO: Record<SetId, { name: string; tagline: string; releaseOrder: number }> = {
   CORE: { name: 'Kingdoms at War', tagline: 'Banners rise, crowns clash. The Wardens take the field.', releaseOrder: 1 },
   DEEP: { name: 'Fantasy Realms', tagline: 'Dragons wake in the realms beyond the map.', releaseOrder: 2 },
+  ABYSS: { name: 'Curse of the Abyss', tagline: 'Knights of every banner, sworn to the dark below the world.', releaseOrder: 3 },
 };

@@ -9,6 +9,7 @@ import { ASTRAL_CARDS } from './astral';
 import { VOID_CARDS } from './void';
 import { TIDE_CARDS } from './tide';
 import { NEUTRAL_CARDS } from './neutral';
+import { ABYSS_CARDS } from './abyss';
 
 const RAW: CardDefinition[] = [
   ...TOKEN_CARDS,
@@ -19,6 +20,7 @@ const RAW: CardDefinition[] = [
   ...VOID_CARDS,
   ...TIDE_CARDS,
   ...NEUTRAL_CARDS,
+  ...ABYSS_CARDS,
 ];
 
 export const CARD_LOAD_ERRORS: string[] = [];

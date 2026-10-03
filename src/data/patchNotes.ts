@@ -19,6 +19,25 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.13.0',
+    date: '2026-10-03',
+    title: 'Curse of the Abyss',
+    summary: 'A new set of 15 Knights from every faction, including the new Legendary Liu Kano.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'New set: Curse of the Abyss. 15 Knights from every faction (4 Common, 4 Rare, 3 Epic, 4 Legendary). Its packs are in the shop at the usual prices and can also be won in the Arena.',
+          'New card tag: Knight. Duskwing Knight draws a Knight from your deck, and Redcloak Sentinel grows when you already control another Knight.',
+          'Legendaries: Vorgrath, the Burning Oath (Cinder Legion, 7 energy 6/6): On Deploy: Deal 2 damage to all enemies. Azhrel, the Drowned Champion (Rimetide Court, 6 energy 5/6): On Deploy: Freeze all enemy units. Draw a card.',
+          'Liu Kano (Lumen Conclave Legendary, 6 energy, 5/5): Ward. After you cast a spell, deal 2 damage to a random enemy.',
+          'Tallys the Menace moves from Fantasy Realms to Curse of the Abyss and is now also a Knight. Copies you own stay in your collection.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.12.2',
     date: '2026-10-03',
     title: 'Tallys the Menace',

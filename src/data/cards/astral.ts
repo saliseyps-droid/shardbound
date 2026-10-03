@@ -156,4 +156,10 @@ export const ASTRAL_CARDS: CardDefinition[] = [
     description: 'Ward. On Deploy: Silence all enemy units. Draw 2 cards.',
     flavorText: 'When the last star in the Conclave\'s chart burns out, it will be this one.',
   },
+  {
+    ...base, id: 'ast_liu_kano', name: 'Liu Kano', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'ABYSS',
+    manaCost: 6, attack: 5, health: 5, keywords: ['WARD'], tags: ['Knight'], archetypes: ['Spellweave'],
+    abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'RANDOM_ENEMY' }] }],
+    flavorText: 'He left the Conclave\'s light to hunt what hides in the dark. He took the light with him.',
+  },
 ];

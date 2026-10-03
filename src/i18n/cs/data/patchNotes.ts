@@ -1,6 +1,19 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.13.0': {
+    title: 'Curse of the Abyss',
+    summary: 'Nový set 15 Rytířů ze všech frakcí, včetně nové legendárky Liu Kano.',
+    sections: [
+      [
+        'Nový set: Curse of the Abyss. 15 Rytířů ze všech frakcí (4 běžné, 4 vzácné, 3 epické, 4 legendární). Jeho balíčky jsou v obchodě za obvyklé ceny a dají se vyhrát i v Aréně.',
+        'Nová značka karet: Rytíř. Rytíř soumračných křídel si lízne z balíčku Rytíře a Hlídka v rudém plášti zesílí, když už ovládáš jiného Rytíře.',
+        'Legendárky: Vorgrath, Hořící přísaha (Popelavá legie, 7 energie 6/6): Při nasazení: Způsob 2 poškození všem nepřátelům. Azhrel, Utonulý šampion (Dvůr Jinovatky, 6 energie 5/6): Při nasazení: Zmraz všechny nepřátelské jednotky. Lízni si kartu.',
+        'Liu Kano (legendárka Konkláve Lumenu, 6 energie, 5/5): Ochrana. Když sešleš kouzlo, způsob 2 poškození náhodnému nepříteli.',
+        'Tallys Hrozivý přechází ze setu Fantasy Realms do Curse of the Abyss a je teď také Rytíř. Kopie, které vlastníš, ti zůstávají.',
+      ],
+    ],
+  },
   '0.12.2': {
     title: 'Tallys Hrozivý',
     summary: 'Do setu Fantasy Realms přibývá nová legendárka Prázdného chóru.',
