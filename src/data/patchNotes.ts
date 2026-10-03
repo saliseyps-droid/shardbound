@@ -19,6 +19,26 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.14.0',
+    date: '2026-10-03',
+    title: 'Third-place match',
+    summary: 'Tournaments now have a match for third place.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Tournament: the two semi-final losers play a third-place match at the same time as the final. Third place wins 50 Gold.',
+          'The tournament ends when both the final and the third-place match are over.',
+        ],
+      },
+      {
+        kind: 'fixed',
+        items: ['A tournament no longer gets stuck when a player who still had a match to play has already left: their opponent wins that match.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.13.3',
     date: '2026-10-03',
     title: 'Steadier tournament connections',

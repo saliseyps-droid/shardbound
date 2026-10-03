@@ -189,6 +189,9 @@ export const useTournament = create<TournamentStore>((set, get) => {
       } else if (t.runnerUpId === myId) {
         gameService.grantTournamentPrize(TOURNAMENT_CONFIG.prizes.runnerUp, 'Tournament runner-up');
         toast(`Runner-up! +${TOURNAMENT_CONFIG.prizes.runnerUp} Gold`, 'reward');
+      } else if (t.thirdId === myId) {
+        gameService.grantTournamentPrize(TOURNAMENT_CONFIG.prizes.third, 'Tournament third place');
+        toast(`Third place! +${TOURNAMENT_CONFIG.prizes.third} Gold`, 'reward');
       }
     }
   }

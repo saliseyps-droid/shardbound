@@ -3,7 +3,8 @@ import type { PlayableFaction } from '@/game/types';
 import type { SideSetup } from '@/engine/types';
 
 /**
- * Four-player single-elimination tournament: two semi-finals, then a final.
+ * Four-player single-elimination tournament: two semi-finals, then the final and
+ * a third-place match between the semi-final losers, played at the same time.
  * Empty seats are filled with bots. Pure data + transitions (no networking).
  */
 
@@ -20,7 +21,7 @@ export interface TournamentPlayer {
   connected: boolean;
 }
 
-export type TournamentMatchId = 'SF1' | 'SF2' | 'F';
+export type TournamentMatchId = 'SF1' | 'SF2' | 'F' | 'P3';
 
 export interface TournamentMatch {
   id: TournamentMatchId;
@@ -40,15 +41,16 @@ export interface Tournament {
   phase: 'lobby' | 'running' | 'done';
   championId: string | null;
   runnerUpId: string | null;
+  thirdId?: string | null;
 }
 
 export const TOURNAMENT_CONFIG = {
   size: 4,
   minHumans: 2,
-  prizes: { champion: 250, runnerUp: 100 },
+  prizes: { champion: 250, runnerUp: 100, third: 50 },
 };
 
-export const MATCH_LABEL: Record<TournamentMatchId, string> = { SF1: 'Semi-final 1', SF2: 'Semi-final 2', F: 'Final' };
+export const MATCH_LABEL: Record<TournamentMatchId, string> = { SF1: 'Semi-final 1', SF2: 'Semi-final 2', F: 'Final', P3: 'Third-place match' };
 
 export function newTournament(code: string, organizer: TournamentPlayer): Tournament {
   return { code, players: [organizer], matches: [], phase: 'lobby', championId: null, runnerUpId: null };
@@ -73,6 +75,7 @@ export function startTournament(t: Tournament, bots: Omit<TournamentPlayer, 'id'
     { id: 'SF1', a: seeds[0].id, b: seeds[3].id, winner: null, status: 'ready' },
     { id: 'SF2', a: seeds[1].id, b: seeds[2].id, winner: null, status: 'ready' },
     { id: 'F', a: null, b: null, winner: null, status: 'waiting' },
+    { id: 'P3', a: null, b: null, winner: null, status: 'waiting' },
   ];
   return assignRooms({ ...t, players, matches, phase: 'running' });
 }
@@ -103,20 +106,38 @@ export function markPlaying(t: Tournament, matchId: TournamentMatchId): Tourname
 export function reportResult(t: Tournament, matchId: TournamentMatchId, winnerId: string): Tournament {
   const match = t.matches.find((m) => m.id === matchId);
   if (!match || match.status === 'done' || (winnerId !== match.a && winnerId !== match.b)) return t;
-  let matches = t.matches.map((m) => (m.id === matchId ? { ...m, winner: winnerId, status: 'done' as const } : m));
+  const matches = t.matches.map((m) => (m.id === matchId ? { ...m, winner: winnerId, status: 'done' as const } : m));
+  const loserOf = (m: TournamentMatch) => (m.winner === m.a ? m.b : m.a);
   let next: Tournament = { ...t, matches };
-  if (matchId !== 'F') {
+  if (matchId === 'SF1' || matchId === 'SF2') {
     const sf1 = matches.find((m) => m.id === 'SF1')!;
     const sf2 = matches.find((m) => m.id === 'SF2')!;
     if (sf1.winner && sf2.winner) {
-      matches = matches.map((m) => (m.id === 'F' ? { ...m, a: sf1.winner, b: sf2.winner, status: 'ready' as const } : m));
-      next = assignRooms({ ...next, matches });
+      next = assignRooms({
+        ...next,
+        matches: matches.map((m) =>
+          m.id === 'F' ? { ...m, a: sf1.winner, b: sf2.winner, status: 'ready' as const } : m.id === 'P3' ? { ...m, a: loserOf(sf1), b: loserOf(sf2), status: 'ready' as const } : m,
+        ),
+      });
+      return resolveAbsent(next);
     }
+  } else if (matchId === 'F') {
+    next = { ...next, championId: winnerId, runnerUpId: winnerId === match.a ? match.b : match.a };
   } else {
-    const loser = winnerId === match.a ? match.b : match.a;
-    next = { ...next, phase: 'done', championId: winnerId, runnerUpId: loser };
+    next = { ...next, thirdId: winnerId };
   }
-  return next;
+  const unfinished = next.matches.some((m) => (m.id === 'F' || m.id === 'P3') && m.status !== 'done');
+  return unfinished ? next : { ...next, phase: 'done' };
+}
+
+/** A newly scheduled match against someone who already left is won by the other player. */
+function resolveAbsent(t: Tournament): Tournament {
+  for (const m of t.matches) {
+    if (m.status !== 'ready' || !m.a || !m.b) continue;
+    if (!playerById(t, m.a)?.connected) return resolveAbsent(reportResult(t, m.id, m.b));
+    if (!playerById(t, m.b)?.connected) return resolveAbsent(reportResult(t, m.id, m.a));
+  }
+  return t;
 }
 
 /** A player left: every unfinished match of theirs is forfeited to the opponent. */
@@ -135,9 +156,10 @@ export function readyMatches(t: Tournament): TournamentMatch[] {
   return t.matches.filter((m) => m.status === 'ready' && m.a && m.b);
 }
 
-export function placementOf(t: Tournament, playerId: string): 1 | 2 | 3 | null {
+export function placementOf(t: Tournament, playerId: string): 1 | 2 | 3 | 4 | null {
   if (t.phase !== 'done') return null;
   if (t.championId === playerId) return 1;
   if (t.runnerUpId === playerId) return 2;
-  return t.players.some((p) => p.id === playerId) ? 3 : null;
+  if (t.thirdId === playerId) return 3;
+  return t.players.some((p) => p.id === playerId) ? 4 : null;
 }

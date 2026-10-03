@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.14.0': {
+    title: 'Zápas o třetí místo',
+    summary: 'Turnaje mají nově zápas o třetí místo.',
+    sections: [
+      [
+        'Turnaj: poražení ze semifinále hrají zápas o třetí místo, souběžně s finále. Třetí místo vyhrává 50 zlata.',
+        'Turnaj skončí, až dohraje finále i zápas o třetí místo.',
+      ],
+      ['Turnaj se už nezasekne, když hráč, který měl ještě hrát, mezitím odešel: zápas vyhraje jeho soupeř.'],
+    ],
+  },
   '0.13.3': {
     title: 'Spolehlivější připojení do turnaje',
     summary: 'Připojení do turnaje z jiné sítě teď čeká déle a samo to zkusí znovu.',
