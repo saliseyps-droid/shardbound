@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { FACTIONS } from '@/data/factions';
 import { portraitsOf, type PortraitDef } from '@/data/portraits';
 import { PLAYABLE_FACTIONS } from '@/game/types';
@@ -32,11 +33,10 @@ export function PortraitShop() {
         <h3 id="portraits-title">{t('Warden portraits')}</h3>
         <p className="muted">{t('New faces for your Wardens. Pick one per faction in your Profile, or a different one for a single deck in the deck editor.')}</p>
       </div>
+      <div className="portrait-shop-grid">
       {PLAYABLE_FACTIONS.map((f) => (
-        <div key={f} className="portrait-shop-faction">
-          <div className="faint" style={{ color: FACTIONS[f].colors.primary }}>
-            {FACTIONS[f].name}
-          </div>
+        <div key={f} className="portrait-shop-faction" style={{ '--fc': FACTIONS[f].colors.primary } as CSSProperties}>
+          <div className="portrait-shop-faction-name">{FACTIONS[f].name}</div>
           <div className="portrait-shop-row">
             {portraitsOf(f).map((p) => {
               const have = owned.includes(p.id);
@@ -57,6 +57,7 @@ export function PortraitShop() {
           </div>
         </div>
       ))}
+      </div>
     </section>
   );
 }

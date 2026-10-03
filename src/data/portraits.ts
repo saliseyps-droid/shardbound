@@ -13,22 +13,22 @@ export interface PortraitDef {
 }
 
 export const PORTRAITS: PortraitDef[] = [
-  { id: 'ember_orc_warchief', faction: 'EMBER', name: 'Orc Warchief', price: 400 },
-  { id: 'ember_flameborn', faction: 'EMBER', name: 'Flameborn Duelist', price: 400 },
-  { id: 'ember_black_drake', faction: 'EMBER', name: 'Black Drake', price: 600 },
-  { id: 'verdant_ancient_treant', faction: 'VERDANT', name: 'Ancient Treant', price: 400 },
-  { id: 'verdant_bamboo_monk', faction: 'VERDANT', name: 'Bamboo Monk', price: 600 },
-  { id: 'verdant_dryad', faction: 'VERDANT', name: 'Grove Dryad', price: 400 },
-  { id: 'iron_lion_lord', faction: 'IRON', name: 'Lion Lord', price: 600 },
-  { id: 'iron_goblin_tinker', faction: 'IRON', name: 'Goblin Tinker', price: 400 },
-  { id: 'iron_dwarf_forgemaster', faction: 'IRON', name: 'Dwarf Forgemaster', price: 400 },
-  { id: 'astral_white_seer', faction: 'ASTRAL', name: 'White Seer', price: 400 },
-  { id: 'astral_eagle_herald', faction: 'ASTRAL', name: 'Eagle Herald', price: 600 },
-  { id: 'void_night_elf', faction: 'VOID', name: 'Night Elf', price: 400 },
-  { id: 'void_horned_warlock', faction: 'VOID', name: 'Horned Warlock', price: 400 },
-  { id: 'tide_sapphire_dragon', faction: 'TIDE', name: 'Sapphire Dragon', price: 600 },
-  { id: 'tide_sea_elf', faction: 'TIDE', name: 'Sea Elf', price: 400 },
-  { id: 'tide_frost_lich', faction: 'TIDE', name: 'Frost Lich', price: 400 },
+  { id: 'ember_orc_warchief', faction: 'EMBER', name: 'Orc Warchief', price: 150 },
+  { id: 'ember_flameborn', faction: 'EMBER', name: 'Flameborn Duelist', price: 150 },
+  { id: 'ember_black_drake', faction: 'EMBER', name: 'Black Drake', price: 250 },
+  { id: 'verdant_ancient_treant', faction: 'VERDANT', name: 'Ancient Treant', price: 150 },
+  { id: 'verdant_bamboo_monk', faction: 'VERDANT', name: 'Bamboo Monk', price: 250 },
+  { id: 'verdant_dryad', faction: 'VERDANT', name: 'Grove Dryad', price: 150 },
+  { id: 'iron_lion_lord', faction: 'IRON', name: 'Lion Lord', price: 250 },
+  { id: 'iron_goblin_tinker', faction: 'IRON', name: 'Goblin Tinker', price: 150 },
+  { id: 'iron_dwarf_forgemaster', faction: 'IRON', name: 'Dwarf Forgemaster', price: 150 },
+  { id: 'astral_white_seer', faction: 'ASTRAL', name: 'White Seer', price: 150 },
+  { id: 'astral_eagle_herald', faction: 'ASTRAL', name: 'Eagle Herald', price: 250 },
+  { id: 'void_night_elf', faction: 'VOID', name: 'Night Elf', price: 150 },
+  { id: 'void_horned_warlock', faction: 'VOID', name: 'Horned Warlock', price: 150 },
+  { id: 'tide_sapphire_dragon', faction: 'TIDE', name: 'Sapphire Dragon', price: 250 },
+  { id: 'tide_sea_elf', faction: 'TIDE', name: 'Sea Elf', price: 150 },
+  { id: 'tide_frost_lich', faction: 'TIDE', name: 'Frost Lich', price: 150 },
 ];
 
 const BY_ID = new Map(PORTRAITS.map((p) => [p.id, p]));

@@ -223,8 +223,8 @@ export default function ShopScreen() {
         })}
       </div>
       <OddsTable />
-      <PortraitShop />
       <CardBackShop />
+      <PortraitShop />
       {gold < 100 && <p className="muted shop-hint">{t('Earn Gold by winning matches, completing quests and claiming daily rewards.')}</p>}
     </div>
   );

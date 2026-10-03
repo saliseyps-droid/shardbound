@@ -16,9 +16,9 @@ const fresh = (gold = 5000) => {
 };
 
 describe('card backs', () => {
-  it('has 16 backs with unique ids; only the default is free', () => {
-    expect(CARD_BACKS).toHaveLength(16);
-    expect(new Set(CARD_BACKS.map((b) => b.id)).size).toBe(16);
+  it('has 32 backs with unique ids; only the default is free', () => {
+    expect(CARD_BACKS).toHaveLength(32);
+    expect(new Set(CARD_BACKS.map((b) => b.id)).size).toBe(32);
     expect(CARD_BACKS[0].id).toBe(DEFAULT_CARD_BACK);
     expect(CARD_BACKS.filter((b) => b.price === 0).map((b) => b.id)).toEqual([DEFAULT_CARD_BACK]);
   });
@@ -68,7 +68,7 @@ describe('card backs', () => {
     const opp = { ...PRACTICE_OPPONENTS.IRON, difficulty: 'EASY' as const, rarities: ['COMMON' as const] };
     expect(getCardBack(opponentSide(opp).cardBack)).toBeTruthy();
     expect(opponentSide(opp, () => 0).cardBack).toBe(CARD_BACKS[0].id);
-    expect(opponentSide(opp, () => 0.99).cardBack).toBe(CARD_BACKS[15].id);
+    expect(opponentSide(opp, () => 0.99).cardBack).toBe(CARD_BACKS[CARD_BACKS.length - 1].id);
     const side = playerSide(prof('A', 'flame', 'moonlit_night'), deck);
     expect(validateRemoteSide(side)).toBeNull();
     expect(validateRemoteSide({ ...side, cardBack: 'hacked' })).toBe('Invalid card back.');

@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.2': {
+    title: '16 nových rubů karet',
+    summary: 'Do obchodu přibývá druhá kolekce rubů karet.',
+    sections: [
+      ['16 nových rubů karet v obchodě za 300 až 750 zlata: hvězdy s drahokamy, mrazivá hvězda, oko Prázdna, měsíční srpek, dračí pečeť, mlhovina a další.'],
+      [
+        'Portréty Strážců jsou výrazně levnější: 150 zlata, nebo 250 za draky, lva, pandu a orla (dřív 400 a 600). Zlevní s nimi i Balíček Curse of the Abyss.',
+        'Obchod ukazuje portréty Strážců pod ruby karet, seskupené podle frakcí vedle sebe.',
+      ],
+    ],
+  },
   '0.18.1': {
     title: 'Balíček Curse of the Abyss',
     summary: 'Jednorázový balíček k nejnovějšímu setu: 10 boosterů, rub karet a portrét Strážce o 30 % levněji.',

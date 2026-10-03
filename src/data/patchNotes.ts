@@ -19,6 +19,26 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.2',
+    date: '2026-10-03',
+    title: '16 new card backs',
+    summary: 'A second collection of card backs joins the shop.',
+    sections: [
+      {
+        kind: 'new',
+        items: ['16 new card backs in the shop, from 300 to 750 Gold: gem stars, a frozen star, a void eye, a crescent moon, a dragon seal, a nebula and more.'],
+      },
+      {
+        kind: 'improved',
+        items: [
+          'Warden portraits are much cheaper: 150 Gold, or 250 for the dragons, the lion, the panda and the eagle (were 400 and 600). The Curse of the Abyss Bundle gets cheaper with them.',
+          'The shop shows Warden portraits below the card backs, grouped by faction side by side.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.18.1',
     date: '2026-10-03',
     title: 'Curse of the Abyss Bundle',
