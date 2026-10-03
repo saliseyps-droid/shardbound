@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.17.1',
+    date: '2026-10-03',
+    title: 'Curse of the Abyss: spells',
+    summary: '15 spells join Curse of the Abyss, bringing the set to 60 cards.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          '15 new spells in Curse of the Abyss for every faction (6 Common, 4 Rare, 3 Epic, 2 Legendary). Several reward controlling a Knight, such as Forge Oath, Abyssal Flare and Ember of Oaths.',
+          'Legendaries: Crown of the Abyss (Neutral, 5 energy): Draw 2 Knights from your deck. Knights in your hand cost (1) less. Wings of the Last Light (Lumen Conclave, 5 energy): Give your units +2/+2 and Ward.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.17.0',
     date: '2026-10-03',
     title: 'Tournaments up to 32 players',

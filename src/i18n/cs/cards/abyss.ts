@@ -45,6 +45,21 @@ const cards: CardsOverlay = {
   ast_starbound_inquisitor: { name: 'Inkvizitor spoutaný hvězdami', description: 'Ochrana. Při nasazení: Umlč nepřátelskou jednotku (odstraň její text a vylepšení).', flavorText: 'Hvězdy tě už odsoudily. On je tu jen proto, aby přečetl rozsudek.' },
   neu_rendoslav: { name: 'Rendoslav', description: 'Při nasazení: Lízni si z balíčku 2 Rytíře. Dej svým ostatním jednotkám +1/+1.', flavorText: 'Propast ho korunovala králem všech rytířů, kteří jí přísahali. Všichni ho dodnes poslouchají.' },
   vod_kaelthar_pyre_of_souls: { name: 'Kaelthar, Hranice duší', description: 'Vysátí. Při nasazení: Způsob všem nepřátelským jednotkám 1 poškození za každou spřátelenou jednotku, která v této hře zemřela (nejvýš 5).', flavorText: 'Hoří v něm každá duše, o kterou Chór přišel. Vypouští je jednu po druhé.' },
+  irn_forge_oath: { name: 'Kovaná přísaha', description: 'Získej 4 brnění. Pokud ovládáš Rytíře, lízni si kartu.', flavorText: 'Přísaha složená nad mosaznou pánví se vtluče přímo do zbroje.' },
+  emb_abyssal_flare: { name: 'Plamen z Propasti', description: 'Způsob 2 poškození jednotce. Pokud ovládáš Rytíře, způsob o 1 víc.', flavorText: 'Plamen z hlubinných ohňů: malý, rudý a mířený někým ve zbroji.' },
+  vod_soulfire_rite: { name: 'Obřad duševního ohně', description: 'Způsob 4 poškození jednotce. Způsob 2 poškození svému Strážci.', flavorText: 'Oheň hoří tím jasněji, čím víc ze svého strážce dostane.' },
+  tid_undertow_surge: { name: 'Nápor spodního proudu', description: 'Pokud je nepřátelská jednotka zmrazená, způsob jí 3 poškození. Pak ji Zmraz.', flavorText: 'Chlad táhne dvakrát: jednou, aby tě zadržel, podruhé, aby tě utopil.' },
+  neu_ember_of_oaths: { name: 'Uhlík přísahy', description: 'Dej spřátelenému Rytíři +2/+2.', flavorText: 'Každý Rytíř Propasti nosí jeden uhlík z pánve, nad kterou přísahal.' },
+  vod_choirs_lament: { name: 'Nářek chóru', description: 'Vyvolej 2 Prázdné světlušky 1/1.', flavorText: 'Nářek má dva hlasy. Ani jeden z nich není živý.' },
+  vod_hollow_pact: { name: 'Prázdná úmluva', description: 'Znič spřátelenou jednotku. Lízni si 2 karty.', flavorText: 'Dej fialovému plameni jednoho ze svých. Odpoví ti dvěma tajemstvími.' },
+  emb_wildfire_charge: { name: 'Útok divokého ohně', description: 'Způsob 2 poškození všem nepřátelským jednotkám. Uděl všem nepřátelským jednotkám Hoření 1.', flavorText: 'Legie pánev zapálí a pak ji prostě pustí.' },
+  ver_verdant_rekindling: { name: 'Zelené znovuzažehnutí', description: 'Obnov 5 životů svému Strážci. Dej svým jednotkám +0/+1.', flavorText: 'I v Propasti si zelený oheň pamatuje, jak růst.' },
+  ast_starfall_lance: { name: 'Kopí padající hvězdy', description: 'Způsob 3 poškození jednotce. Lízni si kartu.', flavorText: 'Padající hvězda, chycená do pánve a vržená znovu.' },
+  irn_molten_bulwark: { name: 'Roztavená hradba', description: 'Vyvolej dvě Mosazné hlídky 2/3 se Stráží.', flavorText: 'Nalij mosaz, nech ji ve tmě vychladnout a z formy vstanou dvě hlídky.' },
+  tid_drowned_ward: { name: 'Utopená ochrana', description: 'Vrať nepřátelskou jednotku do ruky jejího vlastníka. Zmraz všechny ostatní nepřátelské jednotky.', flavorText: 'Kruh run se uzavře. Co je uvnitř, je vzato; co je venku, je drženo.' },
+  neu_abyssal_pyre: { name: 'Hranice Propasti', description: 'Způsob 3 poškození nepřátelské jednotce a jednotkám vedle ní.', flavorText: 'Zapal v Propasti jednu hranici a vzplanou i ty vedle.' },
+  neu_crown_of_the_abyss: { name: 'Koruna Propasti', description: 'Lízni si z balíčku 2 Rytíře. Rytíři v tvé ruce stojí o (1) méně.', flavorText: 'Kdo zapálí zlatou pánev, je korunován. Každý Rytíř v hlubinách odpoví.' },
+  ast_wings_of_the_last_light: { name: 'Křídla posledního světla', description: 'Dej svým jednotkám +2/+2 a Ochranu.', flavorText: 'Poslední světlo Konkláve roztáhlo křídla nad všemi, kdo ještě stáli.' },
 };
 
 export default cards;

@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.17.1': {
+    title: 'Curse of the Abyss: kouzla',
+    summary: 'Do setu Curse of the Abyss přibývá 15 kouzel, set má teď 60 karet.',
+    sections: [
+      [
+        '15 nových kouzel v Curse of the Abyss pro všechny frakce (6 běžných, 4 vzácná, 3 epická, 2 legendární). Několik z nich odměňuje, když ovládáš Rytíře, například Kovaná přísaha, Plamen z Propasti a Uhlík přísahy.',
+        'Legendárky: Koruna Propasti (Poutníci, 5 energie): Lízni si z balíčku 2 Rytíře. Rytíři v tvé ruce stojí o (1) méně. Křídla posledního světla (Konkláve Lumenu, 5 energie): Dej svým jednotkám +2/+2 a Ochranu.',
+      ],
+    ],
+  },
   '0.17.0': {
     title: 'Turnaje až pro 32 hráčů',
     summary: 'Velikost turnaje si vybereš při jeho vytvoření; čím větší turnaj, tím větší ceny.',

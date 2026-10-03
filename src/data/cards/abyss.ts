@@ -6,6 +6,7 @@ import type { CardDefinition } from '@/game/types';
  * Set theme: Knight synergy (draw Knights, reward controlling another Knight) on top of each faction's own plan.
  */
 const knight = { cardType: 'UNIT' as const, set: 'ABYSS' as const, collectible: true, tags: ['Knight'] };
+const spell = { cardType: 'SPELL' as const, set: 'ABYSS' as const, collectible: true };
 
 export const ABYSS_CARDS: CardDefinition[] = [
   // ----- Commons -----
@@ -304,5 +305,112 @@ export const ABYSS_CARDS: CardDefinition[] = [
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: { kind: 'ALLY_DEATHS_THIS_GAME', max: 5 }, target: 'ALL_ENEMY_UNITS' }] }],
     description: 'Drain. On Deploy: Deal 1 damage to all enemy units for each friendly unit that died this game (up to 5).',
     flavorText: 'Every soul the Choir has lost burns in him. He lets them out one at a time.',
+  },
+
+  // ===== Spells: the Abyssal braziers =====
+  // ----- Commons -----
+  {
+    ...spell, id: 'irn_forge_oath', name: 'Forge Oath', faction: 'IRON', rarity: 'COMMON',
+    manaCost: 2, archetypes: ['Bulwark'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'GAIN_ARMOR', amount: 4, target: 'ALLY_HERO' }, { type: 'DRAW_CARDS', amount: 1, condition: { kind: 'CONTROLS_TAG', tag: 'Knight' } }] }],
+    description: 'Gain 4 Armor. If you control a Knight, draw a card.',
+    flavorText: 'Sworn over a brass brazier, an oath is hammered into the armour itself.',
+  },
+  {
+    ...spell, id: 'emb_abyssal_flare', name: 'Abyssal Flare', faction: 'EMBER', rarity: 'COMMON',
+    manaCost: 1, target: { kind: 'ANY_UNIT' }, archetypes: ['Pyromancy'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'TARGET' }, { type: 'DEAL_DAMAGE', amount: 1, target: 'TARGET', condition: { kind: 'CONTROLS_TAG', tag: 'Knight' } }] }],
+    description: 'Deal 2 damage to a unit. If you control a Knight, deal 1 more.',
+    flavorText: 'A flare from the deep fires: small, red, and aimed by someone in armour.',
+  },
+  {
+    ...spell, id: 'vod_soulfire_rite', name: 'Soulfire Rite', faction: 'VOID', rarity: 'COMMON',
+    manaCost: 2, target: { kind: 'ANY_UNIT' }, archetypes: ['Offering'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 4, target: 'TARGET' }, { type: 'DEAL_DAMAGE', amount: 2, target: 'ALLY_HERO' }] }],
+    description: 'Deal 4 damage to a unit. Deal 2 damage to your Warden.',
+    flavorText: 'The fire burns brighter for every drop of its keeper it is fed.',
+  },
+  {
+    ...spell, id: 'tid_undertow_surge', name: 'Undertow Surge', faction: 'TIDE', rarity: 'COMMON',
+    manaCost: 2, target: { kind: 'ENEMY_UNIT' }, archetypes: ['Deep Freeze'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'TARGET', condition: { kind: 'TARGET_FROZEN' } }, { type: 'APPLY_STATUS', status: 'FROZEN', target: 'TARGET' }] }],
+    description: 'If an enemy unit is Frozen, deal 3 damage to it. Then Freeze it.',
+    flavorText: 'The cold pulls twice: once to hold you, once to drown you.',
+  },
+  {
+    ...spell, id: 'neu_ember_of_oaths', name: 'Ember of Oaths', faction: 'NEUTRAL', rarity: 'COMMON',
+    manaCost: 2, target: { kind: 'ALLY_UNIT', filter: { tag: 'Knight' } },
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'BUFF', attack: 2, health: 2, target: 'TARGET' }] }],
+    description: 'Give a friendly Knight +2/+2.',
+    flavorText: 'Every Knight of the Abyss carries one ember from the brazier where they swore.',
+  },
+  {
+    ...spell, id: 'vod_choirs_lament', name: "Choir's Lament", faction: 'VOID', rarity: 'COMMON',
+    manaCost: 2, archetypes: ['Requiem'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'SUMMON', cardId: 'token_hollow_wisp', count: 2 }] }],
+    flavorText: 'The lament has two voices. Neither of them is alive.',
+  },
+  // ----- Rares -----
+  {
+    ...spell, id: 'vod_hollow_pact', name: 'Hollow Pact', faction: 'VOID', rarity: 'RARE',
+    manaCost: 2, target: { kind: 'ALLY_UNIT' }, archetypes: ['Offering'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DESTROY', target: 'TARGET' }, { type: 'DRAW_CARDS', amount: 2 }] }],
+    description: 'Destroy a friendly unit. Draw 2 cards.',
+    flavorText: 'Give the violet flame one of yours. It answers with two secrets.',
+  },
+  {
+    ...spell, id: 'emb_wildfire_charge', name: 'Wildfire Charge', faction: 'EMBER', rarity: 'RARE',
+    manaCost: 4, archetypes: ['Pyromancy'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ALL_ENEMY_UNITS' }, { type: 'APPLY_STATUS', status: 'BURN', amount: 1, target: 'ALL_ENEMY_UNITS' }] }],
+    flavorText: 'The Legion lights the brazier and then simply lets go of it.',
+  },
+  {
+    ...spell, id: 'ver_verdant_rekindling', name: 'Verdant Rekindling', faction: 'VERDANT', rarity: 'RARE',
+    manaCost: 3, archetypes: ['Wellspring'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'HEAL', amount: 5, target: 'ALLY_HERO' }, { type: 'BUFF', health: 1, target: 'ALL_ALLY_UNITS' }] }],
+    flavorText: 'Even in the Abyss, the green fire remembers how to grow.',
+  },
+  {
+    ...spell, id: 'ast_starfall_lance', name: 'Starfall Lance', faction: 'ASTRAL', rarity: 'RARE',
+    manaCost: 3, target: { kind: 'ANY_UNIT' }, archetypes: ['Spellweave'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'TARGET' }, { type: 'DRAW_CARDS', amount: 1 }] }],
+    flavorText: 'A falling star, caught in a brazier and thrown again.',
+  },
+  // ----- Epics -----
+  {
+    ...spell, id: 'irn_molten_bulwark', name: 'Molten Bulwark', faction: 'IRON', rarity: 'EPIC',
+    manaCost: 4, archetypes: ['Bulwark'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'SUMMON', cardId: 'token_sentry', count: 2 }] }],
+    description: 'Summon two 2/3 Brass Sentries with Guard.',
+    flavorText: 'Pour the brass, cool it in the dark, and two sentries stand up out of the mould.',
+  },
+  {
+    ...spell, id: 'tid_drowned_ward', name: 'Drowned Ward', faction: 'TIDE', rarity: 'EPIC',
+    manaCost: 5, target: { kind: 'ENEMY_UNIT' }, archetypes: ['Undertow', 'Deep Freeze'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }, { type: 'APPLY_STATUS', status: 'FROZEN', target: 'ALL_ENEMY_UNITS' }] }],
+    description: "Return an enemy unit to its owner's hand. Freeze all other enemy units.",
+    flavorText: 'The ring of runes closes. What is inside is taken; what is outside is held.',
+  },
+  {
+    ...spell, id: 'neu_abyssal_pyre', name: 'Abyssal Pyre', faction: 'NEUTRAL', rarity: 'EPIC',
+    manaCost: 4, target: { kind: 'ENEMY_UNIT' },
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'TARGET_AND_ADJACENT' }] }],
+    description: 'Deal 3 damage to an enemy unit and the units next to it.',
+    flavorText: 'Light one pyre in the Abyss and the ones beside it catch as well.',
+  },
+  // ----- Legendaries -----
+  {
+    ...spell, id: 'neu_crown_of_the_abyss', name: 'Crown of the Abyss', faction: 'NEUTRAL', rarity: 'LEGENDARY',
+    manaCost: 5,
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DRAW_CARDS', amount: 2, filter: { tag: 'Knight' } }, { type: 'REDUCE_COST', amount: 1, scope: 'HAND', filter: { tag: 'Knight' } }] }],
+    description: 'Draw 2 Knights from your deck. Knights in your hand cost (1) less.',
+    flavorText: 'Whoever lights the golden brazier is crowned. Every Knight below answers the call.',
+  },
+  {
+    ...spell, id: 'ast_wings_of_the_last_light', name: 'Wings of the Last Light', faction: 'ASTRAL', rarity: 'LEGENDARY',
+    manaCost: 5, archetypes: ['Starlit Control'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'BUFF', attack: 2, health: 2, target: 'ALL_ALLY_UNITS' }, { type: 'GRANT_KEYWORD', keyword: 'WARD', target: 'ALL_ALLY_UNITS' }] }],
+    description: 'Give your units +2/+2 and Ward.',
+    flavorText: 'The last light of the Conclave spread its wings over everyone still standing.',
   },
 ];

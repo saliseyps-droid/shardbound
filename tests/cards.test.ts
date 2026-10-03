@@ -32,7 +32,7 @@ describe('card database', () => {
         firstPlayer: 0,
         skipMulligan: true,
         players: [
-          { name: 'A', avatar: 'a', deck, talents: DEFAULT_BUILD.EMBER, startingBoard: ['emb_kindling_imp'] },
+          { name: 'A', avatar: 'a', deck, talents: DEFAULT_BUILD.EMBER, startingBoard: ['emb_kindling_imp', 'ver_thornmail_knight'] }, // a Knight for Knight-targeting spells
           { name: 'B', avatar: 'b', deck: Array.from({ length: 30 }, () => 'emb_kindling_imp'), startingBoard: ['emb_kindling_imp', 'emb_kindling_imp'] },
         ],
       });

@@ -6,12 +6,16 @@ import { createRng } from '@/core/rng';
 import { act, giveCard, hero, newGame, setEnergy, unitRef } from './helpers';
 
 describe('Curse of the Abyss set', () => {
-  it('has 45 collectible Knights across every faction', () => {
+  it('has 45 Knights and 15 spells across every faction', () => {
     const cards = cardsBy({ set: 'ABYSS' }).filter((c) => c.collectible);
-    expect(cards).toHaveLength(45);
-    expect(cards.every((c) => c.cardType === 'UNIT' && c.tags?.includes('Knight'))).toBe(true);
+    expect(cards).toHaveLength(60);
+    const units = cards.filter((c) => c.cardType === 'UNIT');
+    const spells = cards.filter((c) => c.cardType === 'SPELL');
+    expect(units).toHaveLength(45);
+    expect(units.every((c) => c.tags?.includes('Knight'))).toBe(true);
+    expect(spells).toHaveLength(15);
     expect(new Set(cards.map((c) => c.faction))).toEqual(new Set(['EMBER', 'VERDANT', 'IRON', 'ASTRAL', 'VOID', 'TIDE', 'NEUTRAL']));
-    expect(cards.filter((c) => c.rarity === 'LEGENDARY')).toHaveLength(8);
+    expect(cards.filter((c) => c.rarity === 'LEGENDARY')).toHaveLength(10);
   });
 
   it('is sold in the shop and opens packs of its own cards', () => {
@@ -92,6 +96,40 @@ describe('Curse of the Abyss: third wave', () => {
     setEnergy(s, 0, 3);
     s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'tid_undertow_halberdier'), target: unitRef(s.players[1].board[0]) });
     expect(s.players[1].board).toHaveLength(0);
+  });
+});
+
+describe('Curse of the Abyss: spells', () => {
+  it('Abyssal Flare hits harder while you control a Knight', () => {
+    let s = newGame({ board0: ['ver_thornmail_knight'], board1: ['token_golem', 'token_golem'] });
+    setEnergy(s, 0, 5);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'emb_abyssal_flare'), target: unitRef(s.players[1].board[0]) });
+    expect(s.players[1].board[0].damage).toBe(3);
+    let t = newGame({ board1: ['token_golem'] });
+    setEnergy(t, 0, 5);
+    t = act(t, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(t, 0, 'emb_abyssal_flare'), target: unitRef(t.players[1].board[0]) });
+    expect(t.players[1].board[0].damage).toBe(2);
+  });
+
+  it('Undertow Surge only damages a unit that is already Frozen, then Freezes it', () => {
+    let s = newGame({ board1: ['token_golem'] });
+    setEnergy(s, 0, 5);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'tid_undertow_surge'), target: unitRef(s.players[1].board[0]) });
+    expect(s.players[1].board[0].damage).toBe(0);
+    expect(s.players[1].board[0].frozen).toBe(true);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'tid_undertow_surge'), target: unitRef(s.players[1].board[0]) });
+    expect(s.players[1].board[0].damage).toBe(3);
+  });
+
+  it('Crown of the Abyss draws 2 Knights and makes Knights in hand cheaper', () => {
+    const deck = [...Array(20).fill('token_recruit'), 'ver_thornmail_knight', 'irn_bastion_dreadknight', ...Array(8).fill('token_recruit')];
+    let s = newGame({ deck0: deck });
+    setEnergy(s, 0, 10);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'neu_crown_of_the_abyss') });
+    const bastion = s.players[0].hand.find((c) => c.cardId === 'irn_bastion_dreadknight')!;
+    expect(bastion).toBeTruthy();
+    expect(s.players[0].hand.some((c) => c.cardId === 'ver_thornmail_knight')).toBe(true);
+    expect(bastion.costMod).toBe(-1);
   });
 });
 
