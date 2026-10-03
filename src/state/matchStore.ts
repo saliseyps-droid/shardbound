@@ -376,7 +376,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     const cfg = get().config;
     set({ banner: { text: player === HUMAN ? t('match.yourTurn') : t('match.theirTurn', { name: get().game?.players[AI].hero.name ?? '' }), id: bannerSeq++ } });
     if (player === HUMAN) {
-      audio.play('turn');
+      // No chime here: the draw at the start of the turn already makes a sound.
       const timer = useSettings.getState().turnTimer && cfg?.mode !== 'TUTORIAL' && GAME_RULES.turnTimerSeconds > 0;
       set({ turnDeadline: timer ? Date.now() + GAME_RULES.turnTimerSeconds * 1000 : null });
     } else {
@@ -727,6 +727,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     endTurn: () => {
       const s = get();
       if (!s.game || s.game.activePlayer !== HUMAN || s.game.phase !== 'MAIN' || s.busy) return;
+      audio.play('endTurn');
       set({ selection: null, targets: [], turnDeadline: null });
       void dispatch({ type: 'END_TURN', player: HUMAN });
     },

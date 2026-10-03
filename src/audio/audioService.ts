@@ -21,6 +21,7 @@ export type SoundEvent =
   | 'victory'
   | 'defeat'
   | 'turn'
+  | 'endTurn'
   | 'error'
   | 'coin'
   | 'levelUp';
@@ -77,6 +78,8 @@ const RECIPES: Record<SoundEvent, Tone[]> = {
     { freq: 262, dur: 0.9, type: 'sine', gain: 0.22, delay: 0.6 },
   ],
   turn: [{ freq: 440, dur: 0.12, type: 'sine', gain: 0.18 }, { freq: 660, dur: 0.2, type: 'sine', gain: 0.18, delay: 0.1 }],
+  // Fallback until the recorded book-close sound has loaded.
+  endTurn: [{ freq: 180, to: 120, dur: 0.12, type: 'triangle', gain: 0.12 }],
   error: [{ freq: 200, dur: 0.12, type: 'square', gain: 0.1 }, { freq: 150, dur: 0.15, type: 'square', gain: 0.1, delay: 0.1 }],
   coin: [{ freq: 1320, dur: 0.08, type: 'square', gain: 0.08 }, { freq: 1760, dur: 0.16, type: 'square', gain: 0.08, delay: 0.07 }],
   levelUp: [
@@ -102,6 +105,7 @@ const SAMPLES: Partial<Record<SoundEvent, { prefix: string; gain: number; layer?
   spell: { prefix: 'spell', gain: 0.3 },
   shield: { prefix: 'shield', gain: 0.22 },
   coin: { prefix: 'coin', gain: 0.3 },
+  endTurn: { prefix: 'endturn', gain: 0.45 },
   death: { prefix: 'death', gain: 0.4, layer: true },
   packOpen: { prefix: 'pack', gain: 0.4, layer: true },
 };

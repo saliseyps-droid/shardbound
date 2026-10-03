@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.6',
+    date: '2026-10-03',
+    title: 'Turn sounds',
+    summary: 'New sounds for playing a card and ending your turn; the extra chime at the start of your turn is gone.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Playing a card now lands on the table with a soft leather slap.',
+          'Ending your turn closes it with the sound of a book shutting.',
+          'The old chime at the start of your turn is gone; only the card you draw is heard.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.18.5',
     date: '2026-10-03',
     title: 'Quieter sounds',
