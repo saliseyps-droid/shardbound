@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.3',
+    date: '2026-10-03',
+    title: 'iPhone and phone fixes',
+    summary: 'The menu works on iPhones again, and the shop fits phone screens.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          'iPhone: the top bar and the menu button no longer hide under the notch or the clock, so the menu opens again in portrait. Matches, the leave button, messages and the welcome screen also keep clear of the notch and the home bar.',
+          'Phones: Warden portraits in the shop fit the screen (three per row) instead of spilling past the edge.',
+          'Your Warden portrait now also shows in tournament lists and brackets, when picking an Arena Warden and when creating a deck.',
+          'Booster packs lists the newest set first, like the shop. The shop subtitle mentions bundles and portraits.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.18.2',
     date: '2026-10-03',
     title: '16 new card backs',
@@ -47,7 +65,7 @@ export const PATCH_NOTES: PatchNote[] = [
       {
         kind: 'new',
         items: [
-          'Shop: the Curse of the Abyss Bundle has 10 Curse of the Abyss packs, the Hollow Vortex card back and the Frost Lich Warden portrait for 1300 Gold instead of 1850. One per account.',
+          'Shop: the Curse of the Abyss Bundle has 10 Curse of the Abyss packs, the Hollow Vortex card back and the Frost Lich Warden portrait for 30% less than buying them one by one. One per account.',
           'If you already own the card back or the portrait, it isn\'t charged: the price only counts what you still get, still with 30% off.',
         ],
       },

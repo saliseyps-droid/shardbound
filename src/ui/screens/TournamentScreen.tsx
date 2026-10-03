@@ -148,7 +148,7 @@ function Lobby({ tour }: { tour: Tournament }) {
         <ul className="t-seats">
           {seats.map((p, i) => (
             <li key={i} className={`t-seat ${p ? '' : 'empty'}`}>
-              {p ? <WardenPortrait faction={p.faction} size={44} /> : <span className="t-seat-empty" aria-hidden />}
+              {p ? <WardenPortrait faction={p.faction} portrait={p.side?.portrait} size={44} /> : <span className="t-seat-empty" aria-hidden />}
               <span>
                 <strong>{p ? p.name : tr('Open seat')}</strong>
                 <span className="faint">{p ? (p.id === 'p0' ? tr('Organizer') : p.id === t.myId ? tr('You') : tr('Player')) : tr('A bot takes this seat if nobody joins')}</span>
@@ -196,7 +196,7 @@ function PlayerLine({ tour, id, winner }: { tour: Tournament; id: string | null;
   if (!p) return <div className="t-player tbd">{tr('To be decided')}</div>;
   return (
     <div className={`t-player ${winner === p.id ? 'won' : winner ? 'lost' : ''} ${p.id === me ? 'me' : ''}`}>
-      <WardenPortrait faction={p.faction} size={34} />
+      <WardenPortrait faction={p.faction} portrait={p.side?.portrait} size={34} />
       <span className="t-name">
         {p.name}
         {p.id === me && ` ${tr('(you)')}`}
@@ -245,7 +245,7 @@ function Bracket({ tour }: { tour: Tournament }) {
     <>
       {tour.phase === 'done' && champion && (
         <section className="panel t-champion">
-          <WardenPortrait faction={champion.faction} size={90} />
+          <WardenPortrait faction={champion.faction} portrait={champion.side?.portrait} size={90} />
           <div>
             <h3>{champion.id === t.myId ? tr('You are the champion!') : tr('{name} wins the tournament', { name: champion.name })}</h3>
             <p className="muted">{place === 1 ? tr('Prize: {prize}.', { prize: prizeText(prizes.champion) }) : place === 2 ? tr('Runner-up prize: {prize}.', { prize: prizeText(prizes.runnerUp) }) : place === 3 ? tr('Third place prize: {prize}.', { prize: prizeText(prizes.third) }) : tr('Better luck next time.')}</p>

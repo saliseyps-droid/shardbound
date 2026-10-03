@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.3': {
+    title: 'Opravy pro iPhone a telefony',
+    summary: 'Menu na iPhonu zase funguje a obchod se vejde na displej telefonu.',
+    sections: [
+      [
+        'iPhone: horní lišta a tlačítko menu už nejsou schované pod výřezem displeje a hodinami, takže menu jde na výšku zase otevřít. Odstup od výřezu a spodní lišty drží i zápasy, tlačítko pro opuštění zápasu, zprávy a úvodní obrazovka.',
+        'Telefony: portréty Strážců se v obchodě vejdou na displej (tři v řádku) a nepřetékají přes okraj.',
+        'Tvůj portrét Strážce se teď ukazuje i v seznamu a pavouku turnaje, při výběru Strážce v Aréně a při zakládání decku.',
+        'Booster balíčky jsou seřazené od nejnovějšího setu, stejně jako obchod. Podnadpis obchodu zmiňuje i balíčky a portréty.',
+      ],
+    ],
+  },
   '0.18.2': {
     title: '16 nových rubů karet',
     summary: 'Do obchodu přibývá druhá kolekce rubů karet.',
@@ -17,7 +29,7 @@ const notes: PatchNotesOverlay = {
     summary: 'Jednorázový balíček k nejnovějšímu setu: 10 boosterů, rub karet a portrét Strážce o 30 % levněji.',
     sections: [
       [
-        'Obchod: Balíček Curse of the Abyss obsahuje 10 boosterů Curse of the Abyss, rub karet Hollow Vortex a portrét Strážce Mrazivý lich za 1300 zlata místo 1850. Jednou na účet.',
+        'Obchod: Balíček Curse of the Abyss obsahuje 10 boosterů Curse of the Abyss, rub karet Hollow Vortex a portrét Strážce Mrazivý lich o 30 % levněji než po jednom. Jednou na účet.',
         'Pokud rub nebo portrét už máš, neplatíš za něj: cena počítá jen to, co ještě dostaneš, stále se slevou 30 %.',
       ],
     ],

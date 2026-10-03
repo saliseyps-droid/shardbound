@@ -76,7 +76,7 @@ function LanguageToggle() {
     { code: 'cs', label: 'CZ', name: 'Čeština' },
   ];
   return (
-    <div role="group" aria-label={t('Language')} style={{ position: 'fixed', top: 12, right: 12, zIndex: 5, display: 'flex', gap: 4 }}>
+    <div role="group" aria-label={t('Language')} style={{ position: 'fixed', top: 'calc(12px + env(safe-area-inset-top, 0px))', right: 'calc(12px + env(safe-area-inset-right, 0px))', zIndex: 5, display: 'flex', gap: 4 }}>
       {opts.map((o) => (
         <button key={o.code} type="button" className={`btn btn-sm ${o.code === active ? 'btn-primary' : 'btn-ghost'}`} aria-pressed={o.code === active} title={o.name} onClick={() => setLanguage(o.code)}>
           {o.label}

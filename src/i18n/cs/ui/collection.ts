@@ -178,7 +178,7 @@ const d: Record<string, string> = {
   'Buy for {n} Gold': 'Koupit za {n} zlata',
   'Bought {n} {set} packs.': 'Koupen {n} booster {set}.|Koupeny {n} boostery {set}.|Koupeno {n} boosterů {set}.',
   Shop: 'Obchod',
-  'Trade Gold for booster packs and card backs. Every pack holds five cards.': 'Vyměň zlato za boostery a rubové strany. Každý booster obsahuje pět karet.',
+  'Trade Gold for booster packs, bundles, card backs and Warden portraits. Every pack holds five cards.': 'Vyměň zlato za boostery, balíčky, ruby karet a portréty Strážců. Každý booster obsahuje pět karet.',
   'Open packs': 'Otevřít boostery',
   '{n} unopened': 'Neotevřené: {n}',
   'No unopened packs of this set.': 'Žádné neotevřené boostery této edice.',

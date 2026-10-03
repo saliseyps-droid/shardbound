@@ -7,7 +7,7 @@ import { getCardBack } from '@/data/cardBacks';
 import { FACTIONS } from '@/data/factions';
 import { defaultBuild, talentSummary, type TalentPick } from '@/data/wardenTalents';
 import { arenaDeck, arenaOpponent, arenaPhase, arenaWins, currentOffer, hasFreeArenaEntry, type ArenaRun, type ArenaSummary } from '@/domain/arena';
-import type { CardDefinition } from '@/game/types';
+import type { CardDefinition, PlayableFaction } from '@/game/types';
 import { gameService, useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
 import { toast, useUi } from '@/state/uiStore';
@@ -150,14 +150,18 @@ function ArenaLobby({ gold, runsPlayed, bestWins, free }: { gold: number; runsPl
   );
 }
 
+/** Your chosen portrait for a faction (Profile → Warden portraits). */
+const useMyPortrait = (f: PlayableFaction | null) => useAccount((s) => (f ? (s.save?.profile.factionPortraits[f] ?? null) : null));
+
 function FactionPick({ run }: { run: ArenaRun }) {
+  const chosen = useAccount((s) => s.save?.profile.factionPortraits ?? {});
   return (
     <div className="arena-factions">
       {run.factionChoices.map((f) => {
         const info = FACTIONS[f];
         return (
           <button key={f} className="panel arena-faction" style={{ '--fc': info.colors.primary } as CSSProperties} onClick={() => report(gameService.arenaChooseFaction(f), 'buff')}>
-            <WardenPortrait faction={f} size={120} />
+            <WardenPortrait faction={f} portrait={chosen[f]} size={120} />
             <strong className="arena-faction-name">{info.name}</strong>
             <em className="muted">{info.motto}</em>
             <span className="arena-faction-identity">{info.identity}</span>
@@ -170,6 +174,7 @@ function FactionPick({ run }: { run: ArenaRun }) {
 }
 
 function DeckSidebar({ run }: { run: ArenaRun }) {
+  const portrait = useMyPortrait(run.faction);
   const rows = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const id of run.picks) counts[id] = (counts[id] ?? 0) + 1;
@@ -185,7 +190,7 @@ function DeckSidebar({ run }: { run: ArenaRun }) {
   return (
     <aside className="panel arena-deck" aria-label={t('Your Arena deck')}>
       <div className="arena-deck-head">
-        {run.faction && <WardenPortrait faction={run.faction} size={40} />}
+        {run.faction && <WardenPortrait faction={run.faction} portrait={portrait} size={40} />}
         <div>
           <strong>{info?.name}</strong>
           <span className="faint num">

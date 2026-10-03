@@ -17,6 +17,7 @@ import { t } from '@/i18n';
 import '@/ui/styles/decks.css';
 
 function FactionPicker({ value, onChange }: { value: PlayableFaction; onChange: (f: PlayableFaction) => void }) {
+  const chosen = useAccount((s) => s.save?.profile.factionPortraits ?? {});
   return (
     <div className="faction-picker" role="radiogroup" aria-label={t('Warden faction')}>
       {PLAYABLE_FACTIONS.map((f) => {
@@ -31,7 +32,7 @@ function FactionPicker({ value, onChange }: { value: PlayableFaction; onChange: 
             style={{ '--fc': info.colors.primary, '--fd': info.colors.dark } as CSSProperties}
             onClick={() => onChange(f)}
           >
-            <WardenPortrait faction={f} size={40} />
+            <WardenPortrait faction={f} portrait={chosen[f]} size={40} />
             <span className="fc-name">{info.name}</span>
             <span className="fc-identity">{info.identity}</span>
           </button>

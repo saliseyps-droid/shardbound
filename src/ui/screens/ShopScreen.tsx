@@ -170,7 +170,7 @@ export default function ShopScreen() {
     <div className="screen shop-screen">
       <ScreenHeader
         title={t('Shop')}
-        subtitle={t('Trade Gold for booster packs and card backs. Every pack holds five cards.')}
+        subtitle={t('Trade Gold for booster packs, bundles, card backs and Warden portraits. Every pack holds five cards.')}
         actions={
           <>
             <span className="shop-wallet">

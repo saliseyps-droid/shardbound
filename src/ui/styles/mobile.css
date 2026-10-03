@@ -166,3 +166,52 @@ body .hand-card.is-peek .card { filter: drop-shadow(0 0 6px var(--gold-bright)) 
   body .enemy-side > .draw-pile-anchor { left: 48px; }
   body .match { --unit-w: clamp(46px, 15vh, 84px); }
 }
+
+/* ------------------------------------------------------------------ */
+/* iPhone notch / Dynamic Island / home indicator. index.html uses     */
+/* viewport-fit=cover, so the page reaches under them: keep the header, */
+/* menu, screens and the match inside the safe area.                   */
+/* ------------------------------------------------------------------ */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+body .app-shell { grid-template-rows: calc(var(--header-h) + var(--safe-top)) 1fr; }
+body .app-shell.in-match { grid-template-rows: 1fr; }
+body .app-header {
+  padding-top: var(--safe-top);
+  padding-left: max(var(--space-4), var(--safe-left));
+  padding-right: max(var(--space-4), var(--safe-right));
+}
+body .screen {
+  padding-left: max(clamp(16px, 3vw, 48px), var(--safe-left));
+  padding-right: max(clamp(16px, 3vw, 48px), var(--safe-right));
+  padding-bottom: calc(var(--space-7) + var(--safe-bottom));
+}
+body .match { box-sizing: border-box; padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left); }
+body .toast-host { right: calc(16px + var(--safe-right)); bottom: calc(16px + var(--safe-bottom)); }
+body .cloud-banner { bottom: calc(16px + var(--safe-bottom)); }
+@media (max-width: 760px) {
+  body .app-header { padding-left: max(var(--space-2), var(--safe-left)); padding-right: max(var(--space-2), var(--safe-right)); }
+  body .main-nav { top: calc(var(--header-h) + var(--safe-top)); padding-bottom: max(var(--space-3), var(--safe-bottom)); }
+  body .nav-backdrop { top: calc(var(--header-h) + var(--safe-top)); }
+}
+
+/* Shop: three Warden portraits per row on phones. */
+@media (max-width: 760px) {
+  body .portrait-shop-faction { padding: var(--space-3); }
+  body .portrait-shop-row { gap: var(--space-2); justify-content: space-around; }
+  body .portrait-tile { width: 88px; }
+  body .portrait-tile .warden-portrait { width: 70px !important; height: 80px !important; }
+  body .portrait-tile strong { font-size: 12px; }
+}
+@media (max-width: 760px) {
+  body .collection-side.has-detail { padding-bottom: calc(var(--space-3) + var(--safe-bottom)); }
+}
+/* The leave button sits on the match corner, so it needs the insets itself. */
+body .leave-btn { top: calc(10px + var(--safe-top)); left: calc(10px + var(--safe-left)); }
+@media (max-height: 520px) {
+  body .leave-btn { top: calc(4px + var(--safe-top)); left: calc(4px + var(--safe-left)); }
+}

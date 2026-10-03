@@ -11,7 +11,8 @@ import { t, tn } from '@/i18n';
 import '@/ui/styles/shop.css';
 import '@/ui/styles/packs.css';
 
-const SETS = (Object.keys(SET_INFO) as SetId[]).sort((a, b) => SET_INFO[a].releaseOrder - SET_INFO[b].releaseOrder);
+/** Newest set first, like the shop. */
+const SETS = (Object.keys(SET_INFO) as SetId[]).sort((a, b) => SET_INFO[b].releaseOrder - SET_INFO[a].releaseOrder);
 
 export default function PacksScreen() {
   const navigate = useNavigate();
