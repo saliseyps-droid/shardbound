@@ -335,10 +335,13 @@ label.toggle-row { cursor: pointer; }
 
 /* Profile: rewards of the next levels */
 .level-road ul { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; gap: 6px; }
-.level-road li { display: flex; align-items: center; gap: var(--space-2); }
+/* Gem in its own column, level with the first row of rewards; extra rewards wrap under each other. */
+.level-road li { display: grid; grid-template-columns: 26px minmax(0, 1fr); align-items: start; gap: var(--space-2); }
+.level-road li .level-gem { margin-top: 1px; }
 .level-road li.major .chip { border-color: rgba(246, 207, 122, 0.5); }
 .level-road li.milestone .chip { border-color: var(--gold, #f6cf7a); color: var(--gold, #f6cf7a); }
-.level-road-rewards { display: flex; flex-wrap: wrap; gap: 4px; }
+.level-road-rewards { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-height: 28px; }
+.level-road-rewards .chip { white-space: nowrap; }
 .level-gem.small { width: 26px; height: 26px; font-size: 12px; }
 
 /* Warden portraits: pickers (Profile, deck editor) and the shop */

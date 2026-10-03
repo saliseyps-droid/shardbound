@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.18.14': {
+    title: 'Úhlednější Profil a Obchod',
+    summary: 'Odměny za úrovně v Profilu jsou úhledně zarovnané a balíček setu v Obchodě už nemá barevný rámeček.',
+    sections: [
+      [
+        'Odměny za další úrovně: u úrovní s více odměnami zůstává odznak úrovně na prvním řádku a zbytek se úhledně zalomí pod něj.',
+        'Balíček setu v Obchodě už nemá barevný rámeček.',
+      ],
+    ],
+  },
   '0.18.13': {
     title: 'Více titulů',
     summary: 'Tituly teď získáváš každých 5 úrovní místo 10 a přibyly čtyři nové.',

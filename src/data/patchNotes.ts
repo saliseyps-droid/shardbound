@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.18.14',
+    date: '2026-10-04',
+    title: 'Tidier Profile and Shop',
+    summary: 'The level rewards in your Profile line up neatly, and the set bundle lost its coloured frame.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Next level rewards: levels with several rewards keep the level badge on the first line and wrap the rest neatly underneath.',
+          'The set bundle in the Shop no longer has a coloured frame.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.18.13',
     date: '2026-10-04',
     title: 'More titles',
