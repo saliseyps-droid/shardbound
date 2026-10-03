@@ -24,6 +24,11 @@ const cards: CardsOverlay = {
   vod_hymn_of_unmaking: { name: 'Hymna zániku', description: 'Způsob 2 poškození všem jednotkám. Pak oživ náhodnou spřátelenou jednotku s cenou 3 nebo méně.', flavorText: 'Sloka, která ukončí všechny písně. Chór ji zpívá potichu.' },
   vod_ysolde: { name: 'Ysolde, Královna Prázdnoty', description: 'Při nasazení: Oživ 3 náhodné spřátelené jednotky, které v této hře zemřely.', flavorText: 'Mrtvé si nepodmanila. Prostě je pozvala domů.' },
   vod_nhal: { name: 'Nhal, Mlčenlivá hymna', description: 'Vysátí. Kdykoli zemře jiná spřátelená jednotka, způsob 2 poškození nepřátelskému Strážci.', flavorText: 'Poslední tón každé písně patří jemu.' },
+  vod_tallys_the_menace: {
+    name: 'Tallys Hrozivý',
+    description: 'Stráž. Při nasazení: Znič náhodnou nepřátelskou jednotku.',
+    flavorText: 'Kde zpívá Chór, kráčí on v čele. Za ním už nekráčí nic.',
+  },
 };
 
 export default cards;

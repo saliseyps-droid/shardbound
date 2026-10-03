@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.12.2': {
+    title: 'Tallys Hrozivý',
+    summary: 'Do setu Fantasy Realms přibývá nová legendárka Prázdného chóru.',
+    sections: [['Tallys Hrozivý (Prázdný chór, Legendární, 6 energie, Nemrtvý 5/5): Stráž. Při nasazení: Znič náhodnou nepřátelskou jednotku.']],
+  },
   '0.12.1': {
     title: 'Balanc talentů',
     summary: 'Vyvolávací schopnosti Prázdného chóru a Mosazného dominia jsou o něco dražší.',

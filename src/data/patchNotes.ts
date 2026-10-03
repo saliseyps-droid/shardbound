@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.12.2',
+    date: '2026-10-03',
+    title: 'Tallys the Menace',
+    summary: 'A new Hollow Choir Legendary joins the Fantasy Realms set.',
+    sections: [{ kind: 'new', items: ['Tallys the Menace (Hollow Choir Legendary, 6 energy, 5/5 Undead): Guard. On Deploy: Destroy a random enemy unit.'] }],
+    commits: [],
+  },
+  {
     version: '0.12.1',
     date: '2026-10-03',
     title: 'Talent balance',
