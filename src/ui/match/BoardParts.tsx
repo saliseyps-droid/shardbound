@@ -62,7 +62,7 @@ export const UnitView = memo(function UnitView({
   targetable?: boolean;
   selected?: boolean;
   onPointerDown?: (e: RPointerEvent, uid: number) => void;
-  onHover?: (cardId: string | null) => void;
+  onHover?: (cardId: string | null, uid?: number) => void;
 }) {
   const card = getCardSafe(unit.cardId);
   const faction = FACTIONS[card.faction];
@@ -96,6 +96,7 @@ export const UnitView = memo(function UnitView({
     unit.barrier && KEYWORDS.BARRIER.name,
     unit.ambush && KEYWORDS.AMBUSH.name,
     unit.frozen && t('Frozen'),
+    unit.silenced && t('Silenced'),
     unit.burn > 0 && `${KEYWORDS.BURN.name} ${unit.burn}`,
     ready && t('ready to attack'),
     targetable && t('valid target'),
@@ -112,7 +113,7 @@ export const UnitView = memo(function UnitView({
       style={{ '--f1': faction.colors.primary, '--fglow': faction.colors.glow, '--fdark': faction.colors.dark } as CSSProperties}
       onPointerDown={(e) => !ghost && onPointerDown?.(e, unit.uid)}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), useMatch.getState().clickUnit(unit.uid))}
-      onMouseEnter={() => onHover?.(unit.cardId)}
+      onMouseEnter={() => onHover?.(unit.cardId, unit.uid)}
       onMouseLeave={() => onHover?.(null)}
     >
       <div className="unit-body">

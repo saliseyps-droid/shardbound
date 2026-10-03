@@ -32,6 +32,8 @@ export interface CardViewProps {
   dimmed?: boolean;
   selected?: boolean;
   faceDown?: boolean;
+  /** A unit on the board that was Silenced: its rules text no longer applies. */
+  silenced?: boolean;
   className?: string;
   style?: CSSProperties;
   onClick?: (e: MouseEvent) => void;
@@ -78,6 +80,7 @@ export const CardView = memo(function CardView(props: CardViewProps) {
     props.playable ? 'is-playable' : '',
     props.dimmed ? 'is-dimmed' : '',
     props.selected ? 'is-selected' : '',
+    props.silenced ? 'is-silenced' : '',
     props.onClick ? 'is-clickable' : '',
     props.className ?? '',
   ].join(' ');
@@ -127,7 +130,8 @@ export const CardView = memo(function CardView(props: CardViewProps) {
           <Glyph name={faction.sigil} size={Math.round(width * 0.36)} />
         </span>
         <div className="card-text">
-          <p>
+          {props.silenced && <span className="card-silenced-tag">{t('Silenced')}</span>}
+          <p className="card-rules">
             <KeywordText text={card.description ?? ''} />
           </p>
           {props.size !== 'xs' && props.size !== 'sm' && card.flavorText && width >= 220 && <p className="card-flavor">{card.flavorText}</p>}

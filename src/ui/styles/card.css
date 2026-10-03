@@ -277,3 +277,11 @@
   pointer-events: none;
 }
 .tooltip-bubble strong { font-family: var(--font-display); color: var(--gold-bright); font-size: var(--t-md); }
+
+/* A Silenced unit (board preview / inspector): its rules text is struck through. */
+.card.is-silenced .card-rules { text-decoration: line-through; text-decoration-thickness: 2px; opacity: 0.55; }
+.card-silenced-tag {
+  display: inline-block; margin-bottom: 4px; padding: 1px 8px; border-radius: 999px;
+  font-size: max(9px, calc(var(--card-w) * 0.05)); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  color: #f2f2f2; background: rgba(90, 90, 110, 0.85); border: 1px solid rgba(255, 255, 255, 0.25);
+}

@@ -48,7 +48,7 @@ export function CardInspector() {
     <Modal open onClose={() => close(null)} title={card.name} wide labelledBy="inspector-title" className="inspector">
       <div className="inspector-body">
         <div className="inspector-card">
-          <CardView card={card} size="xl" variant={variant} />
+          <CardView card={card} size="xl" variant={variant} silenced={inspect.silenced} />
         </div>
         <div className="inspector-info">
           <dl className="info-grid">

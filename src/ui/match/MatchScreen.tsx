@@ -122,7 +122,10 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const boardBg = useMemo(() => pickBoardBackground(), [startedAt]);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
-  const [hoverCard, setHoverCard] = useState<string | null>(null);
+  const [hover, setHover] = useState<{ cardId: string; uid?: number } | null>(null);
+  const setHoverCard = (cardId: string | null, uid?: number) => setHover(cardId ? { cardId, uid } : null);
+  const hoverCard = hover?.cardId ?? null;
+  const hoverSilenced = hover?.uid !== undefined && !!game.players.some((p) => p.board.some((u) => u.uid === hover.uid && u.silenced));
   const [newCards, setNewCards] = useState<Set<number>>(new Set());
   const prevHand = useRef<number[]>([]);
   const boardRef = useRef<HTMLDivElement>(null);
@@ -374,8 +377,9 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const inspectAt = (el: HTMLElement): boolean => {
     const handUid = el.closest('[data-hand-uid]')?.getAttribute('data-hand-uid');
     const entity = el.closest('[data-entity^="u:"]')?.getAttribute('data-entity');
-    const cardId = handUid ? me.hand.find((c) => c.uid === Number(handUid))?.cardId : entity ? game.players.flatMap((p) => p.board).find((u) => `u:${u.uid}` === entity)?.cardId : undefined;
-    if (cardId) useUi.getState().inspectCard(cardId);
+    const unit = entity ? game.players.flatMap((p) => p.board).find((u) => `u:${u.uid}` === entity) : undefined;
+    const cardId = handUid ? me.hand.find((c) => c.uid === Number(handUid))?.cardId : unit?.cardId;
+    if (cardId) useUi.getState().inspectCard(cardId, undefined, { silenced: unit?.silenced });
     return !!cardId;
   };
 
@@ -522,7 +526,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
 
       <aside className="match-sidebar">
         <div className="hover-preview" aria-hidden>
-          {hoverCard ? <CardView card={hoverCard} width={220} /> : <BrandLogo size={200} className="sidebar-logo" />}
+          {hoverCard ? <CardView card={hoverCard} width={220} silenced={hoverSilenced} /> : <BrandLogo size={200} className="sidebar-logo" />}
         </div>
         <BattleLog game={game} />
         <div className="match-meta faint">

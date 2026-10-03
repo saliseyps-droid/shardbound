@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.13.4': {
+    title: 'Viditelné umlčení',
+    summary: 'Umlčené jednotky to teď ukazují, když se na ně podíváš.',
+    sections: [['Když najedeš na umlčenou jednotku nebo si ji prohlédneš, karta má štítek „Umlčeno“ a přeškrtnutý text, takže je jasné, že už neplatí.']],
+  },
   '0.13.3': {
     title: 'Spolehlivější připojení do turnaje',
     summary: 'Připojení do turnaje z jiné sítě teď čeká déle a samo to zkusí znovu.',

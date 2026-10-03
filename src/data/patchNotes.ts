@@ -19,6 +19,21 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.13.4',
+    date: '2026-10-03',
+    title: 'Silence you can see',
+    summary: 'Silenced units now show it when you look at them.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Hovering over or inspecting a Silenced unit shows its card with a "Silenced" label and the rules text struck through, so it is clear the text no longer applies.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.13.3',
     date: '2026-10-03',
     title: 'Steadier tournament connections',

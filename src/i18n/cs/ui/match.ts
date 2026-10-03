@@ -48,6 +48,7 @@ const d: Record<string, string> = {
   // Board parts
   '{name}, {atk} attack, {hp} of {max} health': '{name}, útok {atk}, životy {hp} z {max}',
   Frozen: 'Zmrazená',
+  Silenced: 'Umlčeno',
   'ready to attack': 'může útočit',
   'valid target': 'platný cíl',
   'Triggered ability': 'Spouštěná schopnost',
