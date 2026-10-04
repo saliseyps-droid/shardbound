@@ -180,7 +180,7 @@ export const TIDE_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'tid_skolky', name: 'Skolky', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'DEEP',
-    manaCost: 6, attack: 5, health: 5, tags: ['Mage'], archetypes: ['Deep Freeze', 'Undertow'],
+    manaCost: 7, attack: 5, health: 5, tags: ['Mage'], archetypes: ['Deep Freeze', 'Undertow'],
     abilities: [
       { trigger: 'ON_DEPLOY', effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'ALL_ENEMY_UNITS' }] },
       { trigger: 'LAST_BREATH', effects: [{ type: 'RETURN_TO_HAND', target: 'RANDOM_ENEMY_UNIT' }] },

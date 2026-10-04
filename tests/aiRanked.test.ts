@@ -78,10 +78,10 @@ describe('AI ranked ladder', () => {
     expect(loss(at(6, 0)).rankChange).toBe('NONE');
   });
 
-  it('a draw changes nothing on the ladder', () => {
+  it('a draw keeps rank and stars but ends the win streak', () => {
     const s = at(5, 2, { streak: 2 });
     const r = applyAiRankedResult(s, 'DRAW');
-    expect(r.state).toEqual(s);
+    expect(r.state).toEqual({ ...s, streak: 0, draws: 1 });
     expect(r.starDelta).toBe(0);
   });
 

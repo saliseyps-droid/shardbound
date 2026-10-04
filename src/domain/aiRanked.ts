@@ -1,6 +1,6 @@
 import type { AiPersonality, AiTuning } from '@/ai/config';
 import type { Difficulty } from '@/config/progression';
-import { createRng, nextInt, pickOne } from '@/core/rng';
+import { createRng, hashString, nextInt, pickOne } from '@/core/rng';
 import { PRACTICE_OPPONENTS, type OpponentDef } from '@/data/opponents';
 import { PLAYABLE_FACTIONS, type Rarity, type SetId } from '@/game/types';
 
@@ -17,6 +17,8 @@ export interface AiRankedState {
   streak: number;
   wins: number;
   losses: number;
+  /** Drawn matches (left out while 0, so older saves and fresh ladders look the same). */
+  draws?: number;
   /** Highest rank ever reached. */
   best: number;
   /** Tiers whose one-time reward has been granted. */
@@ -108,7 +110,8 @@ export interface AiRankedOutcome {
 
 export function applyAiRankedResult(prev: AiRankedState, result: 'WIN' | 'LOSS' | 'DRAW'): AiRankedOutcome {
   const s = repairAiRanked(prev);
-  if (result === 'DRAW') return { state: s, rankChange: 'NONE', starDelta: 0 };
+  // A draw keeps the stars but breaks the win streak.
+  if (result === 'DRAW') return { state: { ...s, streak: 0, draws: (s.draws ?? 0) + 1 }, rankChange: 'NONE', starDelta: 0 };
   if (result === 'WIN') {
     const streak = s.streak + 1;
     let rank = s.rank;
@@ -163,12 +166,14 @@ export function repairAiRanked(raw: unknown): AiRankedState {
   const rank = int(r.rank, 0, CROWN_RANK);
   const stars = rank >= CROWN_RANK ? int(r.stars) : int(r.stars, 0, STARS_PER_RANK - 1);
   const claimed = Array.isArray(r.tierRewardsClaimed) ? r.tierRewardsClaimed.filter((x): x is string => typeof x === 'string' && (AI_TIERS as string[]).includes(x) && x !== 'Bronze') : [];
+  const draws = int(r.draws);
   return {
     rank,
     stars,
     streak: int(r.streak),
     wins: int(r.wins),
     losses: int(r.losses),
+    ...(draws > 0 ? { draws } : {}),
     best: Math.max(rank, int(r.best, 0, CROWN_RANK)),
     tierRewardsClaimed: [...new Set(claimed)],
   };
@@ -244,6 +249,14 @@ export function aiStrengthFor(rank: number): AiStrength {
     default:
       return { difficulty: 'EXPERT', rarities: ALL, heroHealth: 35, bonusStartingEnergy: 1 };
   }
+}
+
+/**
+ * Seed of the next rival. It comes from the saved ladder (matches played so far), so leaving and
+ * re-opening the screen shows the same rival; it changes only once a match result is recorded.
+ */
+export function nextAiRival(s: AiRankedState): number {
+  return hashString(`ai-rival:${s.wins}:${s.losses}:${s.draws ?? 0}`);
 }
 
 const PERSONALITIES: AiPersonality[] = ['BALANCED', 'AGGRESSIVE', 'CONTROL', 'SWARM'];

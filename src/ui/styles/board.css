@@ -350,9 +350,10 @@
   z-index: 10;
   /* The hand strip spans the full width; only the cards themselves take input so it never covers the Warden controls. */
   pointer-events: none;
+  /* Distance between neighbouring cards in the fan (also sizes the tutorial highlight). */
+  --spread: clamp(52px, calc(var(--card-w) * 0.78 - var(--n) * 2.4px), var(--card-w));
 }
 .hand-card {
-  --spread: clamp(52px, calc(var(--card-w) * 0.78 - var(--n) * 2.4px), var(--card-w));
   position: absolute; bottom: calc(var(--card-w) * -0.08);
   left: 50%;
   transform: translateX(calc(-50% + var(--o) * var(--spread))) translateY(calc(var(--o) * var(--o) * 3px)) rotate(calc(var(--o) * 2.5deg));
@@ -480,9 +481,11 @@
 .tutorial-pointer.below { transform: translate(-50%, 0) rotate(180deg); }
 @keyframes tut-bob { from { transform: translateY(-6px); } to { transform: translateY(2px); } }
 @media (prefers-reduced-motion: reduce) { .tutorial-pointer svg { animation: none; } }
-.tutorial-next { display: grid; justify-items: center; gap: var(--space-2); }
+.tutorial-next { display: grid; justify-items: center; gap: var(--space-2); width: 100%; }
 .tutorial-next p { margin: 0; }
-.tutorial-next-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); }
+/* Four equal buttons: one row when there is room, otherwise even rows of equal height. */
+.tutorial-next-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); grid-auto-rows: 1fr; gap: var(--space-2); width: min(760px, 100%); }
+.tutorial-next-actions .btn { min-height: 48px; height: 100%; padding: 4px var(--space-4); white-space: normal; text-align: center; line-height: 1.2; }
 @media (max-width: 1400px) { .tutorial-box { width: min(280px, 24vw); font-size: var(--t-sm); } }
 
 .leave-btn { position: absolute; top: 10px; left: 10px; z-index: 50; }
@@ -505,10 +508,11 @@
 .reward-values { display: flex; gap: var(--space-3); align-items: center; }
 .xp-text { color: var(--cyan); font-weight: 800; }
 .results-xp { margin-top: var(--space-4); display: grid; gap: var(--space-2); }
+.xp-numbers { text-align: right; font-size: var(--t-sm); }
 .xp-row { display: grid; grid-template-columns: auto 1fr; gap: var(--space-3); align-items: center; }
 .level-up { color: var(--gold-bright); font-weight: 700; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .quest-mini { display: grid; grid-template-columns: 1fr 100px auto; gap: var(--space-2); align-items: center; padding: 4px 0; font-size: var(--t-sm); }
-.results-actions { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; }
+.results-actions { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; width: min(1100px, 100%); }
 
 @media (max-height: 800px) {
   .match { grid-template-rows: minmax(100px, 16vh) minmax(0, 1fr) minmax(190px, 30vh); }

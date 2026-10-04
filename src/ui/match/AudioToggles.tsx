@@ -1,7 +1,7 @@
 import { useSettings } from '@/state/settingsStore';
 import { t } from '@/i18n';
 
-/** Two small switches in the bottom-left corner of the board: music on top, sound effects below. */
+/** Two small switches (fixed label + aria-pressed = on; the tooltip names the action) in the bottom-left corner of the board: music on top, sound effects below. */
 export function AudioToggles() {
   const musicMuted = useSettings((s) => s.musicMuted);
   const sfxMuted = useSettings((s) => s.sfxMuted);
@@ -12,7 +12,7 @@ export function AudioToggles() {
         type="button"
         className={`icon-btn audio-toggle ${musicMuted ? 'is-off' : ''}`}
         aria-pressed={!musicMuted}
-        aria-label={musicMuted ? t('Unmute music') : t('Mute music')}
+        aria-label={t('Music')}
         title={musicMuted ? t('Unmute music') : t('Mute music')}
         onClick={() => update({ musicMuted: !musicMuted })}
       >
@@ -27,7 +27,7 @@ export function AudioToggles() {
         type="button"
         className={`icon-btn audio-toggle ${sfxMuted ? 'is-off' : ''}`}
         aria-pressed={!sfxMuted}
-        aria-label={sfxMuted ? t('Unmute sound effects') : t('Mute sound effects')}
+        aria-label={t('Sound effects')}
         title={sfxMuted ? t('Unmute sound effects') : t('Mute sound effects')}
         onClick={() => update({ sfxMuted: !sfxMuted })}
       >

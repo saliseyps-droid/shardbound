@@ -2,7 +2,6 @@ import { useState, type CSSProperties } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
-import { randomSeed } from '@/core/rng';
 import { MATCH_REWARDS, XP_REWARDS } from '@/config/progression';
 import { SET_INFO } from '@/config/economy';
 import { FACTIONS } from '@/data/factions';
@@ -15,6 +14,7 @@ import {
   aiRankedOpponent,
   aiStrengthFor,
   aiTierOf,
+  nextAiRival,
   nextTierReward,
   repairAiRanked,
 } from '@/domain/aiRanked';
@@ -32,14 +32,12 @@ export default function AiRankedScreen() {
   const save = useAccount((s) => s.save);
   const navigate = useNavigate();
   const [deckId, setDeckId] = useState<string | null>(() => (save ? firstValidDeck(save, save.profile.selectedDeckId) : null));
-  // The next rival is rolled when the screen opens (a new one after every match).
-  const [seed] = useState(() => randomSeed());
   if (!save) return null;
   const ladder = repairAiRanked(save.profile.aiRanked);
   const tier = aiTierOf(ladder.rank);
   const color = TIER_COLORS[tier];
   const strength = aiStrengthFor(ladder.rank);
-  const opponent = aiRankedOpponent(ladder.rank, seed);
+  const opponent = aiRankedOpponent(ladder.rank, nextAiRival(ladder)); // saved with the ladder: re-opening keeps the rival
   const next = nextTierReward(ladder);
   const validDeck = !!deckId && firstValidDeck(save, deckId) === deckId;
   const winGold = AI_RANKED_CONFIG.winGold[tier];
@@ -118,8 +116,14 @@ export default function AiRankedScreen() {
           </div>
 
           <div className="air-rules faint">
-            {t('Win: +1 star. Loss: −1 star. Three stars rank you up.')} {streakBonus ? t('From the third win in a row, each win gives a bonus star.') : ''}{' '}
-            {t('You never fall out of Silver, Gold or Diamond once you reach them.')}
+            {crown ? (
+              t('Crown is the top rank and you keep it for good. Every win adds a Crown point; a loss costs nothing.')
+            ) : (
+              <>
+                {t('Win: +1 star. Loss: −1 star. Three stars rank you up.')} {streakBonus ? t('From the third win in a row, each win gives a bonus star.') : ''}{' '}
+                {t('You never fall out of Silver, Gold or Diamond once you reach them.')}
+              </>
+            )}
           </div>
         </section>
 

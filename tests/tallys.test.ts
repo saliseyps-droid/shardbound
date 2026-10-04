@@ -3,9 +3,9 @@ import { getCard } from '@/data/cards';
 import { act, giveCard, newGame, setEnergy } from './helpers';
 
 describe('Tallys the Menace', () => {
-  it('is a 6-cost Hollow Choir Legendary 5/5 with Guard', () => {
+  it('is a 6-cost Hollow Choir Legendary 4/5 with Guard', () => {
     const c = getCard('vod_tallys_the_menace')!;
-    expect(c).toMatchObject({ faction: 'VOID', rarity: 'LEGENDARY', manaCost: 6, attack: 5, health: 5, collectible: true });
+    expect(c).toMatchObject({ faction: 'VOID', rarity: 'LEGENDARY', manaCost: 6, attack: 4, health: 5, collectible: true });
     expect(c.keywords).toContain('GUARD');
   });
 

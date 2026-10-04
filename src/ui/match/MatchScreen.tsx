@@ -4,7 +4,7 @@ import { getCardSafe } from '@/data/cards';
 import { effectiveCost, canPlayCard } from '@/engine/queries';
 import type { GameState } from '@/engine/types';
 import { useMatch, HUMAN, AI, parseEntity } from '@/state/matchStore';
-import { useMatchLaunch } from '@/state/matchLaunch';
+import { useMatchLaunch, type MatchConfig } from '@/state/matchLaunch';
 import { useSettings } from '@/state/settingsStore';
 import { toast, useUi } from '@/state/uiStore';
 import { CardBack, CardView } from '@/ui/components/CardView';
@@ -37,6 +37,28 @@ let mountedBoards = 0;
 
 /** Hand card width: from the viewport height; much smaller on phones held sideways. */
 const cardWidthFor = (h: number) => (h <= 520 ? Math.round(Math.max(54, h * 0.17)) : Math.round(Math.min(150, Math.max(104, h * 0.14))));
+
+/** Footer label for the match's mode ("Ranked vs Skolky"). */
+function modeLabel(config: MatchConfig | null | undefined): string {
+  switch (config?.mode) {
+    case 'ARENA':
+      return t('Arena');
+    case 'PVE':
+      return t('Campaign');
+    case 'TUTORIAL':
+      return t('Tutorial');
+    case 'AI_RANKED':
+      return t('AI Ranked');
+    case 'RANKED':
+      return t('Ranked');
+    case 'TOURNAMENT':
+      return t('Tournament');
+    case 'ONLINE':
+      return t('Online match');
+    default:
+      return config?.online ? t('Online match') : t('Practice');
+  }
+}
 
 function useViewportCardWidth() {
   const [w, setW] = useState(() => cardWidthFor(window.innerHeight));
@@ -535,7 +557,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         </div>
         <BattleLog game={game} />
         <div className="match-meta faint">
-          {t('{mode} vs {name}', { mode: t(config?.mode === 'ARENA' ? 'Arena' : config?.mode === 'PVE' ? 'Campaign' : config?.mode === 'TUTORIAL' ? 'Tutorial' : config?.online ? 'Online' : 'Practice'), name: game.players[AI].hero.name })}
+          {t('{mode} vs {name}', { mode: modeLabel(config), name: game.players[AI].hero.name })}
         </div>
       </aside>
 
@@ -576,6 +598,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           <span className="hand-peek-hint">{interactive ? (canPlayCard(game, HUMAN, peekCard).ok ? t('Tap the card to play it') : t('Not enough energy')) : t('Opponent’s turn')}</span>
         </div>
       )}
+      {/* Only the live board needs landscape; the results screen works upright. */}
+      {phase !== 'ended' && (
       <div className="rotate-hint" role="alert">
         <Glyph name="deck" size={48} />
         <strong>{t('Turn your phone sideways')}</strong>
@@ -586,6 +610,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           </button>
         )}
       </div>
+      )}
       <CastPreview />
       <TurnBanner />
       <TutorialOverlay />

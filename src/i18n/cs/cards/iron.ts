@@ -18,7 +18,7 @@ const cards: CardsOverlay = {
   irn_dominion_forge: { name: 'Výheň Dominia', description: 'Na začátku tvého tahu vyvolej Šrotobota 1/1. Náboje: 3.', flavorText: 'Každé ráno sjede z kovadliny čerstvý pomocník.' },
   irn_clockwork_commander: { name: 'Hodinový velitel', description: 'Tvé Konstrukty mají +1 k útoku.', flavorText: 'Mluví v tiknutích. Armáda rozumí.' },
   irn_shieldwall_protocol: { name: 'Protokol štítové hradby', description: 'Dej spřátelené jednotce +1/+2. Dej spřátelené jednotce schopnost Bariéra.', flavorText: 'Směrnice sedm: pláty mají přednost.' },
-  irn_cogspire_foundry: { name: 'Slévárna Ozubené věže', description: 'Na konci tvého tahu vyvolej Mosaznou hlídku 2/3. Trvá 3 tahy.', flavorText: 'Slévárenské město nikdy nespí. Ani jeho hlídky.' },
+  irn_cogspire_foundry: { name: 'Slévárna Ozubené věže', description: 'Na konci tvého tahu vyvolej Mosaznou hlídku 2/3. Trvá 4 tahy.', flavorText: 'Slévárenské město nikdy nespí. Ani jeho hlídky.' },
   irn_aegis_titan: { name: 'Titán Égidy', description: 'Stráž. Při nasazení: Získej 6 brnění.', flavorText: 'Kráčející citadela, kterou si Shromáždění objednalo po pádu Koruny.' },
   irn_mass_production: { name: 'Sériová výroba', description: 'Vyvolej 3 Šrotoboty 1/1. Dej svým jednotkám +1/+1.', flavorText: 'Kvantita má svou vlastní kvalitu.' },
   irn_aetherdyne_core: { name: 'Éterodynové jádro', description: 'Stráž. Na začátku tvého tahu získej prázdný krystal energie.', flavorText: 'Střep v mosazné kleci, který se každou hodinou točí rychleji.' },

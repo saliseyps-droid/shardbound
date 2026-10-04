@@ -266,7 +266,10 @@ export interface MatchReports {
   firstReportAt?: number;
 }
 
-export type ReportDecision = { kind: 'accept'; winnerId: string } | { kind: 'wait' } | { kind: 'replay' };
+export type ReportDecision = { kind: 'accept'; winnerId: string } | { kind: 'wait' } | { kind: 'replay'; draw?: boolean };
+
+/** Reported instead of a winner id when the match ended in a draw (e.g. a disconnect draw). */
+export const DRAW_REPORT = 'DRAW';
 
 /** How long the organizer waits for the second player's report. */
 export const REPORT_TIMEOUT_MS = 120_000;
@@ -286,21 +289,26 @@ export function isMatchParticipant(t: Tournament, matchId: TournamentMatchId, pl
  * A human vs bot match counts on the human's report. Between two humans both must
  * report the same winner; different reports mean a replay. If only one reports, the
  * organizer accepts it after a timeout, but only when both players actually started
- * the match (otherwise the match is replayed).
+ * the match (otherwise the match is replayed). A draw eliminates nobody: when every
+ * human reports a draw (or a lone draw report times out), the match is replayed.
  */
 export function decideReport(t: Tournament, matchId: TournamentMatchId, book: MatchReports, now: number): ReportDecision {
   const m = t.matches.find((x) => x.id === matchId);
   if (!m || !m.a || !m.b || m.status === 'done') return { kind: 'wait' };
-  const valid = (w: string | undefined) => w === m.a || w === m.b;
+  const valid = (w: string | undefined) => w === m.a || w === m.b || w === DRAW_REPORT;
   const humans = [m.a, m.b].filter((id) => !playerById(t, id)?.bot);
   const reported = humans.filter((h) => valid(book.reports[h]));
   if (reported.length === 0) return { kind: 'wait' };
   if (reported.length === humans.length) {
     const winners = new Set(reported.map((h) => book.reports[h]));
-    return winners.size === 1 ? { kind: 'accept', winnerId: book.reports[reported[0]] } : { kind: 'replay' };
+    if (winners.size !== 1) return { kind: 'replay' };
+    const winnerId = book.reports[reported[0]];
+    return winnerId === DRAW_REPORT ? { kind: 'replay', draw: true } : { kind: 'accept', winnerId };
   }
   if (book.firstReportAt !== undefined && now - book.firstReportAt >= REPORT_TIMEOUT_MS) {
-    return humans.every((h) => book.started.includes(h)) ? { kind: 'accept', winnerId: book.reports[reported[0]] } : { kind: 'replay' };
+    const winnerId = book.reports[reported[0]];
+    if (winnerId === DRAW_REPORT) return { kind: 'replay', draw: true };
+    return humans.every((h) => book.started.includes(h)) ? { kind: 'accept', winnerId } : { kind: 'replay' };
   }
   return { kind: 'wait' };
 }

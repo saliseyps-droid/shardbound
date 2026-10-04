@@ -120,7 +120,7 @@ export const EMBER_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'emb_kharzul_caldera', name: 'Kharzul Caldera', cardType: 'LOCATION', rarity: 'EPIC', set: 'CORE',
-    manaCost: 3, duration: 3, archetypes: ['Pyromancy', 'Blitz'],
+    manaCost: 2, duration: 3, archetypes: ['Pyromancy', 'Blitz'],
     abilities: [{ trigger: 'TURN_START', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ALL_ENEMIES' }] }],
     flavorText: 'The birthplace of the Legion. The deathplace of everyone else.',
   },

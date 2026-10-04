@@ -10,7 +10,7 @@ export const VOID_CARDS: CardDefinition[] = [
   // ----- Commons -----
   {
     ...base, id: 'vod_grave_whisperer', name: 'Grave Whisperer', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 1, attack: 1, health: 1, tags: ['Wraith'], archetypes: ['Requiem'],
+    manaCost: 1, attack: 1, health: 2, tags: ['Wraith'], archetypes: ['Requiem'],
     abilities: [{ trigger: 'LAST_BREATH', effects: [{ type: 'SUMMON', cardId: 'token_hollow_wisp' }] }],
     flavorText: 'It speaks only to the dead. The dead, unfortunately, answer.',
   },
@@ -34,7 +34,7 @@ export const VOID_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'vod_cryptcrawler', name: 'Cryptcrawler', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 3, attack: 2, health: 2, tags: ['Undead'], archetypes: ['Requiem'],
+    manaCost: 3, attack: 2, health: 3, tags: ['Undead'], archetypes: ['Requiem'],
     abilities: [{ trigger: 'LAST_BREATH', effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }] }],
     flavorText: 'Break it apart and the pieces simply stand up again.',
   },
@@ -59,7 +59,7 @@ export const VOID_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'vod_open_grave', name: 'Open Grave', cardType: 'SPELL', rarity: 'COMMON', set: 'CORE',
-    manaCost: 2, archetypes: ['Offering', 'Requiem'],
+    manaCost: 1, archetypes: ['Offering', 'Requiem'],
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'RESURRECT', count: 1, maxCost: 3 }] }],
     flavorText: 'The Choir never fills a grave in. It might be needed again.',
   },
@@ -157,7 +157,7 @@ export const VOID_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'vod_tallys_the_menace', name: 'Tallys the Menace', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'ABYSS',
-    manaCost: 6, attack: 5, health: 5, keywords: ['GUARD'], tags: ['Undead', 'Knight'], archetypes: ['Offering'],
+    manaCost: 6, attack: 4, health: 5, keywords: ['GUARD'], tags: ['Undead', 'Knight'], archetypes: ['Offering'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DESTROY', target: 'RANDOM_ENEMY_UNIT' }] }],
     flavorText: 'Where the Choir sings, he walks ahead. Nothing walks behind him.',
   },

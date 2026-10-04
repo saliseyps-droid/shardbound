@@ -105,7 +105,8 @@
   position: relative;
   z-index: 2;
   padding: 1.5cqw 6cqw 11cqw;
-  font-size: 6.2cqw;
+  /* --fit is set by CardView when long rules text would overflow the panel. */
+  font-size: calc(6.2cqw * var(--fit, 1));
   line-height: 1.22;
   color: var(--parchment);
   text-align: center;
@@ -127,6 +128,9 @@
 }
 .card-watermark svg { width: 36cqw; height: 36cqw; }
 .card-flavor { font-style: italic; color: var(--parchment-faint); font-size: 5.2cqw; }
+.card-text.no-flavor .card-flavor { display: none; }
+/* Units: the text stops above the Attack and Health gems in the bottom corners. */
+.card-unit .card-text { padding-bottom: 15cqw; }
 .card-text .kw { color: var(--gold-bright); font-weight: 700; border-bottom: 1px dotted rgba(255, 210, 122, 0.5); cursor: help; }
 
 .card-cost {

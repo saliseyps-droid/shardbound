@@ -104,11 +104,36 @@ body .rotate-hint { display: none; }
   body .mulligan-cards { gap: var(--space-3); }
   body .match-overlay { justify-content: flex-start; padding: var(--space-3); gap: var(--space-3); }
   body .match-overlay h1, body .results-title { font-size: 2rem; }
+  /* Results sideways: a short title, the three panels side by side, the buttons pinned to the bottom. */
+  body .match-overlay.results { gap: var(--space-2); padding: 6px max(12px, var(--safe-right)) 0 max(12px, var(--safe-left)); }
+  body .match-overlay.results .results-title { font-size: 1.7rem; line-height: 1.05; flex: none; }
+  body .match-overlay.results > p.muted { margin: 0; font-size: var(--t-xs); }
+  body .results-grid { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--space-2); font-size: var(--t-xs); }
+  body .results-grid > .panel { padding: 8px 10px; }
+  body .results-grid h4 { margin: 0 0 4px; font-size: var(--t-sm); }
+  body .results-stats dl { gap: 2px 6px; }
+  body .reward-line { padding: 2px 0; }
+  body .results-xp { margin-top: 6px; gap: 4px; }
+  body .air-result { margin-top: 6px; padding: 4px 8px; gap: var(--space-2); }
+  body .results-actions {
+    position: sticky; bottom: 0; z-index: 1; width: 100%; margin-top: auto; flex: none;
+    padding: 10px 0 calc(8px + var(--safe-bottom)); gap: var(--space-2);
+    background: linear-gradient(180deg, transparent, rgba(10, 8, 24, 0.96) 35%);
+  }
+  body .results-actions .btn-lg { min-height: 42px; font-size: var(--t-md); }
+  body .tutorial-next-actions .btn { min-height: 40px; }
   body .turn-banner { transform: scale(0.7); }
-  /* Top centre (bottom while the enemy side is the subject), clear of the decks and sound buttons. */
-  body .tutorial-box { left: 50%; top: 4px; bottom: auto; transform: translateX(-50%); width: min(440px, 58vw); font-size: var(--t-xs); gap: 2px; padding: 6px 12px; }
-  body .tutorial-box.at-bottom { top: auto; bottom: calc(23vh + 4px); }
-  body .tutorial-box h4 { font-size: var(--t-sm); }
+  /* A narrow panel docked to the right edge, under the enemy Warden and above End turn: the unit rows
+     are centred, so it never covers a unit, the hand or either Warden. Long steps scroll inside it. */
+  body .tutorial-box {
+    left: auto; right: calc(6px + var(--safe-right)); top: calc(56px + var(--safe-top)); bottom: auto; transform: none;
+    width: clamp(150px, 24vw, 210px); max-height: calc(100dvh - 56px - 33vh - 40px - var(--safe-top)); overflow-y: auto; overscroll-behavior: contain;
+    pointer-events: auto; font-size: 0.72rem; line-height: 1.3; gap: 2px; padding: 6px 10px;
+  }
+  /* The arrow under the enemy Warden (top-right corner) would land on the panel: step it aside. */
+  body .tutorial-box.is-hero-step { right: calc(72px + var(--safe-right)); }
+  body .tutorial-box h4 { font-size: var(--t-sm); line-height: 1.15; }
+  body .tutorial-box .btn { position: sticky; bottom: 0; }
 }
 
 /* Touch screens: a tap leaves :hover stuck, so only a selected card or unit grows. */

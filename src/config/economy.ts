@@ -18,13 +18,13 @@ export interface ShopOffer {
 export const SHOP_OFFERS: ShopOffer[] = [
   { id: 'core_1', setId: 'CORE', packs: 1, price: 100, label: '1 Pack' },
   { id: 'core_5', setId: 'CORE', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
-  { id: 'core_10', setId: 'CORE', packs: 10, price: 1000, label: '10 Packs', badge: '+1 Bonus Pack' },
+  { id: 'core_10', setId: 'CORE', packs: 10, price: 1000, label: '10 Packs', badge: '+2 Bonus Packs' },
   { id: 'deep_1', setId: 'DEEP', packs: 1, price: 100, label: '1 Pack' },
   { id: 'deep_5', setId: 'DEEP', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
-  { id: 'deep_10', setId: 'DEEP', packs: 10, price: 1000, label: '10 Packs', badge: '+1 Bonus Pack' },
+  { id: 'deep_10', setId: 'DEEP', packs: 10, price: 1000, label: '10 Packs', badge: '+2 Bonus Packs' },
   { id: 'abyss_1', setId: 'ABYSS', packs: 1, price: 100, label: '1 Pack' },
   { id: 'abyss_5', setId: 'ABYSS', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
-  { id: 'abyss_10', setId: 'ABYSS', packs: 10, price: 1000, label: '10 Packs', badge: '+1 Bonus Pack' },
+  { id: 'abyss_10', setId: 'ABYSS', packs: 10, price: 1000, label: '10 Packs', badge: '+2 Bonus Packs' },
 ];
 
 /** One-time bundles for a set: packs plus cosmetics for less than buying them apart. */
@@ -43,8 +43,8 @@ export const BUNDLES: Bundle[] = [
   { id: 'abyss_bundle', setId: 'ABYSS', name: 'Legions of Shadow Bundle', packs: 10, cardBack: 'hollow_vortex', portrait: 'tide_frost_lich', discount: 0.3 },
 ];
 
-/** Offers with a bonus badge grant this many extra packs. */
-export const SHOP_BONUS_PACKS: Record<string, number> = { core_10: 1, deep_10: 1, abyss_10: 1 };
+/** Offers with a bonus badge grant this many extra packs (10 + 2 for 1000 Gold ≈ 83 Gold/pack, the best deal). */
+export const SHOP_BONUS_PACKS: Record<string, number> = { core_10: 2, deep_10: 2, abyss_10: 2 };
 
 export const PACK_CONFIG = {
   cardsPerPack: 5,

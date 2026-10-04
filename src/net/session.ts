@@ -149,13 +149,20 @@ class NetSession {
     const { Peer } = await import('peerjs');
     return new Promise((resolve, reject) => {
       const peer = id ? new Peer(id) : new Peer();
+      let opened = false;
       const timer = setTimeout(() => reject(new Error('Could not reach the matchmaking service. Check your internet connection.')), 15000);
       peer.on('open', () => {
+        opened = true;
         clearTimeout(timer);
         resolve(peer);
       });
       peer.on('error', (e: Error & { type?: string }) => {
         clearTimeout(timer);
+        // A closed (or lingering) peer of an earlier session must not touch the current one.
+        if (opened && this.peer !== peer) return;
+        // Once a match link existed, "peer-unavailable" can only be the answer to a probe
+        // (possibly arriving after the probe timed out): it never makes the session fail.
+        if (e.type === 'peer-unavailable' && this.remotePeerId) return;
         const message =
           e.type === 'peer-unavailable'
             ? 'This match link is no longer available. Ask your friend for a new one.'
@@ -225,6 +232,39 @@ class NetSession {
     this.heartbeat = null;
   }
 
+  /**
+   * After a disconnect draw: the peer stays registered (answering probes only) this long after
+   * close(), so the other player's check still sees this side as present and records a draw too.
+   */
+  private lingering: { peer: Peer; timer: ReturnType<typeof setTimeout> } | null = null;
+
+  /** Until when close() must keep the peer alive (set after a disconnect draw). */
+  private lingerUntil = 0;
+
+  /** The next close() (whoever calls it) keeps the peer registered for at least `ms` from now. */
+  keepAliveFor(ms: number) {
+    this.lingerUntil = Math.max(this.lingerUntil, Date.now() + ms);
+  }
+
+  private endLinger() {
+    if (!this.lingering) return;
+    clearTimeout(this.lingering.timer);
+    this.lingering.peer.destroy();
+    this.lingering = null;
+  }
+
+  /** Answers probes on a peer; every other incoming connection is refused. */
+  private static refuse(conn: DataConnection) {
+    if ((conn.metadata as { probe?: boolean } | undefined)?.probe) {
+      setTimeout(() => conn.close(), 500);
+      return;
+    }
+    conn.on('open', () => {
+      conn.send({ t: 'reject', reason: 'This match already has two players.' } satisfies NetMessage);
+      setTimeout(() => conn.close(), 500);
+    });
+  }
+
   /** Host: opens a room and resolves when a valid guest has said hello. */
   async host(
     hostName: string,
@@ -236,6 +276,8 @@ class NetSession {
     this.role = 'host';
     this.setStatus('opening');
     let peer: Peer | null = null;
+    // A lingering peer from the last match may still hold this room's id.
+    if (opts.code && this.lingering?.peer.id === ID_PREFIX + opts.code) this.endLinger();
     // A fixed code (matchmaking slots, tournament rooms) gets exactly one attempt.
     const attempts = opts.code ? 1 : 3;
     for (let attempt = 0; attempt < attempts && !peer; attempt++) {
@@ -246,25 +288,25 @@ class NetSession {
         if (attempt === attempts - 1 || !(e as Error).message.includes('taken')) throw e;
       }
     }
-    this.peer = peer!;
+    const own = peer!;
+    this.peer = own;
     this.setStatus('waiting');
-    this.peer.on('connection', (conn) => {
-      if ((conn.metadata as { probe?: boolean } | undefined)?.probe) {
-        setTimeout(() => conn.close(), 500);
-        return;
-      }
-      if (this.conn) {
-        conn.on('open', () => {
-          conn.send({ t: 'reject', reason: 'This match already has two players.' } satisfies NetMessage);
-          setTimeout(() => conn.close(), 500);
-        });
-        return;
-      }
+    // Once a guest was accepted, this room never takes anyone else (not even after the link
+    // dropped, or while the peer lingers after the match).
+    let matched = false;
+    own.on('connection', (conn) => {
+      if (matched || this.peer !== own) return NetSession.refuse(conn);
+      if ((conn.metadata as { probe?: boolean } | undefined)?.probe) return NetSession.refuse(conn);
       conn.on('open', () => {
         const onHello = (raw: unknown) => {
           const msg = raw as NetMessage;
           if (msg?.t !== 'hello') return;
           conn.off('data', onHello);
+          if (matched || this.peer !== own) {
+            conn.send({ t: 'reject', reason: 'This match already has two players.' } satisfies NetMessage);
+            setTimeout(() => conn.close(), 500);
+            return;
+          }
           const problem =
             msg.protocol !== PROTOCOL_VERSION || msg.content !== CONTENT_HASH ? 'You and your friend are running different versions of the game. Both of you should reload the page.' : validate(msg);
           if (problem) {
@@ -278,6 +320,7 @@ class NetSession {
           this.remoteName = this.remoteSide.name;
           this.remoteAvatar = this.remoteSide.avatar;
           this.remoteMeta = msg.meta && typeof msg.meta === 'object' ? msg.meta : {};
+          matched = true;
           this.attach(conn);
           conn.send({ t: 'welcome', hostName, hostAvatar, meta: opts.meta } satisfies NetMessage);
           this.setStatus('connected');
@@ -296,6 +339,8 @@ class NetSession {
     this.setStatus('connecting');
     this.peer = await this.createPeer();
     const peer = this.peer;
+    // The guest's peer only answers probes (the host checking whether we are still there).
+    peer.on('connection', (incoming) => NetSession.refuse(incoming));
     const conn = peer.connect(ID_PREFIX + this.code, { reliable: true });
     await new Promise<void>((resolve, reject) => {
       const timer = setTimeout(() => reject(new Error('Your friend’s game did not answer. Make sure they are still on the waiting screen.')), opts.timeoutMs ?? 20000);
@@ -334,7 +379,11 @@ class NetSession {
     });
   }
 
-  close() {
+  /**
+   * Ends the session. With `lingerMs` (after a disconnect draw) the peer is kept registered for
+   * that long, answering only probes, so the opponent's disconnect check finds it and agrees.
+   */
+  close(opts: { lingerMs?: number } = {}) {
     this.stopHeartbeat();
     if (this.conn?.open) {
       try {
@@ -344,8 +393,19 @@ class NetSession {
       }
     }
     const peer = this.peer;
-    // Give the goodbye a moment to flush.
-    setTimeout(() => peer?.destroy(), 300);
+    const lingerMs = Math.max(opts.lingerMs ?? 0, this.lingerUntil - Date.now());
+    this.lingerUntil = 0;
+    if (peer && !peer.destroyed && lingerMs > 0) {
+      this.endLinger();
+      const timer = setTimeout(() => {
+        if (this.lingering?.peer === peer) this.lingering = null;
+        peer.destroy();
+      }, lingerMs);
+      this.lingering = { peer, timer };
+    } else {
+      // Give the goodbye a moment to flush.
+      setTimeout(() => peer?.destroy(), 300);
+    }
     this.peer = null;
     this.conn = null;
     this.remotePeerId = null;

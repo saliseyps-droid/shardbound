@@ -36,6 +36,8 @@ const d: Record<string, string> = {
   Tutorial: 'Výuka',
   Online: 'Online',
   Practice: 'Trénink',
+  'AI Ranked': 'Hodnocená hra s AI',
+  'Online match': 'Online zápas',
   '{name}. Tap to play.': '{name}. Klepnutím zahraješ.',
   'Tap the card to play it': 'Klepnutím na kartu ji zahraješ',
   'Not enough energy': 'Nedostatek energie',

@@ -137,7 +137,7 @@ export default function PlayScreen() {
           <div className="opponent-detail" style={factionStyle(faction)}>
             <h3>{opp.name}</h3>
             <p className="muted">
-              {t('{title}. Plays {archetype} strategy: {identity}', { title: opp.title, archetype: opp.archetype ?? t('a balanced'), identity: FACTIONS[faction].identity })}
+              {t('{title}. Plays {archetype} strategy: {identity}', { title: opp.title, archetype: opp.archetype ? t(opp.archetype) : t('a balanced'), identity: FACTIONS[faction].identity })}
             </p>
             <blockquote>“{opp.intro}”</blockquote>
           </div>

@@ -236,7 +236,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...knight, id: 'irn_steelwatch_knight', name: 'Steelwatch Knight', faction: 'IRON', rarity: 'COMMON',
-    manaCost: 2, attack: 1, health: 3, keywords: ['GUARD'], archetypes: ['Bulwark'],
+    manaCost: 2, attack: 2, health: 3, keywords: ['GUARD'], archetypes: ['Bulwark'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }] }],
     flavorText: 'The Steelwatch never sleeps. It just leans on its shield with its eyes closed.',
   },
@@ -302,8 +302,8 @@ export const ABYSS_CARDS: CardDefinition[] = [
   {
     ...knight, id: 'vod_kaelthar_pyre_of_souls', name: 'Kaelthar, Pyre of Souls', faction: 'VOID', rarity: 'LEGENDARY',
     manaCost: 5, attack: 5, health: 5, keywords: ['DRAIN'], archetypes: ['Requiem'],
-    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: { kind: 'ALLY_DEATHS_THIS_GAME', max: 5 }, target: 'ALL_ENEMY_UNITS' }] }],
-    description: 'Drain. On Deploy: Deal 1 damage to all enemy units for each friendly unit that died this game (up to 5).',
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: { kind: 'ALLY_DEATHS_THIS_GAME', max: 4 }, target: 'ALL_ENEMY_UNITS' }] }],
+    description: 'Drain. On Deploy: Deal 1 damage to all enemy units for each friendly unit that died this game (up to 4).',
     flavorText: 'Every soul the Choir has lost burns in him. He lets them out one at a time.',
   },
 

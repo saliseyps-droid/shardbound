@@ -1,6 +1,10 @@
 /** Ranked vs AI (src/ui/screens/AiRankedScreen.tsx, results overlay, Play screen). */
 const d: Record<string, string> = {
   'Ranked vs AI': 'Hodnocená hra proti AI',
+  'Crown is the top rank and you keep it for good. Every win adds a Crown point; a loss costs nothing.': 'Koruna je nejvyšší hodnost a už o ni nepřijdeš. Každá výhra přidá bod Koruny, prohra ti žádný nevezme.',
+  'No Crown points lost': 'Body Koruny beze ztráty',
+  '+{n} Crown point': '+{n} bod Koruny',
+  '+{n} Crown points': '+{n} bod Koruny|+{n} body Koruny|+{n} bodů Koruny',
   'Climb from Bronze to Crown. Every rank you reach, the AI plays sharper and brings stronger cards.': 'Vyšplhej z Bronzu až na Korunu. S každou další hodností hraje AI chytřeji a má silnější karty.',
   'Climb from Bronze to Crown against the AI. It gets stronger with every rank.': 'Vyšplhej z Bronzu až na Korunu proti AI. S každou hodností sílí.',
   Climb: 'Šplhat',

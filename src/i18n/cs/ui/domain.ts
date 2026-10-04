@@ -70,6 +70,7 @@ const d: Record<string, string> = {
   '10 Packs': '10 boosterů',
   'Save 10%': 'Ušetříš 10 %',
   '+1 Bonus Pack': '+1 booster navíc',
+  '+2 Bonus Packs': '+2 boostery navíc',
 
   // --- Match rewards (src/domain/matchResults.ts) ---
   'Tutorial complete': 'Výuka dokončena',

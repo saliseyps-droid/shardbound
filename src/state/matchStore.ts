@@ -25,7 +25,15 @@ import { guestEvents, guestView, mirrorAction } from '@/net/view';
 import { TUTORIAL_STEPS, tutorialOpponentAction, tutorialSetup } from '@/ui/match/tutorial';
 
 /** How long to keep asking the signalling server about a vanished opponent (it drops dead peers after ~60 s). */
-export const DISCONNECT_TIMING = { checkMs: 75_000, retryMs: 8_000 };
+export const DISCONNECT_TIMING = {
+  checkMs: 75_000,
+  retryMs: 8_000,
+  /**
+   * After a disconnect draw this side's peer stays registered this long (answering probes only),
+   * so the opponent, whose check may have started later, also finds us present and records a draw.
+   */
+  lingerMs: 100_000,
+};
 
 export const HUMAN: PlayerId = 0;
 export const AI: PlayerId = 1;
@@ -77,6 +85,8 @@ interface MatchStore {
   lastError: string | null;
   /** Monotonic counter bumped for every committed action (lets UI detect new draws). */
   version: number;
+  /** Online: the link dropped and the outcome is being decided; all input is locked meanwhile. */
+  linkCheck: boolean;
 
   start: (config: MatchConfig) => Promise<void>;
   toggleMulligan: (uid: number) => void;
@@ -101,11 +111,13 @@ let aiLoopToken = 0;
 let matchGen = 0;
 /** Generation whose result has been recorded (results are recorded exactly once). */
 let recordedGen = -1;
+/** Set by leave()/concede(): a link drop from now on is the expected end of the session. */
+let leaving = false;
 /** Initial online state received by the guest before its board mounted. */
 let pendingInitial: GameState | null = null;
 /** Set by the tournament store: called once when a tournament match finishes. */
-let onTournamentMatchEnd: ((matchId: string, won: boolean) => void) | null = null;
-export function setTournamentMatchHandler(fn: ((matchId: string, won: boolean) => void) | null) {
+let onTournamentMatchEnd: ((matchId: string, result: 'WIN' | 'LOSS' | 'DRAW') => void) | null = null;
+export function setTournamentMatchHandler(fn: ((matchId: string, result: 'WIN' | 'LOSS' | 'DRAW') => void) | null) {
   onTournamentMatchEnd = fn;
 }
 
@@ -225,6 +237,8 @@ export const useMatch = create<MatchStore>((set, get) => {
     const game = s.game;
     const gen = matchGen;
     if (!game || game.phase === 'ENDED' || s.phase === 'ended') return false;
+    // While a dropped link is being checked nothing may change the board.
+    if (s.linkCheck) return false;
     // Online guest: the host is authoritative; send the action and wait for its state.
     if (s.config?.online === 'guest') return sendGuestAction(action);
     const res = applyAction(game, action);
@@ -362,48 +376,65 @@ export const useMatch = create<MatchStore>((set, get) => {
       .catch((e) => console.error('[net] message handling failed', e));
   });
 
-  netSession.onStatus(() => {
+  /** The match is over or being left: a dropped link is expected and needs no check. */
+  const linkDropExpected = () => {
     const s = get();
-    if (netSession.status !== 'closed' || !s.config?.online || !s.game || s.phase === 'ended') return;
+    return leaving || !s.config?.online || !s.game || s.game.phase === 'ENDED' || s.phase === 'ended';
+  };
+
+  netSession.onStatus(() => {
+    if (netSession.status !== 'closed' || linkDropExpected()) return;
     const gen = matchGen;
+    set({ linkCheck: true, selection: null, targets: [] });
     netChain = netChain.then(async () => {
-      // Both sides see the link drop. A player who went offline (e.g. turned Wi-Fi off while
-      // losing) gets the loss. Otherwise ask the signalling server whether the opponent is still
-      // there: gone means they left (win); still there after the server would have dropped a dead
-      // peer means only the link between the two broke, so the match is a draw for both.
-      const localOk = await netSession.localNetworkOk();
-      if (gen !== matchGen) return;
-      let outcome: 'WIN' | 'LOSS' | 'DRAW' = localOk ? 'DRAW' : 'LOSS';
-      if (localOk) {
-        toast(t('Connection lost — checking whether your opponent is still there…'), 'info');
-        const deadline = Date.now() + DISCONNECT_TIMING.checkMs;
-        for (;;) {
-          if (!(await netSession.remotePeerPresent())) {
-            outcome = 'WIN';
-            break;
+      try {
+        // Messages queued before the drop (e.g. the opponent's concede) ran first: re-check.
+        if (gen !== matchGen || linkDropExpected()) return;
+        // Both sides see the link drop. A player who went offline (e.g. turned Wi-Fi off while
+        // losing) gets the loss. Otherwise ask the signalling server whether the opponent is still
+        // there: gone means they left (win); still there after the server would have dropped a dead
+        // peer means only the link between the two broke, so the match is a draw for both.
+        const localOk = await netSession.localNetworkOk();
+        if (gen !== matchGen) return;
+        let outcome: 'WIN' | 'LOSS' | 'DRAW' = localOk ? 'DRAW' : 'LOSS';
+        if (localOk) {
+          if (linkDropExpected()) return;
+          toast(t('Connection lost — checking whether your opponent is still there…'), 'info');
+          const deadline = Date.now() + DISCONNECT_TIMING.checkMs;
+          for (;;) {
+            if (!(await netSession.remotePeerPresent())) {
+              outcome = 'WIN';
+              break;
+            }
+            if (gen !== matchGen || Date.now() >= deadline) break;
+            await new Promise((r) => setTimeout(r, DISCONNECT_TIMING.retryMs));
+            if (gen !== matchGen) return;
           }
-          if (gen !== matchGen || Date.now() >= deadline) break;
-          await new Promise((r) => setTimeout(r, DISCONNECT_TIMING.retryMs));
           if (gen !== matchGen) return;
         }
-        if (gen !== matchGen) return;
+        await waitIdle();
+        const game = get().game;
+        if (!game || game.phase === 'ENDED') return;
+        if (outcome === 'DRAW') {
+          toast(t('The connection between you broke, but both of you are online — the match is a draw.'), 'info');
+          const state: GameState = structuredClone(game);
+          state.phase = 'ENDED';
+          state.winner = 'DRAW';
+          state.endReason = 'DISCONNECT';
+          state.eventSeq += 1;
+          // Keep our peer registered past the opponent's check window so they find us and agree.
+          netSession.keepAliveFor(DISCONNECT_TIMING.lingerMs);
+          set({ linkCheck: false });
+          await present(game, { state, events: [{ seq: state.eventSeq, type: 'GAME_ENDED', winner: 'DRAW', reason: 'DISCONNECT' }] });
+          return;
+        }
+        toast(outcome === 'WIN' ? t('Your opponent disconnected — you win.') : t('You lost your connection, so the match counts as a loss.'), 'info');
+        const res = applyAction(game, { type: 'CONCEDE', player: outcome === 'WIN' ? AI : HUMAN });
+        set({ linkCheck: false });
+        if (!res.error) await present(game, res);
+      } finally {
+        if (gen === matchGen && get().linkCheck) set({ linkCheck: false });
       }
-      await waitIdle();
-      const game = get().game;
-      if (!game || game.phase === 'ENDED') return;
-      if (outcome === 'DRAW') {
-        toast(t('The connection between you broke, but both of you are online — the match is a draw.'), 'info');
-        const state: GameState = structuredClone(game);
-        state.phase = 'ENDED';
-        state.winner = 'DRAW';
-        state.endReason = 'DISCONNECT';
-        state.eventSeq += 1;
-        await present(game, { state, events: [{ seq: state.eventSeq, type: 'GAME_ENDED', winner: 'DRAW', reason: 'DISCONNECT' }] });
-        return;
-      }
-      toast(outcome === 'WIN' ? t('Your opponent disconnected — you win.') : t('You lost your connection, so the match counts as a loss.'), 'info');
-      const res = applyAction(game, { type: 'CONCEDE', player: outcome === 'WIN' ? AI : HUMAN });
-      if (!res.error) await present(game, res);
     });
   });
 
@@ -501,7 +532,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         firstWinReward: cfg.mode === 'PVE' ? cfg.opponent.firstWinReward : undefined,
       });
       set({ rewards });
-      if (cfg.mode === 'TOURNAMENT' && cfg.tournamentMatchId) onTournamentMatchEnd?.(cfg.tournamentMatchId, result === 'WIN');
+      if (cfg.mode === 'TOURNAMENT' && cfg.tournamentMatchId) onTournamentMatchEnd?.(cfg.tournamentMatchId, result);
       if (rewards.levelUps.length) setTimeout(() => audio.play('levelUp'), 1200);
     } catch (e) {
       console.error('[match] failed to record result', e);
@@ -511,7 +542,7 @@ export const useMatch = create<MatchStore>((set, get) => {
 
   function selectionAllowed(): boolean {
     const s = get();
-    return !!s.game && s.phase === 'playing' && !s.busy && s.game.activePlayer === HUMAN && s.game.phase === 'MAIN';
+    return !!s.game && s.phase === 'playing' && !s.busy && !s.linkCheck && s.game.activePlayer === HUMAN && s.game.phase === 'MAIN';
   }
 
   return {
@@ -534,10 +565,12 @@ export const useMatch = create<MatchStore>((set, get) => {
     tutorialStep: 0,
     lastError: null,
     version: 0,
+    linkCheck: false,
 
     start: async (config) => {
       aiLoopToken++;
       const gen = ++matchGen;
+      leaving = false;
       const save = useAccount.getState().save;
       if (!save) throw new Error('No profile');
       let setup;
@@ -614,6 +647,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         tutorialStep: 0,
         lastError: null,
         version: 0,
+        linkCheck: false,
       });
       setLastMatchLog(state.log);
       if (config.online) {
@@ -635,6 +669,7 @@ export const useMatch = create<MatchStore>((set, get) => {
 
     confirmMulligan: async () => {
       const cur = get();
+      if (cur.linkCheck) return;
       if (cur.config?.online === 'guest') {
         if (!cur.game || cur.game.players[HUMAN].mulliganDone) return;
         audio.play('draw');
@@ -780,7 +815,7 @@ export const useMatch = create<MatchStore>((set, get) => {
 
     endTurn: () => {
       const s = get();
-      if (!s.game || s.game.activePlayer !== HUMAN || s.game.phase !== 'MAIN' || s.busy) return;
+      if (!s.game || s.game.activePlayer !== HUMAN || s.game.phase !== 'MAIN' || s.busy || s.linkCheck) return;
       audio.play('endTurn');
       set({ selection: null, targets: [], turnDeadline: null });
       void dispatch({ type: 'END_TURN', player: HUMAN });
@@ -791,12 +826,13 @@ export const useMatch = create<MatchStore>((set, get) => {
       if (!s.game || s.game.phase === 'ENDED') return;
       aiLoopToken++;
       matchGen++;
+      leaving = true;
       // Concede works even during the opponent's turn.
       const res = applyAction(s.game, { type: 'CONCEDE', player: HUMAN });
       if (s.config?.online === 'guest') netSession.send({ t: 'action', action: { type: 'CONCEDE', player: HUMAN } });
       if (s.config?.online === 'host' && !res.error) netSession.send({ t: 'state', state: guestView(res.state), events: guestEvents(res.events) });
       if (!res.error) {
-        set({ game: res.state, version: s.version + 1, busy: false, cast: null });
+        set({ game: res.state, version: s.version + 1, busy: false, cast: null, linkCheck: false });
         setLastMatchLog(res.state.log);
         void finishMatch(res.state);
       }
@@ -807,9 +843,10 @@ export const useMatch = create<MatchStore>((set, get) => {
     leave: () => {
       aiLoopToken++;
       matchGen++;
+      leaving = true;
       if (get().config?.online) netSession.close();
       useMatchLaunch.getState().setConfig(null);
-      set({ config: null, game: null, phase: 'idle', rewards: null, fx: [], ghosts: [], selection: null, targets: [], turnDeadline: null });
+      set({ config: null, game: null, phase: 'idle', rewards: null, fx: [], ghosts: [], selection: null, targets: [], turnDeadline: null, linkCheck: false });
     },
   };
 });

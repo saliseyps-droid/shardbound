@@ -1,6 +1,10 @@
 /* ---------------- Ranked vs AI ---------------- */
 .air-layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr); gap: var(--space-5); align-items: start; }
-@media (max-width: 1000px) { .air-layout { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 1000px) {
+  .air-layout { grid-template-columns: minmax(0, 1fr); }
+  /* Narrow screens: rival, deck and the Play button come before the ladder detail. */
+  .air-side { order: -1; }
+}
 
 .air-kicker { font: 700 var(--t-xs) var(--font-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--parchment-faint); }
 

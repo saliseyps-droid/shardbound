@@ -165,7 +165,7 @@ export default function CampaignScreen() {
               <dt>{t('Difficulty')}</dt>
               <dd>{t(DIFFICULTY_INFO[enc.difficulty].label)}</dd>
               <dt>{t('Strategy')}</dt>
-              <dd>{enc.archetype ?? FACTIONS[enc.faction].archetypes[0].name}</dd>
+              <dd>{enc.archetype ? t(enc.archetype) : FACTIONS[enc.faction].archetypes[0].name}</dd>
               {enc.firstWinReward && (
                 <>
                   <dt>{t('First clear')}</dt>

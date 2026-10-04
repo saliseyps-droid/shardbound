@@ -222,7 +222,7 @@ button.deckbox:hover:not(:disabled) { filter: brightness(1.15); }
   clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
 }
 .camp-tab.is-active { color: var(--ink-1); background: var(--gold); }
-.chapter { position: relative; }
+.chapter { position: relative; container-type: inline-size; }
 .chapter-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); }
 .chapter-head > span { white-space: nowrap; flex: none; }
 .chapter-head h3 { margin: 0; }
@@ -250,6 +250,16 @@ button.deckbox:hover:not(:disabled) { filter: brightness(1.15); }
 .enc-node:hover { transform: scale(1.06); }
 .enc-check { position: absolute; bottom: 10px; right: 14px; font-weight: 800; color: var(--heal); text-shadow: 0 0 4px #000; }
 .enc-name { font-size: var(--t-sm); line-height: 1.2; }
+/* Too narrow for the whole path in one row (five 120px steps): a vertical trail instead of wrapped rows,
+   so every link joins two nodes and none pokes out of the panel. */
+@container (max-width: 599px) {
+  .enc-path { flex-direction: column; flex-wrap: nowrap; gap: 12px; }
+  .enc-step { width: auto; grid-template-columns: 84px minmax(0, 1fr); justify-items: start; align-items: center; column-gap: var(--space-3); text-align: left; }
+  .enc-step .enc-node { justify-self: center; }
+  .enc-node.boss { margin-top: 0; }
+  .enc-link { top: -14px; right: auto; left: 40.5px; width: 3px; height: 16px; }
+  .enc-link.lit { background: linear-gradient(180deg, var(--gold-deep), var(--gold)); }
+}
 .enc-detail { position: sticky; top: var(--space-4); }
 .enc-detail.boss { box-shadow: inset 0 0 0 1px var(--damage), var(--shadow-lift); }
 .enc-detail-head { display: flex; gap: var(--space-4); align-items: center; }
@@ -385,7 +395,8 @@ label.toggle-row { cursor: pointer; }
 .mode-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: rgba(0, 0, 0, 0.3); color: var(--gold-bright); }
 .mode-tile strong { font-family: var(--font-display); font-size: 1.15rem; }
 .mode-text { font-size: var(--t-sm); line-height: 1.35; }
-.mode-status { font-size: var(--t-xs); font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.05em; }
+/* Pinned to the last row so footers line up even when a title wraps or the blurb is hidden. */
+.mode-status { grid-row: 4; align-self: end; font-size: var(--t-xs); font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.05em; }
 .practice-head { margin-bottom: var(--space-3); }
 .practice-head h2 { margin: 0; }
 .practice-head p { margin: 2px 0 0; }

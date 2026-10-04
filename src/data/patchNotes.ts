@@ -19,6 +19,44 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.23.0',
+    date: '2026-10-04',
+    title: 'Balance and polish',
+    summary: 'Balance changes for Tide, Void, Iron and Ember, fairer online disconnects, cheaper 10-pack deals and many interface fixes.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Skolky: 6 → 7 mana.',
+          'Kaelthar, Pyre of Souls: deals up to 4 damage (was 5).',
+          'Tallys the Menace: 5/5 → 4/5.',
+          'Grave Whisperer: 1/1 → 1/2. Cryptcrawler: 2/2 → 2/3. Open Grave: 2 → 1 mana.',
+          'Dominion Forge: 3 → 2 mana. Cogspire Foundry: lasts 4 turns (was 3). Steelwatch Knight: 1/3 → 2/3.',
+          'Kharzul Caldera: 3 → 2 mana.',
+        ],
+      },
+      {
+        kind: 'improved',
+        items: [
+          'Shop: 10 packs now come with 2 bonus packs, so the big deal is always the cheapest per pack.',
+          'Ranked vs AI: your next rival is fixed until you play (no more rerolling by leaving the screen), a draw ends your win streak, and Crown explains Crown points.',
+          'Long card text shrinks to fit and hides the flavor text first, so it never runs into the Attack and Health gems.',
+          'Phones: the tutorial box sits at the side and never covers the units you need, the results screen fits in landscape and shows in portrait too, and the campaign path becomes a vertical trail on narrow screens.',
+          'The results screen shows your XP numbers; the match log names the right mode; strategy names are translated.',
+        ],
+      },
+      {
+        kind: 'fixed',
+        items: [
+          'Online: when the link breaks but both players are online, both now get the same result (a draw), and nobody can keep playing while the connection is being checked.',
+          'Online: no more "connection lost" message after a normal concede, and a host no longer accepts a stranger after the link dropped.',
+          'Tournament: a draw is replayed instead of counting as a loss.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.22.5',
     date: '2026-10-04',
     title: 'New Legendaries',

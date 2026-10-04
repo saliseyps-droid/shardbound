@@ -1,6 +1,32 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.23.0': {
+    title: 'Vyvážení a doladění',
+    summary: 'Úpravy vyváženosti pro Tide, Void, Iron a Ember, férovější výpadky online, výhodnější balení po 10 a spousta oprav rozhraní.',
+    sections: [
+      [
+        'Skolky: 6 → 7 many.',
+        'Kaelthar, Hranice duší: způsobí nejvýš 4 poškození (dříve 5).',
+        'Tallys the Menace: 5/5 → 4/5.',
+        'Grave Whisperer: 1/1 → 1/2. Cryptcrawler: 2/2 → 2/3. Open Grave: 2 → 1 many.',
+        'Dominion Forge: 3 → 2 many. Cogspire Foundry: trvá 4 tahy (dříve 3). Steelwatch Knight: 1/3 → 2/3.',
+        'Kharzul Caldera: 3 → 2 many.',
+      ],
+      [
+        'Obchod: k 10 balíčkům teď dostaneš 2 balíčky navíc, takže velké balení je vždy nejlevnější na kus.',
+        'Ranked proti AI: další soupeř je pevně daný, dokud nezahraješ (odchodem z obrazovky už ho nepřerolíš), remíza ukončí sérii výher a Koruna vysvětluje body Koruny.',
+        'Dlouhý text karty se zmenší, aby se vešel, a nejdřív skryje podtext, takže už nezasahuje do ikon útoku a životů.',
+        'Mobily: okno výuky je u okraje a nezakrývá jednotky, které potřebuješ, výsledky se vejdou na šířku a zobrazí se i na výšku a cesta kampaně je na úzké obrazovce svislá.',
+        'Výsledky ukazují čísla zkušeností, záznam zápasu uvádí správný režim a názvy strategií jsou přeložené.',
+      ],
+      [
+        'Online: když se spojení přeruší a oba hráči jsou online, dostanou teď oba stejný výsledek (remízu) a během kontroly spojení už nikdo nemůže hrát dál.',
+        'Online: po normálním vzdání už se neobjeví hláška o ztrátě spojení a hostitel po výpadku nepřijme cizího hráče.',
+        'Turnaj: remíza se hraje znovu místo toho, aby se počítala jako prohra.',
+      ],
+    ],
+  },
   '0.22.5': {
     title: 'Nové legendárky',
     summary: 'Do Fantasy Realms přibyly čtyři nové legendární karty: Bublinář Qinny, Elinda, Skolky a Qvido.',

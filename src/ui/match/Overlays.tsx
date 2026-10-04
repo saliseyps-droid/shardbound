@@ -16,6 +16,9 @@ import { AiRankEmblem, aiRankLabel } from '@/ui/components/meta/aiRankedUi';
 import { t, tn } from '@/i18n';
 import '@/ui/styles/aiRanked.css';
 
+/** Focus a button when it mounts without scrolling the overlay (autoFocus would scroll the title away). */
+const focusWithoutScroll = (el: HTMLButtonElement | null) => el?.focus({ preventScroll: true });
+
 export function MulliganOverlay({ game }: { game: GameState }) {
   const picks = useMatch((s) => s.mulliganPicks);
   const toggle = useMatch((s) => s.toggleMulligan);
@@ -44,7 +47,7 @@ export function MulliganOverlay({ game }: { game: GameState }) {
           </div>
         ))}
       </div>
-      <button className="btn btn-primary btn-lg" onClick={() => void confirm()} autoFocus>
+      <button className="btn btn-primary btn-lg" onClick={() => void confirm()} ref={focusWithoutScroll}>
         {picks.length ? t('Replace {n} and keep', { n: picks.length }) : t('Keep hand')}
       </button>
     </div>
@@ -204,6 +207,14 @@ function TutorialPointer({ target, card }: { target: string; card?: string }) {
   );
 }
 
+const HIGHLIGHT_LOOK = 'outline: 3px solid var(--cyan); outline-offset: 6px; box-shadow: 0 0 30px rgba(114,223,230,.6); border-radius: 8px;';
+/** The hand strip spans the whole table, so its highlight is a box that hugs just the fanned cards. */
+function highlightCss(target: string): string {
+  if (target === 'hand')
+    return `[data-tutorial="hand"]::before { content: ''; position: absolute; left: 50%; bottom: 0; height: 100%; width: calc((var(--n) - 1) * var(--spread) + var(--card-w)); transform: translateX(-50%); pointer-events: none; ${HIGHLIGHT_LOOK} }`;
+  return `[data-tutorial="${target}"] { ${HIGHLIGHT_LOOK} }`;
+}
+
 export function TutorialOverlay() {
   const step = useMatch((s) => s.tutorialStep);
   const next = useMatch((s) => s.nextTutorialStep);
@@ -212,20 +223,18 @@ export function TutorialOverlay() {
   if (mode !== 'TUTORIAL' || phase === 'ended' || step >= TUTORIAL_STEPS.length) return null;
   const s = TUTORIAL_STEPS[step];
   const text = isTouchScreen() && s.touchText ? s.touchText : s.text;
-  // On small screens the box sits at the top, or at the bottom while the step is about the enemy side.
-  const atBottom = s.highlight === 'enemy-hero' || s.highlight === 'enemy-board';
   return (
     <>
-      {s.highlight && <style>{`[data-tutorial="${s.highlight}"] { outline: 3px solid var(--cyan); outline-offset: 6px; box-shadow: 0 0 30px rgba(114,223,230,.6); border-radius: 8px; }`}</style>}
+      {s.highlight && <style>{highlightCss(s.highlight)}</style>}
       {s.highlight && <TutorialPointer key={s.id} target={s.highlight} card={s.pointAt} />}
-      <div className={`tutorial-box panel ${atBottom ? 'at-bottom' : ''}`} role="dialog" aria-live="polite" aria-label={t('Tutorial')}>
+      <div className={`tutorial-box panel ${s.highlight === 'enemy-hero' ? 'is-hero-step' : ''}`} role="dialog" aria-live="polite" aria-label={t('Tutorial')}>
         <span className="faint num">
           {t('Step {n} of {total}', { n: step + 1, total: TUTORIAL_STEPS.length })}
         </span>
         <h4>{s.title}</h4>
         <p>{text}</p>
         {!s.done && (
-          <button className="btn btn-cyan btn-sm" onClick={next} autoFocus>
+          <button className="btn btn-cyan btn-sm" onClick={next} ref={focusWithoutScroll}>
             {t('Next')}
           </button>
         )}
@@ -300,6 +309,14 @@ export function ResultsOverlay({ game }: { game: GameState }) {
                 <span className="level-gem num">{profile.level}</span>
                 <ProgressBar value={profile.xp} max={xpToNext(profile.level) || 1} gold label={t('Experience')} />
               </div>
+              <div className="xp-numbers faint num">
+                {(() => {
+                  const gained = rewards.xp;
+                  const need = xpToNext(profile.level);
+                  const total = need ? t('{xp} / {need} XP', { xp: profile.xp, need }) : t('Max level');
+                  return gained > 0 ? `${t('+{n} XP', { n: gained })} · ${total}` : total;
+                })()}
+              </div>
               {rewards.levelUps.map((lu) => (
                 <div key={lu.level} className="level-up">
                   {t('Level {n} reached!', { n: lu.level })}{' '}
@@ -325,12 +342,13 @@ export function ResultsOverlay({ game }: { game: GameState }) {
                   {a.rankChange === 'NONE' && <span>{aiRankLabel(a.after.rank)}</span>}
                   <span className="num">
                     {a.starDelta > 0 ? (
-                      <strong className="up">{tn(a.starDelta, '+{n} star', '+{n} stars')}</strong>
+                      <strong className="up">{crown && a.rankChange === 'NONE' ? tn(a.starDelta, '+{n} Crown point', '+{n} Crown points') : tn(a.starDelta, '+{n} star', '+{n} stars')}</strong>
                     ) : a.starDelta < 0 ? (
                       <strong className="down">{tn(-a.starDelta, '−{n} star', '−{n} stars')}</strong>
                     ) : (
-                      <span className="faint">{t('No star change')}</span>
-                    )}{' '}
+                      <span className="faint">{crown ? t('No Crown points lost') : t('No star change')}</span>
+                    )}
+                    <span className="faint" aria-hidden> · </span>
                     <span className="faint">{crown ? t('{n} Crown points', { n: a.after.stars }) : t('{n} of {max} stars', { n: a.after.stars, max: 3 })}</span>
                   </span>
                   {a.tierReached && <span className="gold-text">{t('{tier} reached for the first time!', { tier: t(a.tierReached) })}</span>}
@@ -366,7 +384,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
           <div className="tutorial-next">
             <p className="muted">{t('You know the basics. Where to next?')}</p>
             <div className="tutorial-next-actions">
-              <button className="btn btn-primary btn-lg" onClick={() => exit('/campaign')} autoFocus>
+              <button className="btn btn-primary" onClick={() => exit('/campaign')} ref={focusWithoutScroll}>
                 {t('Start the campaign')}
               </button>
               <button className="btn" onClick={() => exit('/packs')}>
@@ -375,7 +393,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
               <button className="btn" onClick={() => exit('/decks')}>
                 {t('Build a deck')}
               </button>
-              <button className="btn btn-ghost" onClick={() => exit('/')}>
+              <button className="btn" onClick={() => exit('/')}>
                 {t('Home')}
               </button>
             </div>
@@ -383,7 +401,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
         ) : (
           <>
             {config?.mode === 'ARENA' ? (
-              <button className="btn btn-primary btn-lg" onClick={() => exit('/arena')} autoFocus>
+              <button className="btn btn-primary btn-lg" onClick={() => exit('/arena')} ref={focusWithoutScroll}>
                 {t('Back to Arena')}
               </button>
             ) : (
@@ -397,7 +415,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
                 {t('Rematch')}
               </button>
             )}
-            <button className="btn btn-primary btn-lg" onClick={() => exit(config?.mode === 'TOURNAMENT' ? '/tournament' : '/')} autoFocus>
+            <button className="btn btn-primary btn-lg" onClick={() => exit(config?.mode === 'TOURNAMENT' ? '/tournament' : '/')} ref={focusWithoutScroll}>
               {t('Continue')}
             </button>
             </>

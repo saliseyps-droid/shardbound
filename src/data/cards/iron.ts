@@ -96,7 +96,7 @@ export const IRON_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'irn_dominion_forge', name: 'Dominion Forge', cardType: 'RELIC', rarity: 'RARE', set: 'CORE',
-    manaCost: 3, charges: 3, archetypes: ['Assembly Line'],
+    manaCost: 2, charges: 3, archetypes: ['Assembly Line'],
     abilities: [{ trigger: 'TURN_START', effects: [{ type: 'SUMMON', cardId: 'token_scrapbot' }] }],
     flavorText: 'Every morning, a fresh helper rolls off the anvil.',
   },
@@ -116,7 +116,7 @@ export const IRON_CARDS: CardDefinition[] = [
   // ----- Epics -----
   {
     ...base, id: 'irn_cogspire_foundry', name: 'Cogspire Foundry', cardType: 'LOCATION', rarity: 'EPIC', set: 'CORE',
-    manaCost: 4, duration: 3, archetypes: ['Assembly Line'],
+    manaCost: 4, duration: 4, archetypes: ['Assembly Line'],
     abilities: [{ trigger: 'TURN_END', effects: [{ type: 'SUMMON', cardId: 'token_sentry' }] }],
     flavorText: 'The foundry-city never sleeps. Neither do its sentries.',
   },

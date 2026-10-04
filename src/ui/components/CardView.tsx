@@ -1,4 +1,4 @@
-import { memo, useRef, useState, type CSSProperties, type MouseEvent, type PointerEvent } from 'react';
+import { memo, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type PointerEvent } from 'react';
 import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import type { CardDefinition, Variant } from '@/game/types';
@@ -103,10 +103,48 @@ function useLongPress(onContextMenu: ((e: MouseEvent) => void) | undefined, onPo
   };
 }
 
+/** Steps the rules text may shrink to (fraction of the normal size) before it is clipped. */
+const FIT_STEPS = [0.94, 0.88, 0.82, 0.76, 0.7];
+
+/**
+ * Keeps the rules text inside its panel: when it overflows, the flavor text goes first, then the rules
+ * text shrinks step by step. Measured after layout and again once web fonts have loaded.
+ */
+function useTextFit(deps: unknown[]) {
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const fit = () => {
+      const el = ref.current;
+      if (!el) return;
+      el.style.removeProperty('--fit');
+      el.classList.remove('no-flavor');
+      const fits = () => el.scrollHeight <= el.clientHeight + 1;
+      if (fits()) return;
+      if (el.querySelector('.card-flavor')) {
+        el.classList.add('no-flavor');
+        if (fits()) return;
+      }
+      for (const step of FIT_STEPS) {
+        el.style.setProperty('--fit', String(step));
+        if (fits()) return;
+      }
+    };
+    fit();
+    let live = true;
+    void document.fonts?.ready.then(() => live && fit());
+    return () => {
+      live = false;
+    };
+  }, deps);
+  return ref;
+}
+
 export const CardView = memo(function CardView(props: CardViewProps) {
   const card = typeof props.card === 'string' ? getCardSafe(props.card) : props.card;
   const width = props.width ?? CARD_WIDTH[props.size ?? 'md'];
   const { fired: longPressed, ...pressHandlers } = useLongPress(props.onContextMenu, props.onPointerDown);
+  const showFlavor = props.size !== 'xs' && props.size !== 'sm' && !!card.flavorText && width >= 220;
+  const textRef = useTextFit([card.id, card.description, showFlavor && card.flavorText, width, props.silenced, props.faceDown]);
   if (props.faceDown) return <CardBack width={width} className={props.className} style={props.style} />;
   const faction = FACTIONS[card.faction] ?? FACTIONS.NEUTRAL;
   const cost = props.cost ?? card.manaCost;
@@ -186,12 +224,12 @@ export const CardView = memo(function CardView(props: CardViewProps) {
         <span className="card-watermark" aria-hidden>
           <Glyph name={faction.sigil} size={Math.round(width * 0.36)} />
         </span>
-        <div className="card-text">
+        <div className="card-text" ref={textRef}>
           {props.silenced && <span className="card-silenced-tag">{t('Silenced')}</span>}
           <p className="card-rules">
             <KeywordText text={card.description ?? ''} />
           </p>
-          {props.size !== 'xs' && props.size !== 'sm' && card.flavorText && width >= 220 && <p className="card-flavor">{card.flavorText}</p>}
+          {showFlavor && <p className="card-flavor">{card.flavorText}</p>}
         </div>
         {card.cardType === 'UNIT' && (
           <>

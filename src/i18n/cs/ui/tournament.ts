@@ -23,5 +23,6 @@ const d: Record<string, string> = {
   'Runner-up! +{gold} Gold and {n} booster packs': 'Druhé místo! +{gold} zlata a {n} boostery',
   'Third place! +{gold} Gold and {n} booster pack': 'Třetí místo! +{gold} zlata a {n} booster',
   'The players reported different results, so the match will be replayed.': 'Hráči nahlásili různé výsledky, zápas se proto odehraje znovu.',
+  'The match ended in a draw, so it will be replayed.': 'Zápas skončil remízou, odehraje se proto znovu.',
 };
 export default d;

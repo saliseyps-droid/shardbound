@@ -8,6 +8,7 @@ import { PRACTICE_OPPONENTS, DIFFICULTY_POOLS } from '@/data/opponents';
 import { opponentSide, playerSide } from '@/domain/matchSetup';
 import type { Deck } from '@/domain/decks';
 import {
+  DRAW_REPORT,
   decideReport,
   emptyReports,
   forfeitPlayer,
@@ -36,6 +37,7 @@ import { gameService, useAccount } from './accountStore';
 import { launchMatch } from './matchLaunch';
 import { setTournamentMatchHandler } from './matchStore';
 import { toast } from './uiStore';
+import { tr } from '@/i18n';
 
 /**
  * Tournament coordination (star topology): the organizer's browser keeps the
@@ -179,7 +181,10 @@ export const useTournament = create<TournamentStore>((set, get) => {
     if (decision.kind === 'wait') return;
     reportBooks.delete(matchId);
     if (decision.kind === 'accept') update(reportResult(t, matchId, decision.winnerId));
-    else {
+    else if (decision.draw) {
+      toast(tr('The match ended in a draw, so it will be replayed.'), 'info');
+      update(replayMatch(t, matchId));
+    } else {
       toast('The players reported different results, so the match will be replayed.', 'info');
       update(replayMatch(t, matchId));
     }
@@ -249,13 +254,14 @@ export const useTournament = create<TournamentStore>((set, get) => {
     }
   }
 
-  function report(rawMatchId: string, won: boolean) {
+  function report(rawMatchId: string, result: 'WIN' | 'LOSS' | 'DRAW') {
     const matchId = rawMatchId as TournamentMatchId;
     const { tournament: t, myId, role } = get();
     if (!t || !myId) return;
     const m = t.matches.find((x) => x.id === matchId);
     if (!m) return;
-    const winnerId = won ? myId : m.a === myId ? m.b! : m.a!;
+    // A draw names no winner: the organizer replays the match (nobody is eliminated by a draw).
+    const winnerId = result === 'DRAW' ? DRAW_REPORT : result === 'WIN' ? myId : m.a === myId ? m.b! : m.a!;
     set({ activeMatch: null });
     if (role === 'organizer') receiveReport(myId, matchId, winnerId);
     else hostConn?.send({ t: 't-result', matchId, winnerId } satisfies TMsg);
