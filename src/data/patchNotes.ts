@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.22.3',
+    date: '2026-10-04',
+    title: 'Skolky',
+    summary: 'A new Rimetide Court Legendary who freezes the whole enemy board.',
+    sections: [
+      {
+        kind: 'new',
+        items: ['Skolky (Rimetide Court, Legendary, Fantasy Realms): 6 mana 5/5. On Deploy: Freeze all enemy units. Last Breath: return a random enemy unit to its owner\'s hand.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.22.2',
     date: '2026-10-04',
     title: 'Elinda',

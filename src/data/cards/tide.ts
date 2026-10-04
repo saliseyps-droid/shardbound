@@ -178,4 +178,14 @@ export const TIDE_CARDS: CardDefinition[] = [
     description: 'On Deploy: Return 2 random enemy units to their owner\'s hand. Summon two 1/1 Grasping Tentacles with Guard.',
     flavorText: 'When it rises, the horizon rises with it.',
   },
+  {
+    ...base, id: 'tid_skolky', name: 'Skolky', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'DEEP',
+    manaCost: 6, attack: 5, health: 5, tags: ['Mage'], archetypes: ['Deep Freeze', 'Undertow'],
+    abilities: [
+      { trigger: 'ON_DEPLOY', effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'ALL_ENEMY_UNITS' }] },
+      { trigger: 'LAST_BREATH', effects: [{ type: 'RETURN_TO_HAND', target: 'RANDOM_ENEMY_UNIT' }] },
+    ],
+    description: 'On Deploy: Freeze all enemy units. Last Breath: Return a random enemy unit to its owner\'s hand.',
+    flavorText: 'He reads the cold the way others read the stars, and the cold always answers.',
+  },
 ];

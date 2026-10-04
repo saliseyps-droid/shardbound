@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.22.3': {
+    title: 'Skolky',
+    summary: 'Nová legendární karta Dvora Jinovatky, která zmrazí celé nepřátelské bojiště.',
+    sections: [['Skolky (Dvůr Jinovatky, legendární, Fantasy Realms): 6 many, 5/5. Při nasazení: zmraz všechny nepřátelské jednotky. Poslední dech: vrať náhodnou nepřátelskou jednotku do ruky jejího vlastníka.']],
+  },
   '0.22.2': {
     title: 'Elinda',
     summary: 'Nová legendární karta Kruhu Trnoboru, která mění léčení v sílu.',

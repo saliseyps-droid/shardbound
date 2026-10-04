@@ -23,6 +23,7 @@ const cards: CardsOverlay = {
   tid_undertow_maelstrom: { name: 'Vír spodního proudu', description: 'Vrať všechny jednotky do rukou jejich vlastníků.', flavorText: 'Moře si vezme všechno zpátky. Všechno.' },
   tid_tidewitch_of_the_rime: { name: 'Přílivová čarodějka jinovatky', description: 'Léčka. Kdykoli zemře nepřátelská jednotka, přidej si do ruky Střep jinovatky.', flavorText: 'Každá duše, kterou utopí, se stane ledovou třískou pro tu příští.' },
   tid_ysolde: { name: 'Ysolde, Ojíněná vládkyně', description: 'Při nasazení: Zmraz všechny nepřátelské jednotky. Pak způsob 2 poškození nepřátelskému Strážci za každou Zmrazenou nepřátelskou jednotku.', flavorText: 'Královna dvora, který už tisíc let nevydechl.' },
+  tid_skolky: { name: 'Skolky', description: 'Při nasazení: Zmraz všechny nepřátelské jednotky. Poslední dech: Vrať náhodnou nepřátelskou jednotku do ruky jejího vlastníka.', flavorText: 'Čte chlad tak, jako jiní čtou hvězdy, a chlad mu vždycky odpoví.' },
   tid_morrowgast: { name: 'Morrowgast, Leviatan z hlubin', description: 'Při nasazení: Vrať 2 náhodné nepřátelské jednotky do ruky jejich vlastníka. Vyvolej dvě Svírající chapadla 1/1 se Stráží.', flavorText: 'Když se vynoří, zvedne se s ním i obzor.' },
 };
 

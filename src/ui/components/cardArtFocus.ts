@@ -158,6 +158,7 @@ export const CARD_ART_FOCUS: Record<string, number> = {
   tid_hailstorm: 35,
   tid_icebound_oracle: 32,
   tid_morrowgast: 40,
+  tid_skolky: 22,
   tid_palehood_sentry: 20,
   tid_rimebound_acolyte: 35,
   tid_rimed_tide_bell: 50,
