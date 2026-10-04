@@ -27,6 +27,11 @@ const rich = (gold = 1000): GameSave => {
   const s = createNewSave('A', 'flame', 1, 'p');
   return { ...s, profile: { ...s.profile, gold } };
 };
+/** The day's free entry is already used, so the next run is paid. */
+const paidEntry = (): GameSave => {
+  const s = rich();
+  return { ...s, arena: { ...s.arena, freeEntryDay: dayKey(1) } };
+};
 const ok = <T,>(r: { ok: true; value: T } | { ok: false; error: string }): T => {
   if (!r.ok) throw new Error(r.error);
   return r.value;
@@ -138,7 +143,8 @@ describe('arena', () => {
   });
 
   it('the run summary is shown until acknowledged, then stays dismissed', () => {
-    let s = ok(retireArena(ok(startArena(rich(), 1, 4)), 2));
+    // A paid run (a free run retired before playing pays nothing; see fixClock.test.ts).
+    let s = ok(retireArena(ok(startArena(paidEntry(), 1, 4)), 2));
     expect(s.arena.last?.seen).toBe(false);
     s = acknowledgeArenaResult(s);
     expect(s.arena.last?.seen).toBe(true);
@@ -146,7 +152,7 @@ describe('arena', () => {
   });
 
   it('retiring ends the run with the current wins', () => {
-    let s = ok(startArena(rich(), 1, 9));
+    let s = ok(startArena(paidEntry(), 1, 9));
     s = ok(retireArena(s, 2));
     expect(s.arena.run).toBeNull();
     expect(s.arena.last?.wins).toBe(0);

@@ -5,7 +5,7 @@ import { generatePack } from '@/domain/packs';
 import { createRng } from '@/core/rng';
 import { act, giveCard, hero, newGame, setEnergy, unitRef } from './helpers';
 
-describe('Curse of the Abyss set', () => {
+describe('Legions of Shadow set', () => {
   it('has 45 Knights and 30 spells across every faction', () => {
     const cards = cardsBy({ set: 'ABYSS' }).filter((c) => c.collectible);
     expect(cards).toHaveLength(75);
@@ -19,7 +19,7 @@ describe('Curse of the Abyss set', () => {
   });
 
   it('is sold in the shop and opens packs of its own cards', () => {
-    expect(SET_INFO.ABYSS.name).toBe('Curse of the Abyss');
+    expect(SET_INFO.ABYSS.name).toBe('Legions of Shadow');
     expect(SHOP_OFFERS.some((o) => o.setId === 'ABYSS')).toBe(true);
     const pack = generatePack('ABYSS', { EPIC: 0, LEGENDARY: 0 }, () => 0, createRng(7));
     expect(pack.cards.every((c) => getCard(c.cardId)?.set === 'ABYSS')).toBe(true);
@@ -45,7 +45,7 @@ describe('Curse of the Abyss set', () => {
   });
 });
 
-describe('Curse of the Abyss: second wave', () => {
+describe('Legions of Shadow: second wave', () => {
   it('Scarlet Oathbreaker gives each Knight you summon +1/+1', () => {
     let s = newGame({ board0: ['neu_scarlet_oathbreaker'] });
     setEnergy(s, 0, 2);
@@ -71,7 +71,7 @@ describe('Curse of the Abyss: second wave', () => {
   });
 });
 
-describe('Curse of the Abyss: third wave', () => {
+describe('Legions of Shadow: third wave', () => {
   it('Rendoslav draws 2 Knights and gives your other units +1/+1', () => {
     const deck = [...Array(20).fill('token_recruit'), 'ver_thornmail_knight', 'tid_tidewrack_knight', ...Array(8).fill('token_recruit')];
     let s = newGame({ deck0: deck, board0: ['token_treant'] });
@@ -99,7 +99,7 @@ describe('Curse of the Abyss: third wave', () => {
   });
 });
 
-describe('Curse of the Abyss: spells', () => {
+describe('Legions of Shadow: spells', () => {
   it('Abyssal Flare hits harder while you control a Knight', () => {
     let s = newGame({ board0: ['ver_thornmail_knight'], board1: ['token_golem', 'token_golem'] });
     setEnergy(s, 0, 5);
@@ -133,7 +133,7 @@ describe('Curse of the Abyss: spells', () => {
   });
 });
 
-describe('Curse of the Abyss: second spell wave', () => {
+describe('Legions of Shadow: second spell wave', () => {
   it('Sigil of the Abyss Lord takes an enemy unit that costs 5 or less', () => {
     let s = newGame({ board1: ['token_treant'] });
     setEnergy(s, 0, 10);

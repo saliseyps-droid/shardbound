@@ -1,7 +1,7 @@
 import type { CardDefinition } from '@/game/types';
 
 /**
- * CURSE OF THE ABYSS — Knights from every faction, sworn to the dark below the world.
+ * LEGIONS OF SHADOW — Knights from every faction, marching for the shadow (set id ABYSS kept for saves).
  * Tallys the Menace (void.ts) and Liu Kano (astral.ts) also belong to this set.
  * Set theme: Knight synergy (draw Knights, reward controlling another Knight) on top of each faction's own plan.
  */
@@ -319,7 +319,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   {
     ...spell, id: 'emb_abyssal_flare', name: 'Abyssal Flare', faction: 'EMBER', rarity: 'COMMON',
     manaCost: 1, target: { kind: 'ANY_UNIT' }, archetypes: ['Pyromancy'],
-    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'TARGET' }, { type: 'DEAL_DAMAGE', amount: 1, target: 'TARGET', condition: { kind: 'CONTROLS_TAG', tag: 'Knight' } }] }],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'TARGET', bonus: { amount: 1, condition: { kind: 'CONTROLS_TAG', tag: 'Knight' } } }] }],
     description: 'Deal 2 damage to a unit. If you control a Knight, deal 1 more.',
     flavorText: 'A flare from the deep fires: small, red, and aimed by someone in armour.',
   },

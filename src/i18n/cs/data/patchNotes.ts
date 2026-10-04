@@ -1,6 +1,38 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.19.0': {
+    title: 'Legions of Shadow',
+    summary: 'Nejnovější set se teď jmenuje Legions of Shadow, kampaň má dvě nové kapitoly a přišla velká várka oprav.',
+    sections: [
+      [
+        'Nejnovější set se přejmenoval na Legions of Shadow a má nový obrázek balíčku. Tvoje karty i balíčky zůstávají.',
+        'Kampaň, Kapitola IV – Legie stínu: čtyři zapřisáhlí Rytíři a Vorgrath, Hořící přísaha.',
+        'Kampaň, Kapitola V – Stínový trůn: Azhrel, Kaelthar a závěrečná bitva s Rendoslavem.',
+        'Rubové strany karet ukazují i ty, které teprve můžeš získat.',
+        'Sbírka a editor balíčku na mobilu: filtry se otevírají ve vlastním panelu a dlouhým podržením si kartu prohlédneš.',
+      ],
+      ['Kostnicový kolos: teď stojí 5 a je 3/4, který může vyrůst až o +4/+4 (dříve 6 many, 5/6, až +5/+5).'],
+      [
+        'Posílení se přičte jen jednou u kouzel, která za podmínky dávají poškození navíc (Abyssal Flare, Frost Lance), a nikdy proti vlastní straně.',
+        'Umlčení už nezabije zraněnou jednotku tím, že jí odebere bonus k životům.',
+        '„Kdykoli tato jednotka zničí jednotku“ se spustí i tehdy, když zabije útočníka protiúderem.',
+        'Relikvie spotřebují náboj, jen když jejich efekt opravdu proběhne.',
+        'Spellweaver Adept teď dává samostatné zásahy po 2 náhodným nepřátelům, jak říká text.',
+        'Jednotky s cílem při nasazení jde zahrát i bez cíle; popis Ochrany teď zmiňuje i efekty při nasazení.',
+        'Vybraný portrét Strážce u balíčku zůstane i po načtení hry.',
+        'Poškozený kód balíčku teď ukáže chybu místo toho, aby nic neudělal.',
+        'Obnovení nebo zavření hry během zápasu v aréně, Ranked, turnaji nebo online se počítá jako prohra.',
+        'Výpadek vlastního připojení už ti nepřinese výhru.',
+        'Výsledek turnaje platí, jen když se zápas opravdu odehrál a oba hráči se shodnou.',
+        'Přetočení hodin v počítači už nedává další arénu zdarma ani nové úkoly.',
+        'Vzdání bezplatné arény před prvním zápasem nedává odměnu.',
+        'Cloudové ukládání nezahodí změny provedené během přihlašování.',
+        'Spousta oprav rozložení na mobilu a v češtině: tlačítka u balíčků, Lore, Nastavení, Kampaň, Úkoly, Profil, větší tlačítka v zápase.',
+        'Data se zobrazují podle jazyka hry.',
+      ],
+    ],
+  },
   '0.18.14': {
     title: 'Úhlednější Profil a Obchod',
     summary: 'Odměny za úrovně v Profilu jsou úhledně zarovnané a balíček setu v Obchodě už nemá barevný rámeček.',

@@ -7,7 +7,7 @@ import { ownedCopies } from '@/domain/save';
 import { gameService, useAccount } from '@/state/accountStore';
 import { toast, useUi } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
-import { CardView } from '@/ui/components/CardView';
+import { CardView, isTouchScreen } from '@/ui/components/CardView';
 import { confirmDialog, Essence, ScreenHeader } from '@/ui/components/common';
 import { VirtualCardGrid } from '@/ui/components/collection/VirtualCardGrid';
 import { CardFilterBar } from '@/ui/components/collection/CardFilterBar';
@@ -116,7 +116,7 @@ export default function CollectionScreen() {
     <div className="screen collection-screen">
       <ScreenHeader
         title={t('Collection')}
-        subtitle={`${tn(cards.length, '{n} card shown.', '{n} cards shown.')} ${t('Right-click a card to inspect it.')}`}
+        subtitle={`${tn(cards.length, '{n} card shown.', '{n} cards shown.')} ${isTouchScreen() ? t('Tap a card for details, long-press to inspect it.') : t('Right-click a card to inspect it.')}`}
         actions={
           <>
             <Essence amount={save.profile.essence} />

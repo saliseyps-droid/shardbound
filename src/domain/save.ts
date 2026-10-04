@@ -1,3 +1,4 @@
+import type { ActiveMatch } from './activeMatch';
 import type { ArenaState } from './arena';
 import type { Difficulty } from '@/config/progression';
 import type { QuestType } from '@/config/quests';
@@ -46,6 +47,8 @@ export interface PlayerProfile {
   factionPortraits: Partial<Record<PlayableFaction, string>>;
   /** One-time shop bundles already bought (src/config/economy.ts BUNDLES). */
   bundlesBought: string[];
+  /** A match with stakes in progress (src/domain/activeMatch.ts); recorded as a loss if the app is reloaded mid-match. */
+  activeMatch?: ActiveMatch | null;
 }
 
 export type VariantCounts = Record<Variant, number>;

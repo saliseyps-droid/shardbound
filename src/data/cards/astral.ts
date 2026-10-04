@@ -77,7 +77,7 @@ export const ASTRAL_CARDS: CardDefinition[] = [
   {
     ...base, id: 'ast_spellweaver_adept', name: 'Spellweaver Adept', cardType: 'UNIT', rarity: 'RARE', set: 'CORE',
     manaCost: 3, attack: 3, health: 3, tags: ['Mage'], archetypes: ['Spellweave'],
-    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: { kind: 'SPELLS_CAST_THIS_TURN', times: 2 }, target: 'RANDOM_ENEMY' }] }],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'RANDOM_ENEMY', repeat: { kind: 'SPELLS_CAST_THIS_TURN', max: 20 } }] }],
     description: 'On Deploy: Deal 2 damage to a random enemy for each spell you cast this turn.',
     flavorText: 'She weaves each finished spell into the next, until the pattern bites.',
   },

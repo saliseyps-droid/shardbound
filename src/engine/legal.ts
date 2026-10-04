@@ -13,7 +13,8 @@ export function getLegalActions(state: GameState, playerId: PlayerId): GameActio
     const def = getCard(card.cardId)!;
     if (def.target) {
       const targets = validTargets(state, playerId, def.target, { spellLike: true });
-      if (targets.length === 0) actions.push({ type: 'PLAY_CARD', player: playerId, cardUid: card.uid });
+      // Only spells must take a target when one exists; other cards may also be played without one.
+      if (targets.length === 0 || def.cardType !== 'SPELL') actions.push({ type: 'PLAY_CARD', player: playerId, cardUid: card.uid });
       for (const target of targets) actions.push({ type: 'PLAY_CARD', player: playerId, cardUid: card.uid, target });
     } else {
       actions.push({ type: 'PLAY_CARD', player: playerId, cardUid: card.uid });

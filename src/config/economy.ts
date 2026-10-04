@@ -40,7 +40,7 @@ export interface Bundle {
 }
 
 export const BUNDLES: Bundle[] = [
-  { id: 'abyss_bundle', setId: 'ABYSS', name: 'Curse of the Abyss Bundle', packs: 10, cardBack: 'hollow_vortex', portrait: 'tide_frost_lich', discount: 0.3 },
+  { id: 'abyss_bundle', setId: 'ABYSS', name: 'Legions of Shadow Bundle', packs: 10, cardBack: 'hollow_vortex', portrait: 'tide_frost_lich', discount: 0.3 },
 ];
 
 /** Offers with a bonus badge grant this many extra packs. */
@@ -71,5 +71,5 @@ export const CRAFTING = {
 export const SET_INFO: Record<SetId, { name: string; tagline: string; releaseOrder: number }> = {
   CORE: { name: 'Kingdoms at War', tagline: 'Banners rise, crowns clash. The Wardens take the field.', releaseOrder: 1 },
   DEEP: { name: 'Fantasy Realms', tagline: 'Dragons wake in the realms beyond the map.', releaseOrder: 2 },
-  ABYSS: { name: 'Curse of the Abyss', tagline: 'Knights of every banner, sworn to the dark below the world.', releaseOrder: 3 },
+  ABYSS: { name: 'Legions of Shadow', tagline: 'Knights of every banner, marching for the shadow.', releaseOrder: 3 },
 };

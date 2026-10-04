@@ -19,6 +19,50 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.19.0',
+    date: '2026-10-04',
+    title: 'Legions of Shadow',
+    summary: 'The newest set is now Legions of Shadow, the campaign gains two chapters, and a large round of fixes.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'The newest set is renamed Legions of Shadow, with new pack art. Your cards and packs stay as they were.',
+          'Campaign Chapter IV, Legions of Shadow: four sworn Knights and Vorgrath, the Burning Oath.',
+          'Campaign Chapter V, The Shadow Throne: Azhrel, Kaelthar and the final battle against Rendoslav.',
+          'Card Backs shows the backs you can still collect.',
+          'Collection and deck editor on phones: filters open in their own panel, and long-press a card to inspect it.',
+        ],
+      },
+      {
+        kind: 'balance',
+        items: ['Ossuary Colossus: now costs 5 and is a 3/4 that grows by up to +4/+4 (was 6 mana, 5/6, up to +5/+5).'],
+      },
+      {
+        kind: 'fixed',
+        items: [
+          'Empower is added only once to spells that deal extra damage under a condition (Abyssal Flare, Frost Lance), and never to damage against your own side.',
+          'Silence no longer kills a damaged unit by removing its Health buffs.',
+          '"Whenever this destroys a unit" also triggers when the unit kills an attacker with its counter-damage.',
+          'Relics only use up a charge when their effect actually happens.',
+          'Spellweaver Adept now deals separate 2-damage hits to random enemies, as its text says.',
+          'Units with a deploy target can be played without one; Ward text now mentions deploy effects.',
+          'A deck\'s chosen Warden portrait is kept after reloading.',
+          'A damaged deck code shows an error instead of doing nothing.',
+          'Reloading or closing the game during an Arena, Ranked, tournament or online match counts as a loss.',
+          'Losing your own connection no longer gives you the win.',
+          'Tournament results only count when the match was really played and both players agree.',
+          'Changing the computer clock no longer gives extra free Arena entries or new quests.',
+          'Retiring a free Arena run before playing gives no reward.',
+          'Cloud save keeps changes made while signing in.',
+          'Many layout fixes on phones and in Czech: deck buttons, Lore, Settings, Campaign, Quests, Profile, larger buttons in matches.',
+          'Dates follow the game language.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.18.14',
     date: '2026-10-04',
     title: 'Tidier Profile and Shop',

@@ -10,7 +10,16 @@ export const RANKED_CONFIG = {
   kFactor: 32,
   /** Rating never drops below this floor. */
   floor: 100,
+  /** Highest rating accepted from an opponent (anything above is clamped). */
+  ceiling: 4000,
 };
+
+/** A rating received from another player: a finite number in range, else the start rating. */
+export function sanitizeRating(v: unknown): number {
+  const n = typeof v === 'number' ? v : typeof v === 'string' && v.trim() !== '' ? Number(v) : NaN;
+  if (!Number.isFinite(n)) return RANKED_CONFIG.startRating;
+  return Math.round(Math.max(RANKED_CONFIG.floor, Math.min(RANKED_CONFIG.ceiling, n)));
+}
 
 export const TIERS: { name: string; min: number; color: string }[] = [
   { name: 'Bronze', min: 0, color: '#c98b5a' },
@@ -33,19 +42,22 @@ export function tierFor(rating: number) {
 
 /** Elo change for `mine` after a game against `theirs`. */
 export function eloDelta(mine: number, theirs: number, result: 'WIN' | 'LOSS' | 'DRAW'): number {
+  mine = Number.isFinite(mine) ? mine : RANKED_CONFIG.startRating;
+  theirs = sanitizeRating(theirs);
   const expected = 1 / (1 + Math.pow(10, (theirs - mine) / 400));
   const score = result === 'WIN' ? 1 : result === 'DRAW' ? 0.5 : 0;
   return Math.round(RANKED_CONFIG.kFactor * (score - expected));
 }
 
 export function applyRanked(state: RankedState, opponentRating: number, result: 'WIN' | 'LOSS' | 'DRAW'): { state: RankedState; delta: number } {
-  const delta = eloDelta(state.rating, opponentRating, result);
-  const rating = Math.max(RANKED_CONFIG.floor, state.rating + delta);
+  const current = Number.isFinite(state.rating) ? state.rating : RANKED_CONFIG.startRating;
+  const delta = eloDelta(current, opponentRating, result);
+  const rating = Math.max(RANKED_CONFIG.floor, current + delta);
   return {
-    delta: rating - state.rating,
+    delta: rating - current,
     state: {
       rating,
-      peak: Math.max(state.peak, rating),
+      peak: Math.max(Number.isFinite(state.peak) ? state.peak : rating, rating),
       wins: state.wins + (result === 'WIN' ? 1 : 0),
       losses: state.losses + (result === 'LOSS' ? 1 : 0),
     },

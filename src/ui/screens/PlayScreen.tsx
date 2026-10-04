@@ -110,7 +110,7 @@ export default function PlayScreen() {
             <Glyph name="crown" size={28} />
             <div>
               <strong>{t('Tournament')}</strong>
-              <span className="muted">{t('A 4-player knockout for 2–4 friends; bots fill the empty seats.')}</span>
+              <span className="muted">{t('A knockout for 4 to 32 players with your friends; bots fill the empty seats.')}</span>
             </div>
             <Link className="btn btn-sm btn-cyan" to="/tournament">
               {t('Open')}

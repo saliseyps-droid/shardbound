@@ -164,7 +164,7 @@ const d: Record<string, string> = {
   'Get matched against a random player who is searching right now and climb the ladder.': 'Utkej se s náhodným hráčem, který právě hledá zápas, a stoupej žebříčkem.',
   'Find match': 'Najít zápas',
   Tournament: 'Turnaj',
-  'A 4-player knockout for 2–4 friends; bots fill the empty seats.': 'Vyřazovací turnaj pro 4 hráče, 2–4 přátele; volná místa obsadí boti.',
+  'A knockout for 4 to 32 players with your friends; bots fill the empty seats.': 'Vyřazovací turnaj pro 4 až 32 hráčů s přáteli; volná místa obsadí boti.',
   Open: 'Otevřít',
   'Play a friend online': 'Hraj s přítelem online',
   'Create a match, send your friend the room code, and they join from their browser.': 'Založ zápas, pošli příteli kód místnosti a on se připojí ze svého prohlížeče.',

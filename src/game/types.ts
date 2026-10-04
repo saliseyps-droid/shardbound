@@ -185,8 +185,8 @@ export type EffectType =
 
 interface EffectBase {
   target?: TargetSelector;
-  /** Resolve the effect this many times (random selectors re-roll each time). */
-  repeat?: number;
+  /** Resolve the effect this many times (random selectors re-roll each time). An expression may resolve to 0 (no effect). */
+  repeat?: ValueExpr;
   /** Effect only resolves when the condition holds. */
   condition?: Condition;
 }
@@ -194,6 +194,8 @@ interface EffectBase {
 export interface DealDamageEffect extends EffectBase {
   type: 'DEAL_DAMAGE';
   amount: ValueExpr;
+  /** Extra damage in the same hit when the condition holds ("If ..., deal N more"). */
+  bonus?: { amount: number; condition: Condition };
 }
 export interface HealEffect extends EffectBase {
   type: 'HEAL';
@@ -358,7 +360,7 @@ export type TriggerType =
   | 'TURN_END' // controller's turn ends
   | 'ON_ATTACK' // this unit attacks
   | 'ON_DAMAGED' // this unit takes damage and survives
-  | 'ON_KILL' // this unit destroys a unit in combat
+  | 'ON_KILL' // this unit destroys a unit (attacking, defending, or with its own damage)
   | 'ALLY_SUMMONED' // another friendly unit enters play
   | 'ALLY_DIED' // another friendly unit dies
   | 'ENEMY_DIED' // an enemy unit dies

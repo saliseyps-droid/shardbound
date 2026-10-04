@@ -155,6 +155,10 @@ export class CloudSync {
     this.detach();
     this.uid = uid;
     this.setStatus('checking');
+    // Track saves from now on: writes made during the checks below must still be uploaded.
+    this.store.setListener((keys) => {
+      if (this.uid === uid) keys.forEach((k) => this.dirty.add(k));
+    });
     try {
       const [cloud, localMeta, link] = await Promise.all([this.backend.loadMeta(uid), this.store.local.get<SaveMeta>(KEYS.meta), this.store.local.get<CloudLink>(LINK_KEY)]);
       const hasLocal = !!(await this.store.local.get(KEYS.profile));
@@ -216,17 +220,21 @@ export class CloudSync {
     await this.queueUpload();
   }
 
+  private scheduleUpload() {
+    this.setStatus('syncing');
+    if (this.timer) clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.timer = null;
+      void this.queueUpload();
+    }, this.opts.debounceMs ?? 3000);
+  }
+
   private startMirroring() {
     const uid = this.uid!;
     this.store.setListener((keys) => {
       if (this.status === 'paused' || this.uid !== uid) return;
       keys.forEach((k) => this.dirty.add(k));
-      this.setStatus('syncing');
-      if (this.timer) clearTimeout(this.timer);
-      this.timer = setTimeout(() => {
-        this.timer = null;
-        void this.queueUpload();
-      }, this.opts.debounceMs ?? 3000);
+      this.scheduleUpload();
     });
     this.unwatch = this.backend.watchMeta(uid, (meta) => {
       if (meta && meta.session !== this.session && this.uid === uid) {
@@ -237,6 +245,8 @@ export class CloudSync {
       }
     });
     this.setStatus('synced');
+    // Saves made while signing in (their time may already be in the uploaded meta) go up now.
+    if (this.dirty.size > 0) this.scheduleUpload();
   }
 
   private queueUpload(): Promise<void> {
@@ -269,6 +279,8 @@ export class CloudSync {
 
   private async uploadAll() {
     this.setStatus('syncing');
+    // Everything is read below; only writes after this point need another upload.
+    this.dirty.clear();
     await this.push(await this.readLocal());
     this.setStatus('synced');
   }

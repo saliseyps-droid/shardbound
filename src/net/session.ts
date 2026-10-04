@@ -3,6 +3,7 @@ import type { DataConnection, Peer } from 'peerjs';
 import { collectibleCards } from '@/data/cards';
 import { hashString } from '@/core/rng';
 import type { GameAction, GameEvent, GameState, SideSetup } from '@/engine/types';
+import { sanitizeRemoteSide } from './lobby';
 
 /**
  * Peer-to-peer match session (WebRTC via PeerJS's public signalling server).
@@ -14,6 +15,8 @@ export const PROTOCOL_VERSION = 4;
 export const ID_PREFIX = 'shardbound-v1-';
 const HEARTBEAT_MS = 4000;
 const TIMEOUT_MS = 15000;
+/** PeerJS's public signalling server (the one `new Peer()` uses); reachable = our network works. */
+const SIGNALLING_PROBE = 'https://0.peerjs.com/peerjs/id';
 
 /** Both players must run the same card database (mechanics only, so different languages can play together). */
 export function contentHash(): number {
@@ -144,6 +147,27 @@ class NetSession {
     }, HEARTBEAT_MS);
   }
 
+  /**
+   * After the opponent's connection dropped: is this device's own network still working?
+   * False when the browser is offline, when PeerJS lost its signalling server, or when the
+   * signalling server can't be reached. Decides who gets the win (see matchStore).
+   */
+  async localNetworkOk(timeoutMs = 4000): Promise<boolean> {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) return false;
+    if (this.peer && (this.peer.destroyed || this.peer.disconnected)) return false;
+    if (typeof fetch !== 'function') return true;
+    const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    const timer = setTimeout(() => ctrl?.abort(), timeoutMs);
+    try {
+      await fetch(`${SIGNALLING_PROBE}?ts=${Date.now()}`, { mode: 'no-cors', cache: 'no-store', signal: ctrl?.signal });
+      return true;
+    } catch {
+      return false;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   private handleClose() {
     if (this.status === 'closed' || this.status === 'idle') return;
     this.stopHeartbeat();
@@ -199,11 +223,12 @@ class NetSession {
             setTimeout(() => conn.close(), 500);
             return;
           }
-          this.remoteSide = msg.side;
-          this.remoteDeckName = msg.deckName;
-          this.remoteName = msg.side.name;
-          this.remoteAvatar = msg.side.avatar;
-          this.remoteMeta = msg.meta ?? {};
+          // Only the validated, whitelisted fields reach the engine (the deck is always shuffled).
+          this.remoteSide = sanitizeRemoteSide(msg.side);
+          this.remoteDeckName = typeof msg.deckName === 'string' ? msg.deckName.slice(0, 40) : 'Deck';
+          this.remoteName = this.remoteSide.name;
+          this.remoteAvatar = this.remoteSide.avatar;
+          this.remoteMeta = msg.meta && typeof msg.meta === 'object' ? msg.meta : {};
           this.attach(conn);
           conn.send({ t: 'welcome', hostName, hostAvatar, meta: opts.meta } satisfies NetMessage);
           this.setStatus('connected');

@@ -6,7 +6,7 @@ import { ScreenHeader } from '@/ui/components/common';
 import { GoldIcon } from '@/ui/components/Icons';
 import { DIFFICULTY_INFO } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
-import { t, tn } from '@/i18n';
+import { formatDateTime, t, tn } from '@/i18n';
 
 type Filter = 'ALL' | 'WIN' | 'LOSS' | 'DRAW';
 const MODE_LABEL = { PRACTICE: 'Practice', PVE: 'Campaign', TUTORIAL: 'Tutorial', PVP: 'Online', RANKED: 'Ranked', TOURNAMENT: 'Tournament', ARENA: 'Arena' } as const;
@@ -70,7 +70,7 @@ export default function MatchHistoryScreen() {
                     </span>
                     {m.conceded && <span className="faint"> {t('(conceded)')}</span>}
                   </td>
-                  <td className="faint">{new Date(m.date).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}</td>
+                  <td className="faint">{formatDateTime(m.date)}</td>
                   <td>
                     {m.opponentName} <span className="faint">{DIFFICULTY_INFO[m.difficulty] && t(DIFFICULTY_INFO[m.difficulty].label)}</span>
                   </td>

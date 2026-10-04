@@ -337,5 +337,7 @@ const d: Record<string, string> = {
   'This tournament has already started.': 'Tento turnaj už začal.',
   'This tournament is full.': 'Tento turnaj je plný.',
   'Your opponent did not connect.': 'Soupeř se nepřipojil.',
+  'Your unfinished match was counted as a loss.': 'Tvůj nedohraný zápas se započítal jako prohra.',
+  'You lost your connection, so the match counts as a loss.': 'Ztratil jsi připojení, zápas se proto počítá jako prohra.',
 };
 export default d;

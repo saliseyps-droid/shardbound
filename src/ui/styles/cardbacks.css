@@ -24,3 +24,12 @@
   35% { transform: rotate(3deg) scale(1.1); filter: drop-shadow(0 0 30px var(--gold)); }
   100% { transform: scale(1); }
 }
+
+/* Card backs the player doesn't own yet: dark silhouettes with a lock and where to get them. */
+.cardbacks-locked { margin-top: var(--space-4); }
+.cardback-item.is-locked { background: rgba(6, 4, 16, 0.5); }
+.cardback-item.is-locked .card-back { filter: grayscale(0.85) brightness(0.32) contrast(1.1); transition: filter 0.25s; }
+.cardback-item.is-locked:hover .card-back { filter: grayscale(0.4) brightness(0.6); }
+.cardback-item.is-locked .cardback-name { color: var(--parchment-dim); }
+.cardback-lock { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: var(--parchment-dim); filter: drop-shadow(0 2px 4px #000); pointer-events: none; }
+.cardback-source { display: inline-flex; align-items: center; gap: 4px; font-size: var(--t-xs); white-space: nowrap; }

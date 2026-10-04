@@ -109,9 +109,9 @@ export const VOID_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'vod_ossuary_colossus', name: 'Ossuary Colossus', cardType: 'UNIT', rarity: 'RARE', set: 'CORE',
-    manaCost: 6, attack: 5, health: 6, keywords: ['GUARD'], tags: ['Undead'], archetypes: ['Requiem'],
-    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: { kind: 'ALLY_DEATHS_THIS_GAME', max: 5 }, health: { kind: 'ALLY_DEATHS_THIS_GAME', max: 5 }, target: 'SELF' }] }],
-    description: 'Guard. On Deploy: Gain +1/+1 for each friendly unit that died this game (up to +5/+5).',
+    manaCost: 5, attack: 3, health: 4, keywords: ['GUARD'], tags: ['Undead'], archetypes: ['Requiem'],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: { kind: 'ALLY_DEATHS_THIS_GAME', max: 4 }, health: { kind: 'ALLY_DEATHS_THIS_GAME', max: 4 }, target: 'SELF' }] }],
+    description: 'Guard. On Deploy: Gain +1/+1 for each friendly unit that died this game (up to +4/+4).',
     flavorText: 'Built from every soldier the Choir has ever lost. It remembers each of their names.',
   },
 

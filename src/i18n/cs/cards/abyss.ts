@@ -1,6 +1,6 @@
 import type { CardsOverlay } from '../../overlayTypes';
 
-/** Curse of the Abyss (set ABYSS). */
+/** Legions of Shadow (set ABYSS). */
 const cards: CardsOverlay = {
   tid_tidewrack_knight: { name: 'Rytíř z vraku', description: 'Při nasazení: Zmraz nepřátelskou jednotku.', flavorText: 'Klesl ke dnu se svou lodí. Vynořil se bez ní.' },
   ver_thornmail_knight: { name: 'Rytíř v trnité zbroji', description: 'Regenerace.', flavorText: 'Kořeny mu prorostly zbrojí. Teď ji každou noc spravují.' },

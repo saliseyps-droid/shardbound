@@ -112,6 +112,67 @@ const v: OpponentsOverlay = {
         'Schopnosti Strážce: Úlomek Koruny, Prozíravost III.',
       ],
     },
+    c4_e1: {
+      name: 'Dáma Rowena Trnová',
+      title: 'Strážkyně přísahy Trnové přilby',
+      intro: 'Přísahala jsem háji. Stín v něm jen vyrostl dřív.',
+      special: ['V balíčku má navíc Rytíře trní.'],
+    },
+    c4_e2: {
+      name: 'Sir Halvard Slaný',
+      title: 'Rytíř utopeného praporu',
+      intro: 'Jednou už jsem se utopil. Nechytlo se to.',
+      special: ['V balíčku má navíc utopené Rytíře.'],
+    },
+    c4_e3: {
+      name: 'Maršálka Dagna Železná přísaha',
+      title: 'Děsivá rytířka výhně',
+      intro: 'Každý nýt v téhle zbroji je slib. Žádný z nich tobě.',
+      special: ['V balíčku má navíc Děsivé rytíře.'],
+    },
+    c4_e4: {
+      name: 'Fialová čepel',
+      title: 'Duelantka Posledního světla',
+      intro: 'Hvězdy zhasly. Moje čepel ne.',
+      special: ['V balíčku má navíc Rytíře Posledního světla.'],
+    },
+    c4_boss: {
+      name: 'Vorgrath',
+      title: 'Hořící přísaha',
+      intro: 'Přísahal jsem hořet pro Korunu. Teď hořím pro to, co přijde po ní.',
+      special: [
+        'Schopnosti Strážce: Přísaha popela, Válečný pokřik III.',
+        'V balíčku má samotného Vorgratha a své zapřisáhlé Rytíře.',
+      ],
+    },
+    c5_b1: {
+      name: 'Azhrel',
+      title: 'Utopený šampion',
+      intro: 'Příliv mi vzal království. Stín mi dal meč, abych si ho vzal zpátky.',
+      special: [
+        'Začíná s 35 životy.',
+        'Schopnosti Strážce: Černý příliv, Náhlý mráz II.',
+      ],
+    },
+    c5_b2: {
+      name: 'Kaelthar',
+      title: 'Hranice duší',
+      intro: 'Každá duše, kterou jsi obětoval, abys mě našel, teď hoří v mém ohni.',
+      special: [
+        'Začíná s 35 životy.',
+        'Schopnosti Strážce: Hranice duší, Žeň duší III.',
+      ],
+    },
+    c5_final: {
+      name: 'Rendoslav',
+      title: 'Pán stínových legií',
+      intro: 'Nakonec přede mnou poklekne každý prapor. Tvůj bude poslední.',
+      special: [
+        'Začíná se 40 životy.',
+        'Schopnosti Strážce: Stínový nábor, Úlomek Koruny.',
+        'V balíčku má samotného Rendoslava a relikvie Pána propasti.',
+      ],
+    },
   },
   chapters: {
     ch1: {
@@ -125,6 +186,14 @@ const v: OpponentsOverlay = {
     ch3: {
       name: 'Kapitola III – Vzestup Koruny',
       description: 'Mezi tebou a srdcem Rozťaté koruny stojí tři mocnosti.',
+    },
+    ch4: {
+      name: 'Kapitola IV – Legie stínu',
+      description: 'Koruna je obnovená, ale její stín kráčí dál. Rytíři pod všemi prapory teď táhnou pro něj.',
+    },
+    ch5: {
+      name: 'Kapitola V – Stínový trůn',
+      description: 'Na dně světa se Legie shromažďují kolem prázdného trůnu. Někdo na něm chce usednout.',
     },
   },
 };

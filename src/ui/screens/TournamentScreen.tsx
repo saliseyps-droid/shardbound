@@ -15,7 +15,7 @@ import '@/ui/styles/online.css';
 const DIFF_LABEL: Record<Difficulty, string> = { EASY: 'Easy', NORMAL: 'Normal', HARD: 'Hard', EXPERT: 'Expert' };
 
 function prizeText(p: PlacePrize): string {
-  return p.packs > 0 ? tr('{gold} Gold and {packs}× Curse of the Abyss pack', { gold: p.gold, packs: p.packs }) : tr('{gold} Gold', { gold: p.gold });
+  return p.packs > 0 ? tr('{gold} Gold and {packs}× Legions of Shadow pack', { gold: p.gold, packs: p.packs }) : tr('{gold} Gold', { gold: p.gold });
 }
 
 function PrizeList({ size }: { size: TournamentSize }) {

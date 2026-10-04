@@ -45,6 +45,14 @@
 }
 .cost-filter button[aria-pressed='true'] { background: linear-gradient(160deg, #bff8ff, #3aa6d8); color: #06233a; }
 .filter-bar.compact .search-field { max-width: 260px; }
+/* The Filters button and its sheet only exist on small screens (mobile.css); on larger ones the
+   extra filters sit inline in the row. */
+.filter-toggle, .filter-sheet-done, .filter-sheet-backdrop { display: none; }
+.filter-extra { display: contents; }
+.filter-toggle-count {
+  display: inline-grid; place-items: center; min-width: 20px; height: 20px; margin-left: 6px; padding: 0 5px;
+  border-radius: 999px; background: var(--cyan); color: var(--ink-0); font-size: var(--t-xs);
+}
 
 /* ---------------- Virtual grid ---------------- */
 .vgrid { position: relative; overflow-y: auto; overflow-x: hidden; min-height: 0; height: 100%; padding: 12px 4px 24px; }

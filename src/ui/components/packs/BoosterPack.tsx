@@ -4,7 +4,7 @@ import type { SetId } from '@/game/types';
 import { t } from '@/i18n';
 import kingdomsAtWar from '@/assets/packs/kingdoms_at_war.webp';
 import fantasyRealms from '@/assets/packs/fantasy_realms.webp';
-import curseOfTheAbyss from '@/assets/packs/curse_of_the_abyss.webp';
+import legionsOfShadow from '@/assets/packs/legions_of_shadow.webp';
 
 /** Per-set accent colours (glows around the pack, the pack-opening stage). */
 export const PACK_THEME: Record<SetId, { a: string; b: string; c: string; glow: string; emblem: string }> = {
@@ -14,7 +14,7 @@ export const PACK_THEME: Record<SetId, { a: string; b: string; c: string; glow: 
 };
 
 /** Pack artwork per set (src/assets/packs). */
-const PACK_ART: Record<SetId, string> = { CORE: kingdomsAtWar, DEEP: fantasyRealms, ABYSS: curseOfTheAbyss };
+const PACK_ART: Record<SetId, string> = { CORE: kingdomsAtWar, DEEP: fantasyRealms, ABYSS: legionsOfShadow };
 
 export function BoosterPack({ setId, width = 180, className = '', style }: { setId: SetId; width?: number; className?: string; style?: CSSProperties }) {
   const art = PACK_ART[setId];

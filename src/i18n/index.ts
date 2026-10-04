@@ -139,3 +139,16 @@ export function tn(n: number, one: string, other: string, vars?: Record<string, 
   }
   return tr(n === 1 ? one : other, v, locale);
 }
+
+/** BCP 47 tag of the app language, for dates (the browser's own locale may differ from the app's). */
+export const dateLocale = (): string => (ACTIVE === 'cs' ? 'cs-CZ' : 'en-GB');
+
+/** A date in the app language, e.g. "4 Oct 2026" / "4. 10. 2026". */
+export function formatDate(date: Date | number | string, options: Intl.DateTimeFormatOptions = { dateStyle: 'medium' }): string {
+  return new Date(date).toLocaleDateString(dateLocale(), options);
+}
+
+/** A date and time in the app language. */
+export function formatDateTime(date: Date | number | string, options: Intl.DateTimeFormatOptions = { dateStyle: 'short', timeStyle: 'short' }): string {
+  return new Date(date).toLocaleString(dateLocale(), options);
+}

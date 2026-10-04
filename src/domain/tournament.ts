@@ -56,7 +56,7 @@ export const TOURNAMENT_CONFIG = {
 
 export interface PlacePrize {
   gold: number;
-  /** Curse of the Abyss packs. */
+  /** Legions of Shadow packs. */
   packs: number;
 }
 
@@ -252,4 +252,60 @@ export function placementOf(t: Tournament, playerId: string): 1 | 2 | 3 | 4 | nu
   if (t.runnerUpId === playerId) return 2;
   if (t.thirdId === playerId) return 3;
   return t.players.some((p) => p.id === playerId) ? 4 : null;
+}
+
+// ---------------------------------------------------------------------------
+// Result reports (organizer side)
+// ---------------------------------------------------------------------------
+
+/** Organizer bookkeeping for one match: which humans started it and who they say won. */
+export interface MatchReports {
+  started: string[];
+  /** reporting player id -> winner id */
+  reports: Record<string, string>;
+  firstReportAt?: number;
+}
+
+export type ReportDecision = { kind: 'accept'; winnerId: string } | { kind: 'wait' } | { kind: 'replay' };
+
+/** How long the organizer waits for the second player's report. */
+export const REPORT_TIMEOUT_MS = 120_000;
+
+export const emptyReports = (): MatchReports => ({ started: [], reports: {} });
+
+/** Only a human player of an unfinished, scheduled match may start it or report it. */
+export function isMatchParticipant(t: Tournament, matchId: TournamentMatchId, playerId: string): boolean {
+  const m = t.matches.find((x) => x.id === matchId);
+  if (!m || !m.a || !m.b || (m.status !== 'ready' && m.status !== 'playing')) return false;
+  if (m.a !== playerId && m.b !== playerId) return false;
+  const p = playerById(t, playerId);
+  return !!p && !p.bot;
+}
+
+/**
+ * A human vs bot match counts on the human's report. Between two humans both must
+ * report the same winner; different reports mean a replay. If only one reports, the
+ * organizer accepts it after a timeout, but only when both players actually started
+ * the match (otherwise the match is replayed).
+ */
+export function decideReport(t: Tournament, matchId: TournamentMatchId, book: MatchReports, now: number): ReportDecision {
+  const m = t.matches.find((x) => x.id === matchId);
+  if (!m || !m.a || !m.b || m.status === 'done') return { kind: 'wait' };
+  const valid = (w: string | undefined) => w === m.a || w === m.b;
+  const humans = [m.a, m.b].filter((id) => !playerById(t, id)?.bot);
+  const reported = humans.filter((h) => valid(book.reports[h]));
+  if (reported.length === 0) return { kind: 'wait' };
+  if (reported.length === humans.length) {
+    const winners = new Set(reported.map((h) => book.reports[h]));
+    return winners.size === 1 ? { kind: 'accept', winnerId: book.reports[reported[0]] } : { kind: 'replay' };
+  }
+  if (book.firstReportAt !== undefined && now - book.firstReportAt >= REPORT_TIMEOUT_MS) {
+    return humans.every((h) => book.started.includes(h)) ? { kind: 'accept', winnerId: book.reports[reported[0]] } : { kind: 'replay' };
+  }
+  return { kind: 'wait' };
+}
+
+/** A disputed match goes back to "ready" so its players can play it again. */
+export function replayMatch(t: Tournament, matchId: TournamentMatchId): Tournament {
+  return { ...t, matches: t.matches.map((m) => (m.id === matchId && m.status === 'playing' ? { ...m, status: 'ready' as const, winner: null } : m)) };
 }

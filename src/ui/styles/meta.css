@@ -167,7 +167,9 @@ button.deckbox:hover:not(:disabled) { filter: brightness(1.15); }
 .quest-row.complete .quest-icon { color: var(--gold-bright); }
 .quest-main { display: grid; gap: 4px; min-width: 0; }
 .quest-title { display: flex; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
-.quest-reward { display: inline-flex; gap: 8px; align-items: center; font-size: var(--t-sm); }
+.quest-reward { display: inline-flex; flex-wrap: wrap; gap: 2px 8px; align-items: center; font-size: var(--t-sm); }
+/* Each reward stays on one line ("+400 XP"); the row wraps between rewards instead. */
+.quest-reward > * { white-space: nowrap; }
 .quest-desc { font-size: var(--t-sm); }
 .quest-progress { display: grid; grid-template-columns: 1fr auto; gap: var(--space-3); align-items: center; font-size: var(--t-sm); }
 .quests-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--space-4); align-items: start; }
@@ -214,6 +216,7 @@ button.deckbox:hover:not(:disabled) { filter: brightness(1.15); }
 .chapters { display: grid; gap: var(--space-5); }
 .chapter { position: relative; }
 .chapter-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); }
+.chapter-head > span { white-space: nowrap; flex: none; }
 .chapter-head h3 { margin: 0; }
 .chapter.locked { opacity: 0.55; }
 .chapter-sep { display: block; height: 1px; background: linear-gradient(90deg, var(--line-strong), transparent); margin-top: var(--space-5); }
@@ -257,6 +260,7 @@ button.deckbox:hover:not(:disabled) { filter: brightness(1.15); }
 .profile-id { display: flex; gap: var(--space-4); align-items: center; }
 .profile-name { margin: 0; display: flex; gap: var(--space-2); align-items: center; overflow-wrap: anywhere; }
 .icon-btn.small { width: 30px; height: 30px; font-size: 0.9rem; }
+@media (hover: none), (max-width: 760px) { .icon-btn.small { width: 38px; height: 38px; flex: none; } }
 .name-edit { display: flex; gap: var(--space-2); flex-wrap: wrap; }
 .profile-level { display: flex; gap: var(--space-3); align-items: center; font-size: var(--t-xs); }
 .profile-wallet { display: flex; gap: var(--space-5); font-size: var(--t-lg); }
@@ -286,7 +290,9 @@ button.deckbox:hover:not(:disabled) { filter: brightness(1.15); }
 
 /* ---------------- Settings ---------------- */
 .settings-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); align-items: start; max-width: 1200px; }
-@media (max-width: 900px) { .settings-layout { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .settings-layout { grid-template-columns: minmax(0, 1fr); } }
+/* Narrow screens: a control that does not fit beside its label drops below it. */
+.settings-screen .toggle-row { flex-wrap: wrap; row-gap: var(--space-2); }
 .slider-wrap { display: inline-flex; align-items: center; gap: var(--space-3); }
 .slider-val { width: 32px; text-align: right; }
 .toggle-hint { display: block; font-size: var(--t-xs); }
@@ -295,7 +301,7 @@ label.toggle-row { cursor: pointer; }
 
 /* ---------------- Lore ---------------- */
 .lore-intro p { font-size: var(--t-lg); line-height: 1.6; color: var(--parchment-dim); }
-.faction-codex { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: var(--space-4); margin-top: var(--space-5); }
+.faction-codex { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr)); gap: var(--space-4); margin-top: var(--space-5); }
 .codex-entry { box-shadow: inset 0 3px 0 var(--f1), inset 0 0 0 1px var(--line), var(--shadow-lift); }
 .codex-entry header { display: flex; gap: var(--space-3); align-items: center; margin-bottom: var(--space-3); }
 .codex-entry h3 { margin: 0; color: var(--f2); }
@@ -305,7 +311,7 @@ label.toggle-row { cursor: pointer; }
 .codex-archetypes { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); }
 .codex-archetypes strong { color: var(--f1); }
 .glossary-section { margin-top: var(--space-4); }
-.glossary { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--space-2) var(--space-5); margin: 0; }
+.glossary { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: var(--space-2) var(--space-5); margin: 0; }
 .glossary-item { padding: var(--space-2) 0; border-bottom: 1px solid var(--line); }
 .glossary dt { font-family: var(--font-display); color: var(--gold-bright); font-size: var(--t-lg); }
 .glossary dd { margin: 0; color: var(--parchment-dim); }

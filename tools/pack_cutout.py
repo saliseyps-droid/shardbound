@@ -11,7 +11,7 @@ Very dark packs whose sides are invisible borrow the side profile of another pac
 the same sheet row (--shape-from), since all packs share one template.
 
 Usage (Pillow + numpy):
-  python tools/pack_cutout.py SHEET.jpg COL ROW OUT.webp [--shape-from COL ROW] [--kingdoms-patch]
+  python tools/pack_cutout.py SHEET.jpg COL ROW OUT.webp [--shape-from COL ROW] [--kingdoms-patch] [--row-shift DY]
 Check the result on a magenta background and the outline over a brightened original before shipping.
 """
 import argparse
@@ -21,11 +21,12 @@ import numpy as np
 S, M, SS = 2, 16, 4  # sheet upscale, crop margin, mask supersampling
 XS = [26, 254, 482, 711]  # column x (at 1x)
 ROWS = [(22, 423), (450, 839), (866, 1253), (1280, 1658)]  # row y ranges (at 1x)
+ROW_SHIFT = 0  # other sheets (packs4) sit a little higher: --row-shift
 
 
 def crop(sheet: Image.Image, col: int, row: int) -> np.ndarray:
     x = XS[col] * S
-    y0, y1 = (v * S for v in ROWS[row])
+    y0, y1 = ((v + ROW_SHIFT) * S for v in ROWS[row])
     return np.asarray(sheet.crop((x - M, y0 - M, x + 204 * S + M, y1 + M)).convert('RGB')).copy()
 
 
@@ -100,7 +101,10 @@ def main():
     ap.add_argument('out')
     ap.add_argument('--shape-from', nargs=2, type=int, metavar=('COL', 'ROW'))
     ap.add_argument('--kingdoms-patch', action='store_true', help='cover the stray line in the Kingdoms at War art')
+    ap.add_argument('--row-shift', type=int, default=0, help='move the row ranges by this many 1x pixels (packs4: -18)')
     a = ap.parse_args()
+    global ROW_SHIFT
+    ROW_SHIFT = a.row_shift
     sheet = Image.open(a.sheet)
     A = crop(sheet, a.col, a.row)
     if a.kingdoms_patch:

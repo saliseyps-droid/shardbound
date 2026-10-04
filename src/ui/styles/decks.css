@@ -80,7 +80,9 @@
   border-top: 1px solid var(--line);
 }
 .deck-actions .btn-sm { flex: 1; max-width: 120px; }
-.deck-links { flex-basis: 100%; display: flex; justify-content: center; gap: var(--space-4); padding-top: 4px; }
+.deck-links { flex-basis: 100%; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 2px var(--space-3); padding-top: 4px; }
+/* Delete is set apart from the harmless links by a divider and a warmer colour. */
+.deck-links .text-btn.danger { margin-left: var(--space-2); padding-left: var(--space-3); border-left: 1px solid var(--line-strong); color: color-mix(in srgb, var(--damage) 55%, var(--parchment-dim)); }
 .text-btn { background: none; border: 0; padding: 2px 4px; color: var(--parchment-dim); font: 600 var(--t-sm) var(--font-body); cursor: pointer; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
 .text-btn:hover { color: var(--parchment); }
 .text-btn.danger:hover { color: var(--damage); }

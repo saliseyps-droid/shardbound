@@ -7,8 +7,8 @@ import { findRankedMatch, MatchmakingCancelled } from '@/net/matchmaking';
 import { onlineOpponent } from '@/net/lobby';
 import { playerSide } from '@/domain/matchSetup';
 import { factionOfList } from '@/domain/decks';
-import { TIERS, tierFor } from '@/domain/ranked';
-import type { PlayableFaction } from '@/game/types';
+import { sanitizeRating, TIERS, tierFor } from '@/domain/ranked';
+import { PLAYABLE_FACTIONS, type PlayableFaction } from '@/game/types';
 import { ProgressBar, ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
@@ -65,8 +65,10 @@ export default function RankedScreen() {
         isCancelled: () => cancelled.current,
       });
       audio.play('turn');
-      const theirRating = Number(netSession.remoteMeta.rating ?? 1000);
-      const faction = (role === 'host' && netSession.remoteSide ? factionOfList(netSession.remoteSide.deck) : (netSession.remoteMeta.faction as PlayableFaction)) ?? 'EMBER';
+      const theirRating = sanitizeRating(netSession.remoteMeta.rating);
+      const metaFaction = netSession.remoteMeta.faction;
+      const faction: PlayableFaction =
+        role === 'host' && netSession.remoteSide ? factionOfList(netSession.remoteSide.deck) : (PLAYABLE_FACTIONS as readonly unknown[]).includes(metaFaction) ? (metaFaction as PlayableFaction) : 'EMBER';
       launchMatch(
         { mode: 'RANKED', online: role, deckId: deck.id, opponent: onlineOpponent(netSession.remoteName, netSession.remoteAvatar, faction), opponentRating: theirRating },
         navigate,

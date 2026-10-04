@@ -53,7 +53,7 @@ export function AppHeader() {
       </NavLink>
       <nav className={`main-nav ${menuOpen ? 'is-open' : ''}`} aria-label={t('Main')}>
         {NAV.map((n) => (
-          <NavLink key={n.to} to={n.to} end={n.to === '/'} className="nav-link" onClick={() => audio.play('click')}>
+          <NavLink key={n.to} to={n.to} end={n.to === '/'} className="nav-link" title={t(n.label)} aria-label={t(n.label)} onClick={() => audio.play('click')}>
             <Glyph name={n.icon} size={16} />
             <span>{t(n.label)}</span>
             {n.to === '/quests' && claimable > 0 && <span className="nav-dot" aria-label={tn(claimable, '{n} reward to claim', '{n} rewards to claim')} />}
@@ -75,7 +75,7 @@ export function AppHeader() {
             <span className="faint num">{profile.level >= MAX_LEVEL ? t('Max level') : t('{xp} / {need} XP', { xp: profile.xp, need })}</span>
           </span>
         </NavLink>
-        <NavLink to="/settings" className="icon-btn" aria-label={t('Settings')}>
+        <NavLink to="/settings" className="icon-btn" aria-label={t('Settings')} title={t('Settings')}>
           <Glyph name="cog" size={18} />
         </NavLink>
       </div>

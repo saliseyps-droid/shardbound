@@ -168,6 +168,7 @@
 .welcome-form h2 { margin: 0; }
 .field { display: grid; gap: 6px; border: 0; padding: 0; margin: 0; }
 .field > span, .field > legend { color: var(--parchment-dim); font-size: var(--t-sm); padding: 0; }
+.field-hint { font-size: var(--t-xs); margin-top: -2px; }
 .avatar-picker { display: flex; gap: var(--space-2); flex-wrap: wrap; }
 .avatar-option {
   width: 54px; height: 54px; display: grid; place-items: center; cursor: pointer;
@@ -179,6 +180,15 @@
 .avatar-option.selected::before { background: var(--gold); }
 .avatar-option.selected { color: var(--ink-0); background: var(--gold); }
 @media (max-width: 900px) { .welcome-screen { grid-template-columns: 1fr; gap: var(--space-5); } }
+/* EN | CZ switch in the corner, on its own backing so it never sits on top of the lore text. */
+.welcome-screen { position: relative; }
+.welcome-lang {
+  position: fixed; z-index: 5; top: calc(12px + var(--safe-top, 0px)); right: calc(12px + var(--safe-right, 0px));
+  display: flex; gap: 4px; padding: 4px; border-radius: 10px;
+  background: rgba(10, 8, 24, 0.85); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45), inset 0 0 0 1px var(--line);
+}
+/* Single column (phones): it scrolls away with the page instead of floating over the text. */
+@media (max-width: 900px) { .welcome-lang { position: absolute; } }
 
 .error-panel { max-width: 640px; margin: var(--space-7) auto; }
 .error-detail { white-space: pre-wrap; font-size: var(--t-xs); color: var(--damage); background: rgba(0, 0, 0, 0.3); padding: var(--space-3); border-radius: 4px; max-height: 200px; overflow: auto; }

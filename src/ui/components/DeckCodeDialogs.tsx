@@ -42,9 +42,16 @@ export function ImportDeckModal({ onClose }: { onClose: () => void }) {
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
   const submit = () => {
-    const res = gameService.importDeck(code);
+    let res: ReturnType<typeof gameService.importDeck>;
+    try {
+      res = gameService.importDeck(code);
+    } catch (e) {
+      console.error('[deck code] import failed', e);
+      res = { ok: false, error: 'That deck code is damaged. Copy it again.' };
+    }
     if (!res.ok) {
       setError(res.error);
+      toast(res.error, 'error');
       return;
     }
     audio.play('click');

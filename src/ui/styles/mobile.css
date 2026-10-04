@@ -91,7 +91,7 @@ body .rotate-hint { display: none; }
   body .turn-controls { right: 8px; bottom: 40%; gap: 4px; }
   body .end-turn { min-width: 84px; height: 38px; padding: 0 12px; font-size: 0.95rem; }
   body .turn-timer { width: 84px; font-size: var(--t-xs); }
-  body .leave-btn { top: 4px; left: 4px; transform: scale(0.8); }
+  body .leave-btn { top: 4px; left: 4px; width: 36px; height: 36px; }
 
   /* Cards in hand grow more when touched so their text stays readable. */
   body .hand-card:hover, body .hand-card:focus-within, body .hand-card.is-selected { transform: translateX(calc(-50% + var(--o) * var(--spread))) scale(2.1); }
@@ -219,5 +219,55 @@ body .audio-toggles { left: calc(10px + var(--safe-left)); bottom: calc(10px + v
 @media (max-height: 520px) {
   /* Sideways your Warden sits in the corner, so the switches go between your deck and the board. */
   body .audio-toggles { left: calc(14px + 26vh + var(--safe-left)); bottom: calc(23vh + 2px); gap: 4px; }
-  body .audio-toggle { width: 30px; height: 30px; }
+  body .audio-toggle { width: 36px; height: 36px; }
+}
+
+/* Touch screens: the deck box text links become real touch targets. */
+@media (hover: none), (max-width: 760px) {
+  body .deck-links { gap: 4px var(--space-2); }
+  body .deck-links .text-btn { min-height: 38px; padding: 6px 10px; }
+  body .deck-links .text-btn.danger { margin-left: var(--space-3); padding-left: var(--space-4); }
+}
+
+/* Collection and deck editor on phones: search and faction tabs stay in view, the other filters
+   open as a sheet from the bottom behind a Filters button. */
+@media (max-width: 760px), (max-height: 520px) {
+  body .filter-toggle { display: inline-flex; align-items: center; min-height: 40px; }
+  body .filter-row { flex-wrap: nowrap; }
+  body .search-field { min-width: 0; max-width: none; }
+  body .filter-extra { display: none; }
+  body .filter-bar.is-open .filter-extra {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2);
+    position: fixed; z-index: 80; left: 0; right: 0; bottom: 0; max-height: 80dvh; overflow-y: auto;
+    padding: var(--space-4) max(var(--space-4), var(--safe-right)) calc(var(--space-4) + var(--safe-bottom)) max(var(--space-4), var(--safe-left));
+    background: linear-gradient(180deg, #221c3d, #141126); box-shadow: 0 -12px 30px -8px #000; border-top: 1px solid var(--line-strong);
+    border-radius: 14px 14px 0 0;
+  }
+  body .filter-bar.is-open .filter-extra .select { min-height: 40px; }
+  body .filter-bar.is-open .filter-extra .cost-filter { flex-basis: 100%; flex-wrap: wrap; }
+  body .filter-bar.is-open .filter-extra .cost-filter button { min-width: 38px; min-height: 38px; }
+  body .filter-bar.is-open .filter-sheet-backdrop { display: block; position: fixed; inset: 0; z-index: 79; background: rgba(4, 2, 16, 0.55); }
+  body .filter-sheet-done { display: inline-flex; margin-left: auto; min-height: 40px; }
+}
+/* Phones held sideways: a compact header so the card grid gets most of the height. */
+@media (max-height: 520px) {
+  body .screen-header { margin-bottom: var(--space-2); gap: var(--space-2); }
+  body .screen-header h2 { font-size: 1.5rem; }
+  body .faction-tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  body .faction-tab { flex: none; min-height: 34px; }
+  body .filter-bar { gap: var(--space-2); margin-bottom: var(--space-2); grid-template-columns: minmax(0, 1fr) minmax(240px, 40%); align-items: center; }
+  body .filter-bar.compact { grid-template-columns: minmax(0, 1fr); }
+  body .filter-bar.compact .search-field { max-width: none; }
+  body .screen-header p { font-size: var(--t-xs); }
+  body .deck-editor-screen .screen-header .btn { min-height: 36px; padding-top: 0; padding-bottom: 0; }
+  body .collection-screen, body .deck-editor-screen { height: auto; }
+  body .collection-body .vgrid, body .editor-pool { height: calc(100dvh - var(--header-h) - var(--safe-top) - 24px); }
+  body .editor-body { grid-template-columns: minmax(0, 1fr) clamp(240px, 32vw, 320px); gap: var(--space-3); }
+  body .editor-side { max-height: calc(100dvh - var(--header-h) - var(--safe-top) - 24px); }
+}
+
+/* Header on touch screens: the packs counter and level badge are links, so give them finger-sized targets. */
+@media (hover: none), (max-width: 760px) {
+  body .header-packs { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px; padding: 0 6px; }
+  body .level-badge { min-height: 40px; min-width: 40px; justify-content: center; }
 }

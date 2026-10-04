@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { useCloud } from '@/state/cloudStore';
-import { t, tn } from '@/i18n';
+import { formatDateTime, t, tn } from '@/i18n';
 import { Modal } from './common';
 import type { SaveSummary } from '@/cloud/sync';
 import '@/ui/styles/cloud.css';
@@ -90,7 +90,7 @@ function SummaryCard({ title, s }: { title: string; s: SaveSummary }) {
       <span className="faint">
         {t('Level {n}', { n: s.level })} · {tn(s.cards, '{n} card', '{n} cards')} · {t('{n} Gold', { n: s.gold })}
       </span>
-      {s.updatedAt && <span className="faint">{t('Last played {date}', { date: new Date(s.updatedAt).toLocaleString() })}</span>}
+      {s.updatedAt && <span className="faint">{t('Last played {date}', { date: formatDateTime(s.updatedAt) })}</span>}
     </div>
   );
 }

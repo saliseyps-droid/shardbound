@@ -168,17 +168,35 @@ export function dealDamage(ctx: EngineContext, source: DamageSource, target: Tar
       emit(ctx, { type: 'BARRIER_BROKEN', uid: unit.uid });
       return 0;
     }
+    const wasDoomed = unit.pendingDestroy;
     unit.damage += amount;
     dealt = amount;
     creditDamage(ctx, source, unit.owner, amount, false);
     if (sourceUnit && !sourceUnit.silenced && hasKeyword(ctx.state, sourceUnit, 'VENOM')) unit.pendingDestroy = true;
-    emit(ctx, { type: 'DAMAGE_DEALT', target, amount, sourcePlayer: source.player, sourceUid: source.unitUid, combat: !!source.combat });
+    const killed = !wasDoomed && (unit.pendingDestroy || currentHealth(unit) <= 0);
+    const event = emit(ctx, { type: 'DAMAGE_DEALT', target, amount, sourcePlayer: source.player, sourceUid: source.unitUid, combat: !!source.combat });
+    // "Whenever this destroys a unit": attacking, defending (counter-damage) or with its own abilities.
+    // A killer that dies at the same time is skipped when the queue resolves.
+    if (killed && sourceUnit && sourceUnit.uid !== unit.uid) queueOnKill(ctx, sourceUnit, event.seq);
   }
   if (sourceUnit && dealt > 0) {
     sourceUnit.ambush = false;
     if (hasKeyword(ctx.state, sourceUnit, 'DRAIN')) heal(ctx, { type: 'hero', player: sourceUnit.owner }, dealt, sourceUnit.owner);
   }
   return dealt;
+}
+
+function queueOnKill(ctx: EngineContext, killer: UnitInstance, seq: number) {
+  if (killer.silenced) return;
+  killer.abilities.forEach((ability, index) => {
+    if (ability.trigger !== 'ON_KILL') return;
+    enqueue(ctx, {
+      source: { kind: 'unit', uid: killer.uid, cardId: killer.cardId, controller: killer.owner },
+      ability,
+      key: `kill:${seq}:${killer.uid}:${index}`,
+      depth: ctx.depth + 1,
+    });
+  });
 }
 
 export function heal(ctx: EngineContext, target: TargetRef, amount: number, sourcePlayer: PlayerId): number {
@@ -273,12 +291,15 @@ export function randomIndex(ctx: EngineContext, length: number): number {
 }
 
 export function silenceUnit(ctx: EngineContext, unit: UnitInstance) {
+  const wasAlive = currentHealth(unit) > 0;
   unit.silenced = true;
   unit.keywords = [];
   unit.keywordValues = {};
   unit.abilities = [];
   unit.attackBuff = 0;
   unit.healthBuff = 0;
+  // Losing Health buffs never kills: a damaged unit keeps at least 1 Health.
+  if (wasAlive) unit.damage = Math.max(0, Math.min(unit.damage, maxHealth(unit) - 1));
   unit.tempAttack = 0;
   unit.frozen = false;
   unit.thawPending = false;

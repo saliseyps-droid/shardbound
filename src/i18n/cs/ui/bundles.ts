@@ -1,7 +1,7 @@
 /** Set bundles in the shop (0.18.1). */
 const d: Record<string, string> = {
   'New set bundle': 'Balíček nového setu',
-  'Curse of the Abyss Bundle': 'Balíček Curse of the Abyss',
+  'Legions of Shadow Bundle': 'Balíček Legions of Shadow',
   'Buy the {name}?': 'Koupit {name}?',
   '{n} Gold for {packs} {set} packs, a card back and a Warden portrait.': '{n} zlata za {packs} boosterů {set}, rub karet a portrét Strážce.',
   'Bundle bought: {n} packs, a card back and a portrait.': 'Balíček koupen: {n} boosterů, rub karet a portrét.',

@@ -42,8 +42,7 @@ export const TIDE_CARDS: CardDefinition[] = [
     abilities: [{
       trigger: 'ON_CAST',
       effects: [
-        { type: 'DEAL_DAMAGE', amount: 2, target: 'TARGET' },
-        { type: 'DEAL_DAMAGE', amount: 2, target: 'TARGET', condition: { kind: 'TARGET_FROZEN' } },
+        { type: 'DEAL_DAMAGE', amount: 2, target: 'TARGET', bonus: { amount: 2, condition: { kind: 'TARGET_FROZEN' } } },
       ],
     }],
     description: 'Deal 2 damage to an enemy unit. If it is Frozen, deal 2 more.',

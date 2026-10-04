@@ -4,7 +4,7 @@ import { ScreenHeader } from '@/ui/components/common';
 import { markPatchNotesSeen } from '@/ui/patchNotesSeen';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/patchnotes.css';
-import { t } from '@/i18n';
+import { formatDate, t } from '@/i18n';
 
 const KIND_LABEL: Record<PatchSection['kind'], string> = { new: 'New', improved: 'Improved', balance: 'Balance', fixed: 'Fixed' };
 
@@ -32,7 +32,7 @@ export default function PatchNotesScreen() {
                   <strong>{p.title}</strong>
                   <span className="muted">{p.summary}</span>
                 </span>
-                <span className="patch-date faint">{new Date(`${p.date}T12:00:00`).toLocaleDateString()}</span>
+                <span className="patch-date faint">{formatDate(`${p.date}T12:00:00`, { dateStyle: 'long' })}</span>
                 <span className="patch-chevron" aria-hidden>
                   {expanded ? '−' : '+'}
                 </span>

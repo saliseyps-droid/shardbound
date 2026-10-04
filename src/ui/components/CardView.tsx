@@ -1,4 +1,4 @@
-import { memo, useState, type CSSProperties, type MouseEvent, type PointerEvent } from 'react';
+import { memo, useRef, useState, type CSSProperties, type MouseEvent, type PointerEvent } from 'react';
 import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import type { CardDefinition, Variant } from '@/game/types';
@@ -63,9 +63,50 @@ function CardArtImage({ card }: { card: CardDefinition }) {
   return <img className="card-art" src={src} style={external ? undefined : { objectPosition: cardArtPosition(card) }} alt="" loading="lazy" decoding="async" draggable={false} onError={() => setFailed(true)} />;
 }
 
+/** Phones and tablets: no mouse to hover or right-click with. */
+export const isTouchScreen = () => typeof matchMedia !== 'undefined' && matchMedia('(hover: none)').matches;
+
+/**
+ * Touch: holding a finger on a card for half a second does what a right-click does (inspect).
+ * Android fires `contextmenu` on a long press by itself but iOS Safari never does, so it is timed here;
+ * the tap that ends a long press is swallowed so it doesn't also select or add the card.
+ */
+function useLongPress(onContextMenu: ((e: MouseEvent) => void) | undefined, onPointerDown: ((e: PointerEvent) => void) | undefined) {
+  const timer = useRef<number | null>(null);
+  const start = useRef<{ x: number; y: number } | null>(null);
+  const fired = useRef(false);
+  const cancel = () => {
+    if (timer.current !== null) window.clearTimeout(timer.current);
+    timer.current = null;
+    start.current = null;
+  };
+  if (!onContextMenu) return { onPointerDown, fired };
+  return {
+    fired,
+    onPointerDown: (e: PointerEvent) => {
+      onPointerDown?.(e);
+      fired.current = false;
+      if (e.pointerType !== 'touch') return;
+      cancel();
+      start.current = { x: e.clientX, y: e.clientY };
+      timer.current = window.setTimeout(() => {
+        timer.current = null;
+        fired.current = true;
+        onContextMenu({ preventDefault() {}, stopPropagation() {} } as unknown as MouseEvent);
+      }, 500);
+    },
+    onPointerMove: (e: PointerEvent) => {
+      if (start.current && Math.hypot(e.clientX - start.current.x, e.clientY - start.current.y) > 10) cancel();
+    },
+    onPointerUp: cancel,
+    onPointerCancel: cancel,
+  };
+}
+
 export const CardView = memo(function CardView(props: CardViewProps) {
   const card = typeof props.card === 'string' ? getCardSafe(props.card) : props.card;
   const width = props.width ?? CARD_WIDTH[props.size ?? 'md'];
+  const { fired: longPressed, ...pressHandlers } = useLongPress(props.onContextMenu, props.onPointerDown);
   if (props.faceDown) return <CardBack width={width} className={props.className} style={props.style} />;
   const faction = FACTIONS[card.faction] ?? FACTIONS.NEUTRAL;
   const cost = props.cost ?? card.manaCost;
@@ -100,9 +141,25 @@ export const CardView = memo(function CardView(props: CardViewProps) {
     <div
       className={classes}
       style={style}
-      onClick={props.onClick}
-      onContextMenu={props.onContextMenu}
-      onPointerDown={props.onPointerDown}
+      onClick={
+        props.onClick &&
+        ((e) => {
+          if (longPressed.current) {
+            longPressed.current = false;
+            return;
+          }
+          props.onClick?.(e);
+        })
+      }
+      onContextMenu={
+        props.onContextMenu &&
+        ((e) => {
+          // A long press already inspected the card (Android also sends contextmenu for it).
+          if (longPressed.current) return e.preventDefault();
+          props.onContextMenu?.(e);
+        })
+      }
+      {...pressHandlers}
       onMouseEnter={props.onMouseEnter}
       onMouseLeave={props.onMouseLeave}
       role={props.onClick ? 'button' : 'img'}

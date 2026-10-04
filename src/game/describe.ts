@@ -130,6 +130,7 @@ export function describeEffect(effect: Effect, card: CardDefinition, lookup?: (i
   switch (effect.type) {
     case 'DEAL_DAMAGE':
       text = `deal ${value(effect.amount)} damage to ${t}.${valueNote(effect.amount)}`;
+      if (effect.bonus) text += ` ${cap(conditionText(effect.bonus.condition, card))}, deal ${effect.bonus.amount} more.`;
       break;
     case 'HEAL':
       text = `restore ${value(effect.amount)} Health to ${t}.${valueNote(effect.amount)}`;
@@ -248,12 +249,13 @@ export function describeEffect(effect: Effect, card: CardDefinition, lookup?: (i
       text = `${effect.opponent ? 'your opponent destroys' : 'destroy'} the top ${effect.amount === 1 ? 'card' : `${effect.amount} cards`} of ${effect.opponent ? 'their' : 'your'} deck.`;
       break;
   }
-  if (effect.repeat && effect.repeat > 1) text = text.replace(/\.$/, '') + `, ${effect.repeat} times.`;
-  if (effect.condition) text = `${conditionText(effect.condition)}, ${text}`;
+  if (typeof effect.repeat === 'number' && effect.repeat > 1) text = text.replace(/\.$/, '') + `, ${effect.repeat} times.`;
+  else if (typeof effect.repeat === 'object') text = text.replace(/\.$/, '') + `, X times.${valueNote(effect.repeat)}`;
+  if (effect.condition) text = `${conditionText(effect.condition, card)}, ${text}`;
   return text;
 }
 
-export function conditionText(c: Condition): string {
+export function conditionText(c: Condition, card?: CardDefinition): string {
   switch (c.kind) {
     case 'ALLY_UNITS_GTE':
       return `if you control ${c.n} or more units`;
@@ -270,7 +272,8 @@ export function conditionText(c: Condition): string {
     case 'SPELLS_CAST_THIS_TURN_GTE':
       return `if you cast ${c.n} or more spells this turn`;
     case 'CONTROLS_TAG':
-      return `if you control a ${c.tag}`;
+      // The check skips the source unit itself, so a unit with the tag needs another one.
+      return card?.cardType === 'UNIT' && (card.tags ?? []).includes(c.tag) ? `if you control another ${c.tag}` : `if you control a ${c.tag}`;
     case 'ALLY_DEATHS_GTE':
       return `if ${c.n} or more of your units died this game`;
     case 'TARGET_DAMAGED':
@@ -308,7 +311,7 @@ const TRIGGER_PREFIX: Record<TriggerType, (card: CardDefinition, a: Ability) => 
 export function describeAbility(ability: Ability, card: CardDefinition, lookup?: (id: string) => CardDefinition | undefined): string {
   const effects = ability.effects.map((e) => describeEffect(e, card, lookup));
   let body = effects.map((e, i) => (i === 0 ? e : cap(e))).join(' ');
-  if (ability.condition) body = `${conditionText(ability.condition)}, ${body}`;
+  if (ability.condition) body = `${conditionText(ability.condition, card)}, ${body}`;
   const prefix = TRIGGER_PREFIX[ability.trigger](card, ability);
   if (ability.overcharge) {
     return `Overcharge ${ability.overcharge}: ${cap(body)}`;

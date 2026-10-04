@@ -4,6 +4,7 @@ import { ownedCopies } from '@/domain/save';
 import { GameService, type InitStatus } from '@/services/gameService';
 import { MirroredStore } from '@/cloud/sync';
 import { toast } from './uiStore';
+import { t } from '@/i18n';
 
 /**
  * Account state: a read-only mirror of the service's save. All mutations go
@@ -29,7 +30,10 @@ export const useAccount = create<AccountStore>((set, get) => ({
   boot: async () => {
     const result = await gameService.init();
     if (result.kind === 'NEW') set({ status: 'NEW', save: null });
-    else if (result.kind === 'LOADED') set({ status: 'READY', save: gameService.current, migrationNotes: result.notes });
+    else if (result.kind === 'LOADED') {
+      set({ status: 'READY', save: gameService.current, migrationNotes: result.notes });
+      if (result.abandonedMatch) toast(t('Your unfinished match was counted as a loss.'), 'info');
+    }
     else set({ status: 'CORRUPTED', initError: result.error });
     void get;
     return result;

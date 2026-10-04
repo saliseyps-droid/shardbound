@@ -5,7 +5,7 @@ import { createRng, nextInt, shuffleInPlace } from '@/core/rng';
 import type { EngineContext } from './context';
 import { createContext, pushEvent } from './context';
 import { emit, queuePlayerTrigger, resolveQueue, runAbility } from './triggers';
-import type { ActionResult, GameAction, GameState, MatchSetup, PlayerId, PlayerState, SideSetup, TargetRef, UnitInstance } from './types';
+import type { ActionResult, GameAction, GameState, MatchSetup, PlayerId, PlayerState, SideSetup, TargetRef } from './types';
 import { isEnded, other } from './types';
 import {
   attackTargets,
@@ -13,9 +13,9 @@ import {
   canPlayCard,
   activeLevelOf,
   canUseHeroPower,
-  currentHealth,
   effectiveCost,
   findUnit,
+  hasKeyword,
   isAlive,
   isValidTarget,
   sameTarget,
@@ -192,7 +192,7 @@ function endTurn(ctx: EngineContext, playerId: PlayerId) {
   if (isEnded(state)) return;
 
   for (const u of p.board) {
-    if (u.keywords.includes('REGENERATE') && !u.silenced && isAlive(u)) u.damage = 0;
+    if (hasKeyword(state, u, 'REGENERATE') && isAlive(u)) u.damage = 0;
     if (u.frozen && u.thawPending) {
       u.frozen = false;
       u.thawPending = false;
@@ -246,11 +246,11 @@ function doPlayCard(ctx: EngineContext, playerId: PlayerId, cardUid: number, tar
   const def = getCard(card.cardId)!;
 
   // Validate target (spells & sigils respect Ward; units' On Deploy also count as abilities).
+  // Spells must take a target when one exists; other cards may skip it (the targeted effect then does nothing).
   if (def.target) {
-    const options = validTargets(state, playerId, def.target, { spellLike: true });
     if (target) {
       if (!isValidTarget(state, playerId, def.target, target, { spellLike: true })) fail('Invalid target');
-    } else if (options.length > 0) {
+    } else if (def.cardType === 'SPELL' && validTargets(state, playerId, def.target, { spellLike: true }).length > 0) {
       fail('A target is required');
     }
   } else {
@@ -348,27 +348,11 @@ function doAttack(ctx: EngineContext, playerId: PlayerId, attackerUid: number, t
     const atk = unitAttack(state, liveAttacker);
     const def = unitAttack(state, defender);
     dealDamage(ctx, { player: playerId, unitUid: attackerUid, combat: true }, target, atk);
+    // ON_KILL for either side is queued by dealDamage.
     dealDamage(ctx, { player: defender.owner, unitUid: defender.uid, combat: true }, { type: 'unit', uid: attackerUid }, def);
-    const defenderDies = defender.pendingDestroy || currentHealth(defender) <= 0;
-    const attackerLives = !liveAttacker.pendingDestroy && currentHealth(liveAttacker) > 0;
-    if (defenderDies && attackerLives && !liveAttacker.silenced) {
-      queueOnKill(ctx, liveAttacker);
-    }
   }
   checkDeaths(ctx);
   resolveQueue(ctx);
-}
-
-function queueOnKill(ctx: EngineContext, unit: UnitInstance) {
-  unit.abilities.forEach((ability, index) => {
-    if (ability.trigger !== 'ON_KILL') return;
-    ctx.queue.push({
-      source: { kind: 'unit', uid: unit.uid, cardId: unit.cardId, controller: unit.owner },
-      ability,
-      key: `kill:${ctx.state.eventSeq}:${unit.uid}:${index}`,
-      depth: 1,
-    });
-  });
 }
 
 function doHeroPower(ctx: EngineContext, playerId: PlayerId, slot: number, target: TargetRef | undefined) {

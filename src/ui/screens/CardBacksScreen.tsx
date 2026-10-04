@@ -3,6 +3,7 @@ import { CARD_BACKS } from '@/data/cardBacks';
 import { useAccount } from '@/state/accountStore';
 import { ScreenHeader } from '@/ui/components/common';
 import { CardBackGrid } from '@/ui/components/CardBackGrid';
+import { ARENA } from '@/config/arena';
 import { t } from '@/i18n';
 
 /** The card backs the player owns; pick the one used in matches. */
@@ -23,6 +24,15 @@ export default function CardBacksScreen() {
       <section className="panel">
         <CardBackGrid mode="owned" />
       </section>
+      {owned < CARD_BACKS.length && (
+        <section className="panel cardbacks-locked" aria-labelledby="cb-locked">
+          <div className="panel-title" id="cb-locked">
+            {t('Still to collect')}
+          </div>
+          <p className="muted">{t('Buy them with Gold in the Shop. An Arena run with {n} wins also brings a card back you don’t own yet.', { n: ARENA.rewards.findIndex((r) => r.cardBack) })}</p>
+          <CardBackGrid mode="locked" />
+        </section>
+      )}
     </div>
   );
 }

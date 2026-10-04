@@ -15,11 +15,15 @@ const d: Record<string, string> = {
   Collection: 'Sbírka',
   '{n} cards shown.': 'Zobrazena {n} karta.|Zobrazeny {n} karty.|Zobrazeno {n} karet.',
   'Right-click a card to inspect it.': 'Pravým kliknutím kartu prozkoumáš.',
+  'Tap a card for details, long-press to inspect it.': 'Klepnutím na kartu zobrazíš podrobnosti, podržením ji prozkoumáš.',
+  'Tap a card to add it, tap a list entry to remove it, long-press a card to inspect it.':
+    'Klepnutím na kartu ji přidáš, klepnutím na položku seznamu ji odebereš, podržením kartu prozkoumáš.',
   'Recycle copies beyond the playable limit': 'Recyklovat kopie nad hratelný limit',
   'Recycle surplus': 'Recyklovat přebytky',
   Cards: 'Karty',
   'No cards match these filters.': 'Těmto filtrům neodpovídají žádné karty.',
   'Clear filters': 'Zrušit filtry',
+  Filters: 'Filtry',
 
   // DeckListScreen
   'Warden faction': 'Frakce Strážce',
@@ -133,6 +137,10 @@ const d: Record<string, string> = {
   'You own {n} of {max}. Pick the back your deck and hand show in every match.':
     'Vlastníš {n} z {max}. Vyber rubovou stranu, kterou bude mít tvůj balíček a ruka v každém zápase.',
   'Get more in the Shop': 'Další získáš v obchodě',
+  'Still to collect': 'Zatím ti chybí',
+  'Buy them with Gold in the Shop. An Arena run with {n} wins also brings a card back you don’t own yet.':
+    'Kup si je za zlato v obchodě. Tažení Arénou se {n} výhrami ti navíc přinese rub karet, který ještě nemáš.',
+  '{name}, not owned yet. {n} Gold in the Shop.': '{name}, zatím nevlastníš. V obchodě za {n} zlata.',
 
   // ShopScreen
   'Odds and guarantees': 'Šance a záruky',

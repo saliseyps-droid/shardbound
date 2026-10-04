@@ -235,6 +235,11 @@ export const BOSS_TALENTS: TalentAbility[] = [
   active('BOSS', 'crushing_depths', 'Crushing Depths', [{ cost: 3, effects: [{ type: 'RETURN_TO_HAND', target: 'RANDOM_ENEMY_UNIT' }], description: "Return a random enemy unit to its owner's hand." }]),
   active('BOSS', 'requiem_chorus', 'Requiem Chorus', [{ cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_hollow_wisp', count: 2 }], description: 'Summon two 1/1 Hollow Wisps.' }]),
   active('BOSS', 'crown_fragment', 'Crown Fragment', [{ cost: 1, effects: [{ type: 'DRAW_CARDS', amount: 1 }, { type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }], description: 'Draw a card and gain 2 Armor.' }]),
+  // Chapters IV-V: Legions of Shadow
+  active('BOSS', 'oath_of_cinders', 'Oath of Cinders', [{ cost: 2, effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'RANDOM_ENEMY' }], description: 'Deal 2 damage to a random enemy.' }]),
+  active('BOSS', 'black_tide', 'Black Tide', [{ cost: 2, effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'RANDOM_ENEMY_UNIT' }, { type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }], description: 'Freeze a random enemy unit and gain 2 Armor.' }]),
+  active('BOSS', 'soul_pyre', 'Soul Pyre', [{ cost: 2, effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ENEMY_HERO' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }], description: 'Deal 2 damage to the enemy Warden and restore 2 Health to yours.' }]),
+  active('BOSS', 'shadow_muster', 'Shadow Muster', [{ cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_skeleton', count: 2 }], description: 'Summon two 2/2 Skeletons.' }]),
 ];
 
 const BY_ID = new Map<string, TalentAbility>([...PLAYABLE_FACTIONS.flatMap((f) => FACTION_TALENTS[f]), ...BOSS_TALENTS].map((t) => [t.id, t]));

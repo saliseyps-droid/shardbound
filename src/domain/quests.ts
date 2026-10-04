@@ -5,6 +5,7 @@ import { dayKey, err, ok, type Result } from '@/core/utils';
 import type { PlayableFaction } from '@/game/types';
 import { grantXp, type LevelUp } from './progression';
 import { pushReward, type GameSave, type Quest } from './save';
+import { isLaterKey, trustedNow } from './clock';
 
 export interface QuestProgressEvent {
   type: QuestType;
@@ -45,9 +46,9 @@ export function weekKey(now: number): string {
 
 /** A new weekly quest each week. A finished one waits until its reward is claimed. */
 function refreshWeekly(save: GameSave, now: number, rng: RngState): GameSave {
-  const week = weekKey(now);
+  const week = weekKey(trustedNow(save, now));
   const q = save.quests;
-  if (q.weekKey === week && q.weekly) return save;
+  if (q.weekly && !isLaterKey(week, q.weekKey)) return save;
   if (q.weekly && q.weekly.completed && !q.weekly.claimed) return save;
   const previous = q.weekly?.templateId;
   const t = pickOne(rng, WEEKLY_QUEST_TEMPLATES.filter((x) => x.id !== previous)) ?? WEEKLY_QUEST_TEMPLATES[0];
@@ -57,10 +58,10 @@ function refreshWeekly(save: GameSave, now: number, rng: RngState): GameSave {
 
 /** Daily refresh: grants new quests (up to the maximum) once per calendar day. */
 export function refreshQuests(save: GameSave, now: number, rng: RngState): GameSave {
-  const today = dayKey(now);
+  const today = dayKey(trustedNow(save, now));
   save = refreshWeekly(save, now, rng);
   const q = save.quests;
-  if (q.lastRefreshDay === today) return save;
+  if (!isLaterKey(today, q.lastRefreshDay)) return save;
   // Remove claimed quests, keep unfinished ones.
   let active = q.active.filter((x) => !x.claimed);
   const isFirstEver = q.lastRefreshDay === null;
@@ -118,10 +119,15 @@ export function claimQuest(save: GameSave, questId: string, now: number): Result
   return ok({ save: next, quest, levelUps: xp.levelUps });
 }
 
+/** Rerolls used "today"; a clock earlier than the last reroll day still counts as that day. */
+function rerollsUsedToday(save: GameSave, now: number): { today: string; used: number } {
+  const today = dayKey(trustedNow(save, now));
+  const newDay = isLaterKey(today, save.quests.rerollDay);
+  return { today: newDay ? today : save.quests.rerollDay!, used: newDay ? 0 : save.quests.rerollsUsed };
+}
+
 export function canReroll(save: GameSave, now: number): boolean {
-  const today = dayKey(now);
-  const used = save.quests.rerollDay === today ? save.quests.rerollsUsed : 0;
-  return used < QUEST_CONFIG.rerollsPerDay;
+  return rerollsUsedToday(save, now).used < QUEST_CONFIG.rerollsPerDay;
 }
 
 export function rerollQuest(save: GameSave, questId: string, now: number, rng: RngState): Result<GameSave> {
@@ -131,8 +137,7 @@ export function rerollQuest(save: GameSave, questId: string, now: number, rng: R
   if (!canReroll(save, now)) return err('No quest rerolls left today.');
   const t = pickTemplate(save.quests.active, rng, [quest.templateId]);
   if (!t) return err('No other quests available.');
-  const today = dayKey(now);
-  const used = save.quests.rerollDay === today ? save.quests.rerollsUsed : 0;
+  const { today, used } = rerollsUsedToday(save, now);
   const replacement = fromTemplate(t, now, 9);
   return ok({
     ...save,

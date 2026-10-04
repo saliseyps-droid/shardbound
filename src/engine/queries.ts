@@ -77,7 +77,8 @@ export function keywordValue(unit: UnitInstance, keyword: StaticKeyword): number
 /** Total spell damage bonus for a player. */
 export function empower(state: GameState, playerId: PlayerId): number {
   let total = 0;
-  for (const u of state.players[playerId].board) if (!u.silenced && u.keywords.includes('EMPOWER')) total += keywordValue(u, 'EMPOWER');
+  // hasKeyword so aura-granted Empower counts too (worth 1 unless the unit has its own value).
+  for (const u of state.players[playerId].board) if (!u.silenced && hasKeyword(state, u, 'EMPOWER')) total += u.keywordValues.EMPOWER ?? 1;
   for (const r of state.players[playerId].relics) total += getCard(r.cardId)?.keywordValues?.EMPOWER ?? 0;
   const loc = state.players[playerId].location;
   if (loc) total += getCard(loc.cardId)?.keywordValues?.EMPOWER ?? 0;

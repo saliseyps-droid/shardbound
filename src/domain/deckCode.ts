@@ -50,7 +50,19 @@ export interface DecodedDeck {
   unknownCards: string[];
 }
 
+const DAMAGED = 'That deck code is damaged. Copy it again.';
+
 export function decodeDeck(input: string): Result<DecodedDeck> {
+  // Any malformed content is a damaged code, never an exception.
+  try {
+    return decodeUnsafe(input);
+  } catch {
+    return err(DAMAGED);
+  }
+}
+
+function decodeUnsafe(input: string): Result<DecodedDeck> {
+  if (typeof input !== 'string') return err('That is not a deck code.');
   const code = input.trim();
   if (!code.startsWith(PREFIX)) return err('That is not a deck code.');
   let payload: Payload;
@@ -75,7 +87,10 @@ export function decodeDeck(input: string): Result<DecodedDeck> {
     const count = Math.min(Math.floor(Number(n) || 0), maxCopiesFor(card));
     if (count > 0) cards[id] = count;
   }
-  const talents = (payload.t ?? []).map(([abilityId, level]) => ({ abilityId, level })) as TalentPick[];
+  const rawTalents: unknown = payload.t ?? [];
+  const talents = (Array.isArray(rawTalents) ? rawTalents : [])
+    .filter((p): p is [unknown, unknown] => Array.isArray(p) && p.length >= 2)
+    .map(([abilityId, level]) => ({ abilityId, level })) as TalentPick[];
   const name = (typeof payload.n === 'string' ? payload.n : '').trim().slice(0, DECK_RULES.maxDeckNameLength) || 'Imported deck';
   return ok({ name, heroFaction: faction, cards, talents: isWellFormedBuild(faction, talents) ? talents : defaultBuild(faction), unknownCards });
 }

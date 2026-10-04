@@ -289,6 +289,10 @@ const talents: TalentsOverlay = {
   wt_boss_crushing_depths: { name: 'Drtivé hlubiny', levels: ['Vrať náhodnou nepřátelskou jednotku do ruky jejího vlastníka.'] },
   wt_boss_requiem_chorus: { name: 'Chór rekviem', levels: ['Vyvolej dvě Prázdné světlušky 1/1.'] },
   wt_boss_crown_fragment: { name: 'Úlomek Koruny', levels: ['Lízni si kartu a získej 2 brnění.'] },
+  wt_boss_oath_of_cinders: { name: 'Přísaha popela', levels: ['Způsob 2 poškození náhodnému nepříteli.'] },
+  wt_boss_black_tide: { name: 'Černý příliv', levels: ['Zmraz náhodnou nepřátelskou jednotku a získej 2 brnění.'] },
+  wt_boss_soul_pyre: { name: 'Hranice duší', levels: ['Způsob 2 poškození nepřátelskému Strážci a vyleč svému 2 životy.'] },
+  wt_boss_shadow_muster: { name: 'Stínový nábor', levels: ['Vyvolej dva Kostlivce 2/2.'] },
 };
 
 export default talents;

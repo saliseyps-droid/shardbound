@@ -126,6 +126,10 @@ export function checkConditions(ctx: EngineContext, c: Condition, source: Abilit
 // ---------------------------------------------------------------------------
 
 const unitRef = (u: UnitInstance): TargetRef => ({ type: 'unit', uid: u.uid });
+
+function targetOwner(ctx: EngineContext, t: TargetRef): PlayerId | undefined {
+  return t.type === 'hero' ? t.player : findUnit(ctx.state, t.uid)?.owner;
+}
 const heroRef = (p: PlayerId): TargetRef => ({ type: 'hero', player: p });
 
 function liveUnits(ctx: EngineContext, p: PlayerId): UnitInstance[] {
@@ -263,7 +267,7 @@ export function executeEffect(
   source: AbilitySource,
   chosen: TargetRef | undefined,
   triggerUnitUid: number | undefined,
-) {
+): boolean {
   const state = ctx.state;
   const me = source.controller;
   const them = other(me);
@@ -275,31 +279,37 @@ export function executeEffect(
     case 'DEAL_DAMAGE': {
       const targets = resolveTargets(ctx, selector, source, chosen, triggerUnitUid);
       let amount = evalValue(ctx, effect.amount, source, chosen);
-      if (source.kind === 'spell') amount += empower(state, me);
+      // "If ..., deal N more" is part of the same hit, so Empower and Barrier apply once.
+      if (effect.bonus && checkConditions(ctx, effect.bonus.condition, source, chosen)) amount += effect.bonus.amount;
+      // Empower boosts spell damage to enemies only, never to your own side.
+      const bonus = source.kind === 'spell' ? empower(state, me) : 0;
       // Area damage is dealt simultaneously: snapshot targets first.
-      for (const t of targets) dealDamage(ctx, damageSource, t, amount);
-      return;
+      for (const t of targets) dealDamage(ctx, damageSource, t, amount + (bonus > 0 && targetOwner(ctx, t) === them ? bonus : 0));
+      return targets.length > 0;
     }
     case 'HEAL': {
       const amount = evalValue(ctx, effect.amount, source, chosen);
-      for (const t of resolveTargets(ctx, selector, source, chosen, triggerUnitUid)) heal(ctx, t, amount, me);
-      return;
+      const targets = resolveTargets(ctx, selector, source, chosen, triggerUnitUid);
+      for (const t of targets) heal(ctx, t, amount, me);
+      return targets.length > 0;
     }
     case 'BUFF': {
       // Literal numbers may be negative (debuffs); expressions are always non-negative.
       const signed = (v: ValueExpr | undefined) => (typeof v === 'number' ? v : evalValue(ctx, v, source, chosen));
       const realAtk = signed(effect.attack);
       const realHp = signed(effect.health);
-      for (const u of unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid))) {
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
+      for (const u of units) {
         if (effect.temporary) u.tempAttack += realAtk;
         else u.attackBuff += realAtk;
         u.healthBuff += realHp;
         emit(ctx, { type: 'UNIT_BUFFED', uid: u.uid, attack: realAtk, health: realHp });
       }
-      return;
+      return units.length > 0;
     }
     case 'SET_STATS': {
-      for (const u of unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid))) {
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
+      for (const u of units) {
         if (effect.attack !== undefined) {
           u.baseAttack = effect.attack;
           u.attackBuff = 0;
@@ -312,12 +322,12 @@ export function executeEffect(
         }
         emit(ctx, { type: 'UNIT_BUFFED', uid: u.uid, attack: 0, health: 0 });
       }
-      return;
+      return units.length > 0;
     }
     case 'DRAW_CARDS': {
       const who = effect.opponent ? them : me;
       drawCards(ctx, who, evalValue(ctx, effect.amount, source, chosen), effect.filter);
-      return;
+      return true;
     }
     case 'SUMMON': {
       const who = effect.forOpponent ? them : me;
@@ -327,15 +337,18 @@ export function executeEffect(
         const idx = state.players[me].board.findIndex((u) => u.uid === srcUnitUid);
         if (idx >= 0) position = idx + 1;
       }
+      let summoned = false;
       for (let i = 0; i < count; i++) {
         const unit = summonUnit(ctx, who, effect.cardId, { position });
+        if (unit) summoned = true;
         if (unit && position !== undefined) position++;
       }
-      return;
+      return summoned;
     }
     case 'DESTROY': {
-      for (const u of unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid))) u.pendingDestroy = true;
-      return;
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
+      for (const u of units) u.pendingDestroy = true;
+      return units.length > 0;
     }
     case 'DISCARD': {
       const who = state.players[effect.opponent ? them : me];
@@ -343,13 +356,13 @@ export function executeEffect(
         const [card] = who.hand.splice(randomIndex(ctx, who.hand.length), 1);
         emit(ctx, { type: 'CARD_DISCARDED', player: who.id, cardId: card.cardId });
       }
-      return;
+      return true;
     }
     case 'GAIN_ENERGY': {
       const p = state.players[me];
       p.energy = Math.min(GAME_RULES.maxEnergy, p.energy + effect.amount);
       emit(ctx, { type: 'ENERGY_CHANGED', player: me, energy: p.energy, maxEnergy: p.maxEnergy });
-      return;
+      return true;
     }
     case 'GAIN_MAX_ENERGY': {
       const p = state.players[me];
@@ -357,14 +370,14 @@ export function executeEffect(
       p.maxEnergy = Math.min(GAME_RULES.maxEnergy, p.maxEnergy + effect.amount);
       if (!effect.empty) p.energy = Math.min(GAME_RULES.maxEnergy, p.energy + (p.maxEnergy - before));
       emit(ctx, { type: 'ENERGY_CHANGED', player: me, energy: p.energy, maxEnergy: p.maxEnergy });
-      return;
+      return true;
     }
     case 'DESTROY_ENERGY': {
       const p = state.players[them];
       p.maxEnergy = Math.max(0, p.maxEnergy - effect.amount);
       p.energy = Math.min(p.energy, p.maxEnergy);
       emit(ctx, { type: 'ENERGY_CHANGED', player: them, energy: p.energy, maxEnergy: p.maxEnergy });
-      return;
+      return true;
     }
     case 'REDUCE_COST': {
       const hand = state.players[me].hand.filter((c) => {
@@ -374,27 +387,29 @@ export function executeEffect(
         if (effect.filter?.tag && !(def.tags ?? []).includes(effect.filter.tag)) return false;
         return true;
       });
-      if (hand.length === 0) return;
+      if (hand.length === 0) return false;
       if (effect.scope === 'HAND') hand.forEach((c) => (c.costMod -= effect.amount));
       else if (effect.scope === 'RANDOM_HAND_CARD') hand[randomIndex(ctx, hand.length)].costMod -= effect.amount;
       else {
         const top = [...hand].sort((a, b) => (getCard(b.cardId)?.manaCost ?? 0) + b.costMod - ((getCard(a.cardId)?.manaCost ?? 0) + a.costMod))[0];
         top.costMod -= effect.amount;
       }
-      return;
+      return true;
     }
     case 'RETURN_TO_HAND': {
-      for (const u of unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid))) {
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
+      for (const u of units) {
         removeUnitFromBoard(ctx, u);
         emit(ctx, { type: 'UNIT_RETURNED', player: u.owner, uid: u.uid, cardId: u.cardId });
         if (getCard(u.cardId)?.collectible !== false) {
           addToHand(ctx, u.owner, makeCardInstance(ctx, u.cardId, { costMod: -(effect.costReduction ?? 0), revealed: true }));
         }
       }
-      return;
+      return units.length > 0;
     }
     case 'APPLY_STATUS': {
-      for (const u of unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid))) {
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
+      for (const u of units) {
         if (effect.status === 'FROZEN') {
           u.frozen = true;
           u.thawPending = false;
@@ -403,20 +418,22 @@ export function executeEffect(
         else if (effect.status === 'AMBUSH') u.ambush = true;
         emit(ctx, { type: 'STATUS_APPLIED', uid: u.uid, status: effect.status, amount: effect.amount });
       }
-      return;
+      return units.length > 0;
     }
     case 'GRANT_KEYWORD': {
-      for (const u of unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid))) {
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
+      for (const u of units) {
         if (!u.keywords.includes(effect.keyword)) u.keywords.push(effect.keyword);
         if (effect.keyword === 'BARRIER') u.barrier = true;
         if (effect.keyword === 'AMBUSH') u.ambush = true;
         emit(ctx, { type: 'STATUS_APPLIED', uid: u.uid, status: effect.keyword });
       }
-      return;
+      return units.length > 0;
     }
     case 'SILENCE': {
-      for (const u of unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid))) silenceUnit(ctx, u);
-      return;
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
+      for (const u of units) silenceUnit(ctx, u);
+      return units.length > 0;
     }
     case 'CREATE_CARD': {
       const count = effect.count ?? 1;
@@ -432,13 +449,14 @@ export function executeEffect(
           emit(ctx, { type: 'CARD_CREATED', player: me, cardId, destination: 'DECK' });
         }
       }
-      return;
+      return true;
     }
     case 'COPY_CARD': {
-      for (const u of unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid))) {
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
+      for (const u of units) {
         if (addToHand(ctx, me, makeCardInstance(ctx, u.cardId))) emit(ctx, { type: 'CARD_CREATED', player: me, cardId: u.cardId, destination: 'HAND' });
       }
-      return;
+      return units.length > 0;
     }
     case 'STEAL_CARD': {
       const victim = state.players[them];
@@ -448,10 +466,11 @@ export function executeEffect(
         card.revealed = true;
         if (addToHand(ctx, me, card)) emit(ctx, { type: 'CARD_STOLEN', player: me, cardId: card.cardId });
       }
-      return;
+      return true;
     }
     case 'TAKE_CONTROL': {
-      for (const u of unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid))) {
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
+      for (const u of units) {
         if (u.owner === me) continue;
         if (state.players[me].board.length >= GAME_RULES.maxBoardSize) {
           u.pendingDestroy = true;
@@ -464,14 +483,15 @@ export function executeEffect(
         state.players[me].board.push(u);
         emit(ctx, { type: 'CONTROL_CHANGED', uid: u.uid, newOwner: me });
       }
-      return;
+      return units.length > 0;
     }
     case 'GAIN_ARMOR':
       gainArmor(ctx, me, evalValue(ctx, effect.amount, source, chosen));
-      return;
+      return true;
     case 'TRANSFORM': {
-      for (const u of unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid))) transformUnit(ctx, u, effect.cardId);
-      return;
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
+      for (const u of units) transformUnit(ctx, u, effect.cardId);
+      return units.length > 0;
     }
     case 'RESURRECT': {
       const p = state.players[me];
@@ -483,14 +503,15 @@ export function executeEffect(
         const [cardId] = pool.splice(randomIndex(ctx, pool.length), 1);
         summonUnit(ctx, me, cardId);
       }
-      return;
+      return true;
     }
     case 'READY_UNIT': {
-      for (const u of unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid))) {
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
+      for (const u of units) {
         u.attacksThisTurn = 0;
         u.summonedThisTurn = false;
       }
-      return;
+      return units.length > 0;
     }
     case 'MILL': {
       const p = state.players[effect.opponent ? them : me];
@@ -498,7 +519,7 @@ export function executeEffect(
         const [card] = p.deck.splice(0, 1);
         emit(ctx, { type: 'CARD_BURNED', player: p.id, cardId: card.cardId });
       }
-      return;
+      return true;
     }
   }
 }

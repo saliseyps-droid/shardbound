@@ -17,7 +17,7 @@ import { PortraitPicker } from '@/ui/components/PortraitPicker';
 import { effectivePortrait } from '@/domain/portraits';
 import { DeckBox, factionStyle } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
-import { t, tn } from '@/i18n';
+import { formatDate, t, tn } from '@/i18n';
 
 
 function rewardLabel(r: LevelReward): string {
@@ -130,25 +130,26 @@ export default function ProfileScreen() {
               ) : (
                 <h2 className="profile-name">
                   {p.username}{' '}
-                  <button className="icon-btn small" aria-label={t('Rename')} onClick={() => (setName(p.username), setEditing(true))}>
+                  <button className="icon-btn small" aria-label={t('Rename')} title={t('Rename')} onClick={() => (setName(p.username), setEditing(true))}>
                     ✎
                   </button>
                 </h2>
               )}
-              <span className="muted">{t('Warden since {date}', { date: new Date(p.createdAt).toLocaleDateString() })}</span>
+              <span className="muted">{t('Warden since {date}', { date: formatDate(p.createdAt, { dateStyle: 'long' }) })}</span>
             </div>
           </div>
           <p className="faint">{playingFaction ? t('Your portrait is the Warden of the deck you play: {faction}.', { faction: FACTIONS[playingFaction].name }) : t('Your portrait is the Warden of the deck you play.')}</p>
           <label className="field">
             <span>{t('Title')}</span>
             <select className="select" value={p.title ?? ''} onChange={(e) => gameService.updateProfile({ title: e.target.value || null })} disabled={p.titles.length === 0}>
-              <option value="">{p.titles.length ? t('No title') : t('Earn titles every 5 levels')}</option>
+              <option value="">{t('No title')}</option>
               {p.titles.map((ti) => (
                 <option key={ti} value={ti}>
                   {t(ti)}
                 </option>
               ))}
             </select>
+            {p.titles.length === 0 && <small className="faint field-hint">{t('Earn titles every 5 levels')}</small>}
           </label>
           <div className="profile-level">
             <span className="level-gem num">{p.level}</span>

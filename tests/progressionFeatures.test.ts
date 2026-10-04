@@ -89,7 +89,7 @@ describe('daily free Arena entry', () => {
 });
 
 describe('level rewards', () => {
-  it('include Curse of the Abyss packs and a card back every 10 levels', () => {
+  it('include Legions of Shadow packs and a card back every 10 levels', () => {
     const all = LEVELS.flatMap((l) => l.rewards);
     expect(all.some((r) => r.kind === 'PACK' && r.setId === 'ABYSS')).toBe(true);
     for (const lv of [10, 20, 30, 40]) expect(LEVELS[lv - 1].rewards.some((r) => r.kind === 'CARD_BACK')).toBe(true);

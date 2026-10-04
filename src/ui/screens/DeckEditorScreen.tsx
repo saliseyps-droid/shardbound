@@ -10,7 +10,7 @@ import { ownedCopies } from '@/domain/save';
 import { gameService, useAccount } from '@/state/accountStore';
 import { toast, useUi } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
-import { CardView } from '@/ui/components/CardView';
+import { CardView, isTouchScreen } from '@/ui/components/CardView';
 import { confirmDialog, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
@@ -218,7 +218,9 @@ export default function DeckEditorScreen() {
         title={draft.name || t('Untitled deck')}
         subtitle={
           <>
-            {t('Click a card to add it, click a list entry to remove it, right-click to inspect.')}
+            {isTouchScreen()
+              ? t('Tap a card to add it, tap a list entry to remove it, long-press a card to inspect it.')
+              : t('Click a card to add it, click a list entry to remove it, right-click to inspect.')}
             {dirty && <span className="unsaved"> {t('Unsaved changes')}</span>}
           </>
         }

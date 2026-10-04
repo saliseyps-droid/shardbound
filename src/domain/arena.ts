@@ -8,6 +8,7 @@ import { dayKey, err, ok, type Result } from '@/core/utils';
 import { PLAYABLE_FACTIONS, RARITIES, type PlayableFaction, type Rarity, type SetId } from '@/game/types';
 import { maxCopiesFor, type Deck } from './decks';
 import { pushReward, type GameSave } from './save';
+import { isLaterKey, trustedNow } from './clock';
 
 export interface ArenaRun {
   id: string;
@@ -20,6 +21,8 @@ export interface ArenaRun {
   talents: TalentPick[] | null;
   /** Match results so far. */
   results: ('WIN' | 'LOSS')[];
+  /** Started with the day's free entry (retiring it before playing pays nothing). */
+  free?: boolean;
 }
 
 export interface ArenaReward {
@@ -66,7 +69,7 @@ const rngFor = (run: ArenaRun, step: string) => createRng(hashString(`${run.seed
 
 /** The first Arena run of each day is free. */
 export function hasFreeArenaEntry(save: GameSave, now: number): boolean {
-  return save.arena.freeEntryDay !== dayKey(now);
+  return isLaterKey(dayKey(trustedNow(save, now)), save.arena.freeEntryDay);
 }
 
 export function startArena(save: GameSave, now: number, seed: number): Result<GameSave> {
@@ -75,9 +78,9 @@ export function startArena(save: GameSave, now: number, seed: number): Result<Ga
   if (!free && save.profile.gold < ARENA.entryGold) return err(`The Arena costs ${ARENA.entryGold} Gold to enter.`);
   const rng = createRng(seed);
   const factions = shuffleInPlace(rng, [...PLAYABLE_FACTIONS]);
-  const run: ArenaRun = { id: `arena_${now}_${seed >>> 0}`, seed: seed >>> 0, startedAt: now, factionChoices: [factions[0], factions[1]], faction: null, picks: [], talents: null, results: [] };
+  const run: ArenaRun = { id: `arena_${now}_${seed >>> 0}`, seed: seed >>> 0, startedAt: now, factionChoices: [factions[0], factions[1]], faction: null, picks: [], talents: null, results: [], free };
   const gold = free ? save.profile.gold : save.profile.gold - ARENA.entryGold;
-  return ok({ ...save, profile: { ...save.profile, gold }, arena: { ...save.arena, run, freeEntryDay: free ? dayKey(now) : save.arena.freeEntryDay } });
+  return ok({ ...save, profile: { ...save.profile, gold }, arena: { ...save.arena, run, freeEntryDay: free ? dayKey(trustedNow(save, now)) : save.arena.freeEntryDay } });
 }
 
 export function chooseArenaFaction(save: GameSave, faction: PlayableFaction): Result<GameSave> {
@@ -167,6 +170,8 @@ export function recordArenaMatch(save: GameSave, result: 'WIN' | 'LOSS' | 'DRAW'
 export function retireArena(save: GameSave, now: number): Result<GameSave> {
   const run = save.arena.run;
   if (!run) return err('There is no Arena run to retire.');
+  // A free run given up before its first match pays nothing (otherwise it is a free daily reward).
+  if (run.free && run.results.length === 0) return ok({ ...save, arena: { ...save.arena, run: null } });
   return ok(finish(save, run, now));
 }
 
@@ -229,7 +234,7 @@ export function repairArena(raw: unknown): ArenaState {
     Array.isArray(r.results) && r.results.every((x) => x === 'WIN' || x === 'LOSS') &&
     (r.talents === null || (r.faction !== null && validateBuild(r.faction, r.talents) === null))
   ) {
-    out.run = { ...r, startedAt: Number(r.startedAt) || 0 };
+    out.run = { ...r, startedAt: Number(r.startedAt) || 0, free: r.free === true };
   }
   return out;
 }

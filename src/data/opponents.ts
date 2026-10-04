@@ -131,6 +131,87 @@ export const CAMPAIGN: Chapter[] = [
       },
     ],
   },
+  {
+    id: 'ch4',
+    name: 'Chapter IV — Legions of Shadow',
+    description: 'The Crown is mended, but its shadow walks on. Knights of every banner now march for it.',
+    encounters: [
+      {
+        id: 'c4_e1', name: 'Dame Rowena Thorne', title: 'Briarhelm Oathkeeper', avatar: 'leaf', faction: 'VERDANT', archetype: 'Overgrowth', difficulty: 'NORMAL', personality: 'BALANCED', rarities: HARD_POOL,
+        intro: 'My oath was to the grove. The shadow simply grew there first.',
+        special: { extraCards: ['ver_briarhelm_knight', 'ver_antlerhelm_knight'], description: ['Her deck holds extra Knights of the briar.'] },
+        firstWinReward: { gold: 200, xp: 200, packs: { setId: 'ABYSS', amount: 1 } },
+      },
+      {
+        id: 'c4_e2', name: 'Sir Halvard Brine', title: 'Knight of the Drowned Banner', avatar: 'wave', faction: 'TIDE', archetype: 'Deep Freeze', difficulty: 'HARD', personality: 'CONTROL', rarities: HARD_POOL,
+        intro: 'I drowned once already. It did not take.',
+        special: { extraCards: ['tid_frostspine_knight', 'tid_brinehair_duelist'], description: ['His deck holds extra drowned Knights.'] },
+        firstWinReward: { gold: 200, xp: 200 },
+      },
+      {
+        id: 'c4_e3', name: 'Marshal Dagna Ironvow', title: 'Dreadknight of the Forge', avatar: 'gear', faction: 'IRON', archetype: 'Bulwark', difficulty: 'HARD', personality: 'CONTROL', rarities: HARD_POOL,
+        intro: 'Every rivet in this armour is a promise. None of them to you.',
+        special: { extraCards: ['irn_stormrivet_dreadknight', 'irn_ironvow_axeman'], description: ['Her deck holds extra Dreadknights.'] },
+        firstWinReward: { gold: 220, xp: 220, packs: { setId: 'ABYSS', amount: 1 } },
+      },
+      {
+        id: 'c4_e4', name: 'The Violet Blade', title: 'Duelist of the Last Light', avatar: 'star', faction: 'ASTRAL', archetype: 'Spellweave', difficulty: 'HARD', personality: 'AGGRESSIVE', rarities: HARD_POOL,
+        intro: 'The stars went dark. My blade did not.',
+        special: { extraCards: ['ast_isera_of_the_violet_blade', 'ast_duskstar_sentinel'], description: ['Her deck holds extra Knights of the Last Light.'] },
+        firstWinReward: { gold: 220, xp: 220 },
+      },
+      {
+        id: 'c4_boss', name: 'Vorgrath', title: 'The Burning Oath', avatar: 'flame', faction: 'EMBER', archetype: 'Blitz', difficulty: 'HARD', personality: 'AGGRESSIVE', rarities: ALL, boss: true,
+        intro: 'I swore to burn for the Crown. Now I burn for what comes after it.',
+        special: {
+          talents: [{ abilityId: 'wt_boss_oath_of_cinders', level: 0 }, { abilityId: 'wt_ember_warcry', level: 2 }],
+          extraCards: ['emb_vorgrath_the_burning_oath', 'emb_hellshield_marauder', 'emb_cinderhelm_knight'],
+          description: ['Warden abilities: Oath of Cinders, Warcry III.', 'His deck holds Vorgrath himself and his sworn Knights.'],
+        },
+        firstWinReward: { gold: 400, xp: 350, packs: { setId: 'ABYSS', amount: 2 } },
+      },
+    ],
+  },
+  {
+    id: 'ch5',
+    name: 'Chapter V — The Shadow Throne',
+    description: 'At the bottom of the world the Legions gather around an empty throne. Someone means to sit on it.',
+    encounters: [
+      {
+        id: 'c5_b1', name: 'Azhrel', title: 'The Drowned Champion', avatar: 'wave', faction: 'TIDE', archetype: 'Undertow', difficulty: 'HARD', personality: 'CONTROL', rarities: ALL, boss: true,
+        intro: 'The tide took my kingdom. The shadow gave me a sword to take it back.',
+        special: {
+          heroHealth: 35,
+          talents: [{ abilityId: 'wt_boss_black_tide', level: 0 }, { abilityId: 'wt_tide_cold_snap', level: 1 }],
+          extraCards: ['tid_azhrel_drowned_champion', 'tid_drowned_ward'],
+          description: ['Starts with 35 Health.', 'Warden abilities: Black Tide, Cold Snap II.'],
+        },
+        firstWinReward: { gold: 400, xp: 400, essence: 200 },
+      },
+      {
+        id: 'c5_b2', name: 'Kaelthar', title: 'Pyre of Souls', avatar: 'eye', faction: 'VOID', archetype: 'Requiem', difficulty: 'HARD', personality: 'BALANCED', rarities: ALL, boss: true,
+        intro: 'Every soul you spent to reach me now burns in my fire.',
+        special: {
+          heroHealth: 35,
+          talents: [{ abilityId: 'wt_boss_soul_pyre', level: 0 }, { abilityId: 'wt_void_soul_harvest', level: 2 }],
+          extraCards: ['vod_kaelthar_pyre_of_souls', 'vod_horned_revenant', 'vod_pentacle_of_souls'],
+          description: ['Starts with 35 Health.', 'Warden abilities: Soul Pyre, Soul Harvest III.'],
+        },
+        firstWinReward: { gold: 450, xp: 400, packs: { setId: 'ABYSS', amount: 2 } },
+      },
+      {
+        id: 'c5_final', name: 'Rendoslav', title: 'Lord of the Shadow Legions', avatar: 'crown', faction: 'VOID', secondFaction: 'NEUTRAL', archetype: 'Requiem', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
+        intro: 'Every banner kneels to me in the end. Yours will be the last.',
+        special: {
+          heroHealth: 40,
+          talents: [{ abilityId: 'wt_boss_shadow_muster', level: 0 }, { abilityId: 'wt_boss_crown_fragment', level: 0 }],
+          extraCards: ['neu_rendoslav', 'neu_sigil_of_the_abyss_lord', 'neu_scarlet_oathbreaker', 'neu_crown_of_the_abyss'],
+          description: ['Starts with 40 Health.', 'Warden abilities: Shadow Muster, Crown Fragment.', 'His deck holds Rendoslav himself and the relics of the Abyss Lord.'],
+        },
+        firstWinReward: { gold: 600, xp: 600, essence: 400, packs: { setId: 'ABYSS', amount: 3 } },
+      },
+    ],
+  },
 ];
 
 export function findEncounter(id: string): { chapter: Chapter; encounter: OpponentDef; index: number } | undefined {

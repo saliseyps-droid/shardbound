@@ -12,6 +12,9 @@
   container-type: inline-size;
   flex: none;
   user-select: none;
+  -webkit-user-select: none;
+  /* iOS: a long press inspects the card instead of opening the image callout. */
+  -webkit-touch-callout: none;
   transition: transform 0.18s var(--ease-out), filter 0.18s, box-shadow 0.18s;
   filter: drop-shadow(0 8px 14px rgba(5, 3, 20, 0.6));
 }

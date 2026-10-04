@@ -7,7 +7,7 @@ import { pushEvent } from './context';
 import type { GameEvent, NewGameEvent, PlayerId, TargetRef } from './types';
 import { isEnded, other } from './types';
 import { findUnit } from './queries';
-import { checkConditions, executeEffect } from './effects';
+import { checkConditions, evalValue, executeEffect } from './effects';
 import { checkDeaths, checkGameOver } from './ops';
 
 /** Emits an event and collects every trigger that listens for it. */
@@ -162,13 +162,19 @@ export function runAbility(ctx: EngineContext, pending: Omit<PendingAbility, 'ke
   if (ability.condition && !checkConditions(ctx, ability.condition, source, pending.target)) return false;
   const prevDepth = ctx.depth;
   ctx.depth = pending.depth ?? ctx.depth;
+  /** Whether any effect found a target / did something (relics only spend a charge then). */
+  let acted = false;
   try {
     for (const effect of ability.effects) {
       if (isEnded(ctx.state)) break;
       if (effect.condition && !checkConditions(ctx, effect.condition, source, pending.target)) continue;
-      const times = Math.max(1, Math.min(effect.repeat ?? 1, 20));
+      // A literal repeat always resolves at least once; an expression may resolve to 0 times.
+      const times =
+        typeof effect.repeat === 'object'
+          ? Math.min(evalValue(ctx, effect.repeat, source, pending.target), 20)
+          : Math.max(1, Math.min(effect.repeat ?? 1, 20));
       for (let i = 0; i < times; i++) {
-        executeEffect(ctx, effect, source, pending.target, pending.triggerUnitUid);
+        if (executeEffect(ctx, effect, source, pending.target, pending.triggerUnitUid)) acted = true;
         checkDeaths(ctx);
         if (checkGameOver(ctx)) break;
       }
@@ -182,7 +188,7 @@ export function runAbility(ctx: EngineContext, pending: Omit<PendingAbility, 'ke
   if (source.passive && source.talentSlot !== undefined) {
     pushEvent(ctx, { type: 'HERO_ABILITY_TRIGGERED', player: source.controller, slot: source.talentSlot, abilityId: source.cardId });
   }
-  consumeRelicCharge(ctx, source);
+  if (acted) consumeRelicCharge(ctx, source);
   return true;
 }
 

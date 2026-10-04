@@ -8,7 +8,12 @@ import { PRACTICE_OPPONENTS, DIFFICULTY_POOLS } from '@/data/opponents';
 import { opponentSide, playerSide } from '@/domain/matchSetup';
 import type { Deck } from '@/domain/decks';
 import {
+  decideReport,
+  emptyReports,
   forfeitPlayer,
+  isMatchParticipant,
+  replayMatch,
+  type MatchReports,
   markPlaying,
   newTournament,
   playerById,
@@ -24,7 +29,7 @@ import {
   type TournamentSize,
 } from '@/domain/tournament';
 import { CONTENT_HASH, PROTOCOL_VERSION, makeRoomCode, netSession, roomPeerId } from '@/net/session';
-import { onlineOpponent, validateRemoteSide } from '@/net/lobby';
+import { onlineOpponent, sanitizeRemoteSide, validateRemoteSide } from '@/net/lobby';
 import { ConnectTimeout, withRetries } from '@/net/retry';
 import { simulateBotMatch } from '@/ai/simulate';
 import { gameService, useAccount } from './accountStore';
@@ -81,6 +86,8 @@ let peer: Peer | null = null;
 const conns = new Map<string, DataConnection>(); // organizer: playerId -> conn
 let hostConn: DataConnection | null = null; // member: link to organizer
 const lastSeen = new Map<string, number>();
+/** Organizer: who started each match and what its players reported. */
+const reportBooks = new Map<string, MatchReports>();
 let heartbeat: ReturnType<typeof setInterval> | null = null;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -135,15 +142,52 @@ export const useTournament = create<TournamentStore>((set, get) => {
     });
   }
 
-  function handleOrganizerMessage(playerId: string, msg: TMsg) {
+  function bookFor(matchId: string): MatchReports {
+    let book = reportBooks.get(matchId);
+    if (!book) reportBooks.set(matchId, (book = emptyReports()));
+    return book;
+  }
+
+  /** A human player started their match (only the match's own players count). */
+  function receiveStart(playerId: string, matchId: TournamentMatchId) {
     const t = get().tournament;
-    if (!t) return;
-    if (msg.t === 't-start') update(markPlaying(t, msg.matchId));
-    if (msg.t === 't-result') {
-      const m = t.matches.find((x) => x.id === msg.matchId);
-      // Only a participant of that match may report it.
-      if (m && (m.a === playerId || m.b === playerId)) update(reportResult(t, msg.matchId, msg.winnerId));
+    if (!t || typeof matchId !== 'string' || !isMatchParticipant(t, matchId, playerId)) return;
+    const book = bookFor(matchId);
+    if (!book.started.includes(playerId)) book.started.push(playerId);
+    update(markPlaying(t, matchId));
+  }
+
+  /** A player's result report; the bracket only moves once the reports agree (see decideReport). */
+  function receiveReport(playerId: string, matchId: TournamentMatchId, winnerId: unknown) {
+    const t = get().tournament;
+    if (!t || typeof matchId !== 'string' || typeof winnerId !== 'string' || !isMatchParticipant(t, matchId, playerId)) return;
+    const book = bookFor(matchId);
+    book.reports[playerId] = winnerId;
+    book.firstReportAt ??= Date.now();
+    settleReports(matchId);
+  }
+
+  function settleReports(matchId: TournamentMatchId) {
+    const t = get().tournament;
+    const book = reportBooks.get(matchId);
+    if (!t || !book) return;
+    if (t.matches.find((m) => m.id === matchId)?.status !== 'playing' && t.matches.find((m) => m.id === matchId)?.status !== 'ready') {
+      reportBooks.delete(matchId); // decided another way (e.g. a forfeit)
+      return;
     }
+    const decision = decideReport(t, matchId, book, Date.now());
+    if (decision.kind === 'wait') return;
+    reportBooks.delete(matchId);
+    if (decision.kind === 'accept') update(reportResult(t, matchId, decision.winnerId));
+    else {
+      toast('The players reported different results, so the match will be replayed.', 'info');
+      update(replayMatch(t, matchId));
+    }
+  }
+
+  function handleOrganizerMessage(playerId: string, msg: TMsg) {
+    if (msg.t === 't-start') receiveStart(playerId, msg.matchId);
+    if (msg.t === 't-result') receiveReport(playerId, msg.matchId, msg.winnerId);
   }
 
   function dropPlayer(playerId: string) {
@@ -161,6 +205,8 @@ export const useTournament = create<TournamentStore>((set, get) => {
     heartbeat = setInterval(() => {
       const now = Date.now();
       if (get().role === 'organizer') {
+        // A missing second report is decided once its timeout has passed.
+        for (const matchId of [...reportBooks.keys()]) settleReports(matchId);
         for (const [id, c] of conns) {
           if (c.open) c.send({ t: 'ping' } satisfies TMsg);
           if (now - (lastSeen.get(id) ?? now) > TIMEOUT_MS) dropPlayer(id);
@@ -211,7 +257,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
     if (!m) return;
     const winnerId = won ? myId : m.a === myId ? m.b! : m.a!;
     set({ activeMatch: null });
-    if (role === 'organizer') update(reportResult(t, matchId, winnerId));
+    if (role === 'organizer') receiveReport(myId, matchId, winnerId);
     else hostConn?.send({ t: 't-result', matchId, winnerId } satisfies TMsg);
   }
 
@@ -227,6 +273,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
     }
     conns.clear();
     lastSeen.clear();
+    reportBooks.clear();
     try {
       if (hostConn?.open) hostConn.send({ t: 'bye' } satisfies TMsg);
     } catch {
@@ -359,14 +406,17 @@ export const useTournament = create<TournamentStore>((set, get) => {
             if (msg.protocol !== PROTOCOL_VERSION || msg.content !== CONTENT_HASH) return reject('You are running a different version of the game. Reload the page.');
             if (t.phase !== 'lobby') return reject('This tournament has already started.');
             if (t.players.filter((p) => !p.bot).length >= sizeOf(t)) return reject('This tournament is full.');
+            // Check everything before the connection is registered as a player.
+            if (typeof msg.name !== 'string' || typeof msg.avatar !== 'string' || !msg.name.trim()) return reject('Invalid match setup.');
             const problem = validateRemoteSide(msg.side);
             if (problem) return reject(problem);
+            const side = sanitizeRemoteSide(msg.side);
             const id = `p${nextId++}`;
             conns.set(id, conn);
             lastSeen.set(id, Date.now());
             conn.send({ t: 't-welcome', youAre: id } satisfies TMsg);
-            const faction = (msg.side.faction as PlayableFaction) ?? 'EMBER';
-            update({ ...t, players: [...t.players, { id, name: msg.name.slice(0, 20), avatar: msg.avatar, faction, bot: false, side: msg.side, connected: true }] });
+            const faction = (side.faction as PlayableFaction) ?? 'EMBER';
+            update({ ...t, players: [...t.players, { id, name: msg.name.slice(0, 20), avatar: msg.avatar.slice(0, 40), faction, bot: false, side, connected: true }] });
           };
           conn.on('data', onData);
           conn.on('close', () => {
@@ -425,7 +475,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
       const deck = save.decks.find((d) => d.id === deckId) ?? save.decks[0];
       const opponentId = m.a === myId ? m.b! : m.a!;
       const opp = playerById(t, opponentId)!;
-      if (role === 'organizer') update(markPlaying(t, m.id));
+      if (role === 'organizer') receiveStart(myId, m.id);
       else hostConn?.send({ t: 't-start', matchId: m.id } satisfies TMsg);
       set({ activeMatch: m.id });
 

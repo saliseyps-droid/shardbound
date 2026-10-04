@@ -11,6 +11,8 @@ import { GAME_RULES } from '@/config/gameRules';
 import type { MatchRewards } from '@/domain/matchResults';
 import { opponentSide, playerSide } from '@/domain/matchSetup';
 import { ownedCopies } from '@/domain/save';
+import type { ActiveMatch } from '@/domain/activeMatch';
+import { sanitizeRating } from '@/domain/ranked';
 import { validateDeck } from '@/domain/decks';
 import { gameService, useAccount } from './accountStore';
 import { anim, useSettings } from './settingsStore';
@@ -360,12 +362,17 @@ export const useMatch = create<MatchStore>((set, get) => {
   netSession.onStatus(() => {
     const s = get();
     if (netSession.status !== 'closed' || !s.config?.online || !s.game || s.phase === 'ended') return;
-    toast('Your opponent disconnected — you win.', 'info');
+    const gen = matchGen;
     netChain = netChain.then(async () => {
+      // Both sides see the link drop. Only a player whose own connection still works wins;
+      // a player who went offline (e.g. turned Wi-Fi off while losing) gets the loss.
+      const localOk = await netSession.localNetworkOk();
+      if (gen !== matchGen) return;
       await waitIdle();
       const game = get().game;
       if (!game || game.phase === 'ENDED') return;
-      const res = applyAction(game, { type: 'CONCEDE', player: AI });
+      toast(localOk ? t('Your opponent disconnected — you win.') : t('You lost your connection, so the match counts as a loss.'), 'info');
+      const res = applyAction(game, { type: 'CONCEDE', player: localOk ? AI : HUMAN });
       if (!res.error) await present(game, res);
     });
   });
@@ -448,7 +455,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     try {
       const rewards = gameService.recordMatch({
         mode: cfg.mode === 'ONLINE' ? 'PVP' : cfg.mode,
-        ranked: cfg.mode === 'RANKED' && cfg.opponentRating !== undefined ? { opponentRating: cfg.opponentRating } : undefined,
+        ranked: cfg.mode === 'RANKED' && cfg.opponentRating !== undefined ? { opponentRating: sanitizeRating(cfg.opponentRating) } : undefined,
         opponentId: cfg.opponent.id,
         opponentName: cfg.opponent.name,
         difficulty: cfg.opponent.difficulty,
@@ -537,6 +544,25 @@ export const useMatch = create<MatchStore>((set, get) => {
         setup = { seed: config.seed ?? randomSeed(), players: [playerSide(save.profile, deck), opponent] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
       }
       const state = initialState ?? createGame(setup!).state;
+      if (gen !== matchGen) return;
+      // Matches with stakes are remembered until their result is recorded: reloading
+      // or closing the app mid-match then counts as conceding (src/domain/activeMatch.ts).
+      const stakes: ActiveMatch['mode'] | null = config.mode === 'ONLINE' ? 'PVP' : config.mode === 'RANKED' || config.mode === 'TOURNAMENT' || config.mode === 'ARENA' ? config.mode : null;
+      if (stakes) {
+        const deck = config.mode === 'ARENA' && save.arena.run ? arenaDeck(save.arena.run) : save.decks.find((d) => d.id === config.deckId);
+        gameService.beginMatch({
+          id: `am_${Date.now().toString(36)}_${gen}`,
+          mode: stakes,
+          startedAt: Date.now(),
+          opponentId: config.opponent.id,
+          opponentName: config.opponent.name,
+          difficulty: config.opponent.difficulty,
+          deckId: deck?.id ?? 'unknown',
+          deckName: deck?.name ?? deckName,
+          deckFaction: deck?.heroFaction ?? 'EMBER',
+          opponentRating: config.mode === 'RANKED' ? sanitizeRating(config.opponentRating) : undefined,
+        });
+      }
       if (config.online === 'host') netSession.send({ t: 'state', state: guestView(state), events: [], initial: true });
       set({
         config,

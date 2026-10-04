@@ -18,6 +18,7 @@ import { emptyVariants, pushReward, type GameSave, type Quest } from '@/domain/s
 import { decodeDeck } from '@/domain/deckCode';
 import { buyPortrait, choosePortrait } from '@/domain/portraits';
 import { buyBundle } from '@/domain/bundles';
+import { setActiveMatch, settleAbandonedMatch, type ActiveMatch } from '@/domain/activeMatch';
 import { applyRedeem, findCode } from '@/domain/redeem';
 import { migrateSave } from '@/persistence/migrations';
 import { SaveGateway } from '@/persistence/repositories';
@@ -25,7 +26,7 @@ import { IndexedDbStore, MemoryStore, type KeyValueStore } from '@/persistence/s
 
 export type InitStatus =
   | { kind: 'NEW' }
-  | { kind: 'LOADED'; notes: string[] }
+  | { kind: 'LOADED'; notes: string[]; /** A match left by reloading/closing the app was recorded as a loss. */ abandonedMatch?: boolean }
   | { kind: 'CORRUPTED'; error: string; backupKey?: string };
 
 type Listener = (save: GameSave | null) => void;
@@ -108,7 +109,17 @@ export class GameService {
   // Lifecycle
   // -------------------------------------------------------------------------
 
-  async init(): Promise<InitStatus> {
+  private initInFlight: Promise<InitStatus> | null = null;
+
+  /** Loads the save. Concurrent calls (React StrictMode boots twice) share one load. */
+  init(): Promise<InitStatus> {
+    this.initInFlight ??= this.load().finally(() => {
+      this.initInFlight = null;
+    });
+    return this.initInFlight;
+  }
+
+  private async load(): Promise<InitStatus> {
     let raw: Record<string, unknown> | null;
     try {
       raw = await this.gateway.loadRaw();
@@ -119,8 +130,12 @@ export class GameService {
     try {
       const report = migrateSave(raw);
       let save = report.save;
+      // A match with stakes that was abandoned by reloading or closing counts as conceded.
+      const abandoned = settleAbandonedMatch(save, this.now());
+      save = abandoned.save;
       save = refreshQuests(save, this.now(), createRng(randomSeed()));
-      save = { ...save, profile: { ...save.profile, lastSeenAt: this.now() } };
+      // Monotonic: a clock turned back never lowers it (see src/domain/clock.ts).
+      save = { ...save, profile: { ...save.profile, lastSeenAt: Math.max(save.profile.lastSeenAt || 0, this.now()) } };
       this.save = save;
       for (const l of this.listeners) l(save);
       // Persist the migrated/repaired save in full.
@@ -130,7 +145,7 @@ export class GameService {
           this.lastPersisted = save;
         })
         .catch((e) => console.error('[save] persist after migration failed', e));
-      return { kind: 'LOADED', notes: report.notes };
+      return { kind: 'LOADED', notes: report.notes, abandonedMatch: !!abandoned.settled };
     } catch (e) {
       let backupKey: string | undefined;
       try {
@@ -162,7 +177,7 @@ export class GameService {
   tick() {
     if (!this.save) return;
     const next = refreshQuests(this.save, this.now(), createRng(randomSeed()));
-    if (next !== this.save) this.commit(next);
+    if (next !== this.save) this.commit({ ...next, profile: { ...next.profile, lastSeenAt: Math.max(next.profile.lastSeenAt || 0, this.now()) } });
   }
 
   // -------------------------------------------------------------------------
@@ -376,8 +391,13 @@ export class GameService {
   // Matches
   // -------------------------------------------------------------------------
 
+  /** A match with stakes started: remembered until its result is recorded (see src/domain/activeMatch.ts). */
+  beginMatch(marker: ActiveMatch) {
+    this.commit(setActiveMatch(this.require(), marker));
+  }
+
   recordMatch(summary: MatchSummary): MatchRewards {
-    let { save, rewards } = applyMatchResult(this.require(), summary, this.now());
+    let { save, rewards } = applyMatchResult(setActiveMatch(this.require(), null), summary, this.now());
     if (summary.mode === 'ARENA') {
       const res = recordArenaMatch(save, summary.result, this.now());
       if (res.ok) save = res.value;

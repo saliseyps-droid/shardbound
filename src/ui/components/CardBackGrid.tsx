@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CARD_BACKS, type CardBackDef } from '@/data/cardBacks';
 import { gameService, useAccount } from '@/state/accountStore';
 import { toast } from '@/state/uiStore';
@@ -11,14 +12,16 @@ import '@/ui/styles/cardbacks.css';
 
 /**
  * Card backs as a grid of previews. `shop` lists every back with Buy / Equip;
- * `owned` lists only the player's backs to pick from (Collection).
+ * `owned` lists only the player's backs to pick from (Collection); `locked` shows the ones still
+ * missing as dark silhouettes with where to get them.
  */
-export function CardBackGrid({ mode }: { mode: 'shop' | 'owned' }) {
+export function CardBackGrid({ mode }: { mode: 'shop' | 'owned' | 'locked' }) {
+  const navigate = useNavigate();
   const gold = useAccount((s) => s.save?.profile.gold ?? 0);
   const owned = useAccount((s) => s.save?.profile.cardBacks ?? []);
   const equipped = useAccount((s) => s.save?.profile.cardBack);
   const [justBought, setJustBought] = useState<string | null>(null);
-  const list = mode === 'shop' ? CARD_BACKS : CARD_BACKS.filter((b) => owned.includes(b.id));
+  const list = mode === 'shop' ? CARD_BACKS : CARD_BACKS.filter((b) => owned.includes(b.id) === (mode === 'owned'));
 
   const buy = async (b: CardBackDef) => {
     const ok = await confirmDialog({
@@ -51,6 +54,27 @@ export function CardBackGrid({ mode }: { mode: 'shop' | 'owned' }) {
       toast(t('Now using {name}.', { name: b.name }), 'success');
     } else toast(res.error, 'error');
   };
+
+  if (mode === 'locked') {
+    return (
+      <ul className="cardback-grid">
+        {list.map((b) => (
+          <li key={b.id} className="cardback-item is-locked">
+            <button className="cardback-preview" onClick={() => navigate('/shop')} aria-label={t('{name}, not owned yet. {n} Gold in the Shop.', { name: b.name, n: b.price })}>
+              <CardBack width={132} design={b.id} />
+              <svg className="cardback-lock" viewBox="0 0 24 24" width="28" height="28" aria-hidden>
+                <path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5Zm-3 8V7a3 3 0 1 1 6 0v3H9Z" />
+              </svg>
+            </button>
+            <strong className="cardback-name">{b.name}</strong>
+            <span className="cardback-source faint">
+              <GoldIcon size={14} /> <span className="num">{b.price.toLocaleString()}</span> · {t('Shop')}
+            </span>
+          </li>
+        ))}
+      </ul>
+    );
+  }
 
   return (
     <ul className="cardback-grid">

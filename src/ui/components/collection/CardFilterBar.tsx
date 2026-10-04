@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { CardType, Faction, Rarity, SetId } from '@/game/types';
 import { CARD_TYPES, RARITIES } from '@/game/types';
 import { FACTIONS } from '@/data/factions';
@@ -23,10 +24,12 @@ interface Props {
 /** Faction tabs, search and dropdown filters shared by the collection and deck editor. */
 export function CardFilterBar({ value, onChange, factions, disabledFactions = [], ownershipLabels, compact }: Props) {
   const set = <K extends keyof CardFilterState>(k: K, v: CardFilterState[K]) => onChange({ ...value, [k]: v });
+  const [open, setOpen] = useState(false);
+  const extraCount = [value.rarity !== 'ALL', value.set !== 'ALL', value.type !== 'ALL', value.cost !== 'ALL', value.ownership !== 'ALL'].filter(Boolean).length;
   const active =
     value.rarity !== 'ALL' || value.set !== 'ALL' || value.type !== 'ALL' || value.cost !== 'ALL' || value.search !== '' || value.ownership !== 'ALL' || value.faction !== 'ALL';
   return (
-    <div className={`filter-bar ${compact ? 'compact' : ''}`}>
+    <div className={`filter-bar ${compact ? 'compact' : ''} ${open ? 'is-open' : ''}`}>
       <div className="faction-tabs" role="tablist" aria-label={t('Faction')}>
         <button role="tab" aria-selected={value.faction === 'ALL'} className="faction-tab" onClick={() => set('faction', 'ALL')}>
           <Glyph name="crystal" size={16} />
@@ -58,6 +61,13 @@ export function CardFilterBar({ value, onChange, factions, disabledFactions = []
           <Glyph name="eye" size={16} />
           <input className="input" type="search" placeholder={t('Search name, text or tag')} value={value.search} onChange={(e) => set('search', e.target.value)} />
         </label>
+        {/* Small screens: the dropdowns live in a sheet behind this button so the cards keep the room. */}
+        <button type="button" className={`btn btn-sm filter-toggle ${extraCount ? 'has-active' : ''}`} aria-expanded={open} onClick={() => setOpen(!open)}>
+          {t('Filters')}
+          {extraCount > 0 && <span className="filter-toggle-count num">{extraCount}</span>}
+        </button>
+        {open && <div className="filter-sheet-backdrop" onClick={() => setOpen(false)} aria-hidden />}
+        <div className="filter-extra">
         <div className="segmented cost-filter" role="group" aria-label={t('Energy cost')}>
           {Array.from({ length: 8 }, (_, i) => (
             <button key={i} aria-pressed={value.cost === i} aria-label={i === 7 ? t('Cost 7 or more') : t('Cost {n}', { n: i })} onClick={() => set('cost', value.cost === i ? 'ALL' : i)}>
@@ -107,6 +117,10 @@ export function CardFilterBar({ value, onChange, factions, disabledFactions = []
             {t('Clear filters')}
           </button>
         )}
+        <button type="button" className="btn btn-sm btn-primary filter-sheet-done" onClick={() => setOpen(false)}>
+          {t('Done')}
+        </button>
+        </div>
       </div>
     </div>
   );
