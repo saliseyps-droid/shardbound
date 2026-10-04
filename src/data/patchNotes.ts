@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.24.2',
+    date: '2026-10-05',
+    title: 'Reliable online connections',
+    summary: 'Online matches now connect between networks that blocked each other before.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: ['Online, Ranked, tournaments and friend invites: when two players cannot connect directly (strict home routers, mobile data, company networks), the game now relays the match through a TURN server. Direct connections are still tried first.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.24.1',
     date: '2026-10-04',
     title: 'Deck list previews',

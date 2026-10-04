@@ -55,6 +55,7 @@ class FakePeer extends Emitter {
   }
 }
 vi.mock('peerjs', () => ({ Peer: FakePeer }));
+vi.mock('@/net/iceServers', () => ({ peerOptions: async () => ({}) }));
 
 const { netSession, PROTOCOL_VERSION, CONTENT_HASH, ID_PREFIX } = await import('@/net/session');
 const { playerSide } = await import('@/domain/matchSetup');

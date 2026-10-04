@@ -1,5 +1,6 @@
 import { BOSS_TALENTS, FACTION_TALENTS } from '@/data/wardenTalents';
 import type { DataConnection, Peer } from 'peerjs';
+import { peerOptions } from './iceServers';
 import { collectibleCards } from '@/data/cards';
 import { hashString } from '@/core/rng';
 import type { GameAction, GameEvent, GameState, SideSetup } from '@/engine/types';
@@ -146,9 +147,9 @@ class NetSession {
   }
 
   private async createPeer(id?: string): Promise<Peer> {
-    const { Peer } = await import('peerjs');
+    const [{ Peer }, options] = await Promise.all([import('peerjs'), peerOptions()]);
     return new Promise((resolve, reject) => {
-      const peer = id ? new Peer(id) : new Peer();
+      const peer = id ? new Peer(id, options) : new Peer(options);
       let opened = false;
       const timer = setTimeout(() => reject(new Error('Could not reach the matchmaking service. Check your internet connection.')), 15000);
       peer.on('open', () => {

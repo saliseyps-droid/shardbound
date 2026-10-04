@@ -1,3 +1,4 @@
+import { peerOptions } from '@/net/iceServers';
 import { create } from 'zustand';
 import type { DataConnection, Peer } from 'peerjs';
 import type { Difficulty } from '@/config/progression';
@@ -294,9 +295,9 @@ export const useTournament = create<TournamentStore>((set, get) => {
   }
 
   async function makePeer(id?: string): Promise<Peer> {
-    const { Peer } = await import('peerjs');
+    const [{ Peer }, options] = await Promise.all([import('peerjs'), peerOptions()]);
     return new Promise((resolve, reject) => {
-      const p = id ? new Peer(id) : new Peer();
+      const p = id ? new Peer(id, options) : new Peer(options);
       const timer = setTimeout(() => reject(new Error('Could not reach the matchmaking service. Check your internet connection.')), 15000);
       p.on('open', () => {
         clearTimeout(timer);

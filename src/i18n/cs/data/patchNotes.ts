@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.24.2': {
+    title: 'Spolehlivé online spojení',
+    summary: 'Online zápasy se teď spojí i mezi sítěmi, které se dřív navzájem blokovaly.',
+    sections: [['Online, Ranked, turnaje i pozvánky přátel: když se dva hráči nemohou spojit napřímo (přísné domácí routery, mobilní data, firemní sítě), hra teď zápas přenese přes TURN server. Přímé spojení se pořád zkouší jako první.']],
+  },
   '0.24.1': {
     title: 'Náhled karet v balíčku',
     summary: 'Najetím na kartu v seznamu balíčku ji uvidíš zvětšenou.',
