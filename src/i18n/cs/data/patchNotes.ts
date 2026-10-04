@@ -8,10 +8,10 @@ const notes: PatchNotesOverlay = {
       [
         'Skolky: 6 → 7 many.',
         'Kaelthar, Hranice duší: způsobí nejvýš 4 poškození (dříve 5).',
-        'Tallys the Menace: 5/5 → 4/5.',
-        'Grave Whisperer: 1/1 → 1/2. Cryptcrawler: 2/2 → 2/3. Open Grave: 2 → 1 many.',
-        'Dominion Forge: 3 → 2 many. Cogspire Foundry: trvá 4 tahy (dříve 3). Steelwatch Knight: 1/3 → 2/3.',
-        'Kharzul Caldera: 3 → 2 many.',
+        'Tallys Hrozivý: 5/5 → 4/5.',
+        'Hrobový šeptač: 1/1 → 1/2. Kryptolez: 2/2 → 2/3. Otevřený hrob: 2 → 1 many.',
+        'Výheň Dominia: 3 → 2 many. Slévárna Ozubené věže: trvá 4 tahy (dříve 3). Rytíř ocelové hlídky: 1/3 → 2/3.',
+        'Kaldera Kharzul: 3 → 2 many.',
       ],
       [
         'Obchod: k 10 balíčkům teď dostaneš 2 balíčky navíc, takže velké balení je vždy nejlevnější na kus.',
