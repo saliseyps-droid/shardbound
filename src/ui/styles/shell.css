@@ -205,7 +205,8 @@
   object-fit: cover; object-position: 50% 30%;
   clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
 }
-.warden-portrait-fill {
+/* Doubled class: containers that make their children position: relative must not move the fill. */
+.warden-portrait-fill.warden-portrait-fill {
   position: absolute; z-index: 1;
   inset: var(--wp-inset, 3px);
   width: calc(100% - 2 * var(--wp-inset, 3px)); height: calc(100% - 2 * var(--wp-inset, 3px));

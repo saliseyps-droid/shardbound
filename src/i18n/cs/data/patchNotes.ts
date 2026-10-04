@@ -4,7 +4,10 @@ const notes: PatchNotesOverlay = {
   '0.24.1': {
     title: 'Náhled karet v balíčku',
     summary: 'Najetím na kartu v seznamu balíčku ji uvidíš zvětšenou.',
-    sections: [['Editor balíčku: najeď myší na kartu v seznamu balíčku (pravý panel) a vedle se ukáže celá karta.']],
+    sections: [
+      ['Editor balíčku: najeď myší na kartu v seznamu balíčku (pravý panel) a vedle se ukáže celá karta.'],
+      ['Kampaň: portréty Strážců jsou zase vycentrované v rámečku a nevyčnívají vpravo dole.'],
+    ],
   },
   '0.24.0': {
     title: 'Žebříčky, přátelé a úspěchy',

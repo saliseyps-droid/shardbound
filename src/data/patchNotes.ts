@@ -23,7 +23,10 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-04',
     title: 'Deck list previews',
     summary: 'Hovering a card in the deck list shows it large.',
-    sections: [{ kind: 'improved', items: ['Deck editor: hover a card in your deck list (right panel) to see the full card next to it.'] }],
+    sections: [
+      { kind: 'improved', items: ['Deck editor: hover a card in your deck list (right panel) to see the full card next to it.'] },
+      { kind: 'fixed', items: ['Campaign: Warden portraits sit centred in their frames again instead of sticking out at the bottom right.'] },
+    ],
     commits: [],
   },
   {
