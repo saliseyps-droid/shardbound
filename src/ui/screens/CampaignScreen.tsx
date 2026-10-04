@@ -129,7 +129,7 @@ export default function CampaignScreen() {
                           aria-pressed={selectedId === e.id}
                           aria-label={`${e.name}${e.boss ? t(', boss') : ''}, ${state === 'done' ? t('cleared') : state === 'open' ? t('available') : t('locked')}`}
                         >
-                          {state === 'locked' ? <Glyph name="shield" size={e.boss ? 30 : 24} /> : <WardenPortrait faction={e.faction} fill />}
+                          {state === 'locked' ? <Glyph name="shield" size={e.boss ? 30 : 24} /> : <WardenPortrait faction={e.faction} portrait={e.portrait} fill />}
                           {done && <span className="enc-check" aria-hidden>✓</span>}
                         </button>
                         <span className="enc-name">{e.name}</span>
@@ -147,7 +147,7 @@ export default function CampaignScreen() {
           <aside className={`panel enc-detail ${enc.boss ? 'boss' : ''}`} style={factionStyle(enc.faction)} aria-live="polite">
             <div className="enc-detail-head">
               <span className="enc-portrait" aria-hidden>
-                <WardenPortrait faction={enc.faction} fill />
+                <WardenPortrait faction={enc.faction} portrait={enc.portrait} fill />
               </span>
               <div>
                 <span className="faint">{sel?.chapter.name}</span>

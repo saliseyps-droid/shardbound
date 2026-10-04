@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.20.1',
+    date: '2026-10-04',
+    title: 'Faces of the campaign',
+    summary: 'Every campaign Warden now has their own portrait.',
+    sections: [
+      {
+        kind: 'improved',
+        items: ['Campaign Wardens use the portraits from the Shop that fit them (an orc deserter, a goblin tinker, a sapphire dragon...), on the map and in the match.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.20.0',
     date: '2026-10-04',
     title: 'The Last Shard',

@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.20.1': {
+    title: 'Tváře kampaně',
+    summary: 'Každý Strážce v kampani má teď vlastní portrét.',
+    sections: [['Strážci v kampani používají portréty z Obchodu, které k nim sedí (orčí dezertér, goblinní kutil, safírový drak…), na mapě i v zápase.']],
+  },
   '0.20.0': {
     title: 'Poslední Střep',
     summary: 'Čtyři nové kapitoly kampaně dovádějí příběh do konce, s devíti novými bossy.',

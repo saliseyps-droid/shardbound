@@ -124,7 +124,7 @@ export default function HomeScreen() {
           {next ? (
             <div className="next-encounter" style={{ '--f1': FACTIONS[next.encounter.faction].colors.primary } as React.CSSProperties}>
               <span className="enc-sigil" aria-hidden>
-                <WardenPortrait faction={next.encounter.faction} fill inset={2} />
+                <WardenPortrait faction={next.encounter.faction} portrait={next.encounter.portrait} fill inset={2} />
               </span>
               <div>
                 <span className="faint">{CAMPAIGN[next.chapterIndex].name}</span>

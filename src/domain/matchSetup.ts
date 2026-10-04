@@ -32,7 +32,7 @@ export function opponentSide(opponent: OpponentDef, random: () => number = Math.
     deck: buildOpponentDeck(opponent),
     talents: s?.talents ?? aiBuild(opponent.faction, opponent.personality),
     cardBack: randomCardBack(random),
-    portrait: randomPortrait(opponent.faction, random),
+    portrait: opponent.portrait !== undefined ? opponent.portrait : randomPortrait(opponent.faction, random),
     heroHealth: s?.heroHealth,
     bonusStartingEnergy: s?.bonusStartingEnergy,
     startingBoard: s?.startingBoard,
