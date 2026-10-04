@@ -1,5 +1,8 @@
 /** Czech UI text: app header, shared widgets, home, play, campaign, profile, settings, lore, boot, quests, patch notes, match history. */
 const d: Record<string, string> = {
+  Chapters: 'Kapitoly',
+  'Chapter {n}': 'Kapitola {n}',
+  'Chapters {from}–{to}': 'Kapitoly {from}–{to}',
   // App header
   'Close menu': 'Zavřít nabídku',
   'Open menu': 'Otevřít nabídku',

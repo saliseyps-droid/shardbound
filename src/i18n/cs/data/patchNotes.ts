@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.19.1': {
+    title: 'Férové výpadky',
+    summary: 'Přerušené spojení mezi dvěma online hráči je teď remíza, kampaň je rozdělená do záložek a balíček Legions of Shadow je čistě vyříznutý.',
+    sections: [
+      [
+        'Online: když se spojení mezi vámi přeruší, ale oba hráči jsou pořád online, zápas končí remízou. Pokud soupeř opravdu odešel, pořád vyhráváš; pokud vypadlo tvoje připojení, je to pořád prohra.',
+        'Kampaň: najednou se zobrazují nejvýš tři kapitoly, další jsou na vlastní záložce.',
+      ],
+      ['Obrázek balíčku Legions of Shadow už nemá kolem okrajů tmavý pruh a stín.'],
+    ],
+  },
   '0.19.0': {
     title: 'Legions of Shadow',
     summary: 'Nejnovější set se teď jmenuje Legions of Shadow, kampaň má dvě nové kapitoly a přišla velká várka oprav.',

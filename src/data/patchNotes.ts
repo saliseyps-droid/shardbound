@@ -19,6 +19,26 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.19.1',
+    date: '2026-10-04',
+    title: 'Fair disconnects',
+    summary: 'A broken connection between two online players is now a draw, the campaign is split into tabs, and the Legions of Shadow pack is cut cleanly.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Online: when the connection between you breaks but both players are still online, the match ends in a draw. If your opponent really left, you still win; if your own connection dropped, it is still a loss.',
+          'Campaign: at most three chapters are shown at once; later chapters are on their own tab.',
+        ],
+      },
+      {
+        kind: 'fixed',
+        items: ['The Legions of Shadow pack art no longer has a dark band and shadow around its edges.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.19.0',
     date: '2026-10-04',
     title: 'Legions of Shadow',

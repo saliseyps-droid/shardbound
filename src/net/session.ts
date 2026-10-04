@@ -101,6 +101,50 @@ class NetSession {
     if (this.conn?.open) this.conn.send(msg);
   }
 
+  /** Peer id of the other player (kept after the link drops, to ask the server about them). */
+  private remotePeerId: string | null = null;
+  private probing = false;
+
+  /**
+   * After the link dropped: is the opponent's game still registered on the signalling server?
+   * False when the server says the peer is gone (closed tab, lost connection); true when it
+   * still knows them (or doesn't answer), i.e. only the link between the two players broke.
+   */
+  async remotePeerPresent(timeoutMs = 6000): Promise<boolean> {
+    const peer = this.peer;
+    const id = this.remotePeerId;
+    if (!peer || peer.destroyed || !id) return true;
+    this.probing = true;
+    try {
+      return await new Promise<boolean>((resolve) => {
+        let probe: DataConnection | null = null;
+        const done = (present: boolean) => {
+          clearTimeout(timer);
+          peer.off('error', onError);
+          try {
+            probe?.close();
+          } catch {
+            /* ignore */
+          }
+          resolve(present);
+        };
+        const onError = (e: Error & { type?: string }) => {
+          if (e.type === 'peer-unavailable') done(false);
+        };
+        const timer = setTimeout(() => done(true), timeoutMs);
+        peer.on('error', onError);
+        try {
+          probe = peer.connect(id, { reliable: true, metadata: { probe: true } });
+          probe.on('open', () => done(true));
+        } catch {
+          done(true);
+        }
+      });
+    } finally {
+      this.probing = false;
+    }
+  }
+
   private async createPeer(id?: string): Promise<Peer> {
     const { Peer } = await import('peerjs');
     return new Promise((resolve, reject) => {
@@ -120,7 +164,7 @@ class NetSession {
               : e.type === 'network' || e.type === 'server-error'
                 ? 'Could not reach the matchmaking service. Check your internet connection.'
                 : e.message;
-        if (this.status === 'connected') return; // late signalling errors don't matter once connected
+        if (this.status === 'connected' || this.probing) return; // late signalling errors don't matter once connected
         this.setStatus('error', message);
         reject(new Error(message));
       });
@@ -129,6 +173,7 @@ class NetSession {
 
   private attach(conn: DataConnection) {
     this.conn = conn;
+    this.remotePeerId = conn.peer;
     this.lastSeen = Date.now();
     conn.on('data', (raw) => {
       this.lastSeen = Date.now();
@@ -204,6 +249,10 @@ class NetSession {
     this.peer = peer!;
     this.setStatus('waiting');
     this.peer.on('connection', (conn) => {
+      if ((conn.metadata as { probe?: boolean } | undefined)?.probe) {
+        setTimeout(() => conn.close(), 500);
+        return;
+      }
       if (this.conn) {
         conn.on('open', () => {
           conn.send({ t: 'reject', reason: 'This match already has two players.' } satisfies NetMessage);
@@ -299,6 +348,7 @@ class NetSession {
     setTimeout(() => peer?.destroy(), 300);
     this.peer = null;
     this.conn = null;
+    this.remotePeerId = null;
     this.remoteSide = null;
     this.remoteMeta = {};
     if (this.status !== 'idle') this.setStatus('idle');

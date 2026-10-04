@@ -132,7 +132,8 @@ export interface GameState {
   players: [PlayerState, PlayerState];
   nextUid: number;
   winner: PlayerId | 'DRAW' | null;
-  endReason: 'HERO_DEFEATED' | 'CONCEDE' | 'TURN_LIMIT' | null;
+  /** DISCONNECT: online link lost while both players were still online (a draw, set by the client). */
+  endReason: 'HERO_DEFEATED' | 'CONCEDE' | 'TURN_LIMIT' | 'DISCONNECT' | null;
   /** Monotonic event counter. */
   eventSeq: number;
   /** Rolling event log (bounded) for debugging and UI. */

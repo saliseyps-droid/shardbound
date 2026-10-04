@@ -24,6 +24,9 @@ import { netSession, type NetMessage } from '@/net/session';
 import { guestEvents, guestView, mirrorAction } from '@/net/view';
 import { TUTORIAL_STEPS, tutorialOpponentAction, tutorialSetup } from '@/ui/match/tutorial';
 
+/** How long to keep asking the signalling server about a vanished opponent (it drops dead peers after ~60 s). */
+export const DISCONNECT_TIMING = { checkMs: 75_000, retryMs: 8_000 };
+
 export const HUMAN: PlayerId = 0;
 export const AI: PlayerId = 1;
 
@@ -364,15 +367,42 @@ export const useMatch = create<MatchStore>((set, get) => {
     if (netSession.status !== 'closed' || !s.config?.online || !s.game || s.phase === 'ended') return;
     const gen = matchGen;
     netChain = netChain.then(async () => {
-      // Both sides see the link drop. Only a player whose own connection still works wins;
-      // a player who went offline (e.g. turned Wi-Fi off while losing) gets the loss.
+      // Both sides see the link drop. A player who went offline (e.g. turned Wi-Fi off while
+      // losing) gets the loss. Otherwise ask the signalling server whether the opponent is still
+      // there: gone means they left (win); still there after the server would have dropped a dead
+      // peer means only the link between the two broke, so the match is a draw for both.
       const localOk = await netSession.localNetworkOk();
       if (gen !== matchGen) return;
+      let outcome: 'WIN' | 'LOSS' | 'DRAW' = localOk ? 'DRAW' : 'LOSS';
+      if (localOk) {
+        toast(t('Connection lost — checking whether your opponent is still there…'), 'info');
+        const deadline = Date.now() + DISCONNECT_TIMING.checkMs;
+        for (;;) {
+          if (!(await netSession.remotePeerPresent())) {
+            outcome = 'WIN';
+            break;
+          }
+          if (gen !== matchGen || Date.now() >= deadline) break;
+          await new Promise((r) => setTimeout(r, DISCONNECT_TIMING.retryMs));
+          if (gen !== matchGen) return;
+        }
+        if (gen !== matchGen) return;
+      }
       await waitIdle();
       const game = get().game;
       if (!game || game.phase === 'ENDED') return;
-      toast(localOk ? t('Your opponent disconnected — you win.') : t('You lost your connection, so the match counts as a loss.'), 'info');
-      const res = applyAction(game, { type: 'CONCEDE', player: localOk ? AI : HUMAN });
+      if (outcome === 'DRAW') {
+        toast(t('The connection between you broke, but both of you are online — the match is a draw.'), 'info');
+        const state: GameState = structuredClone(game);
+        state.phase = 'ENDED';
+        state.winner = 'DRAW';
+        state.endReason = 'DISCONNECT';
+        state.eventSeq += 1;
+        await present(game, { state, events: [{ seq: state.eventSeq, type: 'GAME_ENDED', winner: 'DRAW', reason: 'DISCONNECT' }] });
+        return;
+      }
+      toast(outcome === 'WIN' ? t('Your opponent disconnected — you win.') : t('You lost your connection, so the match counts as a loss.'), 'info');
+      const res = applyAction(game, { type: 'CONCEDE', player: outcome === 'WIN' ? AI : HUMAN });
       if (!res.error) await present(game, res);
     });
   });

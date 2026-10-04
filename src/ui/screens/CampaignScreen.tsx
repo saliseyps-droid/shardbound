@@ -15,6 +15,19 @@ import { audio } from '@/audio/audioService';
 import '@/ui/styles/meta.css';
 import { t } from '@/i18n';
 
+/** At most this many chapters are shown at once; later ones go on further tabs. */
+const CHAPTERS_PER_TAB = 3;
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+const TABS = Array.from({ length: Math.ceil(CAMPAIGN.length / CHAPTERS_PER_TAB) }, (_, i) => {
+  const first = i * CHAPTERS_PER_TAB;
+  const last = Math.min(CAMPAIGN.length, first + CHAPTERS_PER_TAB) - 1;
+  return { first, last, chapters: CAMPAIGN.slice(first, last + 1) };
+});
+const tabOf = (encounterId: string | null) => {
+  const ci = CAMPAIGN.findIndex((c) => c.encounters.some((e) => e.id === encounterId));
+  return ci < 0 ? 0 : Math.floor(ci / CHAPTERS_PER_TAB);
+};
+
 function RewardList({ r }: { r: OpponentReward }) {
   return (
     <span className="reward-bits">
@@ -36,6 +49,7 @@ export default function CampaignScreen() {
   const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState<string | null>(() => (save ? nextEncounter(save)?.encounter.id ?? CAMPAIGN[0].encounters[0].id : null));
   const [deckId, setDeckId] = useState<string | null>(() => (save ? firstValidDeck(save, save.profile.selectedDeckId) : null));
+  const [tab, setTab] = useState(() => tabOf(selectedId));
   if (!save) return null;
   const prog = campaignProgress(save);
   const sel = selectedId ? findEncounter(selectedId) : undefined;
@@ -65,7 +79,29 @@ export default function CampaignScreen() {
       />
       <div className="campaign-layout">
         <div className="chapters panel">
-          {CAMPAIGN.map((ch, ci) => {
+          {TABS.length > 1 && (
+            <div className="camp-tabs" role="tablist" aria-label={t('Chapters')}>
+              {TABS.map((tb, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === i}
+                  className={`camp-tab ${tab === i ? 'is-active' : ''}`}
+                  onClick={() => {
+                    audio.play('click');
+                    setTab(i);
+                    // Show the first open (or first) rival of the newly picked chapters.
+                    const encs = tb.chapters.flatMap((c) => c.encounters);
+                    setSelectedId((encs.find((e) => isUnlocked(save, e.id) && !isCleared(save, e.id)) ?? encs[0]).id);
+                  }}
+                >
+                  {tb.first === tb.last ? t('Chapter {n}', { n: ROMAN[tb.first] }) : t('Chapters {from}–{to}', { from: ROMAN[tb.first], to: ROMAN[tb.last] })}
+                </button>
+              ))}
+            </div>
+          )}
+          {TABS[tab].chapters.map((ch, ci) => {
             const chCleared = ch.encounters.filter((e) => isCleared(save, e.id)).length;
             const chLocked = !isUnlocked(save, ch.encounters[0].id);
             return (
@@ -101,7 +137,7 @@ export default function CampaignScreen() {
                     );
                   })}
                 </ol>
-                {ci < CAMPAIGN.length - 1 && <span className="chapter-sep" aria-hidden />}
+                {ci < TABS[tab].chapters.length - 1 && <span className="chapter-sep" aria-hidden />}
               </section>
             );
           })}
