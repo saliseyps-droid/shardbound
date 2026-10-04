@@ -150,4 +150,14 @@ export const VERDANT_CARDS: CardDefinition[] = [
     abilities: [{ trigger: 'TURN_END', effects: [{ type: 'HEAL', amount: 3, target: 'ALL_ALLIES' }] }],
     flavorText: 'Drowned once, she rose from the spring and never needed to breathe again.',
   },
+  {
+    ...base, id: 'ver_bubblemaker_qinny', name: 'Bubblemaker Qinny', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'DEEP',
+    manaCost: 6, attack: 4, health: 5, tags: ['Druid'], archetypes: ['Wellspring'],
+    abilities: [
+      { trigger: 'ON_DEPLOY', effects: [{ type: 'GRANT_KEYWORD', keyword: 'BARRIER', target: 'OTHER_ALLY_UNITS' }] },
+      { trigger: 'TURN_END', effects: [{ type: 'GRANT_KEYWORD', keyword: 'BARRIER', target: 'RANDOM_OTHER_ALLY_UNIT' }] },
+    ],
+    description: 'On Deploy: Give your other units Barrier. At the end of your turn, give another random friendly unit Barrier.',
+    flavorText: 'Every bubble holds a breath of the spring. Every breath turns a blade.',
+  },
 ];

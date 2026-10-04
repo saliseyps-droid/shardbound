@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.22.0': {
+    title: 'Bublinář Qinny',
+    summary: 'Nová legendární karta Trnoboru, která obalí tvou armádu ochrannými bublinami.',
+    sections: [['Bublinář Qinny (Trnobor, legendární, Fantasy Realms): 6 many, 4/5. Při nasazení: dej svým ostatním jednotkám Bariéru. Na konci tvého tahu dej jiné náhodné spřátelené jednotce Bariéru.']],
+  },
   '0.21.2': {
     title: 'Přehlednější Hrát',
     summary: 'Obrazovka Hrát teď ukazuje všechny režimy na první pohled a pod nimi tréninkové zápasy.',

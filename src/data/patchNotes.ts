@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.22.0',
+    date: '2026-10-04',
+    title: 'Bubblemaker Qinny',
+    summary: 'A new Thornweald Circle Legendary who wraps your army in protective bubbles.',
+    sections: [
+      {
+        kind: 'new',
+        items: ['Bubblemaker Qinny (Thornweald Circle, Legendary, Fantasy Realms): 6 mana 4/5. On Deploy: give your other units Barrier. At the end of your turn, give another random friendly unit Barrier.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.21.2',
     date: '2026-10-04',
     title: 'A clearer Play screen',

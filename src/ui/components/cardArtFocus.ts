@@ -231,6 +231,7 @@ export const CARD_ART_FOCUS: Record<string, number> = {
   ver_wellspring_oracle: 40,
   ver_world_root_hollow: 40,
   ver_ysolde: 40,
+  ver_bubblemaker_qinny: 30,
   vod_blood_pact: 50,
   vod_bloodcape_zealot: 20,
   vod_choir_novice: 30,
