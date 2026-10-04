@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.22.2',
+    date: '2026-10-04',
+    title: 'Elinda',
+    summary: 'A new Thornweald Circle Legendary who turns healing into strength.',
+    sections: [
+      {
+        kind: 'new',
+        items: ['Elinda (Thornweald Circle, Legendary, Fantasy Realms): 5 mana 3/5. On Deploy: restore 3 Health to all friendly characters. Whenever a friendly character is healed, give a random friendly unit +1 Attack.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.22.1',
     date: '2026-10-04',
     title: 'Qinny joins the Conclave',

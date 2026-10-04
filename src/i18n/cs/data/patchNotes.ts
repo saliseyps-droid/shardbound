@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.22.2': {
+    title: 'Elinda',
+    summary: 'Nová legendární karta Kruhu Trnoboru, která mění léčení v sílu.',
+    sections: [['Elinda (Kruh Trnoboru, legendární, Fantasy Realms): 5 many, 3/5. Při nasazení: obnov všem spřáteleným postavám 3 životy. Kdykoli se spřátelená postava vyléčí, dej náhodné spřátelené jednotce +1 k útoku.']],
+  },
   '0.22.1': {
     title: 'Qinny přechází ke Konkláve',
     summary: 'Bublinář Qinny přechází ke Konkláve Lumenu a přichází o bublinu na konci tahu.',

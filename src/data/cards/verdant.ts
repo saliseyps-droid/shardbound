@@ -150,4 +150,14 @@ export const VERDANT_CARDS: CardDefinition[] = [
     abilities: [{ trigger: 'TURN_END', effects: [{ type: 'HEAL', amount: 3, target: 'ALL_ALLIES' }] }],
     flavorText: 'Drowned once, she rose from the spring and never needed to breathe again.',
   },
+  {
+    ...base, id: 'ver_elinda', name: 'Elinda', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'DEEP',
+    manaCost: 5, attack: 3, health: 5, tags: ['Druid'], archetypes: ['Wellspring'],
+    abilities: [
+      { trigger: 'ON_DEPLOY', effects: [{ type: 'HEAL', amount: 3, target: 'ALL_ALLIES' }] },
+      { trigger: 'ALLY_HEALED', effects: [{ type: 'BUFF', attack: 1, target: 'RANDOM_ALLY_UNIT' }] },
+    ],
+    description: 'On Deploy: Restore 3 Health to all friendly characters. Whenever a friendly character is healed, give a random friendly unit +1 Attack.',
+    flavorText: 'She walks where the grove is wounded, and the grove walks with her.',
+  },
 ];

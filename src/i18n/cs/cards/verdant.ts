@@ -23,6 +23,7 @@ const cards: CardsOverlay = {
   ver_bloomstorm: { name: 'Květobouře', description: 'Vyvolej 2 Semenáčky 1/2. Dej svým jednotkám +2/+2.', flavorText: 'Celé období růstu v jediném nádechu.' },
   ver_wellspring_oracle: { name: 'Věštkyně z pramene', description: 'Kdykoli je spřátelená jednotka vyléčena, dej jí +2 k útoku.', flavorText: 'Pije z pramene pod Světokořenem a vidí zítřek.' },
   ver_sylvara: { name: 'Sylvara, Hlas kořene', description: 'Stráž, Regenerace. Při nasazení: Dej svým ostatním jednotkám +2/+2.', flavorText: 'Když zpívá, Trnobor zpívá s ní — a čekal na to už dlouho.' },
+  ver_elinda: { name: 'Elinda', description: 'Při nasazení: Obnov všem spřáteleným postavám 3 životy. Kdykoli se spřátelená postava vyléčí, dej náhodné spřátelené jednotce +1 k útoku.', flavorText: 'Chodí tam, kde je háj zraněný, a háj chodí s ní.' },
   ver_ysolde: { name: 'Ysolde, Nekonečné jaro', description: 'Vysátí. Na konci tvého tahu obnov všem spřáteleným postavám 3 životy.', flavorText: 'Jednou se utopila, vystoupila z pramene a už nikdy nepotřebovala dýchat.' },
 };
 
