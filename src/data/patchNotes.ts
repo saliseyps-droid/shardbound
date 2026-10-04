@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.21.2',
+    date: '2026-10-04',
+    title: 'A clearer Play screen',
+    summary: 'The Play screen now shows every mode at a glance, with practice matches below.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Play is now a hub: Campaign, Ranked vs AI, Arena and the Tutorial against the AI; Ranked, Play a friend and Tournament against players.',
+          'Each mode shows where you stand: campaign progress, your rank, an Arena run or the free entry of the day.',
+          'Practice matches keep their opponent, difficulty and deck choice below the modes. On phones the modes come first, two per row.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.21.1',
     date: '2026-10-04',
     title: 'A better tutorial',

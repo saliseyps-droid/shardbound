@@ -1,5 +1,17 @@
 /** Czech UI text: app header, shared widgets, home, play, campaign, profile, settings, lore, boot, quests, patch notes, match history. */
 const d: Record<string, string> = {
+  'Choose how you want to play.': 'Vyber si, jak chceš hrát.',
+  'Against the AI': 'Proti AI',
+  'Against players': 'Proti hráčům',
+  'Follow the story across nine chapters of rivals and bosses.': 'Projdi příběhem v devíti kapitolách plných soupeřů a bossů.',
+  '{n} of {total} cleared': 'Poraženo {n} z {total}',
+  'Draft a deck from random cards and win as many of 4 matches as you can.': 'Sestav balíček z náhodných karet a vyhraj co nejvíc ze 4 zápasů.',
+  'Run in progress: {w} of {max} wins': 'Rozehraný běh: {w} z {max} výher',
+  'Free entry today': 'Dnes vstup zdarma',
+  'Entry: {n} Gold': 'Vstup: {n} zlata',
+  'Start here': 'Začni tady',
+  Completed: 'Dokončeno',
+  '4 to 32 players': '4 až 32 hráčů',
   Chapters: 'Kapitoly',
   'Chapter {n}': 'Kapitola {n}',
   'Chapters {from}–{to}': 'Kapitoly {from}–{to}',

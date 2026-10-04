@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.21.2': {
+    title: 'Přehlednější Hrát',
+    summary: 'Obrazovka Hrát teď ukazuje všechny režimy na první pohled a pod nimi tréninkové zápasy.',
+    sections: [
+      [
+        'Hrát je teď rozcestník: proti AI Kampaň, Ranked proti AI, Aréna a Výuka; proti hráčům Ranked, Hra s přítelem a Turnaj.',
+        'Každý režim ukazuje, jak na tom jsi: postup kampaně, tvůj rank, rozehranou arénu nebo dnešní vstup zdarma.',
+        'Tréninkové zápasy s výběrem soupeře, obtížnosti a balíčku zůstávají pod režimy. Na mobilu jsou režimy první, dva vedle sebe.',
+      ],
+    ],
+  },
   '0.21.1': {
     title: 'Lepší výuka',
     summary: 'Výuka ukazuje, co udělat, na mobilu mluví o ťukání, učí prohlížet karty a na konci poradí, kam dál.',
