@@ -23,6 +23,7 @@ const cards: CardsOverlay = {
   emb_ashborn_phoenix: { name: 'Fénix zrozený z popela', description: 'Spěch. Poslední dech: Zamíchej Fénixe zrozeného z popela do svého balíčku.', flavorText: 'Zabiješ ho jednou, hanba tobě. Zabiješ ho dvakrát…' },
   emb_legion_warbringer: { name: 'Zvěstovatel války Legie', description: 'Spěch. Při nasazení: Dej svým ostatním jednotkám v tomto tahu +2/+0.', flavorText: '„Dnes budeme hořet jasněji než slunce!“' },
   emb_vulkara: { name: 'Vulkara, Matka draků', description: 'Spěch. Při nasazení: Způsob 1 poškození všem nepřátelům. Vyvolej 2 Popelavé dráčky 2/2.', flavorText: 'Každý drak v kaldeře poslouchá jediný hlas.' },
+  emb_qvido: { name: 'Qvido', description: 'Při nasazení: Způsob 1 poškození všem nepřátelům a všem nepřátelským jednotkám uděl Hoření 2.', flavorText: 'Nosí kalderu v misce a vylévá ji kraj po kraji.' },
   emb_ignivar: { name: 'Ignivar, Palič koruny', description: 'Posílení 2. Poté, co sešleš kouzlo, způsob 2 poškození nepřátelskému Strážci.', flavorText: 'Jako první se dotkl padajícího Střepu. Od té doby hoří.' },
 };
 

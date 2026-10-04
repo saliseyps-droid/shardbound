@@ -151,4 +151,11 @@ export const EMBER_CARDS: CardDefinition[] = [
     abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ENEMY_HERO' }] }],
     flavorText: 'He was the first to touch a falling Shard. He has been on fire ever since.',
   },
+  {
+    ...base, id: 'emb_qvido', name: 'Qvido', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'DEEP',
+    manaCost: 5, attack: 3, health: 4, tags: ['Mage'], archetypes: ['Pyromancy'],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ALL_ENEMIES' }, { type: 'APPLY_STATUS', status: 'BURN', amount: 2, target: 'ALL_ENEMY_UNITS' }] }],
+    description: 'On Deploy: Deal 1 damage to all enemies and apply Burn 2 to all enemy units.',
+    flavorText: 'He carries the caldera in a bowl, and pours it out one land at a time.',
+  },
 ];

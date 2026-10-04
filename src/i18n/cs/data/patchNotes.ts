@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.22.5': {
+    title: 'Qvido',
+    summary: 'Nová legendární karta Popelavé legie, která zapálí celé nepřátelské bojiště.',
+    sections: [['Qvido (Popelavá legie, legendární, Fantasy Realms): 5 many, 3/4. Při nasazení: způsob 1 poškození všem nepřátelům a všem nepřátelským jednotkám uděl Hoření 2.']],
+  },
   '0.22.4': {
     title: 'Ostřejší obrázky',
     summary: 'Elinda a Skolky mají ostřejší obrázky karet.',

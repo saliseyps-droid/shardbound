@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.22.5',
+    date: '2026-10-04',
+    title: 'Qvido',
+    summary: 'A new Cinder Legion Legendary who sets the whole enemy board alight.',
+    sections: [
+      {
+        kind: 'new',
+        items: ['Qvido (Cinder Legion, Legendary, Fantasy Realms): 5 mana 3/4. On Deploy: deal 1 damage to all enemies and apply Burn 2 to all enemy units.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.22.4',
     date: '2026-10-04',
     title: 'Sharper art',

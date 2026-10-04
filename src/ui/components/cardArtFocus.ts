@@ -52,6 +52,7 @@ export const CARD_ART_FOCUS: Record<string, number> = {
   emb_gildflame_champion: 20,
   emb_hellshield_marauder: 20,
   emb_ignivar: 28,
+  emb_qvido: 25,
   emb_kharzul_caldera: 50,
   emb_kindle: 50,
   emb_kindling_imp: 30,
