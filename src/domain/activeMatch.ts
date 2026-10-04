@@ -13,7 +13,7 @@ import type { GameSave, MatchRecord } from './save';
  */
 export interface ActiveMatch {
   id: string;
-  mode: Extract<MatchRecord['mode'], 'ARENA' | 'RANKED' | 'TOURNAMENT' | 'PVP'>;
+  mode: Extract<MatchRecord['mode'], 'ARENA' | 'RANKED' | 'TOURNAMENT' | 'PVP' | 'AI_RANKED'>;
   startedAt: number;
   opponentId: string;
   opponentName: string;
@@ -25,7 +25,7 @@ export interface ActiveMatch {
   opponentRating?: number;
 }
 
-export const STAKE_MODES: readonly ActiveMatch['mode'][] = ['ARENA', 'RANKED', 'TOURNAMENT', 'PVP'];
+export const STAKE_MODES: readonly ActiveMatch['mode'][] = ['ARENA', 'RANKED', 'TOURNAMENT', 'PVP', 'AI_RANKED'];
 
 const NO_STATS = { damageDealt: 0, heroDamageDealt: 0, cardsPlayed: 0, unitsPlayed: 0, spellsPlayed: 0, unitsDestroyed: 0, healingDone: 0, cardsDrawn: 0 };
 

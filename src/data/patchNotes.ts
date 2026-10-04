@@ -19,6 +19,25 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.21.0',
+    date: '2026-10-04',
+    title: 'Ranked vs AI',
+    summary: 'A new ranked ladder against the AI: climb from Bronze to Crown, and the AI gets stronger with every rank.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Ranked vs AI (Play screen): Bronze, Silver, Gold, Platinum and Diamond, three divisions each, then Crown.',
+          'Win a star, lose a star; three stars rank you up, and from the third win in a row each win gives a bonus star. You never fall out of Silver, Gold or Diamond once you reach them.',
+          'The AI gets sharper with every division and brings rarer cards with every tier; from Diamond it has extra Health, and at Crown extra Energy too.',
+          'Wins pay more Gold the higher you are, and reaching each tier for the first time gives a one-time reward with Gold, Essence and packs.',
+          'Leaving or reloading during a ranked AI match counts as a loss.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.20.1',
     date: '2026-10-04',
     title: 'Faces of the campaign',

@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 import { chooseAction, chooseMulligan } from './search';
-import { makeAiConfig, type AiPersonality } from './config';
+import { makeAiConfig, type AiPersonality, type AiTuning } from './config';
 import type { Difficulty } from '@/config/progression';
 import type { GameState, PlayerId } from '@/engine/types';
 
@@ -13,12 +13,13 @@ export interface AiRequest {
   personality: AiPersonality;
   seed: number;
   actionsThisTurn: number;
+  tuning?: AiTuning;
 }
 
 self.onmessage = (e: MessageEvent<AiRequest>) => {
   const req = e.data;
   try {
-    const cfg = makeAiConfig(req.difficulty, req.personality);
+    const cfg = makeAiConfig(req.difficulty, req.personality, req.tuning);
     if (req.kind === 'mulligan') {
       (self as unknown as Worker).postMessage({ id: req.id, replace: chooseMulligan(req.state, req.me, cfg) });
     } else {

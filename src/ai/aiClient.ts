@@ -1,7 +1,7 @@
 import type { Difficulty } from '@/config/progression';
 import type { GameAction, GameState, PlayerId } from '@/engine/types';
 import { chooseAction, chooseMulligan } from './search';
-import { makeAiConfig, type AiPersonality } from './config';
+import { makeAiConfig, type AiPersonality, type AiTuning } from './config';
 import type { AiRequest } from './worker';
 // Inlined as a blob so the worker also works from a single offline HTML file (file://).
 import AiWorker from './worker?worker&inline';
@@ -61,17 +61,17 @@ class AiClient {
     });
   }
 
-  async chooseAction(state: GameState, me: PlayerId, difficulty: Difficulty, personality: AiPersonality, seed: number, actionsThisTurn: number): Promise<GameAction> {
-    const res = await this.request({ kind: 'action', state, me, difficulty, personality, seed, actionsThisTurn });
+  async chooseAction(state: GameState, me: PlayerId, difficulty: Difficulty, personality: AiPersonality, seed: number, actionsThisTurn: number, tuning?: AiTuning): Promise<GameAction> {
+    const res = await this.request({ kind: 'action', state, me, difficulty, personality, seed, actionsThisTurn, tuning });
     if (res.action) return res.action;
     // Inline fallback uses the exact same rules and search.
-    return chooseAction(state, me, makeAiConfig(difficulty, personality), seed, actionsThisTurn).action;
+    return chooseAction(state, me, makeAiConfig(difficulty, personality, tuning), seed, actionsThisTurn).action;
   }
 
-  async chooseMulligan(state: GameState, me: PlayerId, difficulty: Difficulty, personality: AiPersonality): Promise<number[]> {
-    const res = await this.request({ kind: 'mulligan', state, me, difficulty, personality, seed: 0, actionsThisTurn: 0 });
+  async chooseMulligan(state: GameState, me: PlayerId, difficulty: Difficulty, personality: AiPersonality, tuning?: AiTuning): Promise<number[]> {
+    const res = await this.request({ kind: 'mulligan', state, me, difficulty, personality, seed: 0, actionsThisTurn: 0, tuning });
     if (res.replace) return res.replace;
-    return chooseMulligan(state, me, makeAiConfig(difficulty, personality));
+    return chooseMulligan(state, me, makeAiConfig(difficulty, personality, tuning));
   }
 }
 

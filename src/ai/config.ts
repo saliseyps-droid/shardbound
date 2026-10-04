@@ -45,6 +45,9 @@ export interface AiConfig {
   maxActionsPerTurn: number;
 }
 
+/** Per-match overrides of a difficulty preset (Ranked vs AI sharpens the AI per division). */
+export type AiTuning = Partial<Pick<AiConfig, 'blunderChance' | 'noise' | 'passChance'>>;
+
 export const BASE_WEIGHTS: EvalWeights = {
   myHealth: 1.0,
   enemyHealth: 1.1,
@@ -76,8 +79,12 @@ export const DIFFICULTY_CONFIGS: Record<Difficulty, Omit<AiConfig, 'weights'>> =
   EXPERT: { difficulty: 'EXPERT', beamWidth: 4, depth: 4, branching: 9, blunderChance: 0, noise: 0, passChance: 0, simulateResponse: true, checkLethal: true, maxActionsPerTurn: 40 },
 };
 
-export function makeAiConfig(difficulty: Difficulty, personality: AiPersonality = 'BALANCED'): AiConfig {
-  const base = DIFFICULTY_CONFIGS[difficulty];
+export function makeAiConfig(difficulty: Difficulty, personality: AiPersonality = 'BALANCED', tuning?: AiTuning): AiConfig {
+  const base = { ...DIFFICULTY_CONFIGS[difficulty] };
+  for (const k of ['blunderChance', 'noise', 'passChance'] as const) {
+    const v = tuning?.[k];
+    if (typeof v === 'number' && Number.isFinite(v)) base[k] = Math.max(0, Math.min(1, v));
+  }
   const weights: EvalWeights = { ...BASE_WEIGHTS, ...PERSONALITY_MODS[personality] };
   if (difficulty === 'EASY') {
     // Easy bots undervalue threats and overvalue going face.

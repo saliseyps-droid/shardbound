@@ -1,0 +1,78 @@
+/* ---------------- Ranked vs AI ---------------- */
+.air-layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr); gap: var(--space-5); align-items: start; }
+@media (max-width: 1000px) { .air-layout { grid-template-columns: minmax(0, 1fr); } }
+
+.air-kicker { font: 700 var(--t-xs) var(--font-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--parchment-faint); }
+
+.air-rank { display: grid; gap: var(--space-4); position: relative; overflow: hidden; }
+.air-rank::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 60% 70% at 12% 20%, color-mix(in srgb, var(--tier) 22%, transparent), transparent 70%);
+}
+.air-rank > * { position: relative; }
+.air-rank-head { display: flex; align-items: center; gap: var(--space-5); }
+.air-rank-info { display: grid; gap: var(--space-1); min-width: 0; }
+.air-rank-name { margin: 0; font: 700 var(--t-3xl) / 1 var(--font-display); color: var(--tier); text-shadow: 0 0 22px color-mix(in srgb, var(--tier) 45%, transparent); }
+.air-crown-points { font-size: var(--t-lg); font-weight: 800; color: var(--tier); }
+
+/* Emblem: a faceted shard in the tier colour. */
+.air-emblem {
+  --size: 96px;
+  flex: none; width: var(--size); height: var(--size); display: grid; place-items: center;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--tc) 100%, white 25%), var(--tc) 45%, color-mix(in srgb, var(--tc) 55%, black));
+  clip-path: polygon(50% 0, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--tc) 55%, transparent));
+}
+.air-emblem-core {
+  width: 78%; height: 78%; display: grid; place-items: center; color: var(--tc);
+  background: radial-gradient(circle at 50% 30%, var(--ink-3), var(--ink-0));
+  clip-path: polygon(50% 0, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+}
+.air-emblem-num { font: 700 calc(var(--size) * 0.3) / 1 var(--font-display); letter-spacing: 0.04em; }
+
+.air-stars { display: flex; gap: 6px; }
+.air-star { color: var(--ink-4); display: inline-grid; }
+.air-star.on { color: var(--tier); filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tier) 70%, transparent)); }
+
+.air-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); margin: 0; }
+.air-stats > div { padding: var(--space-2) var(--space-3); background: rgba(0, 0, 0, 0.22); box-shadow: inset 0 0 0 1px var(--line); }
+.air-stats dt { font-size: var(--t-xs); color: var(--parchment-faint); }
+.air-stats dd { margin: 2px 0 0; font: 700 var(--t-lg) var(--font-display); }
+
+/* Ladder track: six tiers, three pips each (one for Crown). */
+.air-track { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 3fr)) minmax(0, 1.6fr); gap: var(--space-2); }
+.air-track-tier { display: grid; gap: 6px; justify-items: center; }
+.air-track-name { font: 600 var(--t-xs) var(--font-body); color: var(--tc); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.air-track-pips { display: flex; gap: 4px; width: 100%; justify-content: center; }
+.air-pip { flex: 1; max-width: 34px; height: 10px; background: color-mix(in srgb, var(--tc) 18%, var(--ink-2)); clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%); }
+.air-pip.done { background: var(--tc); opacity: 0.75; }
+.air-pip.here { background: var(--tc); box-shadow: 0 0 10px var(--tc); outline: 2px solid var(--parchment); outline-offset: 1px; clip-path: none; }
+
+.air-ai { display: grid; gap: 4px; padding: var(--space-3); background: rgba(0, 0, 0, 0.25); box-shadow: inset 3px 0 0 var(--tier); }
+.air-ai strong { font-size: var(--t-lg); font-family: var(--font-display); }
+.air-ai .faint { font-size: var(--t-sm); }
+.air-rules { font-size: var(--t-sm); }
+
+.air-side { display: grid; gap: var(--space-3); }
+.air-opponent { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); background: linear-gradient(90deg, color-mix(in srgb, var(--f1) 16%, transparent), transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--f1) 40%, transparent); }
+.air-opponent > div { display: grid; min-width: 0; }
+.air-opponent strong { font: 700 var(--t-lg) var(--font-display); color: var(--parchment); }
+.air-opponent .faint { font-size: var(--t-sm); }
+.air-next { display: grid; gap: 6px; padding: var(--space-3); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tc) 50%, transparent); background: color-mix(in srgb, var(--tc) 8%, transparent); }
+.air-next .air-kicker { color: var(--tc); }
+.air-warning { font-size: var(--t-xs); margin: 0; }
+
+@media (max-width: 600px) {
+  .air-rank-head { gap: var(--space-3); }
+  .air-rank-head .air-emblem { --size: 76px !important; }
+  .air-rank-name { font-size: var(--t-2xl); }
+  .air-stats dd { font-size: var(--t-md); }
+  .air-track { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: var(--space-3); }
+}
+
+/* Results overlay: star change after an AI ranked match. */
+.air-result { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-3); padding: var(--space-2) var(--space-3); background: rgba(0, 0, 0, 0.25); box-shadow: inset 3px 0 0 var(--tc); }
+.air-result > div { display: grid; gap: 2px; }
+.air-result .up { color: var(--heal); }
+.air-result .down { color: var(--damage); }
+.air-result .air-rankup { font: 700 var(--t-md) var(--font-display); color: var(--tc); }

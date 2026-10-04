@@ -5,6 +5,7 @@ import type { QuestType } from '@/config/quests';
 import type { PlayableFaction, SetId, Variant } from '@/game/types';
 import type { Deck } from './decks';
 import type { RankedState } from './ranked';
+import type { AiRankedState } from './aiRanked';
 
 export const CURRENT_SAVE_VERSION = 5;
 
@@ -38,6 +39,8 @@ export interface PlayerProfile {
   factionWins: Partial<Record<PlayableFaction, number>>;
   /** Ranked online ladder. */
   ranked: RankedState;
+  /** Ranked vs AI star ladder (src/domain/aiRanked.ts). */
+  aiRanked: AiRankedState;
   /** Owned cosmetic card backs and the one in use. */
   cardBacks: string[];
   cardBack: string;
@@ -111,7 +114,7 @@ export interface MatchRecord {
   id: string;
   date: number;
   durationMs: number;
-  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'PVP' | 'RANKED' | 'TOURNAMENT' | 'ARENA';
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'PVP' | 'RANKED' | 'TOURNAMENT' | 'ARENA' | 'AI_RANKED';
   /** Ranked rating change, when ranked. */
   ratingChange?: number;
   opponentId: string;

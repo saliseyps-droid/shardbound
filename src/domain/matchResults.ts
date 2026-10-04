@@ -5,6 +5,7 @@ import type { OpponentReward } from '@/data/opponents';
 import type { PlayableFaction, SetId } from '@/game/types';
 import { grantXp, type LevelUp } from './progression';
 import { applyRanked } from './ranked';
+import { AI_RANKED_CONFIG, aiTierOf, applyAiRankedResult, repairAiRanked, unclaimedTierRewards, type AiTierName } from './aiRanked';
 import { applyQuestProgress, type QuestProgressEvent } from './quests';
 import { addCards, MATCH_HISTORY_LIMIT, pushReward, type GameSave, type MatchRecord, type Quest } from './save';
 
@@ -50,6 +51,14 @@ export interface MatchRewards {
   /** Ranked rating change (ranked matches only). */
   ratingChange?: number;
   ratingAfter?: number;
+  /** Ranked vs AI: the ladder before and after (AI ranked matches only). */
+  aiRanked?: {
+    before: { rank: number; stars: number };
+    after: { rank: number; stars: number };
+    starDelta: number;
+    rankChange: 'UP' | 'DOWN' | 'NONE';
+    tierReached?: AiTierName;
+  };
 }
 
 export function questEventsFromMatch(summary: MatchSummary): QuestProgressEvent[] {
@@ -96,7 +105,11 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
     }
   } else if (eligible) {
     if (summary.result === 'WIN') {
-      let g = MATCH_REWARDS.goldPerWin + (MATCH_REWARDS.difficultyGoldBonus[summary.difficulty] ?? 0);
+      // Ranked vs AI pays by the tier the match was played at instead of by difficulty.
+      let g =
+        summary.mode === 'AI_RANKED'
+          ? AI_RANKED_CONFIG.winGold[aiTierOf(repairAiRanked(save.profile.aiRanked).rank)]
+          : MATCH_REWARDS.goldPerWin + (MATCH_REWARDS.difficultyGoldBonus[summary.difficulty] ?? 0);
       if (winsToday >= MATCH_REWARDS.dailyFullGoldWins) g = Math.round(g * MATCH_REWARDS.reducedGoldMultiplier);
       const x = Math.round(XP_REWARDS.win * xpMult);
       gold += g;
@@ -179,6 +192,34 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
     s = { ...s, profile: { ...s.profile, ranked: r.state } };
   }
 
+  // Ranked vs AI: the ladder moves on every result (a quick concession still costs a star),
+  // and each tier reached pays its one-time reward.
+  let aiRanked: MatchRewards['aiRanked'];
+  if (summary.mode === 'AI_RANKED') {
+    const before = repairAiRanked(s.profile.aiRanked);
+    const out = applyAiRankedResult(before, summary.result);
+    let ladder = out.state;
+    let p2 = { ...s.profile };
+    let packs = { ...s.economy.packs };
+    for (const tier of unclaimedTierRewards(ladder)) {
+      const r = AI_RANKED_CONFIG.tierRewards[tier];
+      gold += r.gold;
+      essence += r.essence;
+      p2 = { ...p2, gold: p2.gold + r.gold, essence: p2.essence + r.essence };
+      packs = { ...packs, [r.packs.setId]: (packs[r.packs.setId] ?? 0) + r.packs.amount };
+      lines.push({ label: `${tier} tier reached`, gold: r.gold, essence: r.essence || undefined, packs: r.packs });
+      ladder = { ...ladder, tierRewardsClaimed: [...ladder.tierRewardsClaimed, tier] };
+    }
+    s = { ...s, profile: { ...p2, aiRanked: ladder }, economy: { ...s.economy, packs } };
+    aiRanked = {
+      before: { rank: before.rank, stars: before.stars },
+      after: { rank: ladder.rank, stars: ladder.stars },
+      starDelta: out.starDelta,
+      rankChange: out.rankChange,
+      tierReached: out.tierReached,
+    };
+  }
+
   const xpResult = grantXp(s, xp, now);
   s = xpResult.save;
 
@@ -208,5 +249,5 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
     s = pushReward(s, { source: `${summary.result === 'WIN' ? 'Victory' : summary.result === 'DRAW' ? 'Draw' : 'Defeat'} vs ${summary.opponentName}`, gold: gold || undefined, xp: xp || undefined, essence: essence || undefined }, now);
   }
 
-  return { save: s, rewards: { gold, xp, essence, lines, levelUps: xpResult.levelUps, questsCompleted, firstClear, levelBefore, xpBefore, ratingChange, ratingAfter: ratingChange !== undefined ? s.profile.ranked.rating : undefined } };
+  return { save: s, rewards: { gold, xp, essence, lines, levelUps: xpResult.levelUps, questsCompleted, firstClear, levelBefore, xpBefore, ratingChange, ratingAfter: ratingChange !== undefined ? s.profile.ranked.rating : undefined, aiRanked } };
 }

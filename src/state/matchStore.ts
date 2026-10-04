@@ -436,7 +436,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       let action: GameAction;
       if (cfg.mode === 'TUTORIAL') action = tutorialOpponentAction(game);
       else {
-        action = await aiClient.chooseAction(game, AI, cfg.opponent.difficulty, cfg.opponent.personality, randomSeed(), actions);
+        action = await aiClient.chooseAction(game, AI, cfg.opponent.difficulty, cfg.opponent.personality, randomSeed(), actions, cfg.aiTuning);
       }
       // Human-like pacing: at least a short pause between actions.
       const elapsed = performance.now() - started;
@@ -577,7 +577,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       if (gen !== matchGen) return;
       // Matches with stakes are remembered until their result is recorded: reloading
       // or closing the app mid-match then counts as conceding (src/domain/activeMatch.ts).
-      const stakes: ActiveMatch['mode'] | null = config.mode === 'ONLINE' ? 'PVP' : config.mode === 'RANKED' || config.mode === 'TOURNAMENT' || config.mode === 'ARENA' ? config.mode : null;
+      const stakes: ActiveMatch['mode'] | null = config.mode === 'ONLINE' ? 'PVP' : config.mode === 'RANKED' || config.mode === 'TOURNAMENT' || config.mode === 'ARENA' || config.mode === 'AI_RANKED' ? config.mode : null;
       if (stakes) {
         const deck = config.mode === 'ARENA' && save.arena.run ? arenaDeck(save.arena.run) : save.decks.find((d) => d.id === config.deckId);
         gameService.beginMatch({
@@ -620,7 +620,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         // Online: each player mulligans on their own screen.
       } else if (state.phase === 'MULLIGAN') {
         // The AI decides its mulligan immediately (it cannot see the human's choice).
-        const replace = await aiClient.chooseMulligan(state, AI, config.opponent.difficulty, config.opponent.personality);
+        const replace = await aiClient.chooseMulligan(state, AI, config.opponent.difficulty, config.opponent.personality, config.aiTuning);
         if (gen !== matchGen) return;
         const res = applyAction(get().game!, { type: 'MULLIGAN', player: AI, replaceUids: replace });
         if (!res.error) set({ game: res.state });

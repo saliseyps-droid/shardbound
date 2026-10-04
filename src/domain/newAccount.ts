@@ -6,6 +6,7 @@ import { defaultBuild } from '@/data/wardenTalents';
 import { DEFAULT_CARD_BACK } from '@/data/cardBacks';
 import type { Deck } from './decks';
 import { newRanked } from './ranked';
+import { newAiRanked } from './aiRanked';
 import { CURRENT_SAVE_VERSION, emptyVariants, type GameSave } from './save';
 
 /** Copies of each starter card granted to new accounts. */
@@ -56,6 +57,7 @@ export function createNewSave(username: string, avatar: string, now: number, id:
       winsTodayDay: null,
       factionWins: {},
       ranked: newRanked(),
+      aiRanked: newAiRanked(),
       cardBacks: [DEFAULT_CARD_BACK],
       cardBack: DEFAULT_CARD_BACK,
       portraits: [],

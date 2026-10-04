@@ -1,0 +1,56 @@
+/** Ranked vs AI (src/ui/screens/AiRankedScreen.tsx, results overlay, Play screen). */
+const d: Record<string, string> = {
+  'Ranked vs AI': 'Hodnocená hra proti AI',
+  'Climb from Bronze to Crown. Every rank you reach, the AI plays sharper and brings stronger cards.': 'Vyšplhej z Bronzu až na Korunu. S každou další hodností hraje AI chytřeji a má silnější karty.',
+  'Climb from Bronze to Crown against the AI. It gets stronger with every rank.': 'Vyšplhej z Bronzu až na Korunu proti AI. S každou hodností sílí.',
+  Climb: 'Šplhat',
+  'Current rank': 'Současná hodnost',
+  '{n} Crown points': 'Body Koruny: {n}',
+  '{n} of {max} stars': '{n} z {max} hvězd',
+  'Win streak': 'Série výher',
+  'Wins / losses': 'Výhry / prohry',
+  'Best rank': 'Nejlepší hodnost',
+  Ladder: 'Žebříček',
+  'Your rivals at this rank': 'Tví soupeři na této hodnosti',
+  'The AI sharpens with every division: fewer mistakes from III to I.': 'AI se zlepšuje s každou divizí: od III do I dělá méně chyb.',
+  'Win: +1 star. Loss: −1 star. Three stars rank you up.': 'Výhra: +1 hvězda. Prohra: −1 hvězda. Tři hvězdy tě posunou o hodnost výš.',
+  'From the third win in a row, each win gives a bonus star.': 'Od třetí výhry v řadě dává každá výhra hvězdu navíc.',
+  'You never fall out of Silver, Gold or Diamond once you reach them.': 'Ze Stříbra, Zlata ani Diamantu už po jejich dosažení nespadneš.',
+  'Next rival': 'Další soupeř',
+  'First time in {tier}': 'Poprvé v úrovni {tier}',
+  'Play ranked match': 'Hrát hodnocený zápas',
+  'Leaving or reloading during the match counts as a loss.': 'Odchod nebo znovunačtení stránky během zápasu se počítá jako prohra.',
+
+  // AI strength
+  'Easy AI': 'Snadná AI',
+  'Normal AI': 'Běžná AI',
+  'Hard AI': 'Těžká AI',
+  'Expert AI': 'Expertní AI',
+  'Commons only': 'Jen běžné karty',
+  'Commons and Rares': 'Běžné a vzácné karty',
+  'Commons, Rares and Epics': 'Běžné, vzácné a epické karty',
+  'All rarities': 'Všechny vzácnosti',
+  '{n} health': '{n} životů',
+  '+{n} starting energy': '+{n} energie na začátku',
+
+  // Results overlay
+  'Ranked match against the AI {name}': 'Hodnocený zápas proti AI: {name}',
+  'Rank up: {rank}!': 'Postup: {rank}!',
+  'Rank lost: {rank}': 'Sestup: {rank}',
+  '+{n} star': '+{n} hvězda',
+  '+{n} stars': '+{n} hvězda|+{n} hvězdy|+{n} hvězd',
+  '−{n} star': '−{n} hvězda',
+  '−{n} stars': '−{n} hvězda|−{n} hvězdy|−{n} hvězd',
+  '+{n} packs': '+{n} booster|+{n} boostery|+{n} boosterů',
+  'No star change': 'Hvězdy beze změny',
+  '{tier} reached for the first time!': 'Poprvé dosažena úroveň {tier}!',
+  'Next ranked match': 'Další hodnocený zápas',
+
+  // One-time tier rewards (src/domain/matchResults.ts)
+  'Silver tier reached': 'Dosaženo Stříbro',
+  'Gold tier reached': 'Dosaženo Zlato',
+  'Platinum tier reached': 'Dosažena Platina',
+  'Diamond tier reached': 'Dosažen Diamant',
+  'Crown tier reached': 'Dosažena Koruna',
+};
+export default d;

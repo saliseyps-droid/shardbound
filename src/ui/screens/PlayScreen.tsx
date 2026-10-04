@@ -96,6 +96,17 @@ export default function PlayScreen() {
           {!validDeck && <p className="deckbox-issue">{t('Choose a valid 30-card deck to play.')}</p>}
 
           <div className="tutorial-card online-card">
+            <Glyph name="star" size={28} />
+            <div>
+              <strong>{t('Ranked vs AI')}</strong>
+              <span className="muted">{t('Climb from Bronze to Crown against the AI. It gets stronger with every rank.')}</span>
+            </div>
+            <Link className="btn btn-sm btn-cyan" to="/ai-ranked">
+              {t('Climb')}
+            </Link>
+          </div>
+
+          <div className="tutorial-card online-card">
             <Glyph name="trophy" size={28} />
             <div>
               <strong>{t('Ranked')}</strong>

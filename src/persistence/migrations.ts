@@ -12,6 +12,7 @@ import type { Deck } from '@/domain/decks';
 import { CURRENT_SAVE_VERSION, emptyVariants, type GameSave } from '@/domain/save';
 import { createNewSave } from '@/domain/newAccount';
 import { newRanked } from '@/domain/ranked';
+import { repairAiRanked } from '@/domain/aiRanked';
 
 export interface MigrationReport {
   save: GameSave;
@@ -101,6 +102,7 @@ export function migrateSave(input: Raw): MigrationReport {
   p.bundlesBought = Array.isArray(p.bundlesBought) ? p.bundlesBought.filter((id: unknown) => typeof id === 'string') : [];
   const r = p.ranked && typeof p.ranked === 'object' ? p.ranked : newRanked();
   p.ranked = { rating: num(r.rating, 1000, 100), peak: num(r.peak, 1000, 100), wins: Math.floor(num(r.wins, 0)), losses: Math.floor(num(r.losses, 0)) };
+  p.aiRanked = repairAiRanked(p.aiRanked);
 
   // Collection: drop unknown cards and invalid counts.
   const cards: GameSave['collection']['cards'] = {};

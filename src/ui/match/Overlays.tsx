@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCardSafe } from '@/data/cards';
 import { getTalent } from '@/data/wardenTalents';
@@ -11,7 +11,10 @@ import { CardView } from '@/ui/components/CardView';
 import { Essence, Gold, ProgressBar, Spinner } from '@/ui/components/common';
 import { TUTORIAL_STEPS } from './tutorial';
 import { GAME_RULES } from '@/config/gameRules';
+import { CROWN_RANK, TIER_COLORS, aiTierOf } from '@/domain/aiRanked';
+import { AiRankEmblem, aiRankLabel } from '@/ui/components/meta/aiRankedUi';
 import { t, tn } from '@/i18n';
+import '@/ui/styles/aiRanked.css';
 
 export function MulliganOverlay({ game }: { game: GameState }) {
   const picks = useMatch((s) => s.mulliganPicks);
@@ -223,7 +226,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
     <div className={`match-overlay results ${win ? 'is-win' : draw ? 'is-draw' : 'is-loss'}`} role="dialog" aria-label={win ? t('Victory') : draw ? t('Draw') : t('Defeat')}>
       <h1 className="results-title">{win ? t('Victory') : draw ? t('Draw') : t('Defeat')}</h1>
       <p className="muted">
-        {config?.mode === 'ARENA' ? t('Arena match against {name}', { name: config.opponent.name }) : config?.mode === 'TOURNAMENT' ? t('Tournament match against {name}', { name: config.opponent.name }) : config?.mode === 'RANKED' ? t('Ranked match against {name}', { name: config.opponent.name }) : config?.online ? t('Online match against {name}', { name: config.opponent.name }) : t(`Against {name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`, { name: String(config?.opponent.name) })}
+        {config?.mode === 'ARENA' ? t('Arena match against {name}', { name: config.opponent.name }) : config?.mode === 'TOURNAMENT' ? t('Tournament match against {name}', { name: config.opponent.name }) : config?.mode === 'RANKED' ? t('Ranked match against {name}', { name: config.opponent.name }) : config?.mode === 'AI_RANKED' ? t('Ranked match against the AI {name}', { name: config.opponent.name }) : config?.online ? t('Online match against {name}', { name: config.opponent.name }) : t(`Against {name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`, { name: String(config?.opponent.name) })}
         {game.endReason === 'CONCEDE' ? t(', by concession') : game.endReason === 'DISCONNECT' ? t(', connection lost') : ''}
       </p>
       <div className="results-grid">
@@ -255,7 +258,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
                 {l.gold ? <Gold amount={l.gold} /> : null}
                 {l.essence ? <Essence amount={l.essence} /> : null}
                 {l.xp ? <span className="num xp-text">{t('+{n} XP', { n: l.xp })}</span> : null}
-                {l.packs ? <span className="chip">{t('+{n} pack', { n: l.packs.amount })}</span> : null}
+                {l.packs ? <span className="chip">{tn(l.packs.amount, '+{n} pack', '+{n} packs')}</span> : null}
               </span>
             </div>
           ))}
@@ -278,6 +281,31 @@ export function ResultsOverlay({ game }: { game: GameState }) {
             </div>
           )}
           {rewards?.firstClear && <p className="gold-text">{t('Encounter cleared for the first time!')}</p>}
+          {rewards?.aiRanked && (() => {
+            const a = rewards.aiRanked;
+            const crown = a.after.rank >= CROWN_RANK;
+            return (
+              <div className="air-result" style={{ '--tc': TIER_COLORS[aiTierOf(a.after.rank)] } as CSSProperties}>
+                <AiRankEmblem rank={a.after.rank} size={52} />
+                <div>
+                  {a.rankChange === 'UP' && <span className="air-rankup">{t('Rank up: {rank}!', { rank: aiRankLabel(a.after.rank) })}</span>}
+                  {a.rankChange === 'DOWN' && <span className="down">{t('Rank lost: {rank}', { rank: aiRankLabel(a.after.rank) })}</span>}
+                  {a.rankChange === 'NONE' && <span>{aiRankLabel(a.after.rank)}</span>}
+                  <span className="num">
+                    {a.starDelta > 0 ? (
+                      <strong className="up">{tn(a.starDelta, '+{n} star', '+{n} stars')}</strong>
+                    ) : a.starDelta < 0 ? (
+                      <strong className="down">{tn(-a.starDelta, '−{n} star', '−{n} stars')}</strong>
+                    ) : (
+                      <span className="faint">{t('No star change')}</span>
+                    )}{' '}
+                    <span className="faint">{crown ? t('{n} Crown points', { n: a.after.stars }) : t('{n} of {max} stars', { n: a.after.stars, max: 3 })}</span>
+                  </span>
+                  {a.tierReached && <span className="gold-text">{t('{tier} reached for the first time!', { tier: t(a.tierReached) })}</span>}
+                </div>
+              </div>
+            );
+          })()}
           {rewards?.ratingChange !== undefined && (
             <p className="rating-change">
               {t('Ranked rating')} <strong className={rewards.ratingChange >= 0 ? 'up' : 'down'}>{rewards.ratingChange >= 0 ? '+' : ''}{rewards.ratingChange}</strong> → {rewards.ratingAfter}
@@ -314,10 +342,11 @@ export function ResultsOverlay({ game }: { game: GameState }) {
               </button>
             ) : (
             <>
-            <button className="btn btn-ghost" onClick={() => exit(config?.mode === 'PVE' ? '/campaign' : config?.mode === 'TOURNAMENT' ? '/tournament' : config?.mode === 'RANKED' ? '/ranked' : config?.online ? '/online' : '/play')}>
-              {config?.mode === 'PVE' ? t('Back to campaign') : config?.mode === 'TOURNAMENT' ? t('Back to bracket') : config?.mode === 'RANKED' ? t('Ranked') : config?.online ? t('New online match') : t('Choose opponent')}
+            <button className="btn btn-ghost" onClick={() => exit(config?.mode === 'PVE' ? '/campaign' : config?.mode === 'TOURNAMENT' ? '/tournament' : config?.mode === 'RANKED' ? '/ranked' : config?.mode === 'AI_RANKED' ? '/ai-ranked' : config?.online ? '/online' : '/play')}>
+              {config?.mode === 'PVE' ? t('Back to campaign') : config?.mode === 'TOURNAMENT' ? t('Back to bracket') : config?.mode === 'RANKED' ? t('Ranked') : config?.mode === 'AI_RANKED' ? t('Next ranked match') : config?.online ? t('New online match') : t('Choose opponent')}
             </button>
-            {!config?.online && config?.mode !== 'TOURNAMENT' && (
+            {/* A ranked rematch would replay the same rival; the ladder screen rolls a new one. */}
+            {!config?.online && config?.mode !== 'TOURNAMENT' && config?.mode !== 'AI_RANKED' && (
               <button className="btn" onClick={rematch}>
                 {t('Rematch')}
               </button>

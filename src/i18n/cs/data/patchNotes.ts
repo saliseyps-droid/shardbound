@@ -1,6 +1,19 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.21.0': {
+    title: 'Ranked proti AI',
+    summary: 'Nový žebříček proti AI: vyšplhej z Bronzu až na Korunu a AI s každým rankem zesiluje.',
+    sections: [
+      [
+        'Ranked proti AI (obrazovka Hrát): Bronz, Stříbro, Zlato, Platina a Diamant, každý se třemi divizemi, a nad nimi Koruna.',
+        'Výhra dává hvězdu, prohra ji bere; tři hvězdy znamenají postup a od třetí výhry v řadě dává každá výhra hvězdu navíc. Ze Stříbra, Zlata a Diamantu už nikdy nespadneš.',
+        'AI je s každou divizí ostřejší a s každou úrovní přináší vzácnější karty; od Diamantu má víc životů a na Koruně i energii navíc.',
+        'Čím výš jsi, tím víc zlata za výhru, a první dosažení každé úrovně dá jednorázovou odměnu se zlatem, esencí a balíčky.',
+        'Odchod nebo obnovení stránky během zápasu se počítá jako prohra.',
+      ],
+    ],
+  },
   '0.20.1': {
     title: 'Tváře kampaně',
     summary: 'Každý Strážce v kampani má teď vlastní portrét.',

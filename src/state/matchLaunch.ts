@@ -1,8 +1,9 @@
 import { create } from 'zustand';
+import type { AiTuning } from '@/ai/config';
 import type { OpponentDef } from '@/data/opponents';
 
 export interface MatchConfig {
-  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE' | 'RANKED' | 'TOURNAMENT' | 'ARENA';
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE' | 'RANKED' | 'TOURNAMENT' | 'ARENA' | 'AI_RANKED';
   /** Ranked: the opponent's rating when the match was found. */
   opponentRating?: number;
   /** Tournament: which bracket match this is. */
@@ -12,6 +13,8 @@ export interface MatchConfig {
   deckId: string | null;
   opponent: OpponentDef;
   encounterId?: string;
+  /** Overrides of the opponent's difficulty preset (Ranked vs AI divisions). */
+  aiTuning?: AiTuning;
   /** Debug: force a seed. */
   seed?: number;
 }
