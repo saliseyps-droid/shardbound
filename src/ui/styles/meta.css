@@ -398,6 +398,6 @@ label.toggle-row { cursor: pointer; }
   .mode-icon { width: 34px; height: 34px; }
   .mode-tile strong { font-size: 1rem; }
 }
-/* Modes against other players: a cooler teal-blue tint, apart from the purple AI modes. */
-.mode-group.is-pvp .mode-tile { background: linear-gradient(160deg, rgba(34, 78, 104, 0.78), rgba(18, 36, 58, 0.9)); }
+/* Modes against other players: a see-through azure tint, apart from the purple AI modes. */
+.mode-group.is-pvp .mode-tile { background: linear-gradient(160deg, rgba(0, 127, 255, 0.34), rgba(0, 72, 160, 0.42)); }
 .mode-group.is-pvp .mode-icon { color: var(--cyan); }

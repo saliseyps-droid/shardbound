@@ -9,7 +9,7 @@ const notes: PatchNotesOverlay = {
         'Hrát je teď rozcestník: proti AI Kampaň, Ranked proti AI, Aréna a Výuka; proti hráčům Ranked, Hra s přítelem a Turnaj.',
         'Každý režim ukazuje, jak na tom jsi: postup kampaně, tvůj rank, rozehranou arénu nebo dnešní vstup zdarma.',
         'Tréninkové zápasy s výběrem soupeře, obtížnosti a balíčku zůstávají pod režimy. Na mobilu jsou režimy první, dva vedle sebe.',
-        'Režimy proti jiným hráčům mají vlastní modrozelené dlaždice.',
+        'Režimy proti jiným hráčům mají vlastní průsvitné azurové dlaždice.',
       ],
     ],
   },

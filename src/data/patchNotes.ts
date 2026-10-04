@@ -30,7 +30,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Play is now a hub: Campaign, Ranked vs AI, Arena and the Tutorial against the AI; Ranked, Play a friend and Tournament against players.',
           'Each mode shows where you stand: campaign progress, your rank, an Arena run or the free entry of the day.',
           'Practice matches keep their opponent, difficulty and deck choice below the modes. On phones the modes come first, two per row.',
-          'Modes against other players have their own teal-blue tiles.',
+          'Modes against other players have their own see-through azure tiles.',
         ],
       },
     ],
