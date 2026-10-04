@@ -53,6 +53,7 @@ const v: MiscOverlay = {
     'play-unit': {
       title: 'Zahraj jednotku',
       text: 'Přetáhni Panoše Střepu na bojiště, nebo na něj klikni. Zářící karty můžeš zahrát právě teď.',
+      touchText: 'Ťukni na Panoše Střepu, abys ho viděl zblízka, a ťukni znovu, abys ho zahrál. Zářící karty můžeš zahrát právě teď.',
     },
     'end-turn': {
       title: 'Ukonči tah',
@@ -61,10 +62,16 @@ const v: MiscOverlay = {
     attack: {
       title: 'Útok',
       text: 'Tvůj Panoš je připravený. Klikni na něj (nebo z něj táhni) a vyber nepřátelského Šrotového goblina. Obě jednotky si navzájem způsobí poškození ve stejnou chvíli.',
+      touchText: 'Tvůj Panoš je připravený. Ťukni na něj a pak na nepřátelského Šrotového goblina. Obě jednotky si navzájem způsobí poškození ve stejnou chvíli.',
     },
     spell: {
       title: 'Sešli kouzlo a zvol cíl',
       text: 'Jiskrový šíp způsobí 2 poškození. Zahraj ho a vyber cíl – zkus nepřátelského Strážce.',
+    },
+    inspect: {
+      title: 'Přečti si kteroukoli kartu',
+      text: 'Klikni pravým tlačítkem na kteroukoli kartu v ruce nebo na bojišti a uvidíš ji zvětšenou i s vysvětlením všech klíčových slov. Zkus to na Rytíři korunní stráže a pak stiskni Další.',
+      touchText: 'Podrž prst na kterékoli kartě v ruce nebo na bojišti a uvidíš ji zvětšenou i s vysvětlením všech klíčových slov. Zkus to na Rytíři korunní stráže a pak stiskni Další.',
     },
     'end-turn-2': {
       title: 'Nepolevuj',
@@ -73,10 +80,12 @@ const v: MiscOverlay = {
     sigil: {
       title: 'Schopnosti tvého Strážce',
       text: 'Každý Strážce má dvě schopnosti, které si vybereš na kartě Talenty v editoru balíčku. Šestiúhelník vedle tvého portrétu je aktivní schopnost: Popelavý šíp za 1 energii způsobí 1 poškození a udělí Hoření. Klikni na něj (najetím myší si ho přečteš) a vyber cíl. Kulatý odznak je pasivní schopnost a funguje sám.',
+      touchText: 'Každý Strážce má dvě schopnosti, které si vybereš na kartě Talenty v editoru balíčku. Šestiúhelník vedle tvého portrétu je aktivní schopnost: Popelavý šíp za 1 energii způsobí 1 poškození a udělí Hoření. Ťukni na něj (podržením prstu si ho přečteš) a vyber cíl. Kulatý odznak je pasivní schopnost a funguje sám.',
     },
     win: {
       title: 'Dokonči boj',
       text: 'Jednotky se Stráží musí být napadeny jako první – najetím na ikonu štítu se dozvíš víc. Zaútoč svými jednotkami a sraz životy nepřátelského Strážce na 0.',
+      touchText: 'Jednotky se Stráží musí být napadeny jako první – podržením prstu na jednotce si přečteš její klíčová slova. Zaútoč svými jednotkami a sraz životy nepřátelského Strážce na 0.',
     },
   },
   tutorialOpponent: {

@@ -475,6 +475,14 @@
 .tutorial-box h4 { margin: 0; color: var(--cyan); }
 .tutorial-box p { margin: 0; }
 .tutorial-box .btn { justify-self: end; pointer-events: auto; }
+.tutorial-pointer { position: fixed; z-index: 170; pointer-events: none; color: var(--cyan); transform: translate(-50%, -100%); filter: drop-shadow(0 0 8px rgba(114, 223, 230, 0.9)); }
+.tutorial-pointer svg { display: block; animation: tut-bob 0.9s ease-in-out infinite alternate; }
+.tutorial-pointer.below { transform: translate(-50%, 0) rotate(180deg); }
+@keyframes tut-bob { from { transform: translateY(-6px); } to { transform: translateY(2px); } }
+@media (prefers-reduced-motion: reduce) { .tutorial-pointer svg { animation: none; } }
+.tutorial-next { display: grid; justify-items: center; gap: var(--space-2); }
+.tutorial-next p { margin: 0; }
+.tutorial-next-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); }
 @media (max-width: 1400px) { .tutorial-box { width: min(280px, 24vw); font-size: var(--t-sm); } }
 
 .leave-btn { position: absolute; top: 10px; left: 10px; z-index: 50; }

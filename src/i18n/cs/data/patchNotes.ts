@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.21.1': {
+    title: 'Lepší výuka',
+    summary: 'Výuka ukazuje, co udělat, na mobilu mluví o ťukání, učí prohlížet karty a na konci poradí, kam dál.',
+    sections: [
+      [
+        'Poskakující šipka ukazuje na kartu, jednotku nebo tlačítko, o kterém krok mluví.',
+        'Na mobilech a tabletech kroky říkají ťukni a podrž prst místo klikni, táhni a najeď myší, a okno s krokem už nezakrývá tvůj balíček ani tlačítka zvuku.',
+        'Nový krok: jak si prohlédnout kteroukoli kartu a přečíst si její klíčová slova.',
+        'Po výuce můžeš rovnou pokračovat do kampaně, k balíčkům nebo do editoru balíčků.',
+      ],
+    ],
+  },
   '0.21.0': {
     title: 'Ranked proti AI',
     summary: 'Nový žebříček proti AI: vyšplhej z Bronzu až na Korunu a AI s každým rankem zesiluje.',

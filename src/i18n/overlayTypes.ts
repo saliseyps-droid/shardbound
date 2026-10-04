@@ -62,7 +62,7 @@ export interface MiscOverlay {
   /** Level titles in order. */
   titles?: string[];
   /** Tutorial steps by id. */
-  tutorial?: Record<string, { title?: string; text?: string }>;
+  tutorial?: Record<string, { title?: string; text?: string; touchText?: string }>;
   /** Tutorial opponent and other single strings. */
   tutorialOpponent?: { name?: string; title?: string; intro?: string };
 }

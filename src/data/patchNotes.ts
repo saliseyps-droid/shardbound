@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.21.1',
+    date: '2026-10-04',
+    title: 'A better tutorial',
+    summary: 'The tutorial points at what to do, speaks touch on phones, teaches card inspection and suggests where to go next.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'A bobbing arrow points at the card, unit or button each step is about.',
+          'On phones and tablets the steps say tap and long-press instead of click, drag and hover, and the step box no longer covers your deck or the sound buttons.',
+          'New step: how to inspect any card and read its keywords.',
+          'After the tutorial you can jump straight to the campaign, your packs or the deck builder.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.21.0',
     date: '2026-10-04',
     title: 'Ranked vs AI',

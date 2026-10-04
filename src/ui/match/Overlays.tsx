@@ -7,7 +7,7 @@ import { useMatch, HUMAN, AI } from '@/state/matchStore';
 import { useAccount } from '@/state/accountStore';
 import { useMatchLaunch } from '@/state/matchLaunch';
 import { xpToNext } from '@/domain/progression';
-import { CardView } from '@/ui/components/CardView';
+import { CardView, isTouchScreen } from '@/ui/components/CardView';
 import { Essence, Gold, ProgressBar, Spinner } from '@/ui/components/common';
 import { TUTORIAL_STEPS } from './tutorial';
 import { GAME_RULES } from '@/config/gameRules';
@@ -176,6 +176,34 @@ export function BattleLog({ game }: { game: GameState }) {
   );
 }
 
+/** A bobbing arrow over (or under, near the top) the element the current tutorial step is about. */
+function TutorialPointer({ target, card }: { target: string; card?: string }) {
+  const [pos, setPos] = useState<{ x: number; y: number; below: boolean } | null>(null);
+  useEffect(() => {
+    let raf = 0;
+    const tick = () => {
+      const el = (card && document.querySelector(`[data-tutorial="${target}"] [data-card-id="${card}"]`)) || document.querySelector(`[data-tutorial="${target}"]`);
+      const r = el?.getBoundingClientRect();
+      if (r && r.width > 0) {
+        const below = r.top < window.innerHeight * 0.3;
+        const next = { x: Math.round(r.left + r.width / 2), y: Math.round(below ? r.bottom + 10 : r.top - 10), below };
+        setPos((p) => (p && p.x === next.x && p.y === next.y && p.below === next.below ? p : next));
+      } else setPos(null);
+      raf = requestAnimationFrame(tick);
+    };
+    tick();
+    return () => cancelAnimationFrame(raf);
+  }, [target, card]);
+  if (!pos) return null;
+  return (
+    <div className={`tutorial-pointer ${pos.below ? 'below' : ''}`} style={{ left: pos.x, top: pos.y }} aria-hidden>
+      <svg viewBox="0 0 24 24" width="34" height="34">
+        <path d="M12 22 3 11h5V2h8v9h5z" fill="currentColor" />
+      </svg>
+    </div>
+  );
+}
+
 export function TutorialOverlay() {
   const step = useMatch((s) => s.tutorialStep);
   const next = useMatch((s) => s.nextTutorialStep);
@@ -183,15 +211,19 @@ export function TutorialOverlay() {
   const phase = useMatch((s) => s.phase);
   if (mode !== 'TUTORIAL' || phase === 'ended' || step >= TUTORIAL_STEPS.length) return null;
   const s = TUTORIAL_STEPS[step];
+  const text = isTouchScreen() && s.touchText ? s.touchText : s.text;
+  // On small screens the box sits at the top, or at the bottom while the step is about the enemy side.
+  const atBottom = s.highlight === 'enemy-hero' || s.highlight === 'enemy-board';
   return (
     <>
       {s.highlight && <style>{`[data-tutorial="${s.highlight}"] { outline: 3px solid var(--cyan); outline-offset: 6px; box-shadow: 0 0 30px rgba(114,223,230,.6); border-radius: 8px; }`}</style>}
-      <div className="tutorial-box panel" role="dialog" aria-live="polite" aria-label={t('Tutorial')}>
+      {s.highlight && <TutorialPointer key={s.id} target={s.highlight} card={s.pointAt} />}
+      <div className={`tutorial-box panel ${atBottom ? 'at-bottom' : ''}`} role="dialog" aria-live="polite" aria-label={t('Tutorial')}>
         <span className="faint num">
           {t('Step {n} of {total}', { n: step + 1, total: TUTORIAL_STEPS.length })}
         </span>
         <h4>{s.title}</h4>
-        <p>{s.text}</p>
+        <p>{text}</p>
         {!s.done && (
           <button className="btn btn-cyan btn-sm" onClick={next} autoFocus>
             {t('Next')}
@@ -331,9 +363,23 @@ export function ResultsOverlay({ game }: { game: GameState }) {
       </div>
       <div className="results-actions">
         {config?.mode === 'TUTORIAL' ? (
-          <button className="btn btn-primary btn-lg" onClick={() => exit('/')} autoFocus>
-            {t('Continue')}
-          </button>
+          <div className="tutorial-next">
+            <p className="muted">{t('You know the basics. Where to next?')}</p>
+            <div className="tutorial-next-actions">
+              <button className="btn btn-primary btn-lg" onClick={() => exit('/campaign')} autoFocus>
+                {t('Start the campaign')}
+              </button>
+              <button className="btn" onClick={() => exit('/packs')}>
+                {t('Open your packs')}
+              </button>
+              <button className="btn" onClick={() => exit('/decks')}>
+                {t('Build a deck')}
+              </button>
+              <button className="btn btn-ghost" onClick={() => exit('/')}>
+                {t('Home')}
+              </button>
+            </div>
+          </div>
         ) : (
           <>
             {config?.mode === 'ARENA' ? (

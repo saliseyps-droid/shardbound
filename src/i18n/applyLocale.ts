@@ -123,6 +123,7 @@ export function applyLocale(locale: Locale) {
       if (text) {
         set(step, 'title', text.title);
         set(step, 'text', text.text);
+        set(step, 'touchText', text.touchText);
       }
     }
     const to = misc.tutorialOpponent;

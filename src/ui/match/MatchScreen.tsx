@@ -491,6 +491,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
                 key={c.uid}
                 className={`hand-card ${newCards.has(c.uid) ? 'is-new' : ''} ${selected ? 'is-selected' : ''} ${drag?.active && drag.uid === c.uid ? 'is-dragging' : ''} ${c.fleeting ? 'is-fleeting' : ''} ${peek === c.uid ? 'is-peek' : ''}`}
                 data-hand-uid={c.uid}
+                data-card-id={c.cardId}
                 style={{ '--o': offset } as CSSProperties}
               >
                 <CardView
