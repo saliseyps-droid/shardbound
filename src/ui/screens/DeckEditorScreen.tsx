@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import { DECK_RULES } from '@/config/gameRules';
 import { collectibleCards, getCard } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
@@ -52,6 +53,22 @@ function ManaCurve({ curve }: { curve: number[] }) {
   );
 }
 
+const PREVIEW_W = 240;
+
+/** Large card shown to the left of the hovered deck-list row, kept inside the window. */
+function DeckRowPreview({ id, rect, variant }: { id: string; rect: DOMRect; variant: ReturnType<typeof bestVariant> }) {
+  const h = PREVIEW_W * 1.4;
+  const top = Math.max(8, Math.min(window.innerHeight - h - 8, rect.top + rect.height / 2 - h / 2));
+  const left = Math.max(8, rect.left - PREVIEW_W - 16);
+  // Portal: the deck panel's clip-path would cut off anything drawn outside it.
+  return createPortal(
+    <div className="deck-row-preview" style={{ top, left }} aria-hidden>
+      <CardView card={id} width={PREVIEW_W} variant={variant} />
+    </div>,
+    document.body,
+  );
+}
+
 export default function DeckEditorScreen() {
   const { deckId } = useParams();
   const navigate = useNavigate();
@@ -61,6 +78,8 @@ export default function DeckEditorScreen() {
   const [filters, setFilters] = useState<CardFilterState>({ ...DEFAULT_FILTERS, ownership: 'OWNED' });
   const [tab, setTab] = useState<'cards' | 'talents'>('cards');
   const [sharing, setSharing] = useState(false);
+  /** Deck-list row under the mouse: shown as a large card beside the list (mouse only). */
+  const [hoverRow, setHoverRow] = useState<{ id: string; rect: DOMRect } | null>(null);
   const profileForPortraits = useAccount((st) => st.save!.profile);
   const cardWidth = useCardWidth(0.86);
 
@@ -362,6 +381,8 @@ export default function DeckEditorScreen() {
                   className={`deck-row rarity-${card.rarity.toLowerCase()}`}
                   style={{ '--rc': FACTIONS[card.faction].colors.primary } as CSSProperties}
                   onClick={() => remove(card.id)}
+                  onMouseEnter={(e) => !isTouchScreen() && setHoverRow({ id: card.id, rect: e.currentTarget.getBoundingClientRect() })}
+                  onMouseLeave={() => setHoverRow(null)}
                   onContextMenu={(e) => {
                     e.preventDefault();
                     useUi.getState().inspectCard(card.id);
@@ -376,6 +397,8 @@ export default function DeckEditorScreen() {
               </li>
             ))}
           </ol>
+
+          {hoverRow && rows.some((r) => r.card.id === hoverRow.id) && <DeckRowPreview id={hoverRow.id} rect={hoverRow.rect} variant={bestVariant(collection.cards[hoverRow.id])} />}
 
           <div className="editor-actions">
             <button className="btn btn-sm" onClick={autoComplete} disabled={size >= DECK_RULES.deckSize}>

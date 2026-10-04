@@ -268,3 +268,8 @@
 .talent-desc { margin: 0; color: var(--parchment-dim); text-align: center; line-height: 1.35; }
 .talent-desc-rank { color: var(--gold-bright); font-weight: 800; }
 .deck-code { width: 100%; font-family: ui-monospace, monospace; font-size: 12px; word-break: break-all; resize: vertical; margin: var(--space-3) 0; }
+
+/* Hover preview of a deck-list row (mouse only; touch uses long-press inspect) */
+.deck-row-preview { position: fixed; z-index: 400; pointer-events: none; filter: drop-shadow(0 18px 30px rgba(4, 2, 16, 0.85)); animation: deck-preview-in 0.12s var(--ease-out); }
+@keyframes deck-preview-in { from { opacity: 0; transform: translateX(8px); } }
+@media (hover: none) { .deck-row-preview { display: none; } }

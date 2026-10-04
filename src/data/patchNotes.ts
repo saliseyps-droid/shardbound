@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.24.1',
+    date: '2026-10-04',
+    title: 'Deck list previews',
+    summary: 'Hovering a card in the deck list shows it large.',
+    sections: [{ kind: 'improved', items: ['Deck editor: hover a card in your deck list (right panel) to see the full card next to it.'] }],
+    commits: [],
+  },
+  {
     version: '0.24.0',
     date: '2026-10-04',
     title: 'Leaderboards, friends and achievements',
