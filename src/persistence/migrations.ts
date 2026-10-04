@@ -22,6 +22,10 @@ export interface MigrationReport {
 
 type Raw = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
+/** Cards whose id changed (e.g. moved to another faction): old id -> new id. */
+const CARD_RENAMES: Record<string, string> = { ver_bubblemaker_qinny: 'ast_bubblemaker_qinny' };
+const renamedCard = (id: string): string => CARD_RENAMES[id] ?? id;
+
 /** Ordered migrations: index i upgrades version i -> i+1. */
 const MIGRATIONS: ((raw: Raw, notes: string[]) => Raw)[] = [
   // v0 -> v1: early prototype saves without a version.
@@ -104,18 +108,19 @@ export function migrateSave(input: Raw): MigrationReport {
   p.ranked = { rating: num(r.rating, 1000, 100), peak: num(r.peak, 1000, 100), wins: Math.floor(num(r.wins, 0)), losses: Math.floor(num(r.losses, 0)) };
   p.aiRanked = repairAiRanked(p.aiRanked);
 
-  // Collection: drop unknown cards and invalid counts.
+  // Collection: drop unknown cards and invalid counts (renamed cards keep their copies).
   const cards: GameSave['collection']['cards'] = {};
-  for (const [id, v] of Object.entries(raw.collection?.cards ?? {})) {
+  for (const [oldId, v] of Object.entries(raw.collection?.cards ?? {})) {
+    const id = renamedCard(oldId);
     if (!hasCard(id)) {
       notes.push(`Removed unknown card from collection: ${id}.`);
       continue;
     }
     const counts = emptyVariants();
-    for (const variant of VARIANTS) counts[variant] = Math.floor(num((v as Raw)?.[variant], 0));
+    for (const variant of VARIANTS) counts[variant] = Math.floor(num((v as Raw)?.[variant], 0)) + (cards[id]?.[variant] ?? 0);
     cards[id] = counts;
   }
-  const collection = { cards, unseen: Array.isArray(raw.collection?.unseen) ? raw.collection.unseen.filter((id: string) => hasCard(id)) : [] };
+  const collection = { cards, unseen: Array.isArray(raw.collection?.unseen) ? raw.collection.unseen.map(renamedCard).filter((id: string) => hasCard(id)) : [] };
 
   // Decks: keep valid structure, strip unknown cards (deck validation flags size issues in UI).
   let decks: Deck[] = Array.isArray(raw.decks)
@@ -123,8 +128,9 @@ export function migrateSave(input: Raw): MigrationReport {
         .filter((d: Raw) => d && typeof d === 'object' && typeof d.id === 'string')
         .map((d: Raw) => {
           const deckCards: Record<string, number> = {};
-          for (const [id, n] of Object.entries(d.cards ?? {})) {
-            if (hasCard(id) && typeof n === 'number' && n > 0) deckCards[id] = Math.floor(n);
+          for (const [oldId, n] of Object.entries(d.cards ?? {})) {
+            const id = renamedCard(oldId);
+            if (hasCard(id) && typeof n === 'number' && n > 0) deckCards[id] = (deckCards[id] ?? 0) + Math.floor(n);
             else if (!hasCard(id)) notes.push(`Removed unknown card ${id} from deck "${d.name}".`);
           }
           const heroFaction: PlayableFaction = PLAYABLE_FACTIONS.includes(d.heroFaction) ? d.heroFaction : 'EMBER';

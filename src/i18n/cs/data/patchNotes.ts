@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.22.1': {
+    title: 'Qinny přechází ke Konkláve',
+    summary: 'Bublinář Qinny přechází ke Konkláve Lumenu a přichází o bublinu na konci tahu.',
+    sections: [
+      [
+        'Bublinář Qinny je teď karta Konkláve Lumenu (dříve Kruh Trnoboru). Kopie, které už máš, ti ve sbírce zůstanou.',
+        'Bublinář Qinny už na konci tvého tahu nedává Bariéru náhodné spřátelené jednotce; při nasazení dál dává Bariéru tvým ostatním jednotkám.',
+      ],
+    ],
+  },
   '0.22.0': {
     title: 'Bublinář Qinny',
     summary: 'Nová legendární karta Kruhu Trnoboru, která obalí tvou armádu ochrannými bublinami.',

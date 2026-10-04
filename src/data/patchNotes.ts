@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.22.1',
+    date: '2026-10-04',
+    title: 'Qinny joins the Conclave',
+    summary: 'Bubblemaker Qinny moves to the Lumen Conclave and loses the end-of-turn bubble.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Bubblemaker Qinny is now a Lumen Conclave card (was Thornweald Circle). Copies you already own stay in your collection.',
+          'Bubblemaker Qinny no longer gives a random friendly unit Barrier at the end of your turn; On Deploy it still gives your other units Barrier.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.22.0',
     date: '2026-10-04',
     title: 'Bubblemaker Qinny',

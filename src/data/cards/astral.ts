@@ -162,4 +162,11 @@ export const ASTRAL_CARDS: CardDefinition[] = [
     abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'RANDOM_ENEMY' }] }],
     flavorText: 'He left the Conclave\'s light to hunt what hides in the dark. He took the light with him.',
   },
+  {
+    ...base, id: 'ast_bubblemaker_qinny', name: 'Bubblemaker Qinny', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'DEEP',
+    manaCost: 6, attack: 4, health: 5, tags: ['Mage'], archetypes: ['Starlit Control'],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'GRANT_KEYWORD', keyword: 'BARRIER', target: 'OTHER_ALLY_UNITS' }] }],
+    description: 'On Deploy: Give your other units Barrier.',
+    flavorText: 'Every bubble holds a breath of starlight. Every breath turns a blade.',
+  },
 ];
