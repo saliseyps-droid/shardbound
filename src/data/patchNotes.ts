@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.22.4',
+    date: '2026-10-04',
+    title: 'Sharper art',
+    summary: 'Elinda and Skolky get sharper card art.',
+    sections: [{ kind: 'improved', items: ['Elinda and Skolky now use higher-resolution art.'] }],
+    commits: [],
+  },
+  {
     version: '0.22.3',
     date: '2026-10-04',
     title: 'Skolky',

@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.22.4': {
+    title: 'Ostřejší obrázky',
+    summary: 'Elinda a Skolky mají ostřejší obrázky karet.',
+    sections: [['Elinda a Skolky teď používají obrázky ve vyšším rozlišení.']],
+  },
   '0.22.3': {
     title: 'Skolky',
     summary: 'Nová legendární karta Dvora Jinovatky, která zmrazí celé nepřátelské bojiště.',
