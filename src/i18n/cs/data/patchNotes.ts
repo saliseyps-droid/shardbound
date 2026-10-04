@@ -1,6 +1,19 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.20.0': {
+    title: 'Poslední Střep',
+    summary: 'Čtyři nové kapitoly kampaně dovádějí příběh do konce, s devíti novými bossy.',
+    sections: [
+      [
+        'Kapitola VI, Hořící rozkvět: o padlé Střepy se přetahuje oheň s kořeny; boss Vulkara, Matka draků.',
+        'Kapitola VII, Hodinová nebesa: Mosazné dominium závodí s Konkláve Lumenu; boss Omnifex, Prvotní montér.',
+        'Kapitola VIII, Utopená hymna: Dvůr Jinovatky a Prázdný chór; boss Morrowgast, Leviatan hlubin.',
+        'Kapitola IX, Poslední Střep: Aeon, Ysolde Třikrát korunovaná, Ignivar a závěrečná bitva s Rozťatou korunou.',
+        'Pět nových schopností bossů a větší odměny za první vítězství v pozdějších kapitolách.',
+      ],
+    ],
+  },
   '0.19.1': {
     title: 'Férové výpadky',
     summary: 'Přerušené spojení mezi dvěma online hráči je teď remíza, kampaň je rozdělená do záložek a balíček Legions of Shadow je čistě vyříznutý.',

@@ -19,6 +19,25 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.20.0',
+    date: '2026-10-04',
+    title: 'The Last Shard',
+    summary: 'Four new campaign chapters take the story to its end, with nine new bosses.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Chapter VI, The Burning Bloom: fire and root fight over the fallen Shards; boss Vulkara, Mother of Drakes.',
+          'Chapter VII, The Clockwork Heavens: the Brass Dominion races the Lumen Conclave; boss Omnifex, the Prime Assembler.',
+          'Chapter VIII, The Drowned Hymn: the Rimetide Court and the Hollow Choir; boss Morrowgast, the Deep Leviathan.',
+          'Chapter IX, The Last Shard: Aeon, Ysolde the Thrice-Crowned, Ignivar and the final battle against the Sundered Crown.',
+          'Five new boss abilities, and bigger first-clear rewards for the later chapters.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.19.1',
     date: '2026-10-04',
     title: 'Fair disconnects',

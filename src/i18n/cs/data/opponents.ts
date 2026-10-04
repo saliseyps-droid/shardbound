@@ -173,6 +173,166 @@ const v: OpponentsOverlay = {
         'V balíčku má samotného Rendoslava a relikvie Pána propasti.',
       ],
     },
+    c6_e1: {
+      name: 'Zažehovačka Maeve',
+      title: 'Palička z Popelavé cesty',
+      intro: 'Se Střepem uvnitř hoří všechno jasněji.',
+      special: [
+        'V balíčku má navíc Válečníka legie.',
+      ],
+    },
+    c6_e2: {
+      name: 'Starý Kůrovec',
+      title: 'Ent spáleného háje',
+      intro: 'Oheň mi vzal háj. Něco si vezmu zpátky.',
+      special: [
+        'V balíčku má navíc Pradávného s úponky.',
+      ],
+    },
+    c6_e3: {
+      name: 'Sazokřídlá Kalla',
+      title: 'Krotitelka draků',
+      intro: 'Moji draci dnes ještě nejedli.',
+      special: [
+        'V balíčku má navíc Popelem zrozeného fénixe.',
+      ],
+    },
+    c6_e4: {
+      name: 'Strážce květů',
+      title: 'Správce Pramene',
+      intro: 'Každé semínko, které spálíš, zasadím dvakrát.',
+      special: [
+        'V balíčku má navíc Věštce Pramene.',
+      ],
+    },
+    c6_boss: {
+      name: 'Vulkara',
+      title: 'Matka draků',
+      intro: 'Vešel jsi do mého hnízda. Málokdo z něj odejde.',
+      special: [
+        'Začíná s 35 životy.',
+        'Schopnosti Strážce: Dračí plod, Rozdmýchaný hněv III.',
+      ],
+    },
+    c7_e1: {
+      name: 'Předák Rusk',
+      title: 'Dozorce Ozubené věže',
+      intro: 'Do řady. Nechte se smontovat.',
+      special: [
+        'V balíčku má navíc Éterodynové jádro.',
+      ],
+    },
+    c7_e2: {
+      name: 'Hvězdopravkyně Ilwen',
+      title: 'Strážkyně oběžných drah',
+      intro: 'Včera v noci jsem ve hvězdách viděla tvou porážku.',
+      special: [
+        'V balíčku má navíc Vodič Lumenu.',
+      ],
+    },
+    c7_e3: {
+      name: 'Mosazný serafín',
+      title: 'Prototyp Éterodynu',
+      intro: 'POKYN: CHRÁNIT STŘEP. POKYN: ODSTRANIT STRÁŽCE.',
+      special: [
+        'V balíčku má navíc Titána egidy.',
+      ],
+    },
+    c7_e4: {
+      name: 'Archontka Teyra',
+      title: 'Tkadlena kouzel Konkláve',
+      intro: 'Má kouzla byla napsána dřív, než ses narodil.',
+      special: [
+        'V balíčku má navíc Ukradené souhvězdí.',
+      ],
+    },
+    c7_boss: {
+      name: 'Omnifex',
+      title: 'Prvotní montér',
+      intro: 'Každý Střep je součástka. Ty jsi náhradní díl.',
+      special: [
+        'Začíná s 35 životy.',
+        'Schopnosti Strážce: Obléhací protokol, Přetaktování III.',
+      ],
+    },
+    c8_e1: {
+      name: 'Mrazivý Odo',
+      title: 'Zamrzlý poustevník',
+      intro: 'Zůstaň chvíli. Zůstaň navždy.',
+      special: [
+        'V balíčku má navíc Čarodějnici jinovatky.',
+      ],
+    },
+    c8_e2: {
+      name: 'Matka Ticho',
+      title: 'Abatyše chóru',
+      intro: 'Pst. Mrtví poslouchají.',
+      special: [
+        'V balíčku má navíc Vysávající přízrak.',
+      ],
+    },
+    c8_e3: {
+      name: 'Kapitán Solnohrob',
+      title: 'Duch utopené flotily',
+      intro: 'Moje posádka šla ke dnu s lodí. Vrátila se bez ní.',
+      special: [
+        'V balíčku má navíc Vír zpětného proudu.',
+      ],
+    },
+    c8_e4: {
+      name: 'Bledý kantor',
+      title: 'Hlas zániku',
+      intro: 'Ještě jedna sloka a svět na tebe zapomene.',
+      special: [
+        'V balíčku má navíc Hymnu zániku.',
+      ],
+    },
+    c8_boss: {
+      name: 'Morrowgast',
+      title: 'Leviatan hlubin',
+      intro: 'Moře má dno. Já jsem to, co žije pod ním.',
+      special: [
+        'Začíná se 40 životy a Utopeným dvorem ve hře.',
+        'Schopnosti Strážce: Zamrzlá hymna, Drtivé hlubiny.',
+      ],
+    },
+    c9_b1: {
+      name: 'Aeon',
+      title: 'Bledý poutník',
+      intro: 'Prošel jsem koncem každého světa. Tvůj je další.',
+      special: [
+        'Začíná se 40 životy.',
+        'Schopnosti Strážce: Pád hvězd, Prozíravost III.',
+      ],
+    },
+    c9_b2: {
+      name: 'Ysolde',
+      title: 'Třikrát korunovaná',
+      intro: 'Jaro, Prázdnota i Jinovatka – byla jsem královnou všech tří. Poklekni před každou z nás.',
+      special: [
+        'Začíná se 40 životy.',
+        'Schopnosti Strážce: Chór rekviem, Pramen III.',
+        'V balíčku má všechny tři Ysoldy.',
+      ],
+    },
+    c9_b3: {
+      name: 'Ignivar',
+      title: 'Spalovač korun',
+      intro: 'Korunu jsem už jednou spálil. Rád to udělám znovu.',
+      special: [
+        'Začíná se 40 životy.',
+        'Schopnosti Strážce: Erupce kaldery, Spalující zloba III.',
+      ],
+    },
+    c9_final: {
+      name: 'Rozťatá koruna',
+      title: 'Vše, co bylo rozbito',
+      intro: 'Posbíral jsi každý můj kousek. Teď uvidíš, co dohromady dokážou.',
+      special: [
+        'Začíná s 50 životy a 1 energií navíc.',
+        'Schopnosti Strážce: Poslední Střep, Úlomek Koruny.',
+      ],
+    },
   },
   chapters: {
     ch1: {
@@ -194,6 +354,22 @@ const v: OpponentsOverlay = {
     ch5: {
       name: 'Kapitola V – Stínový trůn',
       description: 'Na dně světa se Legie shromažďují kolem prázdného trůnu. Někdo na něm chce usednout.',
+    },
+    ch6: {
+      name: 'Kapitola VI – Hořící rozkvět',
+      description: 'Stínový trůn padl a jeho Střepy dopadají do divočiny, kde se o každý z nich přetahuje oheň s kořeny.',
+    },
+    ch7: {
+      name: 'Kapitola VII – Hodinová nebesa',
+      description: 'Střepy stoupají k nebi, kde se o ně předhání Mosazné dominium s Konkláve Lumenu.',
+    },
+    ch8: {
+      name: 'Kapitola VIII – Utopená hymna',
+      description: 'Střepy klesají do hlubin, kde je Dvůr Jinovatky a Prázdný chór uspávají zpěvem.',
+    },
+    ch9: {
+      name: 'Kapitola IX – Poslední Střep',
+      description: 'Všechny Střepy jsou konečně pohromadě. Mezi tebou a celou Korunou stojí jen mocnosti, které je rozprášily.',
     },
   },
 };

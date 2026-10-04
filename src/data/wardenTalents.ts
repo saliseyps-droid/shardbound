@@ -239,7 +239,13 @@ export const BOSS_TALENTS: TalentAbility[] = [
   active('BOSS', 'oath_of_cinders', 'Oath of Cinders', [{ cost: 2, effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'RANDOM_ENEMY' }], description: 'Deal 2 damage to a random enemy.' }]),
   active('BOSS', 'black_tide', 'Black Tide', [{ cost: 2, effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'RANDOM_ENEMY_UNIT' }, { type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }], description: 'Freeze a random enemy unit and gain 2 Armor.' }]),
   active('BOSS', 'soul_pyre', 'Soul Pyre', [{ cost: 2, effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ENEMY_HERO' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }], description: 'Deal 2 damage to the enemy Warden and restore 2 Health to yours.' }]),
-  active('BOSS', 'shadow_muster', 'Shadow Muster', [{ cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_skeleton', count: 2 }], description: 'Summon two 2/2 Skeletons.' }]),
+  // Chapters VI-IX
+  active('BOSS', 'drake_brood', 'Drake Brood', [{ cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_drakeling' }], description: 'Summon a 2/2 Cinder Drakeling with Swift.' }]),
+  active('BOSS', 'siege_protocol', 'Siege Protocol', [{ cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_sentry' }, { type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }], description: 'Summon a 2/3 Brass Sentry with Guard and gain 2 Armor.' }]),
+  active('BOSS', 'frozen_hymn', 'Frozen Hymn', [{ cost: 4, effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'ALL_ENEMY_UNITS' }], description: 'Freeze all enemy units.' }]),
+  active('BOSS', 'starfall', 'Starfall', [{ cost: 3, effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'RANDOM_ENEMY' }], description: 'Deal 3 damage to a random enemy.' }]),
+  active('BOSS', 'last_shard', 'The Last Shard', [{ cost: 2, effects: [{ type: 'DRAW_CARDS', amount: 1 }, { type: 'DEAL_DAMAGE', amount: 2, target: 'RANDOM_ENEMY' }], description: 'Draw a card and deal 2 damage to a random enemy.' }]),
+  active('BOSS', 'shadow_muster', 'Shadow Muster', [{ cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_skeleton', count: 2 }], description: 'Summon two 2/2 Risen Bones.' }]),
 ];
 
 const BY_ID = new Map<string, TalentAbility>([...PLAYABLE_FACTIONS.flatMap((f) => FACTION_TALENTS[f]), ...BOSS_TALENTS].map((t) => [t.id, t]));
