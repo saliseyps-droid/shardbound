@@ -26,10 +26,30 @@ The values in `src/config/firebase.ts` are meant to be public, because Firebase 
 - **One active device.** Signing in on another device makes it the active one. The previous device stops uploading and shows a banner with *Continue here*, which loads the account's latest progress.
 - **Reset account.** While signed in, *Reset account* in Settings also clears the cloud save.
 
+## Social features: leaderboards, friends, invites
+The same project also stores the season leaderboards, friend lists, online status and match invites (`src/cloud/social.ts`). They need **no extra setup** besides the rules:
+
+- **Publish the new rules.** Every time `firestore.rules` changes, paste the whole file into *Firestore → Rules* and choose **Publish**. Until then the leaderboards stay empty and adding friends fails with *permission denied*.
+- **Indexes.** None needed: every query uses a single field (`score` or `rating` for the boards, `to`/`from` for friend requests), which Firestore indexes automatically.
+
+What the rules allow:
+- **Leaderboards** `seasons/{YYYY-MM}/{aiRanked|ranked}/{uid}`: anyone can read (also signed-out players). A player writes only their own entry, only for the current UTC month, and only with valid values: name 1–20 characters, rank 0–15, Crown points only at rank 15, `score = rank × 100000 + crownPoints`, rating 100–4000, and a server timestamp.
+- **Profiles** `profiles/{uid}` (name, portrait, friend code): readable by signed-in players, writable by the owner, and the friend code must belong to them.
+- **Friend codes** `friendCodes/{CODE}` → `{ uid }`: looked up one at a time (no listing), created once by their owner, never taken over.
+- **Friend requests** `friendRequests/{from}_{to}`: created by the sender; read and deleted by sender or recipient.
+- **Friends** `users/{uid}/friends/{friendUid}`: readable by the owner. Created only while a matching friend request exists (the recipient accepting writes both lists in one batch); either friend can delete it.
+- **Presence** `presence/{uid}` `{ lastSeen, inMatch }`: readable by signed-in players, written by the owner with a server timestamp about once a minute while the game is open.
+- **Invites** `invites/{to}/items/{id}`: created only by a player on the recipient's friends list (`from` must be their own uid); the recipient reads, accepts (`status: 'accepted'`) or deletes (declines) it; the sender can watch and delete it.
+
+Seasons are calendar months in UTC. At the start of a month each player gets the reward for their best Ranked vs AI rank on their own device (`src/domain/season.ts`), so the server does not need scheduled jobs.
+
+Dev preview: `npm run dev`, then open `http://localhost:5199/?devsocial#/friends` to see the signed-in screens with fake data. It never talks to Firestore and is not part of production builds.
+
 ## Limits
 The free plan allows 50,000 reads and 20,000 writes per day, and 1 GiB of data.
 - An upload writes the changed slices plus the `users/{uid}` document, usually 2–4 writes.
 - A typical session makes tens of uploads.
+- Social: presence writes about 1 per minute per open game, leaderboard entries 1–2 writes per ranked match, and the leaderboard screen reads up to 100 documents per board view.
 
 ## Not covered
 - **Cheating.** Gold, packs and rewards are still computed in the browser. A determined player could edit their own cloud save, just as they can edit IndexedDB today. Preventing that needs server-side logic (Cloud Functions), which requires the Blaze plan.

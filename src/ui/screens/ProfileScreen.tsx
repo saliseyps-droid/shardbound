@@ -16,6 +16,7 @@ import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { PortraitPicker } from '@/ui/components/PortraitPicker';
 import { effectivePortrait } from '@/domain/portraits';
 import { DeckBox, factionStyle } from '@/ui/components/meta/MetaWidgets';
+import { ProfileAchievements } from '@/ui/components/AchievementBadge';
 import '@/ui/styles/meta.css';
 import { formatDate, t, tn } from '@/i18n';
 
@@ -171,6 +172,8 @@ export default function ProfileScreen() {
           )}
           <RedeemCode />
         </section>
+
+        <ProfileAchievements save={save} />
 
         <section className="panel">
           <div className="panel-title">{t('Battle record')}</div>

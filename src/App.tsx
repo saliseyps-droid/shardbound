@@ -10,6 +10,7 @@ import { ConfirmHost, Spinner, ToastHost } from '@/ui/components/common';
 import { TooltipLayer } from '@/ui/components/Tooltip';
 import { CardInspector } from '@/ui/components/CardInspector';
 import { CloudDialogs } from '@/ui/components/CloudAccount';
+import { SocialHost } from '@/ui/components/SocialHost';
 import { BootScreen, CorruptedSaveScreen, WelcomeScreen } from '@/ui/screens/BootScreens';
 
 const HomeScreen = lazyWithReload(() => import('@/ui/screens/HomeScreen'));
@@ -34,6 +35,9 @@ const RankedScreen = lazyWithReload(() => import('@/ui/screens/RankedScreen'));
 const AiRankedScreen = lazyWithReload(() => import('@/ui/screens/AiRankedScreen'));
 const PatchNotesScreen = lazyWithReload(() => import('@/ui/screens/PatchNotesScreen'));
 const TournamentScreen = lazyWithReload(() => import('@/ui/screens/TournamentScreen'));
+const AchievementsScreen = lazyWithReload(() => import('@/ui/screens/AchievementsScreen'));
+const LeaderboardScreen = lazyWithReload(() => import('@/ui/screens/LeaderboardScreen'));
+const FriendsScreen = lazyWithReload(() => import('@/ui/screens/FriendsScreen'));
 const DebugScreen = import.meta.env.DEV ? lazyWithReload(() => import('@/ui/screens/DebugScreen')) : null;
 
 function Shell() {
@@ -68,6 +72,9 @@ function Shell() {
               <Route path="/ai-ranked" element={<AiRankedScreen />} />
               <Route path="/patch-notes" element={<PatchNotesScreen />} />
               <Route path="/tournament" element={<TournamentScreen />} />
+              <Route path="/achievements" element={<AchievementsScreen />} />
+              <Route path="/leaderboard" element={<LeaderboardScreen />} />
+              <Route path="/friends" element={<FriendsScreen />} />
               {DebugScreen && <Route path="/debug" element={<DebugScreen />} />}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
@@ -111,6 +118,7 @@ export default function App() {
       {status === 'READY' && <Shell />}
       <CardInspector />
       <CloudDialogs />
+      <SocialHost />
       <ConfirmHost />
       <ToastHost />
       <TooltipLayer />

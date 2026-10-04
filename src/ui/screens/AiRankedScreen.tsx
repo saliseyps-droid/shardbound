@@ -23,6 +23,7 @@ import { Glyph, PackIcon } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { DeckPicker, factionStyle, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { AiRankEmblem, aiRankLabel, aiStrengthText } from '@/ui/components/meta/aiRankedUi';
+import { SeasonPanel } from '@/ui/components/meta/SeasonPanel';
 import { t } from '@/i18n';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/aiRanked.css';
@@ -121,10 +122,12 @@ export default function AiRankedScreen() {
             ) : (
               <>
                 {t('Win: +1 star. Loss: −1 star. Three stars rank you up.')} {streakBonus ? t('From the third win in a row, each win gives a bonus star.') : ''}{' '}
-                {t('You never fall out of Silver, Gold or Diamond once you reach them.')}
+                {t('You never fall out of Silver, Gold or Diamond once you reach them this season.')}
               </>
             )}
           </div>
+
+          <SeasonPanel ladder={ladder} now={Date.now()} />
         </section>
 
         <section className="panel air-side" aria-labelledby="air-deck-title">

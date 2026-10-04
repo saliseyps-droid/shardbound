@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
 import { toast } from '@/state/uiStore';
@@ -126,6 +126,11 @@ export default function OnlineScreen() {
               {t('Join')}
             </button>
           </form>
+
+          <hr className="divider" />
+          <Link to="/friends" className="small-link">
+            {t('Invite someone from your friends list instead')}
+          </Link>
         </section>
       </div>
     </div>

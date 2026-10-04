@@ -13,6 +13,7 @@ import { TUTORIAL_STEPS } from './tutorial';
 import { GAME_RULES } from '@/config/gameRules';
 import { CROWN_RANK, TIER_COLORS, aiTierOf } from '@/domain/aiRanked';
 import { AiRankEmblem, aiRankLabel } from '@/ui/components/meta/aiRankedUi';
+import { MatchAchievements } from '@/ui/components/AchievementBadge';
 import { t, tn } from '@/i18n';
 import '@/ui/styles/aiRanked.css';
 
@@ -330,6 +331,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
             </div>
           )}
           {rewards?.firstClear && <p className="gold-text">{t('Encounter cleared for the first time!')}</p>}
+          {rewards?.achievements && rewards.achievements.length > 0 && <MatchAchievements ids={rewards.achievements} />}
           {rewards?.aiRanked && (() => {
             const a = rewards.aiRanked;
             const crown = a.after.rank >= CROWN_RANK;

@@ -11,8 +11,9 @@ import { DEFAULT_PORTRAIT } from '@/domain/portraits';
 import type { Deck } from '@/domain/decks';
 import { CURRENT_SAVE_VERSION, emptyVariants, type GameSave } from '@/domain/save';
 import { createNewSave } from '@/domain/newAccount';
-import { newRanked } from '@/domain/ranked';
+import { newRanked, rankedSeasonFields } from '@/domain/ranked';
 import { repairAiRanked } from '@/domain/aiRanked';
+import { repairAchievements } from '@/domain/achievements';
 
 export interface MigrationReport {
   save: GameSave;
@@ -105,8 +106,10 @@ export function migrateSave(input: Raw): MigrationReport {
   p.activeMatch = repairActiveMatch(p.activeMatch);
   p.bundlesBought = Array.isArray(p.bundlesBought) ? p.bundlesBought.filter((id: unknown) => typeof id === 'string') : [];
   const r = p.ranked && typeof p.ranked === 'object' ? p.ranked : newRanked();
-  p.ranked = { rating: num(r.rating, 1000, 100), peak: num(r.peak, 1000, 100), wins: Math.floor(num(r.wins, 0)), losses: Math.floor(num(r.losses, 0)) };
+  p.ranked = { rating: num(r.rating, 1000, 100), peak: num(r.peak, 1000, 100), wins: Math.floor(num(r.wins, 0)), losses: Math.floor(num(r.losses, 0)), ...rankedSeasonFields(r) };
   p.aiRanked = repairAiRanked(p.aiRanked);
+  p.achievements = repairAchievements(p.achievements);
+  for (const k of ['winStreak', 'bestWinStreak', 'tournamentsWon'] as const) p[k] = Math.floor(num(p[k], 0));
 
   // Collection: drop unknown cards and invalid counts (renamed cards keep their copies).
   const cards: GameSave['collection']['cards'] = {};

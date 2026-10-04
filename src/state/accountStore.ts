@@ -4,7 +4,8 @@ import { ownedCopies } from '@/domain/save';
 import { GameService, type InitStatus } from '@/services/gameService';
 import { MirroredStore } from '@/cloud/sync';
 import { toast } from './uiStore';
-import { t } from '@/i18n';
+import { t, tn } from '@/i18n';
+import { getAchievement } from '@/data/achievements';
 
 /**
  * Account state: a read-only mirror of the service's save. All mutations go
@@ -44,6 +45,17 @@ gameService.subscribe((save) => {
   useAccount.setState({ save, status: save ? 'READY' : 'NEW' });
 });
 gameService.onError((message) => toast(message, 'error'));
+// Achievement unlocks: one toast each, or one summary for a batch (retroactive unlocks on load).
+gameService.onAchievements((ids, retroactive) => {
+  if (retroactive || ids.length > 2) {
+    toast(retroactive ? tn(ids.length, '{n} achievement unlocked from your past progress', '{n} achievements unlocked from your past progress') : tn(ids.length, '{n} achievement unlocked', '{n} achievements unlocked'), 'reward');
+    return;
+  }
+  for (const id of ids) {
+    const def = getAchievement(id);
+    if (def) toast(t('Achievement unlocked: {name}', { name: t(def.name) }), 'reward');
+  }
+});
 
 // Narrow selectors -----------------------------------------------------------
 

@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.24.0',
+    date: '2026-10-04',
+    title: 'Leaderboards, friends and achievements',
+    summary: 'Monthly seasons with leaderboards and rewards, a friends list with one-click invites, and 35 achievements.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Leaderboards for Ranked vs AI and Ranked (signed-in players appear on them), with your position even outside the top 100.',
+          'Monthly seasons: at the start of each month you get a reward for the best Ranked vs AI rank you reached, from 100 Gold at Bronze up to 1000 Gold, 5 packs and 400 Essence at Crown. Then your rank drops by six (Crown starts at Diamond III).',
+          'Friends (needs a cloud account): share your friend code, accept requests, see who is online or in a match, and invite a friend to a match with one click. Playing with a room code still works as before.',
+          'Achievements: 35 goals across battle, campaign, Ranked vs AI, Arena, collection, factions and online play. Each pays out once, the moment you unlock it; anything you have already earned is granted right away.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.23.0',
     date: '2026-10-04',
     title: 'Balance and polish',

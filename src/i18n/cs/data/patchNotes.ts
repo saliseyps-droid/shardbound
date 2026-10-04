@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.24.0': {
+    title: 'Žebříčky, přátelé a úspěchy',
+    summary: 'Měsíční sezóny se žebříčky a odměnami, seznam přátel s pozváním jedním klikem a 35 úspěchů.',
+    sections: [
+      [
+        'Žebříčky pro Ranked proti AI a Ranked (objevují se v nich přihlášení hráči), s tvým pořadím i mimo první stovku.',
+        'Měsíční sezóny: na začátku každého měsíce dostaneš odměnu podle nejlepšího ranku v Ranked proti AI, od 100 zlatých za Bronz až po 1000 zlatých, 5 balíčků a 400 esence za Korunu. Pak ti rank klesne o šest (z Koruny začínáš na Diamantu III).',
+        'Přátelé (potřebuješ cloudový účet): sdílej svůj kód přítele, přijímej žádosti, uvidíš, kdo je online nebo ve hře, a jedním klikem pozveš přítele do zápasu. Hra přes kód místnosti funguje dál jako dřív.',
+        'Úspěchy: 35 cílů v boji, kampani, Ranked proti AI, Aréně, sbírce, frakcích a online hře. Každý se vyplatí jednou, ve chvíli odemčení; co už máš splněné, dostaneš hned.',
+      ],
+    ],
+  },
   '0.23.0': {
     title: 'Vyvážení a doladění',
     summary: 'Úpravy vyváženosti pro Tide, Void, Iron a Ember, férovější výpadky online, výhodnější balení po 10 a spousta oprav rozhraní.',

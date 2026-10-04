@@ -3,6 +3,18 @@ export interface RankedState {
   peak: number;
   wins: number;
   losses: number;
+  /** Monthly season key 'YYYY-MM' (src/domain/season.ts); missing until the first season check. */
+  season?: string;
+  seasonGames?: number;
+  seasonWins?: number;
+}
+
+/** Load-time repair of the season fields (absent ones stay absent). */
+export function rankedSeasonFields(raw: unknown): Pick<RankedState, 'season' | 'seasonGames' | 'seasonWins'> {
+  const r = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
+  if (typeof r.season !== 'string' || !/^\d{4}-\d{2}$/.test(r.season)) return {};
+  const n = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? Math.max(0, Math.floor(v)) : 0);
+  return { season: r.season, seasonGames: n(r.seasonGames), seasonWins: n(r.seasonWins) };
 }
 
 export const RANKED_CONFIG = {
@@ -60,6 +72,7 @@ export function applyRanked(state: RankedState, opponentRating: number, result: 
       peak: Math.max(Number.isFinite(state.peak) ? state.peak : rating, rating),
       wins: state.wins + (result === 'WIN' ? 1 : 0),
       losses: state.losses + (result === 'LOSS' ? 1 : 0),
+      ...(state.season ? { season: state.season, seasonGames: (state.seasonGames ?? 0) + 1, seasonWins: (state.seasonWins ?? 0) + (result === 'WIN' ? 1 : 0) } : {}),
     },
   };
 }

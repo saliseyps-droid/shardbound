@@ -20,7 +20,9 @@ import { buyPortrait, choosePortrait } from '@/domain/portraits';
 import { buyBundle } from '@/domain/bundles';
 import { setActiveMatch, settleAbandonedMatch, type ActiveMatch } from '@/domain/activeMatch';
 import { applyRedeem, findCode } from '@/domain/redeem';
+import { recordAchievementMatch, settleAchievements } from '@/domain/achievements';
 import { migrateSave } from '@/persistence/migrations';
+import { acknowledgeSeasonReward, applySeasonRollover } from '@/domain/season';
 import { SaveGateway } from '@/persistence/repositories';
 import { IndexedDbStore, MemoryStore, type KeyValueStore } from '@/persistence/storage';
 
@@ -31,6 +33,8 @@ export type InitStatus =
 
 type Listener = (save: GameSave | null) => void;
 type ErrorListener = (message: string) => void;
+/** Newly unlocked achievement ids; `retroactive` when unlocked from existing progress on load. */
+type AchievementListener = (ids: string[], retroactive: boolean) => void;
 
 /**
  * Local implementation of the game backend. Every mutation runs a pure domain
@@ -41,6 +45,7 @@ export class GameService {
   private save: GameSave | null = null;
   private listeners = new Set<Listener>();
   private errorListeners = new Set<ErrorListener>();
+  private achievementListeners = new Set<AchievementListener>();
   private writeChain: Promise<void> = Promise.resolve();
   private readonly gateway: SaveGateway;
   /** Injectable clock for tests. */
@@ -73,6 +78,15 @@ export class GameService {
     return () => this.errorListeners.delete(listener);
   }
 
+  onAchievements(listener: AchievementListener): () => void {
+    this.achievementListeners.add(listener);
+    return () => this.achievementListeners.delete(listener);
+  }
+
+  private emitAchievements(ids: string[], retroactive: boolean) {
+    if (ids.length) for (const l of this.achievementListeners) l(ids, retroactive);
+  }
+
   get current(): GameSave | null {
     return this.save;
   }
@@ -85,9 +99,13 @@ export class GameService {
   /** Last snapshot known to be on disk; diffs are computed against it so a failed write is retried in full. */
   private lastPersisted: GameSave | null = null;
 
-  private commit(next: GameSave) {
+  /** `unlocked`: achievements the caller already settled (e.g. by a recorded match); any others now met are unlocked here. */
+  private commit(candidate: GameSave, unlocked: string[] = []) {
+    const settled = settleAchievements(candidate, this.now());
+    const next = settled.save;
     this.save = next;
     for (const l of this.listeners) l(next);
+    this.emitAchievements([...unlocked, ...settled.unlocked], false);
     this.writeChain = this.writeChain
       .then(() => this.gateway.persist(next, this.lastPersisted))
       .then(() => {
@@ -134,6 +152,11 @@ export class GameService {
       const abandoned = settleAbandonedMatch(save, this.now());
       save = abandoned.save;
       save = refreshQuests(save, this.now(), createRng(randomSeed()));
+      // A new month: last season's reward and the ladder soft reset (src/domain/season.ts).
+      save = applySeasonRollover(save, this.now()).save;
+      // Achievements already earned by existing progress (e.g. from before achievements existed).
+      const retro = settleAchievements(save, this.now(), undefined, { retroactive: true });
+      save = retro.save;
       // Monotonic: a clock turned back never lowers it (see src/domain/clock.ts).
       save = { ...save, profile: { ...save.profile, lastSeenAt: Math.max(save.profile.lastSeenAt || 0, this.now()) } };
       this.save = save;
@@ -145,6 +168,7 @@ export class GameService {
           this.lastPersisted = save;
         })
         .catch((e) => console.error('[save] persist after migration failed', e));
+      this.emitAchievements(retro.unlocked, true);
       return { kind: 'LOADED', notes: report.notes, abandonedMatch: !!abandoned.settled };
     } catch (e) {
       let backupKey: string | undefined;
@@ -173,10 +197,17 @@ export class GameService {
     for (const l of this.listeners) l(null);
   }
 
+  /** The season-end reward dialog was closed. */
+  acknowledgeSeasonReward() {
+    const save = this.require();
+    const next = acknowledgeSeasonReward(save);
+    if (next !== save) this.commit(next);
+  }
+
   /** Daily housekeeping when the app stays open across midnight. */
   tick() {
     if (!this.save) return;
-    const next = refreshQuests(this.save, this.now(), createRng(randomSeed()));
+    const next = applySeasonRollover(refreshQuests(this.save, this.now(), createRng(randomSeed())), this.now()).save;
     if (next !== this.save) this.commit({ ...next, profile: { ...next.profile, lastSeenAt: Math.max(next.profile.lastSeenAt || 0, this.now()) } });
   }
 
@@ -369,8 +400,9 @@ export class GameService {
   }
 
   /** Tournament placement prize (awarded once per finished tournament by the tournament store). */
-  grantTournamentPrize(gold: number, source: string, packs = 0) {
-    const save = this.require();
+  grantTournamentPrize(gold: number, source: string, packs = 0, champion = false) {
+    const prev = this.require();
+    const save = champion ? { ...prev, profile: { ...prev.profile, tournamentsWon: (prev.profile.tournamentsWon ?? 0) + 1 } } : prev;
     const economy = packs > 0 ? { ...save.economy, packs: { ...save.economy.packs, ABYSS: (save.economy.packs.ABYSS ?? 0) + packs } } : save.economy;
     this.commit(pushReward({ ...save, economy, profile: { ...save.profile, gold: save.profile.gold + gold } }, { source, gold, packs: packs > 0 ? { setId: 'ABYSS', amount: packs } : undefined }, this.now()));
   }
@@ -397,12 +429,16 @@ export class GameService {
   }
 
   recordMatch(summary: MatchSummary): MatchRewards {
-    let { save, rewards } = applyMatchResult(setActiveMatch(this.require(), null), summary, this.now());
+    // A match finished in a new month counts toward the new season.
+    let { save, rewards } = applyMatchResult(setActiveMatch(applySeasonRollover(this.require(), this.now()).save, null), summary, this.now());
     if (summary.mode === 'ARENA') {
       const res = recordArenaMatch(save, summary.result, this.now());
       if (res.ok) save = res.value;
     }
-    this.commit(save);
+    save = recordAchievementMatch(save, summary);
+    const ach = settleAchievements(save, this.now(), summary);
+    rewards = { ...rewards, gold: rewards.gold + ach.gold, essence: rewards.essence + ach.essence, achievements: ach.unlocked };
+    this.commit(ach.save, ach.unlocked);
     return rewards;
   }
 

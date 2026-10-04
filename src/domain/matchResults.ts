@@ -27,6 +27,8 @@ export interface MatchSummary {
   firstWinReward?: OpponentReward;
   /** Ranked online match: the opponent's rating at match start. */
   ranked?: { opponentRating: number };
+  /** The player's Warden health at the end (achievements). */
+  heroHealth?: number;
 }
 
 export interface RewardLine {
@@ -59,6 +61,8 @@ export interface MatchRewards {
     rankChange: 'UP' | 'DOWN' | 'NONE';
     tierReached?: AiTierName;
   };
+  /** Achievements this match unlocked (ids; their Gold and Essence are included above). */
+  achievements?: string[];
 }
 
 export function questEventsFromMatch(summary: MatchSummary): QuestProgressEvent[] {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
 import { netSession } from '@/net/session';
@@ -12,9 +12,13 @@ import { PLAYABLE_FACTIONS, type PlayableFaction } from '@/game/types';
 import { ProgressBar, ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
-import { tr } from '@/i18n';
+import { tn, tr } from '@/i18n';
+import { daysLeftInSeason, seasonKeyOf } from '@/domain/season';
+import { seasonName } from '@/ui/components/SocialHost';
+import { Glyph } from '@/ui/components/Icons';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/online.css';
+import '@/ui/styles/social.css';
 
 /** Ranked ladder: find a random opponent who is also searching. */
 export default function RankedScreen() {
@@ -109,6 +113,13 @@ export default function RankedScreen() {
           )}
           <p className="muted num">
             {tr('{wins} wins, {losses} losses, peak {peak}', { wins: r.wins, losses: r.losses, peak: r.peak })}
+          </p>
+          <p className="faint">
+            {tr('Season {name}', { name: seasonName(seasonKeyOf(Date.now())) })} · {tn(daysLeftInSeason(Date.now()), '{n} day left', '{n} days left')}.{' '}
+            {tr('At the start of each month, ratings above 1000 move halfway back toward 1000.')}{' '}
+            <Link to="/leaderboard?board=ranked" className="small-link board-link">
+              <Glyph name="trophy" size={14} /> {tr('Leaderboard')}
+            </Link>
           </p>
           {!searching ? (
             <button className="btn btn-primary btn-lg" disabled={!valid} onClick={() => void search()}>

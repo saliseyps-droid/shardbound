@@ -23,6 +23,25 @@ export interface AiRankedState {
   best: number;
   /** Tiers whose one-time reward has been granted. */
   tierRewardsClaimed: string[];
+  /** Monthly season (src/domain/season.ts): its key 'YYYY-MM' (UTC). Missing until the first season check. */
+  season?: string;
+  /** Highest rank reached this season (the season reward and the rank floors follow it). */
+  seasonBest?: number;
+  /** Ranked vs AI matches played / won this season. */
+  seasonGames?: number;
+  seasonWins?: number;
+  /** Reward granted when the last season ended, until the player has seen it. */
+  pendingSeasonReward?: SeasonRewardGrant;
+}
+
+/** What the end of a season paid (already added to the save; kept only to show it). */
+export interface SeasonRewardGrant {
+  season: string;
+  bestRank: number;
+  gold: number;
+  essence: number;
+  packs: number;
+  setId: SetId;
 }
 
 export type AiTierName = 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond' | 'Crown';
@@ -110,8 +129,11 @@ export interface AiRankedOutcome {
 
 export function applyAiRankedResult(prev: AiRankedState, result: 'WIN' | 'LOSS' | 'DRAW'): AiRankedOutcome {
   const s = repairAiRanked(prev);
+  // Season counters move only once the ladder belongs to a season (see src/domain/season.ts).
+  const season = (st: AiRankedState, win: boolean): AiRankedState =>
+    st.season ? { ...st, seasonBest: Math.max(st.seasonBest ?? st.rank, st.rank), seasonGames: (st.seasonGames ?? 0) + 1, seasonWins: (st.seasonWins ?? 0) + (win ? 1 : 0) } : st;
   // A draw keeps the stars but breaks the win streak.
-  if (result === 'DRAW') return { state: { ...s, streak: 0, draws: (s.draws ?? 0) + 1 }, rankChange: 'NONE', starDelta: 0 };
+  if (result === 'DRAW') return { state: season({ ...s, streak: 0, draws: (s.draws ?? 0) + 1 }, false), rankChange: 'NONE', starDelta: 0 };
   if (result === 'WIN') {
     const streak = s.streak + 1;
     let rank = s.rank;
@@ -131,7 +153,7 @@ export function applyAiRankedResult(prev: AiRankedState, result: 'WIN' | 'LOSS' 
     const best = Math.max(s.best, rank);
     const tierReached = aiTierIndex(rank) > aiTierIndex(s.best) ? aiTierOf(rank) : undefined;
     return {
-      state: { ...s, rank, stars, streak, wins: s.wins + 1, best },
+      state: season({ ...s, rank, stars, streak, wins: s.wins + 1, best }, true),
       rankChange: rank > s.rank ? 'UP' : 'NONE',
       starDelta: gained,
       tierReached,
@@ -146,13 +168,13 @@ export function applyAiRankedResult(prev: AiRankedState, result: 'WIN' | 'LOSS' 
   } else if (stars > 0) {
     stars--;
     lost = 1;
-  } else if (rank > floorFor(s.best)) {
+  } else if (rank > floorFor(s.seasonBest ?? s.best)) {
     rank--;
     stars = STARS_PER_RANK - 1;
     lost = 1;
   }
   return {
-    state: { ...s, rank, stars, streak: 0, losses: s.losses + 1 },
+    state: season({ ...s, rank, stars, streak: 0, losses: s.losses + 1 }, false),
     rankChange: rank < s.rank ? 'DOWN' : 'NONE',
     starDelta: -lost,
   };
@@ -176,7 +198,19 @@ export function repairAiRanked(raw: unknown): AiRankedState {
     ...(draws > 0 ? { draws } : {}),
     best: Math.max(rank, int(r.best, 0, CROWN_RANK)),
     tierRewardsClaimed: [...new Set(claimed)],
+    ...repairSeasonFields(r, rank, int),
   };
+}
+
+/** Season fields survive load only when well-formed; absent ones stay absent. */
+function repairSeasonFields(r: Record<string, unknown>, rank: number, int: (v: unknown, min?: number, max?: number) => number): Partial<AiRankedState> {
+  if (typeof r.season !== 'string' || !/^\d{4}-\d{2}$/.test(r.season)) return {};
+  const out: Partial<AiRankedState> = { season: r.season, seasonBest: Math.max(rank, int(r.seasonBest, 0, CROWN_RANK)), seasonGames: int(r.seasonGames), seasonWins: int(r.seasonWins) };
+  const g = r.pendingSeasonReward as Record<string, unknown> | undefined;
+  if (g && typeof g === 'object' && typeof g.season === 'string' && typeof g.setId === 'string') {
+    out.pendingSeasonReward = { season: g.season, bestRank: int(g.bestRank, 0, CROWN_RANK), gold: int(g.gold), essence: int(g.essence), packs: int(g.packs), setId: g.setId as SetId };
+  }
+  return out;
 }
 
 /** Tiers reached (by best rank) whose one-time reward has not been granted yet. */

@@ -530,6 +530,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         conceded: state.endReason === 'CONCEDE' && state.winner !== HUMAN,
         pveEncounterId: cfg.mode === 'PVE' ? cfg.encounterId : undefined,
         firstWinReward: cfg.mode === 'PVE' ? cfg.opponent.firstWinReward : undefined,
+        heroHealth: state.players[HUMAN].hero.health,
       });
       set({ rewards });
       if (cfg.mode === 'TOURNAMENT' && cfg.tournamentMatchId) onTournamentMatchEnd?.(cfg.tournamentMatchId, result);

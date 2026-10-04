@@ -52,6 +52,13 @@ export interface PlayerProfile {
   bundlesBought: string[];
   /** A match with stakes in progress (src/domain/activeMatch.ts); recorded as a loss if the app is reloaded mid-match. */
   activeMatch?: ActiveMatch | null;
+  /** Achievements unlocked: id -> unlock time (src/domain/achievements.ts). */
+  achievements: Record<string, number>;
+  /** Consecutive wins (tutorial excluded) and the best run so far, for achievements. */
+  winStreak: number;
+  bestWinStreak: number;
+  /** Tournaments won as champion. */
+  tournamentsWon: number;
 }
 
 export type VariantCounts = Record<Variant, number>;

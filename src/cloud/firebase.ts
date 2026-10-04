@@ -2,11 +2,14 @@ import type { Auth, User } from 'firebase/auth';
 import { FIREBASE_CONFIG } from '@/config/firebase';
 import { createFirestoreBackend } from './firestore';
 import type { CloudBackend } from './sync';
+import type { SocialBackend } from '@/social/backend';
 
 /** Firebase is only downloaded when cloud save is configured (see src/config/firebase.ts). */
 export interface CloudServices {
   auth: Auth;
   backend: CloudBackend;
+  /** Leaderboards, friends, presence and invites (src/cloud/social.ts). */
+  social: SocialBackend;
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   createAccount: (email: string, password: string) => Promise<void>;
@@ -23,10 +26,12 @@ export function loadCloud(): Promise<CloudServices> {
       const [{ initializeApp }, authMod, { getFirestore }] = await Promise.all([import('firebase/app'), import('firebase/auth'), import('firebase/firestore')]);
       const app = initializeApp(FIREBASE_CONFIG);
       const auth = authMod.getAuth(app);
-      const backend = await createFirestoreBackend(getFirestore(app));
+      const db = getFirestore(app);
+      const [backend, social] = await Promise.all([createFirestoreBackend(db), import('./social').then((m) => m.createSocialBackend(db))]);
       return {
         auth,
         backend,
+        social,
         signInWithGoogle: async () => {
           await authMod.signInWithPopup(auth, new authMod.GoogleAuthProvider());
         },

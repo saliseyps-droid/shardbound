@@ -242,7 +242,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
       const prizes = tournamentPrizes(sizeOf(t));
       const packs = (n: number) => (n > 0 ? ` and ${n} booster pack${n > 1 ? 's' : ''}` : '');
       if (t.championId === myId) {
-        gameService.grantTournamentPrize(prizes.champion.gold, 'Tournament champion', prizes.champion.packs);
+        gameService.grantTournamentPrize(prizes.champion.gold, 'Tournament champion', prizes.champion.packs, true);
         toast(`You won the tournament! +${prizes.champion.gold} Gold${packs(prizes.champion.packs)}`, 'reward');
       } else if (t.runnerUpId === myId) {
         gameService.grantTournamentPrize(prizes.runnerUp.gold, 'Tournament runner-up', prizes.runnerUp.packs);
