@@ -2,39 +2,16 @@ import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
   '0.22.5': {
-    title: 'Qvido',
-    summary: 'Nová legendární karta Popelavé legie, která zapálí celé nepřátelské bojiště.',
-    sections: [['Qvido (Popelavá legie, legendární, Fantasy Realms): 5 many, 3/4. Při nasazení: způsob 1 poškození všem nepřátelům a všem nepřátelským jednotkám uděl Hoření 2.']],
-  },
-  '0.22.4': {
-    title: 'Ostřejší obrázky',
-    summary: 'Elinda a Skolky mají ostřejší obrázky karet.',
-    sections: [['Elinda a Skolky teď používají obrázky ve vyšším rozlišení.']],
-  },
-  '0.22.3': {
-    title: 'Skolky',
-    summary: 'Nová legendární karta Dvora Jinovatky, která zmrazí celé nepřátelské bojiště.',
-    sections: [['Skolky (Dvůr Jinovatky, legendární, Fantasy Realms): 6 many, 5/5. Při nasazení: zmraz všechny nepřátelské jednotky. Poslední dech: vrať náhodnou nepřátelskou jednotku do ruky jejího vlastníka.']],
-  },
-  '0.22.2': {
-    title: 'Elinda',
-    summary: 'Nová legendární karta Kruhu Trnoboru, která mění léčení v sílu.',
-    sections: [['Elinda (Kruh Trnoboru, legendární, Fantasy Realms): 5 many, 3/5. Při nasazení: obnov všem spřáteleným postavám 3 životy. Kdykoli se spřátelená postava vyléčí, dej náhodné spřátelené jednotce +1 k útoku.']],
-  },
-  '0.22.1': {
-    title: 'Qinny přechází ke Konkláve',
-    summary: 'Bublinář Qinny přechází ke Konkláve Lumenu a přichází o bublinu na konci tahu.',
+    title: 'Nové legendárky',
+    summary: 'Do Fantasy Realms přibyly čtyři nové legendární karty: Bublinář Qinny, Elinda, Skolky a Qvido.',
     sections: [
       [
-        'Bublinář Qinny je teď karta Konkláve Lumenu (dříve Kruh Trnoboru). Kopie, které už máš, ti ve sbírce zůstanou.',
-        'Bublinář Qinny už na konci tvého tahu nedává Bariéru náhodné spřátelené jednotce; při nasazení dál dává Bariéru tvým ostatním jednotkám.',
+        'Bublinář Qinny (Konkláve Lumenu): 6 many, 4/5. Při nasazení: dej svým ostatním jednotkám Bariéru.',
+        'Elinda (Kruh Trnoboru): 5 many, 3/5. Při nasazení: obnov všem spřáteleným postavám 3 životy. Kdykoli se spřátelená postava vyléčí, dej náhodné spřátelené jednotce +1 k útoku.',
+        'Skolky (Dvůr Jinovatky): 6 many, 5/5. Při nasazení: zmraz všechny nepřátelské jednotky. Poslední dech: vrať náhodnou nepřátelskou jednotku do ruky jejího vlastníka.',
+        'Qvido (Popelavá legie): 5 many, 3/4. Při nasazení: způsob 1 poškození všem nepřátelům a všem nepřátelským jednotkám uděl Hoření 2.',
       ],
     ],
-  },
-  '0.22.0': {
-    title: 'Bublinář Qinny',
-    summary: 'Nová legendární karta Kruhu Trnoboru, která obalí tvou armádu ochrannými bublinami.',
-    sections: [['Bublinář Qinny (Kruh Trnoboru, legendární, Fantasy Realms): 6 many, 4/5. Při nasazení: dej svým ostatním jednotkám Bariéru. Na konci tvého tahu dej jiné náhodné spřátelené jednotce Bariéru.']],
   },
   '0.21.2': {
     title: 'Přehlednější Hrát',

@@ -21,75 +21,17 @@ export const PATCH_NOTES: PatchNote[] = [
   {
     version: '0.22.5',
     date: '2026-10-04',
-    title: 'Qvido',
-    summary: 'A new Cinder Legion Legendary who sets the whole enemy board alight.',
+    title: 'New Legendaries',
+    summary: 'Four new Legendaries join Fantasy Realms: Bubblemaker Qinny, Elinda, Skolky and Qvido.',
     sections: [
       {
         kind: 'new',
-        items: ['Qvido (Cinder Legion, Legendary, Fantasy Realms): 5 mana 3/4. On Deploy: deal 1 damage to all enemies and apply Burn 2 to all enemy units.'],
-      },
-    ],
-    commits: [],
-  },
-  {
-    version: '0.22.4',
-    date: '2026-10-04',
-    title: 'Sharper art',
-    summary: 'Elinda and Skolky get sharper card art.',
-    sections: [{ kind: 'improved', items: ['Elinda and Skolky now use higher-resolution art.'] }],
-    commits: [],
-  },
-  {
-    version: '0.22.3',
-    date: '2026-10-04',
-    title: 'Skolky',
-    summary: 'A new Rimetide Court Legendary who freezes the whole enemy board.',
-    sections: [
-      {
-        kind: 'new',
-        items: ['Skolky (Rimetide Court, Legendary, Fantasy Realms): 6 mana 5/5. On Deploy: Freeze all enemy units. Last Breath: return a random enemy unit to its owner\'s hand.'],
-      },
-    ],
-    commits: [],
-  },
-  {
-    version: '0.22.2',
-    date: '2026-10-04',
-    title: 'Elinda',
-    summary: 'A new Thornweald Circle Legendary who turns healing into strength.',
-    sections: [
-      {
-        kind: 'new',
-        items: ['Elinda (Thornweald Circle, Legendary, Fantasy Realms): 5 mana 3/5. On Deploy: restore 3 Health to all friendly characters. Whenever a friendly character is healed, give a random friendly unit +1 Attack.'],
-      },
-    ],
-    commits: [],
-  },
-  {
-    version: '0.22.1',
-    date: '2026-10-04',
-    title: 'Qinny joins the Conclave',
-    summary: 'Bubblemaker Qinny moves to the Lumen Conclave and loses the end-of-turn bubble.',
-    sections: [
-      {
-        kind: 'balance',
         items: [
-          'Bubblemaker Qinny is now a Lumen Conclave card (was Thornweald Circle). Copies you already own stay in your collection.',
-          'Bubblemaker Qinny no longer gives a random friendly unit Barrier at the end of your turn; On Deploy it still gives your other units Barrier.',
+          'Bubblemaker Qinny (Lumen Conclave): 6 mana 4/5. On Deploy: give your other units Barrier.',
+          'Elinda (Thornweald Circle): 5 mana 3/5. On Deploy: restore 3 Health to all friendly characters. Whenever a friendly character is healed, give a random friendly unit +1 Attack.',
+          'Skolky (Rimetide Court): 6 mana 5/5. On Deploy: Freeze all enemy units. Last Breath: return a random enemy unit to its owner\'s hand.',
+          'Qvido (Cinder Legion): 5 mana 3/4. On Deploy: deal 1 damage to all enemies and apply Burn 2 to all enemy units.',
         ],
-      },
-    ],
-    commits: [],
-  },
-  {
-    version: '0.22.0',
-    date: '2026-10-04',
-    title: 'Bubblemaker Qinny',
-    summary: 'A new Thornweald Circle Legendary who wraps your army in protective bubbles.',
-    sections: [
-      {
-        kind: 'new',
-        items: ['Bubblemaker Qinny (Thornweald Circle, Legendary, Fantasy Realms): 6 mana 4/5. On Deploy: give your other units Barrier. At the end of your turn, give another random friendly unit Barrier.'],
       },
     ],
     commits: [],
