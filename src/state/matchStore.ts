@@ -21,6 +21,7 @@ import { useMatchLaunch, type MatchConfig } from './matchLaunch';
 import { setLastMatchLog } from '@/ui/match/matchLog';
 import { t } from '@/i18n';
 import { netSession, type NetMessage } from '@/net/session';
+import { GuestSync, HostSync } from '@/net/stateSync';
 import { guestEvents, guestView, mirrorAction } from '@/net/view';
 import { TUTORIAL_STEPS, tutorialOpponentAction, tutorialSetup } from '@/ui/match/tutorial';
 
@@ -115,6 +116,9 @@ let recordedGen = -1;
 let leaving = false;
 /** Initial online state received by the guest before its board mounted. */
 let pendingInitial: GameState | null = null;
+/** Online: the host sends the guest deltas against the last view it sent (see net/stateSync.ts). */
+const hostSync = new HostSync();
+const guestSync = new GuestSync();
 /** Set by the tournament store: called once when a tournament match finishes. */
 let onTournamentMatchEnd: ((matchId: string, result: 'WIN' | 'LOSS' | 'DRAW') => void) | null = null;
 export function setTournamentMatchHandler(fn: ((matchId: string, result: 'WIN' | 'LOSS' | 'DRAW') => void) | null) {
@@ -258,7 +262,7 @@ export const useMatch = create<MatchStore>((set, get) => {
   /** Animates and commits a transition (computed locally, or received from the online host). */
   async function present(game: GameState, res: { state: GameState; events: GameEvent[] }, gen = matchGen): Promise<boolean> {
     const stale = () => gen !== matchGen || get().game !== game;
-    if (get().config?.online === 'host') netSession.send({ t: 'state', state: guestView(res.state), events: guestEvents(res.events) });
+    if (get().config?.online === 'host') netSession.send(hostSync.next(guestView(res.state), guestEvents(res.events)));
     set({ busy: true });
     try {
       // Show what the opponent played before it resolves.
@@ -353,17 +357,28 @@ export const useMatch = create<MatchStore>((set, get) => {
       .then(async () => {
         const cfg = get().config;
         if (msg.t === 'state' && msg.initial) {
+          guestSync.reset();
+          guestSync.receive(msg);
           pendingInitial = msg.state;
           return;
         }
         if (!cfg?.online) return;
         if (cfg.online === 'host' && msg.t === 'action') return hostApplyRemote(msg.action);
-        if (cfg.online === 'guest' && msg.t === 'state') {
+        if (cfg.online === 'host' && msg.t === 'resync') {
+          const full = hostSync.resend();
+          if (full) netSession.send(full);
+          return;
+        }
+        if (cfg.online === 'guest' && (msg.t === 'state' || msg.t === 'delta')) {
+          const update = guestSync.receive(msg);
+          if (!update) return;
+          // Out of step (missed or mismatching delta): ask the host for the full view.
+          if ('resync' in update) return netSession.send({ t: 'resync' });
           if (guestBusyTimer) clearTimeout(guestBusyTimer);
           const game = get().game;
           if (!game) return;
           set({ busy: false });
-          await present(game, { state: msg.state, events: msg.events });
+          await present(game, update);
           return;
         }
         if (cfg.online === 'guest' && msg.t === 'error') {
@@ -627,7 +642,7 @@ export const useMatch = create<MatchStore>((set, get) => {
           opponentRating: config.mode === 'RANKED' ? sanitizeRating(config.opponentRating) : undefined,
         });
       }
-      if (config.online === 'host') netSession.send({ t: 'state', state: guestView(state), events: [], initial: true });
+      if (config.online === 'host') netSession.send(hostSync.full(guestView(state), [], true));
       set({
         config,
         game: state,
@@ -831,7 +846,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       // Concede works even during the opponent's turn.
       const res = applyAction(s.game, { type: 'CONCEDE', player: HUMAN });
       if (s.config?.online === 'guest') netSession.send({ t: 'action', action: { type: 'CONCEDE', player: HUMAN } });
-      if (s.config?.online === 'host' && !res.error) netSession.send({ t: 'state', state: guestView(res.state), events: guestEvents(res.events) });
+      if (s.config?.online === 'host' && !res.error) netSession.send(hostSync.next(guestView(res.state), guestEvents(res.events)));
       if (!res.error) {
         set({ game: res.state, version: s.version + 1, busy: false, cast: null, linkCheck: false });
         setLastMatchLog(res.state.log);

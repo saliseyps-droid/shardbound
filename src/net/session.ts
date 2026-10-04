@@ -3,8 +3,10 @@ import type { DataConnection, Peer } from 'peerjs';
 import { peerOptions } from './iceServers';
 import { collectibleCards } from '@/data/cards';
 import { hashString } from '@/core/rng';
-import type { GameAction, GameEvent, GameState, SideSetup } from '@/engine/types';
+import type { GameAction, SideSetup } from '@/engine/types';
 import { sanitizeRemoteSide } from './lobby';
+import { gzipSupported, pack, unpack, COMPRESS_MIN_BYTES, type Compressed } from './compress';
+import type { DeltaStateMsg, FullStateMsg } from './stateSync';
 
 /**
  * Peer-to-peer match session (WebRTC via PeerJS's public signalling server).
@@ -12,7 +14,8 @@ import { sanitizeRemoteSide } from './lobby';
  * mirrored views. The guest only sends actions.
  */
 
-export const PROTOCOL_VERSION = 4;
+// 5: delta states (`delta`/`resync`) and gzip-compressed large messages (`z`).
+export const PROTOCOL_VERSION = 5;
 export const ID_PREFIX = 'shardbound-v1-';
 const HEARTBEAT_MS = 4000;
 const TIMEOUT_MS = 15000;
@@ -32,10 +35,15 @@ export function contentHash(): number {
 export const CONTENT_HASH = contentHash();
 
 export type NetMessage =
-  | { t: 'hello'; protocol: number; content: number; side: SideSetup; deckName: string; meta?: Record<string, unknown> }
-  | { t: 'welcome'; hostName: string; hostAvatar: string; meta?: Record<string, unknown> }
+  | { t: 'hello'; protocol: number; content: number; side: SideSetup; deckName: string; meta?: Record<string, unknown>; gzip?: boolean }
+  | { t: 'welcome'; hostName: string; hostAvatar: string; meta?: Record<string, unknown>; gzip?: boolean }
   | { t: 'reject'; reason: string }
-  | { t: 'state'; state: GameState; events: GameEvent[]; initial?: boolean }
+  /** A full guest view (the initial one, or the answer to `resync`). */
+  | FullStateMsg
+  /** A patch against the last view the guest received (see stateSync.ts). */
+  | DeltaStateMsg
+  /** Guest: my view is out of step, send a full state. */
+  | { t: 'resync' }
   /** Sent by the guest in its own (mirrored) coordinates; the host converts it. */
   | { t: 'action'; action: GameAction }
   | { t: 'error'; message: string }
@@ -77,6 +85,16 @@ class NetSession {
   private statusListeners = new Set<() => void>();
   private lastSeen = 0;
   private heartbeat: number | null = null;
+  /** Both sides can gzip (agreed in hello/welcome): large messages are sent compressed. */
+  private gzip = false;
+  /** Outgoing messages waiting for compression (sent strictly in order). */
+  private sendChain: Promise<void> = Promise.resolve();
+  private sendPending = 0;
+  /** Incoming messages waiting for decompression (delivered strictly in order). */
+  private recvChain: Promise<void> = Promise.resolve();
+  private recvPending = 0;
+  /** Messages sent in this app session, and how many of them went out compressed. */
+  stats = { messages: 0, compressed: 0 };
 
   onMessage(l: Listener) {
     this.listeners.add(l);
@@ -99,7 +117,36 @@ class NetSession {
   }
 
   send(msg: NetMessage) {
-    if (this.conn?.open) this.conn.send(msg);
+    const conn = this.conn;
+    if (!conn?.open) return;
+    this.stats.messages++;
+    // Small messages go out right away unless a compressed one is still ahead of them.
+    if (this.sendPending === 0 && !this.worthCompressing(msg)) {
+      conn.send(msg);
+      return;
+    }
+    const gzip = this.gzip;
+    this.sendPending++;
+    this.sendChain = this.sendChain
+      .then(async () => {
+        const payload = await pack(msg, gzip);
+        if ((payload as Compressed).t === 'z') this.stats.compressed++;
+        if (conn.open) conn.send(payload);
+      })
+      .catch((e) => console.error('[net] send failed', e))
+      .finally(() => void this.sendPending--);
+  }
+
+  private worthCompressing(msg: NetMessage): boolean {
+    if (!this.gzip || msg.t === 'ping' || msg.t === 'bye' || msg.t === 'action' || msg.t === 'resync') return false;
+    return JSON.stringify(msg).length >= COMPRESS_MIN_BYTES;
+  }
+
+  private deliver(msg: NetMessage) {
+    if (!msg || typeof msg !== 'object' || !('t' in msg)) return;
+    if (msg.t === 'ping') return;
+    if (msg.t === 'bye') return this.handleClose();
+    for (const l of this.listeners) l(msg);
   }
 
   /** Peer id of the other player (kept after the link drops, to ask the server about them). */
@@ -185,11 +232,19 @@ class NetSession {
     this.lastSeen = Date.now();
     conn.on('data', (raw) => {
       this.lastSeen = Date.now();
-      const msg = raw as NetMessage;
+      const msg = raw as NetMessage | Compressed;
       if (!msg || typeof msg !== 'object' || !('t' in msg)) return;
       if (msg.t === 'ping') return;
-      if (msg.t === 'bye') return this.handleClose();
-      for (const l of this.listeners) l(msg);
+      // Uncompressed messages are delivered at once unless a compressed one is still being unpacked.
+      if (msg.t !== 'z' && this.recvPending === 0) return this.deliver(msg);
+      this.recvPending++;
+      this.recvChain = this.recvChain
+        .then(async () => {
+          const plain = await unpack<NetMessage>(msg);
+          if (this.conn === conn) this.deliver(plain);
+        })
+        .catch((e) => console.error('[net] could not read a message', e))
+        .finally(() => void this.recvPending--);
     });
     conn.on('close', () => this.handleClose());
     conn.on('error', () => this.handleClose());
@@ -322,8 +377,9 @@ class NetSession {
           this.remoteAvatar = this.remoteSide.avatar;
           this.remoteMeta = msg.meta && typeof msg.meta === 'object' ? msg.meta : {};
           matched = true;
+          this.gzip = msg.gzip === true && gzipSupported();
           this.attach(conn);
-          conn.send({ t: 'welcome', hostName, hostAvatar, meta: opts.meta } satisfies NetMessage);
+          conn.send({ t: 'welcome', hostName, hostAvatar, meta: opts.meta, gzip: gzipSupported() } satisfies NetMessage);
           this.setStatus('connected');
         };
         conn.on('data', onHello);
@@ -353,7 +409,7 @@ class NetSession {
         }
       });
       conn.on('open', () => {
-        conn.send({ t: 'hello', protocol: PROTOCOL_VERSION, content: CONTENT_HASH, side, deckName, meta: opts.meta } satisfies NetMessage);
+        conn.send({ t: 'hello', protocol: PROTOCOL_VERSION, content: CONTENT_HASH, side, deckName, meta: opts.meta, gzip: gzipSupported() } satisfies NetMessage);
       });
       conn.on('data', (raw) => {
         const msg = raw as NetMessage;
@@ -362,6 +418,7 @@ class NetSession {
           this.remoteName = msg.hostName;
           this.remoteAvatar = msg.hostAvatar;
           this.remoteMeta = msg.meta ?? {};
+          this.gzip = msg.gzip === true && gzipSupported();
           this.attach(conn);
           this.setStatus('connected');
           resolve();
@@ -386,12 +443,18 @@ class NetSession {
    */
   close(opts: { lingerMs?: number } = {}) {
     this.stopHeartbeat();
-    if (this.conn?.open) {
-      try {
-        this.conn.send({ t: 'bye' } satisfies NetMessage);
-      } catch {
-        /* ignore */
-      }
+    const conn = this.conn;
+    if (conn?.open) {
+      // After anything still being compressed (e.g. the final state), so the opponent sees it first.
+      const bye = () => {
+        try {
+          if (conn.open) conn.send({ t: 'bye' } satisfies NetMessage);
+        } catch {
+          /* ignore */
+        }
+      };
+      if (this.sendPending) void this.sendChain.then(bye);
+      else bye();
     }
     const peer = this.peer;
     const lingerMs = Math.max(opts.lingerMs ?? 0, this.lingerUntil - Date.now());
@@ -412,6 +475,7 @@ class NetSession {
     this.remotePeerId = null;
     this.remoteSide = null;
     this.remoteMeta = {};
+    this.gzip = false;
     if (this.status !== 'idle') this.setStatus('idle');
   }
 }

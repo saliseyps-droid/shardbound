@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.24.3': {
+    title: 'Lehčí online zápasy',
+    summary: 'Online zápasy posílají zhruba 30× méně dat a hostovo bojiště se vždy přesně shoduje s hostitelovým.',
+    sections: [
+      [
+        'Online: po každém tahu se místo celého stavu hry posílají jen změny, a to zkomprimované. Běžný zápas klesne zhruba ze 2 MB pod 100 KB.',
+        'Oba hráči potřebují tuto verzi: pokud má přítel otevřenou starší, hra vás vyzve k obnovení stránky.',
+      ],
+      ['Online: drobné rozdíly mezi tím, jak bojiště vidí hostitel a host, se už nemohou hromadit.'],
+    ],
+  },
   '0.24.2': {
     title: 'Spolehlivé online spojení',
     summary: 'Online zápasy se teď spojí i mezi sítěmi, které se dřív navzájem blokovaly.',

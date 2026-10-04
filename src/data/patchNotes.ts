@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.24.3',
+    date: '2026-10-05',
+    title: 'Lighter online matches',
+    summary: 'Online matches send about 30 times less data, and both players always see exactly the same board.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Online: after each move only the changes are sent, compressed, instead of the whole game state. A typical match drops from about 2 MB to under 100 KB.',
+          'Both players need this version: if your friend has an older one open, you will be asked to reload.',
+        ],
+      },
+      { kind: 'fixed', items: ['Online: small differences between how the two players see the board can no longer build up.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.24.2',
     date: '2026-10-05',
     title: 'Reliable online connections',
