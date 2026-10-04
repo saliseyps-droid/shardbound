@@ -32,10 +32,10 @@ interface ModeTile {
   highlight?: boolean;
 }
 
-function ModeGrid({ title, tiles }: { title: string; tiles: ModeTile[] }) {
+function ModeGrid({ title, tiles, variant }: { title: string; tiles: ModeTile[]; variant?: 'pvp' }) {
   const navigate = useNavigate();
   return (
-    <section className="mode-group" aria-label={title}>
+    <section className={`mode-group ${variant === 'pvp' ? 'is-pvp' : ''}`} aria-label={title}>
       <h3 className="mode-group-title">{title}</h3>
       <div className="mode-grid" style={{ '--cols': tiles.length } as CSSProperties}>
         {tiles.map((m) => (
@@ -108,7 +108,7 @@ export default function PlayScreen() {
       <ScreenHeader title={t('Play')} subtitle={t('Choose how you want to play.')} />
       <div className="mode-groups">
         <ModeGrid title={t('Against the AI')} tiles={tiles.ai} />
-        <ModeGrid title={t('Against players')} tiles={tiles.pvp} />
+        <ModeGrid title={t('Against players')} tiles={tiles.pvp} variant="pvp" />
       </div>
       <div className="practice-head">
         <h2>{t('Practice match')}</h2>
