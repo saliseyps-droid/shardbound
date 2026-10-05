@@ -10,6 +10,7 @@ import type {
   ValueExpr,
 } from './types';
 import { KEYWORDS } from '@/data/keywords';
+import { FACTIONS } from '@/data/factions';
 
 /**
  * Generates human-readable rules text from card data so text and behaviour can
@@ -216,7 +217,8 @@ export function describeEffect(effect: Effect, card: CardDefinition, lookup?: (i
         const p = effect.pool ?? {};
         const parts = ['random'];
         if (p.rarity) parts.push(p.rarity.toLowerCase());
-        if (p.faction) parts.push(p.faction === 'NEUTRAL' ? 'Neutral' : cap(p.faction.toLowerCase()));
+        // The faction's player-facing name (e.g. Lumen Conclave), never the internal id (ASTRAL).
+        if (p.faction) parts.push(p.faction === 'NEUTRAL' ? 'Neutral' : FACTIONS[p.faction]?.name ?? cap(p.faction.toLowerCase()));
         parts.push(p.tag ?? (p.cardType ? p.cardType.toLowerCase() : 'card'));
         what = `${count > 1 ? count : 'a'} ${parts.join(' ')}${count > 1 ? 's' : ''}`;
         if (p.maxCost !== undefined) what += ` that costs ${p.maxCost} or less`;

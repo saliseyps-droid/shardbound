@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.2',
+    date: '2026-10-05',
+    title: 'Faction names on cards',
+    summary: 'Card texts name factions the way the game does.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: ['Selunith, Glass Observatory, Pyroclast Sage and Blazeheart Fae said "Astral" or "Ember" spells; they now say Lumen Conclave and Cinder Legion spells.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.26.1',
     date: '2026-10-05',
     title: 'Iron and Astral get stronger',

@@ -342,7 +342,7 @@ export const DRAGON_CARDS: CardDefinition[] = [
     ...dragon, id: 'ast_selunith_the_moonwyrm', name: 'Selunith, the Moonwyrm', faction: 'ASTRAL', rarity: 'LEGENDARY',
     manaCost: 7, attack: 6, health: 6, keywords: ['WARD'], archetypes: ['Spellweave'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'CREATE_CARD', pool: { faction: 'ASTRAL', cardType: 'SPELL' }, count: 2, destination: 'HAND', costReduction: 2 }] }],
-    description: 'Ward. On Deploy: Add 2 random Astral spells to your hand. They cost (2) less.',
+    description: 'Ward. On Deploy: Add 2 random Lumen Conclave spells to your hand. They cost (2) less.',
     flavorText: 'The Conclave charts the moon. The moon, they eventually learned, was charting them.',
   },
   {

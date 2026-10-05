@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.2': {
+    title: 'Názvy frakcí na kartách',
+    summary: 'Texty karet jmenují frakce tak, jak je zná hra.',
+    sections: [['Anglické texty karet Selunith, Glass Observatory, Pyroclast Sage a Blazeheart Fae mluvily o kouzlech „Astral“ a „Ember“; teď o kouzlech Konkláve Lumenu a Popelavé legie (čeština už byla správně).']],
+  },
   '0.26.1': {
     title: 'Silnější Iron a Astral',
     summary: 'Spousta malých posílení pro Mosazné dominium a Konkláve Lumenu.',
