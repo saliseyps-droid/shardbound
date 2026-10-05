@@ -2,6 +2,10 @@ import { err, ok, type Result } from '@/core/utils';
 import type { Board, LeaderboardUpload, PublicProfile, SocialBackend } from './backend';
 import { generateFriendCode, isValidFriendCode, normalizeFriendCode } from './friends';
 import { entryKey, isValidEntry } from './leaderboard';
+import { profileKey } from './profile';
+
+/** What the owner uploads to the public profile (the friend code is added by the service). */
+export type ProfileInfo = Omit<PublicProfile, 'friendCode'>;
 
 interface ServiceOptions {
   /** Friend code generator (tests). */
@@ -18,6 +22,11 @@ export class SocialService {
   private uploaded = new Map<string, string>();
   private pending = new Map<string, { season: string; board: Board; entry: LeaderboardUpload }>();
   private timer: ReturnType<typeof setTimeout> | null = null;
+  /** The profile as last read or written. */
+  private profile: PublicProfile | null = null;
+  private pendingProfile: { info: ProfileInfo; onDone?: (p: PublicProfile) => void } | null = null;
+  private profileTimer: ReturnType<typeof setTimeout> | null = null;
+  private profileChain: Promise<unknown> = Promise.resolve();
 
   constructor(
     readonly backend: SocialBackend,
@@ -25,9 +34,16 @@ export class SocialService {
     private readonly opts: ServiceOptions = {},
   ) {}
 
-  /** Creates or refreshes the public profile; the friend code is made once and then kept. */
-  async ensureProfile(info: Omit<PublicProfile, 'friendCode'>): Promise<PublicProfile> {
-    const existing = await this.backend.getProfile(this.uid);
+  /** Creates or refreshes the public profile; the friend code is made once and then kept. Writes only when something changed. */
+  ensureProfile(info: ProfileInfo): Promise<PublicProfile> {
+    // One at a time, so a queued refresh never races the first friend-code claim.
+    const run = this.profileChain.then(() => this.writeProfile(info));
+    this.profileChain = run.catch(() => undefined);
+    return run;
+  }
+
+  private async writeProfile(info: ProfileInfo): Promise<PublicProfile> {
+    const existing = this.profile ?? (await this.backend.getProfile(this.uid));
     let friendCode = existing?.friendCode && isValidFriendCode(existing.friendCode) ? existing.friendCode : '';
     for (let attempt = 0; !friendCode && attempt < 8; attempt++) {
       const code = (this.opts.makeCode ?? generateFriendCode)();
@@ -39,10 +55,36 @@ export class SocialService {
     }
     if (!friendCode) throw new Error('Could not create a friend code. Try again later.');
     const profile: PublicProfile = { ...info, name: info.name.trim().slice(0, 20) || '?', friendCode };
-    if (!existing || existing.name !== profile.name || existing.avatar !== profile.avatar || existing.portrait !== profile.portrait || existing.friendCode !== friendCode) {
-      await this.backend.putProfile(this.uid, profile);
-    }
+    if (!existing || profileKey(existing) !== profileKey(profile)) await this.backend.putProfile(this.uid, profile);
+    this.profile = profile;
     return profile;
+  }
+
+  /** Queues a profile refresh (level, title, cards, portrait…); uploaded after a short pause, only when it changed. */
+  queueProfile(info: ProfileInfo, onDone?: (p: PublicProfile) => void) {
+    const cur = this.profile;
+    if (cur && profileKey(cur) === profileKey({ ...info, name: info.name.trim().slice(0, 20) || '?', friendCode: cur.friendCode })) {
+      this.pendingProfile = null;
+      return;
+    }
+    this.pendingProfile = { info, onDone };
+    if (this.profileTimer) clearTimeout(this.profileTimer);
+    this.profileTimer = setTimeout(() => {
+      this.profileTimer = null;
+      void this.flushProfile();
+    }, this.opts.debounceMs ?? 4000);
+  }
+
+  async flushProfile() {
+    const job = this.pendingProfile;
+    this.pendingProfile = null;
+    if (!job) return;
+    try {
+      const p = await this.ensureProfile(job.info);
+      job.onDone?.(p);
+    } catch (e) {
+      console.warn('[social] profile upload failed', e);
+    }
   }
 
   /** Sends a friend request (or accepts theirs, if they already asked). */
@@ -133,5 +175,8 @@ export class SocialService {
     if (this.timer) clearTimeout(this.timer);
     this.timer = null;
     this.pending.clear();
+    if (this.profileTimer) clearTimeout(this.profileTimer);
+    this.profileTimer = null;
+    this.pendingProfile = null;
   }
 }

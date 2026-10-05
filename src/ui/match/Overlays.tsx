@@ -3,6 +3,11 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { getCardSafe } from '@/data/cards';
 import { getTalent } from '@/data/wardenTalents';
+import { FACTIONS, WORLD_LORE } from '@/data/factions';
+import { KEYWORDS } from '@/data/keywords';
+import type { KeywordId } from '@/game/types';
+import { PLAYABLE_FACTIONS } from '@/game/types';
+import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import type { GameEvent, GameState } from '@/engine/types';
 import { useMatch, HUMAN, AI } from '@/state/matchStore';
 import { useAccount } from '@/state/accountStore';
@@ -262,12 +267,70 @@ function highlightCss(target: string): string {
   return `[data-tutorial="${target}"] { ${HIGHLIGHT_LOOK} }`;
 }
 
+/** Keywords a new player meets first; the full list is in the Lore screen. */
+const INTRO_KEYWORDS: KeywordId[] = ['GUARD', 'RUSH', 'SWIFT', 'BARRIER', 'WARD', 'DRAIN', 'BURN', 'FREEZE', 'ON_DEPLOY', 'LAST_BREATH'];
+
+/** Before the tutorial: the world, the six factions and the keywords on the cards. */
+function TutorialIntro({ onStart }: { onStart: () => void }) {
+  return (
+    <div className="tutorial-intro-backdrop" role="dialog" aria-modal="true" aria-labelledby="tut-intro-title">
+      <div className="tutorial-intro panel">
+        <div className="tutorial-intro-scroll">
+          <h2 id="tut-intro-title">{WORLD_LORE.title}</h2>
+          <div className="tutorial-intro-cols">
+            <section>
+              {WORLD_LORE.paragraphs.map((p) => (
+                <p key={p} className="tutorial-intro-lore">{p}</p>
+              ))}
+              <h3>{t('The six factions')}</h3>
+              <ul className="tutorial-intro-factions">
+                {PLAYABLE_FACTIONS.map((f) => (
+                  <li key={f} style={{ '--fc': FACTIONS[f].colors.primary } as CSSProperties}>
+                    <WardenPortrait faction={f} size={34} />
+                    <span>
+                      <strong>{FACTIONS[f].name}</strong>
+                      <em className="faint">“{FACTIONS[f].motto}”</em>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+            <section>
+              <h3>{t('Keywords on the cards')}</h3>
+              <dl className="tutorial-intro-keywords">
+                {INTRO_KEYWORDS.map((k) => (
+                  <div key={k}>
+                    <dt>
+                      <span aria-hidden>{KEYWORDS[k].icon}</span> {KEYWORDS[k].name}
+                    </dt>
+                    <dd className="muted">{KEYWORDS[k].definition}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="faint">{t('Every keyword is also explained when you inspect a card, and in Lore.')}</p>
+            </section>
+          </div>
+        </div>
+        <div className="tutorial-intro-actions">
+          <button className="btn btn-primary btn-lg" onClick={onStart} autoFocus>
+            {t('Start the lesson')}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function TutorialOverlay() {
+  const startedAt = useMatch((s) => s.startedAt);
+  const [introFor, setIntroFor] = useState<number | null>(null);
   const step = useMatch((s) => s.tutorialStep);
   const next = useMatch((s) => s.nextTutorialStep);
   const mode = useMatch((s) => s.config?.mode);
   const phase = useMatch((s) => s.phase);
   if (mode !== 'TUTORIAL' || phase === 'ended' || step >= TUTORIAL_STEPS.length) return null;
+  // First the world and the keywords, then the lesson (once per tutorial match).
+  if (step === 0 && introFor !== startedAt) return <TutorialIntro onStart={() => setIntroFor(startedAt)} />;
   const s = TUTORIAL_STEPS[step];
   const text = isTouchScreen() && s.touchText ? s.touchText : s.text;
   return (

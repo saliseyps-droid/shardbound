@@ -1,5 +1,5 @@
 import { BrandLogo } from '@/ui/components/BrandLogo';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { xpToNext } from '@/domain/progression';
@@ -37,6 +37,30 @@ export function AppHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   useEffect(() => setMenuOpen(false), [location.pathname]);
+  // Labels only while every link fits with its label; otherwise icons only (any width, any language).
+  const navRef = useRef<HTMLElement>(null);
+  const [compact, setCompact] = useState(false);
+  const labelWidth = useRef(0);
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const measure = () => {
+      if (nav.classList.contains('is-open') || getComputedStyle(nav).position === 'fixed') return setCompact(false);
+      // Width the links need with their labels (scrollWidth can't tell "fits exactly" from "fits").
+      if (!nav.classList.contains('is-compact')) {
+        const links = nav.querySelectorAll('.nav-link');
+        const first = links[0]?.getBoundingClientRect();
+        const last = links[links.length - 1]?.getBoundingClientRect();
+        labelWidth.current = first && last ? last.right - first.left : 0;
+      }
+      setCompact(labelWidth.current > nav.clientWidth - 4);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(nav);
+    document.fonts?.ready.then(measure).catch(() => {});
+    return () => ro.disconnect();
+  }, [t, profile?.username, claimable > 0, packs > 0, patchSeen]);
   if (!profile) return null;
   const need = xpToNext(profile.level);
   return (
@@ -53,7 +77,7 @@ export function AppHeader() {
         <BrandLogo size={34} />
         <span className="brand-name">Shardbound</span>
       </NavLink>
-      <nav className={`main-nav ${menuOpen ? 'is-open' : ''}`} aria-label={t('Main')}>
+      <nav ref={navRef} className={`main-nav ${menuOpen ? 'is-open' : ''} ${compact ? 'is-compact' : ''}`} aria-label={t('Main')}>
         {NAV.map((n) => (
           <NavLink key={n.to} to={n.to} end={n.to === '/'} className="nav-link" title={t(n.label)} aria-label={t(n.label)} onClick={() => audio.play('click')}>
             <Glyph name={n.icon} size={16} />

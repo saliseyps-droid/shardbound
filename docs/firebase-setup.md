@@ -34,11 +34,11 @@ The same project also stores the season leaderboards, friend lists, online statu
 
 What the rules allow:
 - **Leaderboards** `seasons/{YYYY-MM}/{aiRanked|ranked}/{uid}`: anyone can read (also signed-out players). A player writes only their own entry, only for the current UTC month, and only with valid values: name 1–20 characters, rank 0–15, Crown points only at rank 15, `score = rank × 100000 + crownPoints`, rating 100–4000, and a server timestamp.
-- **Profiles** `profiles/{uid}` (name, portrait, friend code): readable by signed-in players, writable by the owner, and the friend code must belong to them.
+- **Profiles** `profiles/{uid}` (name, portrait, friend code, plus `level`, `title`, `cardsOwned`, `cardsTotal` shown in friends lists): readable by signed-in players, writable by the owner, and the friend code must belong to them. The stats are optional (profiles written by older versions don't have them, and the friends list then leaves them out); when present: level 1–100, title a string of at most 40 characters or null, `cardsOwned` and `cardsTotal` 0–5000 with `cardsOwned ≤ cardsTotal`. The owner's game uploads them after sign-in and a few seconds after they change, and only when they changed.
 - **Friend codes** `friendCodes/{CODE}` → `{ uid }`: looked up one at a time (no listing), created once by their owner, never taken over.
 - **Friend requests** `friendRequests/{from}_{to}`: created by the sender; read and deleted by sender or recipient.
 - **Friends** `users/{uid}/friends/{friendUid}`: readable by the owner. Created only while a matching friend request exists (the recipient accepting writes both lists in one batch); either friend can delete it.
-- **Presence** `presence/{uid}` `{ lastSeen, inMatch }`: readable by signed-in players, written by the owner with a server timestamp about once a minute while the game is open.
+- **Presence** `presence/{uid}` `{ lastSeen, inMatch }`: readable by signed-in players, written by the owner with a server timestamp about once a minute while the game is open. Friends see an offline player's `lastSeen` as *Last online 5 min ago / yesterday / 4 Oct*.
 - **Invites** `invites/{to}/items/{id}`: created only by a player on the recipient's friends list (`from` must be their own uid); the recipient reads, accepts (`status: 'accepted'`) or deletes (declines) it; the sender can watch and delete it.
 
 Seasons are calendar months in UTC. At the start of a month each player gets the reward for their best Ranked vs AI rank on their own device (`src/domain/season.ts`), so the server does not need scheduled jobs.
@@ -49,7 +49,7 @@ Dev preview: `npm run dev`, then open `http://localhost:5199/?devsocial#/friends
 The free plan allows 50,000 reads and 20,000 writes per day, and 1 GiB of data.
 - An upload writes the changed slices plus the `users/{uid}` document, usually 2–4 writes.
 - A typical session makes tens of uploads.
-- Social: presence writes about 1 per minute per open game, leaderboard entries 1–2 writes per ranked match, and the leaderboard screen reads up to 100 documents per board view.
+- Social: presence writes about 1 per minute per open game, leaderboard entries 1–2 writes per ranked match, the profile at most one write per change of level, title or collection (debounced), and the leaderboard screen reads up to 100 documents per board view.
 
 ## Not covered
 - **Cheating.** Gold, packs and rewards are still computed in the browser. A determined player could edit their own cloud save, just as they can edit IndexedDB today. Preventing that needs server-side logic (Cloud Functions), which requires the Blaze plan.

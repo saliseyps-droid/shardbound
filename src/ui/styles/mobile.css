@@ -136,7 +136,8 @@ body .rotate-hint { display: none; }
   body .tutorial-box .btn { position: sticky; bottom: 0; }
 }
 
-/* Touch screens: a tap leaves :hover stuck, so only a selected card or unit grows. */
+/* Touch screens: a tap leaves :hover stuck, so only a selected card or unit grows.
+   html[data-input=touch] (src/ui/inputMode.ts) covers phones that claim to support hover. */
 @media (hover: none) {
   body .hand-card:hover:not(.is-selected) {
     z-index: 1;
@@ -151,6 +152,28 @@ body .rotate-hint { display: none; }
   }
   body .unit:hover:not(.is-selected) { transform: none; }
 }
+html[data-input='touch'] body .hand-card:hover:not(.is-selected),
+html[data-input='touch'] body .hand-card:focus-within:not(.is-selected) {
+  z-index: 1;
+  bottom: calc(var(--card-w) * -0.08);
+  transform: translateX(calc(-50% + var(--o) * var(--spread))) translateY(calc(var(--o) * var(--o) * 3px)) rotate(calc(var(--o) * 2.5deg));
+  transform-origin: 50% 120%;
+}
+html[data-input='touch'] body .unit:hover:not(.is-selected) { transform: none; }
+/* Touch, choosing a target for a card: the card moves to the bottom-right corner (over End turn),
+   enlarged, so it covers neither your units nor the enemy's; no transitions, so nothing pulses. */
+html[data-input='touch'] body .match.is-targeting .hand-card.is-selected {
+  position: fixed; z-index: 320;
+  left: auto; right: calc(10px + var(--safe-right, 0px)); bottom: calc(8px + var(--safe-bottom, 0px));
+  transform: scale(1.7); transform-origin: 100% 100%;
+  transition: none; pointer-events: none;
+}
+html[data-input='touch'] body .match.is-targeting .hand-card.is-selected .card {
+  filter: drop-shadow(0 0 6px var(--gold-bright)) drop-shadow(0 0 14px rgba(232, 176, 75, 0.75));
+}
+html[data-input='touch'] body .match.is-targeting .hand-card.is-selected .hand-cancel { pointer-events: auto; }
+/* The hand is its own stacking layer: lift it above End turn while the card waits there. */
+html[data-input='touch'] body .match.is-targeting .hand { z-index: 330; }
 
 /* Card inspector on short screens: a smaller card with the text beside it. */
 @media (max-height: 520px) {
@@ -298,4 +321,27 @@ body .audio-toggles { left: calc(10px + var(--safe-left)); bottom: calc(10px + v
 @media (hover: none), (max-width: 760px) {
   body .header-packs { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px; padding: 0 6px; }
   body .level-badge { min-height: 40px; min-width: 40px; justify-content: center; }
+}
+
+/* Touch: red cross beside a card that is waiting for a target, to cancel playing it. */
+body .hand-cancel { display: none; }
+html[data-input='touch'] body .hand-cancel {
+  display: grid; place-items: center; position: absolute; z-index: 5; top: -14px; right: -18px;
+  width: 30px; height: 30px; border-radius: 50%; border: 2px solid #ffd2d2; padding: 0;
+  background: #c62828; color: #fff; font: 700 15px/1 var(--font-body); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6); cursor: pointer;
+  width: 36px; height: 36px; top: -16px;
+  /* Inside the 1.7x card: shrink back to finger size, on its top-left (screen edge is on the right). */
+  right: auto; left: -18px; transform: scale(0.6); transform-origin: 50% 50%;
+}
+
+/* Phones sideways: the tutorial intro fills the screen as a sheet (no floating modal), two columns,
+   the Start button always in reach at the bottom. */
+@media (max-height: 520px) {
+  body .tutorial-intro-backdrop { padding: 0; background: var(--ink-1, #120f24); }
+  body .tutorial-intro { width: 100%; height: 100dvh; max-height: none; clip-path: none; box-shadow: none; padding: calc(8px + var(--safe-top, 0px)) calc(14px + var(--safe-right, 0px)) calc(8px + var(--safe-bottom, 0px)) calc(14px + var(--safe-left, 0px)); gap: 6px; }
+  body .tutorial-intro h2 { font-size: 1.25rem; margin-bottom: 6px; }
+  body .tutorial-intro h3 { margin: 10px 0 6px; font-size: 0.95rem; }
+  body .tutorial-intro-cols { grid-template-columns: 1.1fr 1fr; gap: var(--space-4); }
+  body .tutorial-intro-lore, body .tutorial-intro-keywords dd { font-size: var(--t-xs); }
+  body .tutorial-intro-actions .btn { min-height: 40px; padding: 0 28px; font-size: 1rem; }
 }

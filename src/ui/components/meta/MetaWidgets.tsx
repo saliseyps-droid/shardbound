@@ -68,10 +68,15 @@ export function DeckBox({ deck, save, selected, onSelect, compact }: { deck: Dec
 }
 
 /** Deck picker listing all decks; invalid ones disabled with reason. */
+/** Favourite decks first, otherwise in the player's own order. */
+export function decksForPicking<D extends { favorite?: boolean }>(decks: readonly D[]): D[] {
+  return [...decks].sort((a, b) => Number(!!b.favorite) - Number(!!a.favorite));
+}
+
 export function DeckPicker({ save, value, onChange }: { save: GameSave; value: string | null; onChange: (id: string) => void }) {
   return (
     <div className="deck-picker" role="radiogroup" aria-label={t('Choose your deck')}>
-      {save.decks.map((d) => (
+      {decksForPicking(save.decks).map((d) => (
         <DeckBox
           key={d.id}
           deck={d}
@@ -92,7 +97,7 @@ export function DeckPicker({ save, value, onChange }: { save: GameSave; value: s
 export function firstValidDeck(save: GameSave, preferred: string | null): string | null {
   const pref = save.decks.find((d) => d.id === preferred);
   if (pref && deckIssues(save, pref).length === 0) return pref.id;
-  return save.decks.find((d) => deckIssues(save, d).length === 0)?.id ?? null;
+  return decksForPicking(save.decks).find((d) => deckIssues(save, d).length === 0)?.id ?? null;
 }
 
 // ---------------------------------------------------------------------------

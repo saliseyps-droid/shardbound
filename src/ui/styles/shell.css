@@ -50,7 +50,9 @@
 }
 .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
 .nav-count { font: 700 var(--t-xs) var(--font-num); background: var(--cyan); color: var(--ink-0); padding: 0 6px; border-radius: 999px; }
-@media (max-width: 1500px) { .nav-link span:not(.nav-count):not(.nav-dot) { display: none; } .nav-link { padding: 8px 10px; } }
+/* Icons only when the labelled links don't fit (measured in AppHeader). */
+.main-nav.is-compact .nav-link span:not(.nav-count):not(.nav-dot) { display: none; }
+.main-nav.is-compact .nav-link { padding: 8px 10px; }
 
 .header-resources { display: flex; align-items: center; gap: var(--space-4); flex: none; }
 
@@ -65,10 +67,9 @@
 .burger.is-open span:nth-child(2) { opacity: 0; }
 .burger.is-open span:nth-child(3) { top: 6px; transform: rotate(-45deg); }
 .nav-backdrop { display: none; }
-@media (max-width: 760px) {
-  .app-header { gap: var(--space-2); padding: 0 var(--space-2); }
+/* The menu goes into the drawer once even the icon-only links no longer fit in the header. */
+@media (max-width: 1080px) {
   .nav-toggle { display: grid; place-items: center; flex: none; }
-  .brand-name { display: none; }
   .main-nav {
     position: fixed; z-index: 60; top: var(--header-h); left: 0; bottom: 0; width: min(280px, 82vw);
     flex-direction: column; gap: 2px; padding: var(--space-3); overflow-y: auto;
@@ -80,11 +81,27 @@
   .main-nav .nav-link span:not(.nav-count):not(.nav-dot) { display: inline; }
   .main-nav .nav-link.active::after { left: 0; right: auto; top: 8px; bottom: 8px; width: 3px; height: auto; clip-path: none; }
   .nav-backdrop { display: block; position: fixed; z-index: 55; inset: var(--header-h) 0 0 0; background: rgba(5, 3, 14, 0.55); }
+  .header-resources { margin-left: auto; }
+}
+/* Phones sideways: the drawer is short, so the links go in two columns and all fit without scrolling. */
+@media (max-width: 1080px) and (max-height: 520px) {
+  .main-nav { width: min(540px, 92vw); display: grid; grid-template-columns: 1fr 1fr; align-content: start; gap: 2px var(--space-2); }
+  .main-nav .nav-link { padding: 8px 12px; font-size: var(--t-sm); }
+}
+@media (max-width: 760px) {
+  .app-header { gap: var(--space-2); padding: 0 var(--space-2); }
+  .brand-name { display: none; }
   .header-resources { gap: var(--space-2); margin-left: auto; }
   .header-resources .currency { font-size: var(--t-sm); }
   .level-gem { width: 28px; height: 32px; font-size: var(--t-sm); }
 }
-@media (max-width: 420px) { .header-resources .currency:nth-child(2) { display: none; } }
+/* Narrow phones: everything stays visible (Essence used to be hidden here), just tighter. */
+@media (max-width: 420px) {
+  .header-resources { gap: 6px; }
+  .header-resources .currency { font-size: var(--t-xs); gap: 3px; }
+  .header-resources .currency .icon { width: 13px; height: 13px; }
+  .brand .brand-logo { width: 28px; height: 28px; }
+}
 .header-packs { text-decoration: none; color: inherit; }
 .level-badge { display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; }
 .level-gem {

@@ -19,6 +19,36 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.25.0',
+    date: '2026-10-05',
+    title: 'A guided start and smoother phones',
+    summary: 'A stricter tutorial with an introduction to the world, a richer friends list, and many fixes for phones and smaller screens.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Tutorial: it opens with the story of Aethra, the six factions and the keywords you will meet on cards.',
+          'Tutorial: each step now only allows what it asks for, with a hint if you try something else.',
+          'Friends list: see when an offline friend was last online, and the level, title and number of collected cards of every friend.',
+        ],
+      },
+      {
+        kind: 'improved',
+        items: [
+          'Favourite decks come first wherever you pick a deck.',
+          'The top menu shows labels only when they all fit, icons otherwise, and switches to the ☰ menu on narrower screens; phones held sideways get a two-column menu.',
+          'Phones: your Essence is always visible in the header.',
+          'Phones: when a card needs a target, it moves to the bottom-right corner so you can see every unit, with a red cross to cancel.',
+        ],
+      },
+      {
+        kind: 'fixed',
+        items: ['Phones: cards no longer stay enlarged after a tap, and nothing flickers while choosing a target.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.24.4',
     date: '2026-10-05',
     title: 'Match and deck builder comforts',

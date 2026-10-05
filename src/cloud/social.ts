@@ -5,7 +5,7 @@ import type { Board, FriendRequest, LeaderboardEntry, MatchInvite, SocialBackend
  * Firestore layout for the social features (rules in firestore.rules):
  *   seasons/{YYYY-MM}/aiRanked/{uid}   { name, avatar, portrait, rank, crownPoints, score, wins, updatedAt }   public read
  *   seasons/{YYYY-MM}/ranked/{uid}     { name, avatar, portrait, rating, wins, updatedAt }                    public read
- *   profiles/{uid}                     { name, avatar, portrait, friendCode, updatedAt }
+ *   profiles/{uid}                     { name, avatar, portrait, friendCode, level?, title?, cardsOwned?, cardsTotal?, updatedAt }
  *   friendCodes/{CODE}                 { uid }
  *   friendRequests/{from}_{to}         { from, to, fromName, fromAvatar, createdAt }
  *   users/{uid}/friends/{friendUid}    { since }
@@ -80,10 +80,25 @@ export async function createSocialBackend(db: Firestore): Promise<SocialBackend>
       const snap = await getDoc(doc(db, 'profiles', uid));
       if (!snap.exists()) return null;
       const d = snap.data();
-      return { name: String(d.name ?? '?'), avatar: String(d.avatar ?? ''), portrait: String(d.portrait ?? ''), friendCode: String(d.friendCode ?? '') };
+      const int = (v: unknown) => (typeof v === 'number' && Number.isInteger(v) ? v : undefined);
+      // level/title/cards are missing on profiles written before they existed.
+      return {
+        name: String(d.name ?? '?'),
+        avatar: String(d.avatar ?? ''),
+        portrait: String(d.portrait ?? ''),
+        friendCode: String(d.friendCode ?? ''),
+        level: int(d.level),
+        title: typeof d.title === 'string' ? d.title : null,
+        cardsOwned: int(d.cardsOwned),
+        cardsTotal: int(d.cardsTotal),
+      };
     },
     async putProfile(uid, p) {
-      await setDoc(doc(db, 'profiles', uid), { name: p.name, avatar: p.avatar, portrait: p.portrait, friendCode: p.friendCode, updatedAt: serverTimestamp() });
+      const body: Record<string, unknown> = { name: p.name, avatar: p.avatar, portrait: p.portrait, friendCode: p.friendCode, updatedAt: serverTimestamp() };
+      if (p.level !== undefined) body.level = p.level;
+      if (p.title !== undefined) body.title = p.title || null;
+      if (p.cardsOwned !== undefined && p.cardsTotal !== undefined) Object.assign(body, { cardsOwned: p.cardsOwned, cardsTotal: p.cardsTotal });
+      await setDoc(doc(db, 'profiles', uid), body);
     },
     async claimFriendCode(uid, code) {
       const ref = doc(db, 'friendCodes', code);

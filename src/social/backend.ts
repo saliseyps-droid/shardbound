@@ -35,6 +35,13 @@ export interface PublicProfile {
   avatar: string;
   portrait: string;
   friendCode: string;
+  /** Shown to friends; missing on profiles written by older versions (src/social/profile.ts). */
+  level?: number;
+  /** Equipped title (an English key, translated when shown); null or '' for none. */
+  title?: string | null;
+  /** Distinct collectible cards owned, out of cardsTotal. */
+  cardsOwned?: number;
+  cardsTotal?: number;
 }
 
 export interface FriendRequest {

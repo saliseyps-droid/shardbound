@@ -7,7 +7,8 @@ import type { GameSave } from '@/domain/save';
 import type { FriendRequest, MatchInvite, PublicProfile, SocialBackend, Unsubscribe } from '@/social/backend';
 import { PRESENCE_INTERVAL_MS, type Presence } from '@/social/friends';
 import { buildLeaderboardEntries } from '@/social/leaderboard';
-import { SocialService } from '@/social/service';
+import { profileStats } from '@/social/profile';
+import { SocialService, type ProfileInfo } from '@/social/service';
 import { gameService } from './accountStore';
 
 /**
@@ -22,6 +23,11 @@ export interface FriendView {
   avatar: string;
   portrait: string;
   presence: Presence | null;
+  /** From the friend's public profile; missing for profiles written by older versions. */
+  level?: number;
+  title?: string | null;
+  cardsOwned?: number;
+  cardsTotal?: number;
 }
 
 interface SocialStore {
@@ -48,10 +54,15 @@ let heartbeat: ReturnType<typeof setInterval> | null = null;
 let inMatchNow = false;
 let mockBackend: SocialBackend | null = null;
 
-function profileInfo(save: GameSave): Omit<PublicProfile, 'friendCode'> {
+export function profileInfo(save: GameSave): ProfileInfo {
   const p = save.profile;
   const deck = save.decks.find((d) => d.id === p.selectedDeckId) ?? save.decks[0];
-  return { name: p.username, avatar: deck?.heroFaction ?? '', portrait: (deck && effectivePortrait(deck, p)) || '' };
+  return { name: p.username, avatar: deck?.heroFaction ?? '', portrait: (deck && effectivePortrait(deck, p)) || '', ...profileStats(save) };
+}
+
+/** The parts of a friend's profile shown in the list. */
+function friendFields(p: PublicProfile): Partial<FriendView> {
+  return { name: p.name, avatar: p.avatar, portrait: p.portrait, level: p.level, title: p.title, cardsOwned: p.cardsOwned, cardsTotal: p.cardsTotal };
 }
 
 export const useSocial = create<SocialStore>((set, get) => ({
@@ -84,17 +95,13 @@ export const useSocial = create<SocialStore>((set, get) => ({
         });
     }
 
-    // Leaderboard entries: after every change of the save (matches), and right now (sign-in).
-    let profileKey = save ? JSON.stringify(profileInfo(save)) : '';
+    // Leaderboard entries and the public profile (level, title, cards): after every change of the
+    // save, debounced and only when they changed, and right now (sign-in).
     const upload = (s: GameSave | null) => {
       if (!s) return;
       const now = Date.now();
       service.queueLeaderboard(seasonKeyOf(now), buildLeaderboardEntries(s, now));
-      const key = JSON.stringify(profileInfo(s));
-      if (key !== profileKey && get().me) {
-        profileKey = key;
-        void service.ensureProfile(profileInfo(s)).then((me) => get().uid === uid && set({ me })).catch(() => undefined);
-      }
+      service.queueProfile(profileInfo(s), (me) => get().uid === uid && set({ me }));
     };
     upload(save);
     unsubs.push(gameService.subscribe(upload));
@@ -122,7 +129,7 @@ export const useSocial = create<SocialStore>((set, get) => ({
             fid,
             backend.watchPresence(fid, (presence) => set({ friends: get().friends.map((f) => (f.uid === fid ? { ...f, presence } : f)) })),
           );
-          void backend.getProfile(fid).then((p) => p && set({ friends: get().friends.map((f) => (f.uid === fid ? { ...f, name: p.name, avatar: p.avatar, portrait: p.portrait } : f)) }));
+          void backend.getProfile(fid).then((p) => p && set({ friends: get().friends.map((f) => (f.uid === fid ? { ...f, ...friendFields(p) } : f)) }));
         }
       }),
     );
@@ -134,7 +141,7 @@ export const useSocial = create<SocialStore>((set, get) => ({
 
   stop: () => {
     const service = get().service;
-    if (service) void service.flushLeaderboard().finally(() => service.dispose());
+    if (service) void Promise.all([service.flushLeaderboard(), service.flushProfile()]).finally(() => service.dispose());
     unsubs.forEach((u) => u());
     unsubs = [];
     friendUnsubs.forEach((u) => u());

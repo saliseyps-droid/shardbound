@@ -13,8 +13,9 @@ import { formatFriendCode, INVITE_TTL_MS, presenceStatus, type PresenceStatus } 
 import type { Unsubscribe } from '@/social/backend';
 import { confirmDialog, Modal, ScreenHeader, Spinner } from '@/ui/components/common';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
+import { FriendInfo } from '@/ui/components/FriendInfo';
 import { CloudAccountPanel } from '@/ui/components/CloudAccount';
-import { deckIssues, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
+import { deckIssues, decksForPicking, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
 import { t } from '@/i18n';
 import '@/ui/styles/meta.css';
@@ -22,8 +23,6 @@ import '@/ui/styles/online.css';
 import '@/ui/styles/social.css';
 
 const asFaction = (v: string): PlayableFaction | null => ((PLAYABLE_FACTIONS as readonly string[]).includes(v) ? (v as PlayableFaction) : null);
-
-const STATUS_LABEL: Record<PresenceStatus, string> = { online: 'Online', inMatch: 'In a match', offline: 'Offline' };
 
 type InviteState = { friend: FriendView; phase: 'opening' | 'waiting' | 'accepted' | 'declined' | 'expired' | 'error'; error?: string };
 
@@ -171,8 +170,10 @@ export default function FriendsScreen() {
     );
   }
 
-  const validDecks = save.decks.filter((d) => deckIssues(save, d).length === 0);
-  const sorted = [...social.friends].sort((a, b) => rankStatus(presenceStatus(a.presence, now)) - rankStatus(presenceStatus(b.presence, now)) || a.name.localeCompare(b.name));
+  const validDecks = decksForPicking(save.decks).filter((d) => deckIssues(save, d).length === 0);
+  // Online first, then in a match, then offline (most recently seen first).
+  const lastSeen = (f: FriendView) => (presenceStatus(f.presence, now) === 'offline' ? (f.presence?.lastSeen ?? 0) : 0);
+  const sorted = [...social.friends].sort((a, b) => rankStatus(presenceStatus(a.presence, now)) - rankStatus(presenceStatus(b.presence, now)) || lastSeen(b) - lastSeen(a) || a.name.localeCompare(b.name));
 
   return (
     <div className="screen friends-screen">
@@ -290,13 +291,7 @@ export default function FriendsScreen() {
                 return (
                   <li key={f.uid} className={`friend-row status-${st}`}>
                     <WardenPortrait faction={asFaction(f.avatar)} portrait={f.portrait || null} size={40} fallbackGlyph="person" />
-                    <span className="friend-name">
-                      <strong>{f.name}</strong>
-                      <span className={`friend-status status-${st}`}>
-                        <span className="status-dot" aria-hidden />
-                        {t(STATUS_LABEL[st])}
-                      </span>
-                    </span>
+                    <FriendInfo friend={f} now={now} />
                     <span className="friend-actions">
                       <button className="btn btn-sm btn-primary" disabled={st !== 'online' || !!invite || validDecks.length === 0} onClick={() => void sendInvite(f)} title={st === 'online' ? undefined : t('You can invite friends who are online and not in a match.')}>
                         {t('Invite')}

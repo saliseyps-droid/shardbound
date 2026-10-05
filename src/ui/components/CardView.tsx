@@ -64,7 +64,8 @@ function CardArtImage({ card }: { card: CardDefinition }) {
 }
 
 /** Phones and tablets: no mouse to hover or right-click with. */
-export const isTouchScreen = () => typeof matchMedia !== 'undefined' && matchMedia('(hover: none)').matches;
+export const isTouchScreen = () =>
+  (typeof document !== 'undefined' && document.documentElement.dataset.input === 'touch') || (typeof matchMedia !== 'undefined' && matchMedia('(hover: none)').matches);
 
 /**
  * Touch: holding a finger on a card for half a second does what a right-click does (inspect).

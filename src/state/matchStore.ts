@@ -23,7 +23,7 @@ import { t } from '@/i18n';
 import { netSession, type NetMessage } from '@/net/session';
 import { GuestSync, HostSync } from '@/net/stateSync';
 import { guestEvents, guestView, mirrorAction } from '@/net/view';
-import { TUTORIAL_STEPS, tutorialOpponentAction, tutorialSetup } from '@/ui/match/tutorial';
+import { TUTORIAL_STEPS, tutorialAllows, tutorialOpponentAction, tutorialSetup, type TutorialIntent } from '@/ui/match/tutorial';
 
 /** How long to keep asking the signalling server about a vanished opponent (it drops dead peers after ~60 s). */
 export const DISCONNECT_TIMING = {
@@ -243,6 +243,10 @@ export const useMatch = create<MatchStore>((set, get) => {
     if (!game || game.phase === 'ENDED' || s.phase === 'ended') return false;
     // While a dropped link is being checked nothing may change the board.
     if (s.linkCheck) return false;
+    if (action.player === HUMAN && s.config?.mode === 'TUTORIAL') {
+      const intent = intentOf(action, game);
+      if (intent && tutorialBlocks(intent)) return false;
+    }
     // Online guest: the host is authoritative; send the action and wait for its state.
     if (s.config?.online === 'guest') return sendGuestAction(action);
     const res = applyAction(game, action);
@@ -556,6 +560,28 @@ export const useMatch = create<MatchStore>((set, get) => {
     }
   }
 
+  /** Tutorial: only what the current step asks for; anything else gets a hint instead. */
+  function tutorialBlocks(intent: TutorialIntent): boolean {
+    const s = get();
+    if (s.config?.mode !== 'TUTORIAL' || !s.game) return false;
+    if (tutorialAllows(s.tutorialStep, intent, s.game)) return false;
+    audio.play('error');
+    const step = TUTORIAL_STEPS[s.tutorialStep];
+    toast(step ? t('Tutorial: {title} first.', { title: step.title }) : t('Follow the tutorial.'), 'info');
+    return true;
+  }
+
+  function intentOf(action: GameAction, game: GameState): TutorialIntent | null {
+    if (action.type === 'PLAY_CARD') {
+      const card = game.players[HUMAN].hand.find((c) => c.uid === action.cardUid);
+      return card ? { type: 'PLAY_CARD', cardId: card.cardId, target: action.target as Extract<TutorialIntent, { type: 'PLAY_CARD' }>['target'] } : null;
+    }
+    if (action.type === 'ATTACK') return { type: 'ATTACK', attackerUid: action.attackerUid, target: action.target as Extract<TutorialIntent, { type: 'ATTACK' }>['target'] };
+    if (action.type === 'HERO_POWER') return { type: 'HERO_POWER', slot: action.slot ?? 0 };
+    if (action.type === 'END_TURN') return { type: 'END_TURN' };
+    return null;
+  }
+
   function selectionAllowed(): boolean {
     const s = get();
     return !!s.game && s.phase === 'playing' && !s.busy && !s.linkCheck && s.game.activePlayer === HUMAN && s.game.phase === 'MAIN';
@@ -726,6 +752,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       // A targeted selection awaiting a target: clicking another card switches.
       const card = game.players[HUMAN].hand.find((c) => c.uid === uid);
       if (!card) return;
+      if (tutorialBlocks({ type: 'PLAY_CARD', cardId: card.cardId })) return;
       const check = canPlayCard(game, HUMAN, card);
       if (!check.ok) {
         audio.play('error');
@@ -758,6 +785,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       const unit = findUnit(game, uid);
       if (unit && unit.owner === HUMAN) {
         if (s.selection?.kind === 'attacker' && s.selection.uid === uid) return set({ selection: null, targets: [] });
+        if (tutorialBlocks({ type: 'ATTACK', attackerUid: uid })) return;
         const check = canAttack(game, unit);
         if (!check.ok) {
           toast(check.reason === 'Deployed this turn' ? 'This unit arrived this turn and cannot attack yet.' : check.reason ?? 'Cannot attack', 'info');
@@ -785,6 +813,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     clickHeroPower: (slot) => {
       if (!selectionAllowed()) return;
       const game = get().game!;
+      if (tutorialBlocks({ type: 'HERO_POWER', slot })) return;
       const check = canUseHeroPower(game, HUMAN, slot);
       if (!check.ok) {
         audio.play('error');
@@ -832,6 +861,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     endTurn: () => {
       const s = get();
       if (!s.game || s.game.activePlayer !== HUMAN || s.game.phase !== 'MAIN' || s.busy || s.linkCheck) return;
+      if (tutorialBlocks({ type: 'END_TURN' })) return;
       audio.play('endTurn');
       set({ selection: null, targets: [], turnDeadline: null });
       void dispatch({ type: 'END_TURN', player: HUMAN });

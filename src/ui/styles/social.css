@@ -46,7 +46,11 @@
 .friend-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); background: rgba(0, 0, 0, 0.22); }
 .friend-row.status-offline { opacity: 0.75; }
 .friend-name { flex: 1; min-width: 0; display: grid; }
-.friend-name strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.friend-name strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.friend-headline strong { flex-shrink: 0; max-width: 100%; }
+.friend-headline { display: flex; align-items: baseline; gap: var(--space-2); min-width: 0; }
+.friend-title { flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--t-sm); font-style: italic; color: var(--gold-bright); }
+.friend-stats { font-size: var(--t-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .friend-actions { display: flex; gap: var(--space-2); flex-shrink: 0; }
 .friend-status { display: inline-flex; align-items: center; gap: 6px; font-size: var(--t-sm); color: var(--parchment-faint); }
 .status-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--parchment-faint); }

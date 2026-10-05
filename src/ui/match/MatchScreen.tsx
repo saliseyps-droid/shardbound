@@ -10,6 +10,7 @@ import { toast, useUi } from '@/state/uiStore';
 import { CardBack, CardView } from '@/ui/components/CardView';
 import { confirmDialog, Spinner } from '@/ui/components/common';
 import { audio } from '@/audio/audioService';
+import { usingTouch } from '@/ui/inputMode';
 import { AudioToggles } from './AudioToggles';
 import { DrawPile, EmpowerBadge, EnergyBar, HeroAbilities, HeroPanel, PermanentsRow, UnitView } from './BoardParts';
 import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
@@ -530,6 +531,22 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
                   ariaLabel={`${t(playable ? '{name}, costs {cost}, playable.' : '{name}, costs {cost}.', { name: getCardSafe(c.cardId).name, cost })} ${getCardSafe(c.cardId).description ?? ''}`}
                 />
                 {c.fleeting && <span className="fleeting-tag">{t('Fleeting')}</span>}
+                {/* Touch: cancel choosing a target without tapping somewhere else. */}
+                {selected && (
+                  <button
+                    type="button"
+                    className="hand-cancel"
+                    aria-label={t('Cancel playing this card')}
+                    title={t('Cancel playing this card')}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      store.getState().cancelSelection();
+                    }}
+                  >
+                    ✕
+                  </button>
+                )}
               </div>
             );
           })}
@@ -564,7 +581,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       </aside>
 
       {/* ---- Targeting arrow ---- */}
-      {sourceRect && arrowTo && (selection || drag?.active) && (
+      {sourceRect && arrowTo && (drag?.active || (selection && !usingTouch())) && (
         <svg className="target-arrow" aria-hidden>
           <defs>
             <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto">

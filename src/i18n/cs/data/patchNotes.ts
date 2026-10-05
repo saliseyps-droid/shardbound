@@ -1,6 +1,24 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.25.0': {
+    title: 'Začátek s průvodcem a plynulejší mobily',
+    summary: 'Přísnější výuka s úvodem do světa, bohatší seznam přátel a spousta oprav pro mobily a menší obrazovky.',
+    sections: [
+      [
+        'Výuka: začíná příběhem Aethry, šesti frakcemi a klíčovými slovy, která potkáš na kartách.',
+        'Výuka: každý krok teď dovolí jen to, co po tobě chce, a když zkusíš něco jiného, poradí ti.',
+        'Seznam přátel: uvidíš, kdy byl offline přítel naposledy online, a u každého přítele jeho úroveň, titul a kolik karet má sesbíraných.',
+      ],
+      [
+        'Oblíbené balíčky jsou při výběru balíčku vždy první.',
+        'Horní menu ukazuje popisky jen tehdy, když se všechny vejdou, jinak ikony, a na užších obrazovkách se přepne na menu ☰; na mobilu na šířku má dva sloupce.',
+        'Mobily: esence je v hlavičce vždy vidět.',
+        'Mobily: karta, která potřebuje cíl, se přesune do pravého dolního rohu, abys viděl všechny jednotky, a červený křížek zahrání zruší.',
+      ],
+      ['Mobily: karty už po ťuknutí nezůstávají zvětšené a při výběru cíle nic nebliká.'],
+    ],
+  },
   '0.24.4': {
     title: 'Pohodlnější zápas a editor balíčku',
     summary: 'Jména karet v záznamu zápasu, náhled pravým tlačítkem všude v zápase, schopnosti Strážce v barvě frakce a výroba karet přímo v editoru balíčku.',

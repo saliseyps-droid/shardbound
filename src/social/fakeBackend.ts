@@ -1,6 +1,7 @@
 import type { Presence } from './friends';
 import type { Board, FriendRequest, LeaderboardEntry, LeaderboardUpload, MatchInvite, PublicProfile, SocialBackend, Unsubscribe } from './backend';
 import { isValidEntry, sortEntries, sortValue } from './leaderboard';
+import { isValidProfile } from './profile';
 
 /**
  * In-memory SocialBackend for tests and the dev-only preview (never used by production code paths).
@@ -9,6 +10,8 @@ import { isValidEntry, sortEntries, sortValue } from './leaderboard';
 export class FakeSocialBackend implements SocialBackend {
   /** Leaderboard writes, for tests. */
   puts = 0;
+  /** Profile writes, for tests. */
+  profilePuts = 0;
   /** Simulated server clock. */
   now: () => number = () => Date.now();
   private boards = new Map<string, Map<string, LeaderboardEntry>>();
@@ -58,7 +61,8 @@ export class FakeSocialBackend implements SocialBackend {
     return this.profiles.get(uid) ?? null;
   }
   async putProfile(uid: string, profile: PublicProfile) {
-    if (this.codes.get(profile.friendCode) !== uid) throw new Error('permission-denied');
+    if (this.codes.get(profile.friendCode) !== uid || !isValidProfile(profile)) throw new Error('permission-denied');
+    this.profilePuts++;
     this.profiles.set(uid, { ...profile });
   }
   async claimFriendCode(uid: string, code: string) {

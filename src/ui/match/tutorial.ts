@@ -1,6 +1,6 @@
 import { getCard } from '@/data/cards';
 import type { GameAction, GameEvent, GameState, MatchSetup } from '@/engine/types';
-import { canPlayCard } from '@/engine/queries';
+import { canAttack, canPlayCard, canUseHeroPower } from '@/engine/queries';
 import { TUTORIAL_OPPONENT } from './tutorialData';
 
 export { TUTORIAL_OPPONENT };
@@ -62,3 +62,57 @@ export const TUTORIAL_STEPS: TutorialStep[] = [
   { id: 'sigil', title: 'Your Warden abilities', text: 'Every Warden brings two abilities, chosen in the deck editor\'s Talents tab. The hexagon next to your portrait is an active one: Cinder Bolt, 1 energy, deals 1 damage and Burns. Click it (hover to read it), then pick a target. The round badge is passive and works on its own.', touchText: 'Every Warden brings two abilities, chosen in the deck editor\'s Talents tab. The hexagon next to your portrait is an active one: Cinder Bolt, 1 energy, deals 1 damage and Burns. Tap it (long-press to read it), then pick a target. The round badge is passive and works on its own.', highlight: 'sigil', done: (ev) => ev.some((e) => e.type === 'HERO_POWER_USED' && e.player === 0) },
   { id: 'win', title: 'Finish the fight', text: 'Units with Guard must be attacked first — hover the shield icon to learn more. Attack with your units and bring the enemy Warden to 0 Health.', touchText: 'Units with Guard must be attacked first — long-press a unit to read its keywords. Attack with your units and bring the enemy Warden to 0 Health.', highlight: 'enemy-hero', done: (ev) => ev.some((e) => e.type === 'GAME_ENDED') },
 ];
+
+// ---------------------------------------------------------------------------
+// Strict tutorial: each step only lets the player do what it asks for.
+// ---------------------------------------------------------------------------
+
+/** What the player tries to do: a full action, or just starting one (selecting a card/unit/ability). */
+export type TutorialIntent =
+  | { type: 'PLAY_CARD'; cardId: string; target?: { type: 'unit' | 'hero'; player?: number; uid?: number } }
+  | { type: 'ATTACK'; attackerUid: number; target?: { type: 'unit' | 'hero'; player?: number; uid?: number } }
+  | { type: 'HERO_POWER'; slot: number }
+  | { type: 'END_TURN' };
+
+const ownUnitCard = (cardId: string) => getCard(cardId)?.cardType === 'UNIT';
+const firstActiveSlot = (state: GameState) =>
+  state.players[0].hero.abilities.findIndex((a) => a.id === 'wt_ember_cinder_bolt');
+
+function canDo(state: GameState, want: 'PLAY_SQUIRE' | 'PLAY_BOLT' | 'ATTACK' | 'POWER'): boolean {
+  const me = state.players[0];
+  if (want === 'PLAY_SQUIRE') return me.hand.some((c) => c.cardId === 'tut_squire' && canPlayCard(state, 0, c).ok);
+  if (want === 'PLAY_BOLT') return me.hand.some((c) => c.cardId === 'tut_bolt' && canPlayCard(state, 0, c).ok);
+  if (want === 'ATTACK') return me.board.some((u) => canAttack(state, u).ok);
+  const slot = firstActiveSlot(state);
+  return slot >= 0 && canUseHeroPower(state, 0, slot).ok;
+}
+
+/**
+ * Whether the current tutorial step allows this. When the step's own action has become
+ * impossible (e.g. no energy left), ending the turn is allowed so the lesson can't get stuck.
+ */
+export function tutorialAllows(stepIndex: number, intent: TutorialIntent, state: GameState): boolean {
+  const step = TUTORIAL_STEPS[stepIndex];
+  if (!step) return true;
+  const endTurnAsFallback = (want: Parameters<typeof canDo>[1]) => intent.type === 'END_TURN' && !canDo(state, want);
+  switch (step.id) {
+    case 'welcome':
+    case 'energy':
+    case 'inspect':
+      return false; // read, then press Next
+    case 'play-unit':
+      return (intent.type === 'PLAY_CARD' && intent.cardId === 'tut_squire') || endTurnAsFallback('PLAY_SQUIRE');
+    case 'end-turn':
+      return intent.type === 'END_TURN';
+    case 'attack':
+      return (intent.type === 'ATTACK' && (!intent.target || (intent.target.type === 'unit' && state.players[1].board.some((u) => u.uid === intent.target!.uid)))) || endTurnAsFallback('ATTACK');
+    case 'spell':
+      return (intent.type === 'PLAY_CARD' && intent.cardId === 'tut_bolt') || endTurnAsFallback('PLAY_BOLT');
+    case 'end-turn-2':
+      return intent.type === 'END_TURN' || (intent.type === 'PLAY_CARD' && ownUnitCard(intent.cardId));
+    case 'sigil':
+      return (intent.type === 'HERO_POWER' && intent.slot === firstActiveSlot(state)) || endTurnAsFallback('POWER');
+    default:
+      return true; // 'win': free play
+  }
+}
