@@ -45,7 +45,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   // ----- Rares -----
   {
     ...knight, id: 'irn_stormrivet_dreadknight', name: 'Stormrivet Dreadknight', faction: 'IRON', rarity: 'RARE',
-    manaCost: 4, attack: 3, health: 5, keywords: ['GUARD'], archetypes: ['Bulwark'],
+    manaCost: 4, attack: 4, health: 5, keywords: ['GUARD'], archetypes: ['Bulwark'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'GAIN_ARMOR', amount: 3, target: 'ALLY_HERO' }] }],
     flavorText: 'Every rivet was struck in a thunderstorm. He still hums when it rains.',
   },
@@ -70,7 +70,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   // ----- Epics -----
   {
     ...knight, id: 'ast_halberdier_of_last_light', name: 'Halberdier of the Last Light', faction: 'ASTRAL', rarity: 'EPIC',
-    manaCost: 5, attack: 4, health: 5, keywords: ['WARD'], archetypes: ['Spellweave'],
+    manaCost: 5, attack: 5, health: 5, keywords: ['WARD'], archetypes: ['Spellweave'],
     abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'SELF' }] }],
     flavorText: 'He guards the last lit window of the Conclave. Every spell cast inside makes him stronger.',
   },
@@ -110,7 +110,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...knight, id: 'ast_moonlit_duelist', name: 'Moonlit Duelist', faction: 'ASTRAL', rarity: 'COMMON',
-    manaCost: 3, attack: 3, health: 3, archetypes: ['Spellweave'],
+    manaCost: 3, attack: 3, health: 4, archetypes: ['Spellweave'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'SELF', condition: { kind: 'SPELLS_CAST_THIS_TURN_GTE', n: 1 } }] }],
     description: 'On Deploy: If you cast a spell this turn, gain +1/+1.',
     flavorText: 'She only duels under a full moon. The Conclave makes sure there is always one.',
@@ -144,7 +144,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   // ----- Rares -----
   {
     ...knight, id: 'irn_ironvow_axeman', name: 'Ironvow Axeman', faction: 'IRON', rarity: 'RARE',
-    manaCost: 3, attack: 2, health: 4, keywords: ['GUARD'], archetypes: ['Bulwark'],
+    manaCost: 3, attack: 3, health: 4, keywords: ['GUARD'], archetypes: ['Bulwark'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'GAIN_ARMOR', amount: 3, target: 'ALLY_HERO', condition: { kind: 'CONTROLS_TAG', tag: 'Knight' } }] }],
     description: 'Guard. On Deploy: If you control another Knight, gain 3 Armor.',
     flavorText: 'His vow was forged in iron. So, he insists, was he.',
@@ -173,7 +173,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...knight, id: 'ast_isera_of_the_violet_blade', name: 'Isera of the Violet Blade', faction: 'ASTRAL', rarity: 'EPIC',
-    manaCost: 4, attack: 3, health: 4, archetypes: ['Spellweave'],
+    manaCost: 4, attack: 4, health: 5, archetypes: ['Spellweave'],
     abilities: [
       { trigger: 'ON_DEPLOY', effects: [{ type: 'DRAW_CARDS', amount: 1, filter: { cardType: 'SPELL' } }] },
       { trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, target: 'SELF' }] },
@@ -236,7 +236,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...knight, id: 'irn_steelwatch_knight', name: 'Steelwatch Knight', faction: 'IRON', rarity: 'COMMON',
-    manaCost: 2, attack: 2, health: 3, keywords: ['GUARD'], archetypes: ['Bulwark'],
+    manaCost: 2, attack: 2, health: 4, keywords: ['GUARD'], archetypes: ['Bulwark'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }] }],
     flavorText: 'The Steelwatch never sleeps. It just leans on its shield with its eyes closed.',
   },
@@ -260,7 +260,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...knight, id: 'ast_duskstar_sentinel', name: 'Duskstar Sentinel', faction: 'ASTRAL', rarity: 'RARE',
-    manaCost: 4, attack: 3, health: 4, archetypes: ['Spellweave'],
+    manaCost: 4, attack: 3, health: 5, archetypes: ['Spellweave'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DRAW_CARDS', amount: 1, condition: { kind: 'SPELLS_CAST_THIS_TURN_GTE', n: 1 } }] }],
     description: 'On Deploy: If you cast a spell this turn, draw a card.',
     flavorText: 'He keeps watch for the first star of dusk, and writes down what it says.',
@@ -280,13 +280,13 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...knight, id: 'irn_gearspike_commander', name: 'Gearspike Commander', faction: 'IRON', rarity: 'EPIC',
-    manaCost: 5, attack: 4, health: 4, archetypes: ['Assembly Line'],
+    manaCost: 5, attack: 4, health: 5, archetypes: ['Assembly Line'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'SUMMON', cardId: 'token_sentry' }] }],
     flavorText: 'He never rides into battle without a sentry at his side. He builds a new one each time.',
   },
   {
     ...knight, id: 'ast_starbound_inquisitor', name: 'Starbound Inquisitor', faction: 'ASTRAL', rarity: 'EPIC',
-    manaCost: 5, attack: 4, health: 4, keywords: ['WARD'], archetypes: ['Starlit Control'],
+    manaCost: 5, attack: 4, health: 5, keywords: ['WARD'], archetypes: ['Starlit Control'],
     target: { kind: 'ENEMY_UNIT', optional: true },
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'SILENCE', target: 'TARGET' }] }],
     flavorText: 'The stars have already judged you. He is only here to read the verdict.',
@@ -379,7 +379,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   // ----- Epics -----
   {
     ...spell, id: 'irn_molten_bulwark', name: 'Molten Bulwark', faction: 'IRON', rarity: 'EPIC',
-    manaCost: 4, archetypes: ['Bulwark'],
+    manaCost: 3, archetypes: ['Bulwark'],
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'SUMMON', cardId: 'token_sentry', count: 2 }] }],
     description: 'Summon two 2/3 Brass Sentries with Guard.',
     flavorText: 'Pour the brass, cool it in the dark, and two sentries stand up out of the mould.',

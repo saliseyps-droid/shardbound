@@ -166,10 +166,10 @@ const talents: TalentsOverlay = {
     name: 'Tkaní kouzel',
     levels: [
       'Kdykoli sešleš kouzlo, dej náhodné spřátelené jednotce +1/+1.',
-      'Kdykoli sešleš kouzlo, dej náhodné spřátelené jednotce +1/+1 a obnov 1 život tvému Strážci.',
-      'Kdykoli sešleš kouzlo, dvakrát dej náhodné spřátelené jednotce +1/+1 a obnov 1 život tvému Strážci.',
+      'Kdykoli sešleš kouzlo, dej náhodné spřátelené jednotce +1/+1 a obnov 2 životy tvému Strážci.',
+      'Kdykoli sešleš kouzlo, dvakrát dej náhodné spřátelené jednotce +1/+1 a obnov 2 životy tvému Strážci.',
     ],
-    upgradeNotes: ['Navíc obnoví 1 život tvému Strážci.', '+1/+1 se udělí dvakrát.'],
+    upgradeNotes: ['Navíc obnoví 2 životy tvému Strážci.', '+1/+1 se udělí dvakrát.'],
   },
   wt_astral_foresight: {
     name: 'Prozíravost',

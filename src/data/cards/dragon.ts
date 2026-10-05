@@ -347,7 +347,7 @@ export const DRAGON_CARDS: CardDefinition[] = [
   },
   {
     ...dragon, id: 'ast_starveil_drake', name: 'Starveil Drake', faction: 'ASTRAL', rarity: 'RARE',
-    manaCost: 5, attack: 5, health: 6, keywords: ['EMPOWER'], keywordValues: { EMPOWER: 1 }, archetypes: ['Spellweave'],
+    manaCost: 5, attack: 5, health: 7, keywords: ['EMPOWER'], keywordValues: { EMPOWER: 1 }, archetypes: ['Spellweave'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DRAW_CARDS', amount: 1, filter: { cardType: 'SPELL' } }] }],
     flavorText: 'Its scales hold the colour of the sky an hour after sunset, and the spells that live there.',
   },
@@ -365,7 +365,7 @@ export const DRAGON_CARDS: CardDefinition[] = [
   },
   {
     ...fae, id: 'ast_glimmerwing_sprite', name: 'Glimmerwing Sprite', faction: 'ASTRAL', rarity: 'COMMON',
-    manaCost: 1, attack: 1, health: 2, keywords: ['BARRIER', 'EMPOWER'], keywordValues: { EMPOWER: 1 }, archetypes: ['Spellweave'],
+    manaCost: 1, attack: 1, health: 3, keywords: ['BARRIER', 'EMPOWER'], keywordValues: { EMPOWER: 1 }, archetypes: ['Spellweave'],
     flavorText: 'She sits on the edge of a spell and makes it a little brighter.',
   },
   {
@@ -421,7 +421,7 @@ export const DRAGON_CARDS: CardDefinition[] = [
   },
   {
     ...dragon, id: 'irn_bronzecoil_wyrm', name: 'Bronzecoil Wyrm', faction: 'IRON', rarity: 'RARE',
-    manaCost: 5, attack: 5, health: 7, keywords: ['GUARD'], archetypes: ['Bulwark'],
+    manaCost: 5, attack: 6, health: 7, keywords: ['GUARD'], archetypes: ['Bulwark'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'GAIN_ARMOR', amount: 4, target: 'ALLY_HERO' }] }],
     flavorText: 'It coils around the Dominion foundries, and nothing gets in that it does not allow.',
   },

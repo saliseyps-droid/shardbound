@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.1': {
+    title: 'Silnější Iron a Astral',
+    summary: 'Spousta malých posílení pro Mosazné dominium a Konkláve Lumenu.',
+    sections: [
+      [
+        'Mosazné dominium: Plated Bastion 2/4, Rytíř ocelové hlídky 2/4, Ironvow Axeman 3/4, Stormrivet Dreadknight 4/5, Éterodynové jádro 1/5, Bronzecoil Wyrm 6/7, Gearwright Apprentice 2/3, Assembly Foreman 3/4, Steamstride Walker 4/4, Overclock Engineer 3/4, Clockwork Commander 3/5, Gearspike Commander 4/5; Fortress Plating stojí 2, Titán egidy 7, Molten Bulwark 3.',
+        'Konkláve Lumenu: Lumen Acolyte 1/3, Glimmerwing Sprite 1/3, Glimmer Wisp 2/3, Orrery Apprentice 2/4, Spellweaver Adept 4/4, Isera of the Violet Blade 4/5, Zahalená astromantka 4/5, Duskstar Sentinel 3/5, Moonlit Duelist 3/4, Starbound Inquisitor 4/5, Halberdier of the Last Light 5/5, Starveil Drake 5/7, Selenne 4/7.',
+        'Talent Strážce Tkaní kouzel (stupně II a III): léčí tvého Strážce za 2 místo 1.',
+      ],
+    ],
+  },
   '0.26.0': {
     title: 'Dragon Realm',
     summary: 'Nový set 70 karet: draci, dračí rytíři a víly ve všech frakcích.',

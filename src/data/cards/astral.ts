@@ -10,7 +10,7 @@ export const ASTRAL_CARDS: CardDefinition[] = [
   // ----- Commons -----
   {
     ...base, id: 'ast_lumen_acolyte', name: 'Lumen Acolyte', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 1, attack: 1, health: 2, keywords: ['EMPOWER'], keywordValues: { EMPOWER: 1 }, tags: ['Mage'], archetypes: ['Spellweave'],
+    manaCost: 1, attack: 1, health: 3, keywords: ['EMPOWER'], keywordValues: { EMPOWER: 1 }, tags: ['Mage'], archetypes: ['Spellweave'],
     flavorText: 'First-year students polish the telescopes. Second-years learn why they glow.',
   },
   {
@@ -22,13 +22,13 @@ export const ASTRAL_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'ast_orrery_apprentice', name: 'Orrery Apprentice', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 2, attack: 2, health: 3, tags: ['Mage'], archetypes: ['Spellweave'],
+    manaCost: 2, attack: 2, health: 4, tags: ['Mage'], archetypes: ['Spellweave'],
     abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, target: 'SELF' }] }],
     flavorText: 'Each spell turns another brass ring of her orrery. Each ring sharpens her aim.',
   },
   {
     ...base, id: 'ast_glimmer_wisp', name: 'Glimmer Wisp', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 2, attack: 2, health: 2, tags: ['Spirit'], archetypes: ['Spellweave'],
+    manaCost: 2, attack: 2, health: 3, tags: ['Spirit'], archetypes: ['Spellweave'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'CREATE_CARD', cardId: 'token_mote_insight', destination: 'HAND', fleeting: true }] }],
     flavorText: 'It sheds a mote of starlight wherever it drifts. Scholars follow it with jars.',
   },
@@ -76,7 +76,7 @@ export const ASTRAL_CARDS: CardDefinition[] = [
   // ----- Rares -----
   {
     ...base, id: 'ast_spellweaver_adept', name: 'Spellweaver Adept', cardType: 'UNIT', rarity: 'RARE', set: 'CORE',
-    manaCost: 3, attack: 3, health: 3, tags: ['Mage'], archetypes: ['Spellweave'],
+    manaCost: 3, attack: 4, health: 4, tags: ['Mage'], archetypes: ['Spellweave'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'RANDOM_ENEMY', repeat: { kind: 'SPELLS_CAST_THIS_TURN', max: 20 } }] }],
     description: 'On Deploy: Deal 2 damage to a random enemy for each spell you cast this turn.',
     flavorText: 'She weaves each finished spell into the next, until the pattern bites.',
@@ -101,7 +101,7 @@ export const ASTRAL_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'ast_veiled_astromancer', name: 'Veiled Astromancer', cardType: 'UNIT', rarity: 'RARE', set: 'CORE',
-    manaCost: 4, attack: 4, health: 4, keywords: ['WARD'], tags: ['Mage'], archetypes: ['Spellweave'],
+    manaCost: 4, attack: 4, health: 5, keywords: ['WARD'], tags: ['Mage'], archetypes: ['Spellweave'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'REDUCE_COST', amount: 1, scope: 'HAND', filter: { cardType: 'SPELL' } }] }],
     flavorText: 'Behind her veil, a sky no one else has ever seen.',
   },
@@ -145,7 +145,7 @@ export const ASTRAL_CARDS: CardDefinition[] = [
   // ----- Legendaries -----
   {
     ...base, id: 'ast_selenne', name: 'Selenne, Keeper of Orbits', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'CORE',
-    manaCost: 5, attack: 4, health: 6, tags: ['Mage'], archetypes: ['Spellweave'],
+    manaCost: 5, attack: 4, health: 7, tags: ['Mage'], archetypes: ['Spellweave'],
     abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'SUMMON', cardId: 'token_star_fragment' }] }],
     flavorText: 'Every spell she casts leaves a new star in orbit around her. She has lost count.',
   },

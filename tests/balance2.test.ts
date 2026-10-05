@@ -16,7 +16,7 @@ describe('balance pass 2', () => {
     expect(stats('vod_open_grave').cost).toBe(1);
     expect(stats('irn_dominion_forge')).toMatchObject({ cost: 2, ch: 3 });
     expect(stats('irn_cogspire_foundry')).toMatchObject({ cost: 4, dur: 4 });
-    expect(stats('irn_steelwatch_knight')).toMatchObject({ cost: 2, atk: 2, hp: 3 });
+    expect(stats('irn_steelwatch_knight')).toMatchObject({ cost: 2, atk: 2, hp: 4 });
     expect(stats('emb_kharzul_caldera')).toMatchObject({ cost: 2, dur: 3 });
     expect(getCard('vod_kaelthar_pyre_of_souls')!.description).toContain('(up to 4)');
   });

@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.1',
+    date: '2026-10-05',
+    title: 'Iron and Astral get stronger',
+    summary: 'Many small buffs for the Brass Dominion and the Lumen Conclave.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Brass Dominion: Plated Bastion 2/4, Steelwatch Knight 2/4, Ironvow Axeman 3/4, Stormrivet Dreadknight 4/5, Aetherdyne Core 1/5, Bronzecoil Wyrm 6/7, Gearwright Apprentice 2/3, Assembly Foreman 3/4, Steamstride Walker 4/4, Overclock Engineer 3/4, Clockwork Commander 3/5, Gearspike Commander 4/5; Fortress Plating costs 2, Aegis Titan 7, Molten Bulwark 3.',
+          'Lumen Conclave: Lumen Acolyte 1/3, Glimmerwing Sprite 1/3, Glimmer Wisp 2/3, Orrery Apprentice 2/4, Spellweaver Adept 4/4, Isera of the Violet Blade 4/5, Veiled Astromancer 4/5, Duskstar Sentinel 3/5, Moonlit Duelist 3/4, Starbound Inquisitor 4/5, Halberdier of the Last Light 5/5, Starveil Drake 5/7, Selenne 4/7.',
+          'Warden talent Spellweave (ranks II and III): heals your Warden for 2 instead of 1.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.26.0',
     date: '2026-10-05',
     title: 'Dragon Realm',

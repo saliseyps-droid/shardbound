@@ -16,25 +16,25 @@ export const IRON_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'irn_gearwright_apprentice', name: 'Gearwright Apprentice', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 2, attack: 2, health: 2, tags: ['Artificer'], archetypes: ['Assembly Line'],
+    manaCost: 2, attack: 2, health: 3, tags: ['Artificer'], archetypes: ['Assembly Line'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'SUMMON', cardId: 'token_scrapbot' }] }],
     flavorText: 'Her first creation bit her. She was very proud.',
   },
   {
     ...base, id: 'irn_plated_bastion', name: 'Plated Bastion', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 2, attack: 1, health: 4, keywords: ['GUARD'], tags: ['Construct'], archetypes: ['Bulwark'],
+    manaCost: 2, attack: 2, health: 4, keywords: ['GUARD'], tags: ['Construct'], archetypes: ['Bulwark'],
     flavorText: 'Riveted, bolted, welded, and then riveted again for good measure.',
   },
   {
     ...base, id: 'irn_assembly_foreman', name: 'Assembly Foreman', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 3, attack: 3, health: 3, tags: ['Artificer'], archetypes: ['Assembly Line'],
+    manaCost: 3, attack: 3, health: 4, tags: ['Artificer'], archetypes: ['Assembly Line'],
     abilities: [{ trigger: 'ALLY_SUMMONED', filter: { tag: 'Construct' }, effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TRIGGER_UNIT' }] }],
     description: 'Whenever you summon a Construct, give it +1/+1.',
     flavorText: '"Tighter. Tighter. Perfect. Next!"',
   },
   {
     ...base, id: 'irn_steamstride_walker', name: 'Steamstride Walker', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 3, attack: 3, health: 4, tags: ['Construct'], archetypes: ['Assembly Line'],
+    manaCost: 3, attack: 4, health: 4, tags: ['Construct'], archetypes: ['Assembly Line'],
     flavorText: 'Each step vents a sigh of scalding steam. It sounds almost tired.',
   },
   {
@@ -77,13 +77,13 @@ export const IRON_CARDS: CardDefinition[] = [
   // ----- Rares -----
   {
     ...base, id: 'irn_overclock_engineer', name: 'Overclock Engineer', cardType: 'UNIT', rarity: 'RARE', set: 'CORE',
-    manaCost: 3, attack: 3, health: 3, tags: ['Artificer'], archetypes: ['Assembly Line'],
+    manaCost: 3, attack: 3, health: 4, tags: ['Artificer'], archetypes: ['Assembly Line'],
     abilities: [{ trigger: 'ON_DEPLOY', condition: { kind: 'CONTROLS_TAG', tag: 'Construct' }, effects: [{ type: 'GAIN_ENERGY', amount: 2 }] }],
     flavorText: 'Safety limits are a suggestion. She never takes suggestions.',
   },
   {
     ...base, id: 'irn_fortress_plating', name: 'Fortress Plating', cardType: 'SPELL', rarity: 'RARE', set: 'DEEP',
-    manaCost: 3, archetypes: ['Bulwark'],
+    manaCost: 2, archetypes: ['Bulwark'],
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'GAIN_ARMOR', amount: 6 }, { type: 'DRAW_CARDS', amount: 1 }] }],
     flavorText: 'The Dominion builds walls first and asks questions never.',
   },
@@ -102,7 +102,7 @@ export const IRON_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'irn_clockwork_commander', name: 'Clockwork Commander', cardType: 'UNIT', rarity: 'RARE', set: 'CORE',
-    manaCost: 4, attack: 3, health: 4, tags: ['Construct'], archetypes: ['Assembly Line'],
+    manaCost: 4, attack: 3, health: 5, tags: ['Construct'], archetypes: ['Assembly Line'],
     aura: { target: 'ALLY_UNITS', tag: 'Construct', attack: 1 },
     flavorText: 'It speaks in ticks. The army understands.',
   },
@@ -122,7 +122,7 @@ export const IRON_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'irn_aegis_titan', name: 'Aegis Titan', cardType: 'UNIT', rarity: 'EPIC', set: 'CORE',
-    manaCost: 8, attack: 6, health: 8, keywords: ['GUARD'], tags: ['Construct'], archetypes: ['Bulwark'],
+    manaCost: 7, attack: 6, health: 8, keywords: ['GUARD'], tags: ['Construct'], archetypes: ['Bulwark'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'GAIN_ARMOR', amount: 6 }] }],
     flavorText: 'A walking citadel, commissioned by the Assembly after the Crown fell.',
   },
@@ -134,7 +134,7 @@ export const IRON_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'irn_aetherdyne_core', name: 'Aetherdyne Core', cardType: 'UNIT', rarity: 'EPIC', set: 'DEEP',
-    manaCost: 4, attack: 0, health: 5, keywords: ['GUARD'], tags: ['Construct'], archetypes: ['Bulwark'],
+    manaCost: 4, attack: 1, health: 5, keywords: ['GUARD'], tags: ['Construct'], archetypes: ['Bulwark'],
     abilities: [{ trigger: 'TURN_START', effects: [{ type: 'GAIN_MAX_ENERGY', amount: 1, empty: true }] }],
     flavorText: 'A Shard in a cage of brass, spinning faster every hour.',
   },

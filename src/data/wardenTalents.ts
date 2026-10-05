@@ -153,9 +153,9 @@ const ASTRAL: TalentAbility[] = [
   ], ['Three bolts instead of two.', 'Four bolts instead of three.']),
   passive('ASTRAL', 'spellweave', 'Spellweave', [
     { abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'RANDOM_ALLY_UNIT' }] }], description: 'Whenever you cast a spell, give a random friendly unit +1/+1.' },
-    { abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'RANDOM_ALLY_UNIT' }, { type: 'HEAL', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever you cast a spell, give a random friendly unit +1/+1 and restore 1 Health to your Warden.' },
-    { abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'RANDOM_ALLY_UNIT', repeat: 2 }, { type: 'HEAL', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever you cast a spell, give a random friendly unit +1/+1 twice and restore 1 Health to your Warden.' },
-  ], ['Also restores 1 Health to your Warden.', 'The +1/+1 happens twice.']),
+    { abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'RANDOM_ALLY_UNIT' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }] }], description: 'Whenever you cast a spell, give a random friendly unit +1/+1 and restore 2 Health to your Warden.' },
+    { abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'RANDOM_ALLY_UNIT', repeat: 2 }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }] }], description: 'Whenever you cast a spell, give a random friendly unit +1/+1 twice and restore 2 Health to your Warden.' },
+  ], ['Also restores 2 Health to your Warden.', 'The +1/+1 happens twice.']),
   passive('ASTRAL', 'foresight', 'Foresight', [
     { abilities: [{ trigger: 'TURN_END', condition: { kind: 'HAND_SIZE_LTE', n: 1 }, effects: [{ type: 'DRAW_CARDS', amount: 1 }] }], description: 'At the end of your turn, draw a card if you have 1 or fewer cards in hand.' },
     { abilities: [{ trigger: 'TURN_END', condition: { kind: 'HAND_SIZE_LTE', n: 2 }, effects: [{ type: 'DRAW_CARDS', amount: 1 }] }], description: 'At the end of your turn, draw a card if you have 2 or fewer cards in hand.' },
