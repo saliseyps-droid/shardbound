@@ -12,6 +12,16 @@ export function friendStatusText(f: Pick<FriendView, 'presence'>, now: number): 
   return t(STATUS_LABEL[st]);
 }
 
+function rankStatus(s: PresenceStatus): number {
+  return s === 'online' ? 0 : s === 'inMatch' ? 1 : 2;
+}
+
+/** Online first, then in a match, then offline (most recently seen first), then by name. */
+export function sortFriends<F extends Pick<FriendView, 'presence' | 'name'>>(friends: readonly F[], now: number): F[] {
+  const lastSeen = (f: F) => (presenceStatus(f.presence, now) === 'offline' ? (f.presence?.lastSeen ?? 0) : 0);
+  return [...friends].sort((a, b) => rankStatus(presenceStatus(a.presence, now)) - rankStatus(presenceStatus(b.presence, now)) || lastSeen(b) - lastSeen(a) || a.name.localeCompare(b.name));
+}
+
 /** Name with the equipped title, presence, then level and collection. Older profiles without stats show just name and presence. */
 export function FriendInfo({ friend: f, now }: { friend: FriendView; now: number }) {
   const st = presenceStatus(f.presence, now);

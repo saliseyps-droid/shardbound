@@ -97,5 +97,21 @@ const d: Record<string, string> = {
   'Match invite': 'Pozvánka na zápas',
   '{name} invites you to a match.': '{name} tě zve na zápas.',
   'Pick your deck on the next screen and join.': 'Na další obrazovce si vyber balíček a připoj se.',
+
+  // Tournament invites (SocialLayer.tsx, TournamentInvites.tsx)
+  'Tournament invite': 'Pozvánka na turnaj',
+  '{name} invites you to a tournament ({n} players).': '{name} tě zve na turnaj pro {n} hráče.|{name} tě zve na turnaj pro {n} hráče.|{name} tě zve na turnaj pro {n} hráčů.',
+  '{name} invites you to a tournament.': '{name} tě zve na turnaj.',
+  'You join with your selected deck, or pick one if it is not valid.': 'Připojíš se se zvoleným balíčkem, nebo si vybereš jiný, pokud není platný.',
+  'Invite friends': 'Pozvat přátele',
+  'Sign in to invite your friends directly.': 'Přihlas se a zvi přátele přímo.',
+  'Every seat is taken.': 'Všechna místa jsou obsazená.',
+  'Sending…': 'Odesílám…',
+  'Invite sent': 'Pozvánka odeslána',
+  'Accepted, joining…': 'Přijal(a), připojuje se…',
+  Declined: 'Odmítnuto',
+  'No answer': 'Bez odpovědi',
+  Joined: 'Připojen(a)',
 };
+
 export default d;

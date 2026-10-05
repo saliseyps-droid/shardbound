@@ -40,10 +40,14 @@ What the rules allow:
 - **Friends** `users/{uid}/friends/{friendUid}`: readable by the owner. Created only while a matching friend request exists (the recipient accepting writes both lists in one batch); either friend can delete it.
 - **Presence** `presence/{uid}` `{ lastSeen, inMatch }`: readable by signed-in players, written by the owner with a server timestamp about once a minute while the game is open. Friends see an offline player's `lastSeen` as *Last online 5 min ago / yesterday / 4 Oct*.
 - **Invites** `invites/{to}/items/{id}`: created only by a player on the recipient's friends list (`from` must be their own uid); the recipient reads, accepts (`status: 'accepted'`) or deletes (declines) it; the sender can watch and delete it.
+  - Fields: `{ from, fromName, code, createdAt, status, kind?, size? }`. `code` is 4–8 characters `A–Z0–9` (a 6-character match room or a 5-character tournament code).
+  - `kind` is `'match'` or `'tournament'`. It is optional: invites without it are match invites (older versions never write it, and match invites still leave it out, so they also pass rules published before tournaments). Tournament invites need the current rules.
+  - `size` is the number of tournament seats, a whole number 4–32, shown to the invited friend.
+  - Match invites lapse after 2 minutes, tournament invites after 10 (the lobby waits for players). The invitee's game deletes lapsed invites it finds.
 
 Seasons are calendar months in UTC. At the start of a month each player gets the reward for their best Ranked vs AI rank on their own device (`src/domain/season.ts`), so the server does not need scheduled jobs.
 
-Dev preview: `npm run dev`, then open `http://localhost:5199/?devsocial#/friends` to see the signed-in screens with fake data. It never talks to Firestore and is not part of production builds.
+Dev preview: `npm run dev`, then open `http://localhost:5199/?devsocial#/friends` to see the signed-in screens with fake data (`?devsocial=invites` also shows an incoming tournament invite, then a match invite). It never talks to Firestore and is not part of production builds.
 
 ## Limits
 The free plan allows 50,000 reads and 20,000 writes per day, and 1 GiB of data.

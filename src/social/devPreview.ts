@@ -8,12 +8,14 @@ import { aiScore } from './leaderboard';
  * DEV ONLY: a signed-in look at the social screens without Firebase (open the app with
  * ?devsocial before the #). Imported only behind import.meta.env.DEV, so production builds
  * never contain it. Nothing here touches the real Firestore.
+ * ?devsocial=invites also seeds one incoming invite of each kind (tournament first, then a match
+ * invite once that one is answered).
  */
 export const DEV_UID = 'dev-me';
 
 const NAMES = ['Aldric', 'Brynja', 'Corvin', 'Dalia', 'Eskel', 'Fenna', 'Garrick', 'Hesper', 'Ilsa', 'Jorund', 'Kestrel', 'Lysander', 'Maelis', 'Nyx', 'Orrin', 'Perrin', 'Quill', 'Rowan', 'Saskia', 'Tamsin'];
 
-export function createDevSocial(): { uid: string; backend: FakeSocialBackend } {
+export function createDevSocial(opts: { invites?: boolean } = {}): { uid: string; backend: FakeSocialBackend } {
   const b = new FakeSocialBackend();
   const now = Date.now();
   const season = seasonKeyOf(now);
@@ -39,5 +41,10 @@ export function createDevSocial(): { uid: string; backend: FakeSocialBackend } {
   b.seedProfile('f7', { name: 'Hesper', avatar: 'TIDE', portrait: '', friendCode: 'HESP2345', level: 11, title: 'Bladebound', cardsOwned: 96, cardsTotal: total }, { lastSeen: now - 4 * 86_400_000, inMatch: false });
   for (const f of ['f1', 'f2', 'f3', 'f5', 'f6', 'f7']) b.seedFriendship(DEV_UID, f);
   b.seedRequest({ from: 'f4', to: DEV_UID, fromName: 'Eskel', fromAvatar: 'IRON', createdAt: now - 600_000 });
+  if (opts.invites) {
+    b.seedInvite(DEV_UID, { id: 'dev-tour', from: 'f1', fromName: 'Brynja', code: 'K7Q2M', createdAt: now - 30_000, status: 'pending', kind: 'tournament', size: 16 });
+    // As written by an older version: no kind, so it is a match invite.
+    b.seedInvite(DEV_UID, { id: 'dev-match', from: 'f2', fromName: 'Corvin', code: 'ABC234', createdAt: now - 10_000, status: 'pending' });
+  }
   return { uid: DEV_UID, backend: b };
 }

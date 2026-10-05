@@ -1,6 +1,14 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.25.2': {
+    title: 'Pozvánky přátel do turnaje',
+    summary: 'Organizátor turnaje může jedním klikem pozvat přátele a velké turnaje ukazují všechna místa.',
+    sections: [
+      ['Čekárna turnaje: panel Pozvat přátele ukazuje tvé přátele; ty, kdo jsou online, pozveš jedním klikem. Po přijetí se rovnou připojí se svým vybraným balíčkem.'],
+      ['Turnaje pro 16 a 32 hráčů ukazují všechna místa v kompaktní mřížce, stejně jako ty menší.'],
+    ],
+  },
   '0.25.1': {
     title: 'Plynulejší zápasy na každé obrazovce',
     summary: 'Várka oprav hratelnosti pro mobily, tablety i PC a k tomu záznam zápasu a detail Strážce na mobilu.',

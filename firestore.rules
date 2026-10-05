@@ -11,7 +11,7 @@ rules_version = '2';
 //   friendRequests/{from}_{to}        { from, to, fromName, fromAvatar, createdAt }
 //   users/{uid}/friends/{friendUid}   { since }
 //   presence/{uid}                    { lastSeen, inMatch }
-//   invites/{to}/items/{id}           { from, fromName, code, createdAt, status }
+//   invites/{to}/items/{id}           { from, fromName, code, createdAt, status, kind?, size? }
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() {
@@ -156,16 +156,24 @@ service cloud.firestore {
         && request.resource.data.inMatch is bool;
     }
 
-    // Match invites: only a player on the recipient's friends list can send one; the recipient
-    // reads, accepts (status) or deletes (declines) it; the sender can watch and withdraw it.
+    // Match and tournament invites: only a player on the recipient's friends list can send one;
+    // the recipient reads, accepts (status) or deletes (declines) it; the sender can watch and
+    // withdraw it. kind is optional (missing = a match invite, as written by older versions);
+    // size is the number of tournament seats, for display.
+    function validInviteKind(d) {
+      return (!('kind' in d) || d.kind in ['match', 'tournament'])
+        && (!('size' in d) || (d.size is int && d.size >= 4 && d.size <= 32));
+    }
+
     match /invites/{to}/items/{id} {
       allow read: if signedIn()
         && (request.auth.uid == to || resource == null || resource.data.from == request.auth.uid);
       allow delete: if signedIn()
         && (request.auth.uid == to || resource.data.from == request.auth.uid);
       allow create: if signedIn()
-        && request.resource.data.keys().hasOnly(['from', 'fromName', 'code', 'createdAt', 'status'])
+        && request.resource.data.keys().hasOnly(['from', 'fromName', 'code', 'createdAt', 'status', 'kind', 'size'])
         && request.resource.data.from == request.auth.uid
+        && validInviteKind(request.resource.data)
         && validName(request.resource.data.fromName)
         && request.resource.data.code is string
         && request.resource.data.code.matches('^[A-Z0-9]{4,8}$')

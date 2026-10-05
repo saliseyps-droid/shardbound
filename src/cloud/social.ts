@@ -1,5 +1,6 @@
 import type { DocumentData, DocumentSnapshot, Firestore, QueryDocumentSnapshot } from 'firebase/firestore';
 import type { Board, FriendRequest, LeaderboardEntry, MatchInvite, SocialBackend } from '@/social/backend';
+import { inviteKind } from '@/social/friends';
 
 /**
  * Firestore layout for the social features (rules in firestore.rules):
@@ -10,7 +11,7 @@ import type { Board, FriendRequest, LeaderboardEntry, MatchInvite, SocialBackend
  *   friendRequests/{from}_{to}         { from, to, fromName, fromAvatar, createdAt }
  *   users/{uid}/friends/{friendUid}    { since }
  *   presence/{uid}                     { lastSeen, inMatch }
- *   invites/{to}/items/{id}            { from, fromName, code, createdAt, status }
+ *   invites/{to}/items/{id}            { from, fromName, code, createdAt, status, kind?, size? }   kind 'match' | 'tournament' (missing = match)
  * Times are server timestamps (the rules require request.time), read back as milliseconds.
  */
 export async function createSocialBackend(db: Firestore): Promise<SocialBackend> {
@@ -46,7 +47,9 @@ export async function createSocialBackend(db: Firestore): Promise<SocialBackend>
   };
   const toInvite = (snap: DocumentSnapshot | QueryDocumentSnapshot): MatchInvite => {
     const d = data(snap);
-    return { id: snap.id, from: String(d.from), fromName: String(d.fromName ?? '?'), code: String(d.code ?? ''), createdAt: millis(d.createdAt), status: d.status === 'accepted' ? 'accepted' : 'pending' };
+    const inv: MatchInvite = { id: snap.id, from: String(d.from), fromName: String(d.fromName ?? '?'), code: String(d.code ?? ''), createdAt: millis(d.createdAt), status: d.status === 'accepted' ? 'accepted' : 'pending', kind: inviteKind(d) };
+    if (typeof d.size === 'number' && Number.isInteger(d.size)) inv.size = d.size;
+    return inv;
   };
   const warn = (what: string) => (e: unknown) => console.warn(`[social] ${what} failed`, e);
   const reqDoc = (from: string, to: string) => doc(db, 'friendRequests', `${from}_${to}`);
@@ -178,7 +181,13 @@ export async function createSocialBackend(db: Firestore): Promise<SocialBackend>
 
     async sendInvite(to, invite) {
       const ref = doc(collection(db, 'invites', to, 'items'));
-      await setDoc(ref, { from: invite.from, fromName: invite.fromName, code: invite.code, createdAt: serverTimestamp(), status: 'pending' });
+      const body: Record<string, unknown> = { from: invite.from, fromName: invite.fromName, code: invite.code, createdAt: serverTimestamp(), status: 'pending' };
+      // Match invites leave the kind out (missing = match), so they also pass rules published before tournaments.
+      if (invite.kind === 'tournament') {
+        body.kind = 'tournament';
+        if (invite.size !== undefined) body.size = invite.size;
+      }
+      await setDoc(ref, body);
       return ref.id;
     },
     async setInviteStatus(to, id, status) {

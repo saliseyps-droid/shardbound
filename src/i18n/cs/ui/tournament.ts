@@ -24,5 +24,11 @@ const d: Record<string, string> = {
   'Third place! +{gold} Gold and {n} booster pack': 'Třetí místo! +{gold} zlata a {n} booster',
   'The players reported different results, so the match will be replayed.': 'Hráči nahlásili různé výsledky, zápas se proto odehraje znovu.',
   'The match ended in a draw, so it will be replayed.': 'Zápas skončil remízou, odehraje se proto znovu.',
+
+  // Lobby seats for 16/32 and joining from an invite
+  'Bot if nobody joins': 'Bot, pokud nikdo nepřijde',
+  'You were invited to tournament {code}. Choose a valid deck, then join.': 'Máš pozvánku do turnaje {code}. Vyber platný balíček a připoj se.',
+  'Leave your current tournament first.': 'Nejdřív opusť svůj současný turnaj.',
 };
+
 export default d;

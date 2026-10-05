@@ -1,3 +1,5 @@
+import type { InviteKind } from './backend';
+
 /**
  * Friends: codes, presence and invite timing. Pure helpers; the Firestore side lives behind
  * SocialBackend (src/social/backend.ts).
@@ -13,6 +15,8 @@ export const PRESENCE_INTERVAL_MS = 60_000;
 export const ONLINE_WINDOW_MS = 120_000;
 /** A match invite is answered within two minutes or it lapses. */
 export const INVITE_TTL_MS = 120_000;
+/** Tournament lobbies wait for players, so their invites stay open for ten minutes. */
+export const TOURNAMENT_INVITE_TTL_MS = 600_000;
 
 export function generateFriendCode(random: () => number = Math.random): string {
   let s = '';
@@ -47,6 +51,32 @@ export function presenceStatus(p: Presence | null | undefined, now: number): Pre
   return p.inMatch ? 'inMatch' : 'online';
 }
 
-export function inviteIsLive(invite: { createdAt: number; status: string }, now: number): boolean {
-  return invite.status === 'pending' && now - invite.createdAt <= INVITE_TTL_MS;
+/** Invites written before tournaments existed have no kind: they are match invites. */
+export function inviteKind(invite: { kind?: unknown }): InviteKind {
+  return invite.kind === 'tournament' ? 'tournament' : 'match';
+}
+
+export function inviteTtl(invite: { kind?: unknown }): number {
+  return inviteKind(invite) === 'tournament' ? TOURNAMENT_INVITE_TTL_MS : INVITE_TTL_MS;
+}
+
+export function inviteIsLive(invite: { createdAt: number; status: string; kind?: unknown }, now: number): boolean {
+  return invite.status === 'pending' && now - invite.createdAt <= inviteTtl(invite);
+}
+
+const INVITE_FIELDS = ['from', 'fromName', 'code', 'kind', 'size'];
+export const TOURNAMENT_INVITE_SIZES = { min: 4, max: 32 };
+
+/**
+ * What firestore.rules accept when an invite is created (createdAt and status are added by the
+ * backend): only known fields, a 1–20 character name, a 4–8 character code, and the optional
+ * kind ('match' | 'tournament') and size (whole number 4–32).
+ */
+export function isValidInvite(d: Record<string, unknown>): boolean {
+  if (Object.keys(d).some((k) => !INVITE_FIELDS.includes(k))) return false;
+  if (typeof d.from !== 'string' || typeof d.fromName !== 'string' || d.fromName.length < 1 || d.fromName.length > 20) return false;
+  if (typeof d.code !== 'string' || !/^[A-Z0-9]{4,8}$/.test(d.code)) return false;
+  if ('kind' in d && d.kind !== 'match' && d.kind !== 'tournament') return false;
+  if ('size' in d && !(Number.isInteger(d.size) && (d.size as number) >= TOURNAMENT_INVITE_SIZES.min && (d.size as number) <= TOURNAMENT_INVITE_SIZES.max)) return false;
+  return true;
 }

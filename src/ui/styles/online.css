@@ -20,6 +20,21 @@
 .t-seat > span:last-child { display: grid; }
 .t-seat.empty { opacity: 0.6; }
 .t-seat-empty { width: 44px; height: 50px; background: var(--ink-3); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+/* 16 and 32 seats: compact tiles in a responsive grid, so a full lobby fits without long scrolling. */
+.t-seats.compact { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+.t-seats.compact .t-seat { gap: var(--space-2); padding: 5px var(--space-2); min-width: 0; min-height: 42px; }
+.t-seats.compact .t-seat > span:last-child { min-width: 0; line-height: 1.2; }
+.t-seats.compact .t-seat strong { font-size: var(--t-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.t-seats.compact .t-seat .faint { font-size: var(--t-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.t-seats.compact .t-seat-empty { width: 26px; height: 30px; flex-shrink: 0; }
+.t-seats.compact .warden-portrait { flex-shrink: 0; }
+@media (max-width: 480px) { .t-seats.compact { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.t-lobby-side { display: grid; gap: var(--space-5); align-content: start; min-width: 0; }
+.t-invite-list { max-height: 420px; overflow-y: auto; }
+.t-invite-state { align-self: center; font-size: var(--t-xs); color: var(--parchment-faint); white-space: nowrap; }
+.t-invite-state.sent, .t-invite-state.sending { color: var(--cyan); }
+.t-invite-state.accepted, .t-invite-state.joined { color: var(--heal); }
+.t-invite-state.declined, .t-invite-state.error { color: var(--damage); }
 .t-bracket { display: grid; grid-template-columns: repeat(var(--t-rounds, 2), minmax(220px, 1fr)); gap: var(--space-5); align-items: stretch; margin-top: var(--space-4); overflow-x: auto; padding-bottom: var(--space-2); }
 .t-round { display: flex; flex-direction: column; height: 100%; gap: var(--space-2); }
 .t-round-body { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: var(--space-4); }

@@ -1,5 +1,5 @@
-import { useEffect, useState, type CSSProperties } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { useTournament, myMatch } from '@/state/tournamentStore';
 import { toast } from '@/state/uiStore';
@@ -8,6 +8,7 @@ import { TOURNAMENT_CONFIG, TOURNAMENT_SIZES, matchLabel, playerById, placementO
 import { ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
+import { TournamentInvites } from '@/ui/components/TournamentInvites';
 import { tr } from '@/i18n';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/online.css';
@@ -36,6 +37,39 @@ export default function TournamentScreen() {
   const [joinCode, setJoinCode] = useState('');
   const [difficulty, setDifficulty] = useState<Difficulty>('NORMAL');
   const [size, setSize] = useState<TournamentSize>(8);
+  const [invitedTo, setInvitedTo] = useState<string | null>(null);
+  const [params, setParams] = useSearchParams();
+  const inviteCode = (params.get('join') ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+  const handledInvite = useRef<string | null>(null);
+
+  // Accepted a friend's tournament invite (/tournament?join=CODE): join with the selected deck
+  // right away, or prefill the join form when no deck is valid yet.
+  useEffect(() => {
+    if (!inviteCode || !save || handledInvite.current === inviteCode) return;
+    handledInvite.current = inviteCode;
+    setParams(
+      (p) => {
+        p.delete('join');
+        return p;
+      },
+      { replace: true },
+    );
+    const tour = useTournament.getState();
+    if (tour.role !== 'none') {
+      if (tour.code !== inviteCode) toast('Leave your current tournament first.', 'info');
+      return;
+    }
+    const id = firstValidDeck(save, deckId);
+    const chosen = id ? save.decks.find((d) => d.id === id) : undefined;
+    if (chosen) {
+      setDeckId(chosen.id);
+      void tour.join(inviteCode, chosen);
+    } else {
+      setJoinCode(inviteCode);
+      setInvitedTo(inviteCode);
+    }
+  }, [inviteCode]); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (!save) return null;
   const deck = save.decks.find((d) => d.id === deckId);
   const valid = !!deck && deckId === firstValidDeck(save, deckId);
@@ -81,6 +115,7 @@ export default function TournamentScreen() {
             </button>
             <hr className="divider" />
             <div className="panel-title">{tr('Join with a code')}</div>
+            {invitedTo && !valid && <p className="online-warning">{tr('You were invited to tournament {code}. Choose a valid deck, then join.', { code: invitedTo })}</p>}
             <form
               className="invite-row"
               onSubmit={(e) => {
@@ -127,12 +162,31 @@ export default function TournamentScreen() {
   );
 }
 
+/** Every seat of the lobby: roomy rows for 4 and 8 players, a compact grid of tiles for 16 and 32. */
+export function SeatList({ tour, myId }: { tour: Tournament; myId: string | null }) {
+  const humans = tour.players.filter((p) => !p.bot);
+  const size = sizeOf(tour);
+  const compact = size > 8;
+  const seats = Array.from({ length: size }, (_, i) => humans[i]);
+  return (
+    <ul className={`t-seats${compact ? ' compact' : ''}`}>
+      {seats.map((p, i) => (
+        <li key={p?.id ?? `open-${i}`} className={`t-seat ${p ? '' : 'empty'}`}>
+          {p ? <WardenPortrait faction={p.faction} portrait={p.side?.portrait} size={compact ? 26 : 44} /> : <span className="t-seat-empty" aria-hidden />}
+          <span>
+            <strong>{p ? p.name : tr('Open seat')}</strong>
+            <span className="faint">{p ? (p.id === 'p0' ? tr('Organizer') : p.id === myId ? tr('You') : tr('Player')) : compact ? tr('Bot if nobody joins') : tr('A bot takes this seat if nobody joins')}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function Lobby({ tour }: { tour: Tournament }) {
   const t = useTournament();
   const humans = tour.players.filter((p) => !p.bot);
   const size = sizeOf(tour);
-  // Big tournaments list only who joined; the remaining seats are summarised.
-  const seats = size <= 8 ? Array.from({ length: size }, (_, i) => humans[i]) : humans;
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(tour.code);
@@ -144,48 +198,43 @@ function Lobby({ tour }: { tour: Tournament }) {
   return (
     <div className="online-grid">
       <section className="panel">
-        <div className="panel-title">{tr('Players')}</div>
-        <ul className="t-seats">
-          {seats.map((p, i) => (
-            <li key={i} className={`t-seat ${p ? '' : 'empty'}`}>
-              {p ? <WardenPortrait faction={p.faction} portrait={p.side?.portrait} size={44} /> : <span className="t-seat-empty" aria-hidden />}
-              <span>
-                <strong>{p ? p.name : tr('Open seat')}</strong>
-                <span className="faint">{p ? (p.id === 'p0' ? tr('Organizer') : p.id === t.myId ? tr('You') : tr('Player')) : tr('A bot takes this seat if nobody joins')}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
+        <div className="panel-title">
+          {tr('Players')} <span className="faint num">{humans.length} / {size}</span>
+        </div>
+        <SeatList tour={tour} myId={t.myId} />
         {size > 8 && <p className="faint">{tr('{n} open seats. Bots take the seats nobody joins.', { n: size - humans.length })}</p>}
         <div className="faint" style={{ marginTop: 'var(--space-3)' }}>{tr('Prizes')}</div>
         <PrizeList size={size} />
       </section>
-      <section className="panel online-host" aria-live="polite">
-        <div className="panel-title">{tr('Tournament code')}</div>
-        <div className="invite-row">
-          <strong className="room-code">{tour.code}</strong>
-          <button className="btn btn-cyan" onClick={() => void copy()}>
-            {tr('Copy code')}
-          </button>
-        </div>
-        <p className="muted">{tr('Friends join from Play → Tournament → Join with a code.')}</p>
-        {t.role === 'organizer' ? (
-          <>
-            <p className="faint">
-              {tr('{n} / {size} players. Bots: {difficulty}.', { n: humans.length, size, difficulty: tr(DIFF_LABEL[t.botDifficulty]) })}
-            </p>
-            <button className="btn btn-primary btn-lg" disabled={humans.length < TOURNAMENT_CONFIG.minHumans} onClick={() => t.start()}>
-              {tr('Start tournament')}
+      <div className="t-lobby-side">
+        <section className="panel online-host" aria-live="polite">
+          <div className="panel-title">{tr('Tournament code')}</div>
+          <div className="invite-row">
+            <strong className="room-code">{tour.code}</strong>
+            <button className="btn btn-cyan" onClick={() => void copy()}>
+              {tr('Copy code')}
             </button>
-            {humans.length < TOURNAMENT_CONFIG.minHumans && <p className="faint">{tr('At least {n} players are needed to start.', { n: TOURNAMENT_CONFIG.minHumans })}</p>}
-          </>
-        ) : (
-          <>
-            <Spinner label={tr('Waiting')} />
-            <p className="muted">{tr('Waiting for the organizer to start.')}</p>
-          </>
-        )}
-      </section>
+          </div>
+          <p className="muted">{tr('Friends join from Play → Tournament → Join with a code.')}</p>
+          {t.role === 'organizer' ? (
+            <>
+              <p className="faint">
+                {tr('{n} / {size} players. Bots: {difficulty}.', { n: humans.length, size, difficulty: tr(DIFF_LABEL[t.botDifficulty]) })}
+              </p>
+              <button className="btn btn-primary btn-lg" disabled={humans.length < TOURNAMENT_CONFIG.minHumans} onClick={() => t.start()}>
+                {tr('Start tournament')}
+              </button>
+              {humans.length < TOURNAMENT_CONFIG.minHumans && <p className="faint">{tr('At least {n} players are needed to start.', { n: TOURNAMENT_CONFIG.minHumans })}</p>}
+            </>
+          ) : (
+            <>
+              <Spinner label={tr('Waiting')} />
+              <p className="muted">{tr('Waiting for the organizer to start.')}</p>
+            </>
+          )}
+        </section>
+        {t.role === 'organizer' && <TournamentInvites tour={tour} />}
+      </div>
     </div>
   );
 }

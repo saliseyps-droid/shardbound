@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.25.2',
+    date: '2026-10-05',
+    title: 'Invite friends to tournaments',
+    summary: 'Tournament organisers can invite friends with one click, and big tournaments show every seat.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Tournament lobby: an Invite friends panel lists your friends; invite the ones who are online with one click. They join straight away with their selected deck when they accept.',
+        ],
+      },
+      { kind: 'improved', items: ['Tournaments for 16 and 32 players show every seat in a compact grid, like the smaller ones.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.25.1',
     date: '2026-10-05',
     title: 'Smoother matches on every screen',

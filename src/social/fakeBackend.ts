@@ -1,5 +1,6 @@
 import type { Presence } from './friends';
-import type { Board, FriendRequest, LeaderboardEntry, LeaderboardUpload, MatchInvite, PublicProfile, SocialBackend, Unsubscribe } from './backend';
+import type { Board, FriendRequest, InviteInput, LeaderboardEntry, LeaderboardUpload, MatchInvite, PublicProfile, SocialBackend, Unsubscribe } from './backend';
+import { inviteKind, isValidInvite } from './friends';
 import { isValidEntry, sortEntries, sortValue } from './leaderboard';
 import { isValidProfile } from './profile';
 
@@ -133,11 +134,12 @@ export class FakeSocialBackend implements SocialBackend {
     if (!this.invites.has(uid)) this.invites.set(uid, new Map());
     return this.invites.get(uid)!;
   }
-  async sendInvite(to: string, invite: Omit<MatchInvite, 'id' | 'createdAt' | 'status'>) {
-    // Rules: only someone on the recipient's friends list may invite.
-    if (!this.friendSet(to).has(invite.from)) throw new Error('permission-denied');
+  async sendInvite(to: string, invite: InviteInput) {
+    // Rules: only someone on the recipient's friends list may invite, with valid fields only.
+    const fields = Object.fromEntries(Object.entries(invite).filter(([, v]) => v !== undefined));
+    if (!this.friendSet(to).has(invite.from) || !isValidInvite(fields)) throw new Error('permission-denied');
     const id = `inv${++this.seq}`;
-    this.inbox(to).set(id, { ...invite, id, createdAt: this.now(), status: 'pending' });
+    this.inbox(to).set(id, this.read({ ...fields, id, createdAt: this.now(), status: 'pending' }));
     this.emit();
     return id;
   }
@@ -155,6 +157,13 @@ export class FakeSocialBackend implements SocialBackend {
   }
   watchInvite(to: string, id: string, cb: (invite: MatchInvite | null) => void) {
     return this.listen(() => cb(this.inbox(to).get(id) ?? null));
+  }
+
+  /** Like the Firestore side: a missing kind reads as 'match'. */
+  private read(d: Record<string, unknown>): MatchInvite {
+    const inv = { ...d, kind: inviteKind(d) } as MatchInvite;
+    if (typeof d.size !== 'number') delete inv.size;
+    return inv;
   }
 
   // --- test helpers ---
@@ -176,6 +185,11 @@ export class FakeSocialBackend implements SocialBackend {
   seedFriendship(a: string, b: string) {
     this.friendSet(a).add(b);
     this.friendSet(b).add(a);
+  }
+  /** An invite as stored, possibly by an older version (no kind). */
+  seedInvite(to: string, invite: Omit<MatchInvite, 'kind'> & { kind?: MatchInvite['kind'] }) {
+    this.inbox(to).set(invite.id, this.read({ ...invite }));
+    this.emit();
   }
   seedRequest(req: FriendRequest) {
     this.requests.set(this.reqId(req.from, req.to), req);

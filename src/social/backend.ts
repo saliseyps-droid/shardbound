@@ -53,15 +53,30 @@ export interface FriendRequest {
 }
 
 export type InviteStatus = 'pending' | 'accepted';
+/** What the invite is for; invites written before tournaments existed have no kind and are matches. */
+export type InviteKind = 'match' | 'tournament';
 
 export interface MatchInvite {
   id: string;
   from: string;
   fromName: string;
-  /** Room code of the hosted match (src/net/session.ts). */
+  /** Room code of the hosted match (src/net/session.ts) or the tournament code. */
   code: string;
   createdAt: number;
   status: InviteStatus;
+  /** Always set when read back ('match' when the stored invite has none). */
+  kind: InviteKind;
+  /** Tournaments: number of seats (4–32), for display. */
+  size?: number;
+}
+
+/** What the sender writes (id, time and status are added by the backend). */
+export interface InviteInput {
+  from: string;
+  fromName: string;
+  code: string;
+  kind?: InviteKind;
+  size?: number;
 }
 
 export type Unsubscribe = () => void;
@@ -98,7 +113,7 @@ export interface SocialBackend {
   watchPresence(uid: string, cb: (p: Presence | null) => void): Unsubscribe;
 
   // Match invites (invites/{to}/items/{id}).
-  sendInvite(to: string, invite: Omit<MatchInvite, 'id' | 'createdAt' | 'status'>): Promise<string>;
+  sendInvite(to: string, invite: InviteInput): Promise<string>;
   setInviteStatus(to: string, id: string, status: 'accepted'): Promise<void>;
   deleteInvite(to: string, id: string): Promise<void>;
   watchInvites(uid: string, cb: (invites: MatchInvite[]) => void): Unsubscribe;

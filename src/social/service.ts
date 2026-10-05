@@ -1,5 +1,5 @@
 import { err, ok, type Result } from '@/core/utils';
-import type { Board, LeaderboardUpload, PublicProfile, SocialBackend } from './backend';
+import type { Board, InviteInput, InviteKind, LeaderboardUpload, PublicProfile, SocialBackend } from './backend';
 import { generateFriendCode, isValidFriendCode, normalizeFriendCode } from './friends';
 import { entryKey, isValidEntry } from './leaderboard';
 import { profileKey } from './profile';
@@ -121,9 +121,16 @@ export class SocialService {
     return this.backend.removeFriend(this.uid, other);
   }
 
-  /** Invites a friend to the room just hosted under `code`. Returns the invite id. */
+  /** Invites a friend to the 1v1 room just hosted under `code`. Returns the invite id. */
   invite(friendUid: string, fromName: string, code: string) {
-    return this.backend.sendInvite(friendUid, { from: this.uid, fromName: fromName.trim().slice(0, 20) || '?', code });
+    return this.sendInvite(friendUid, fromName, code, 'match');
+  }
+
+  /** Invites a friend to a match room or a tournament lobby (`size` seats, shown to the friend). Returns the invite id. */
+  sendInvite(friendUid: string, fromName: string, code: string, kind: InviteKind = 'match', size?: number) {
+    const invite: InviteInput = { from: this.uid, fromName: fromName.trim().slice(0, 20) || '?', code, kind };
+    if (kind === 'tournament' && size !== undefined) invite.size = size;
+    return this.backend.sendInvite(friendUid, invite);
   }
 
   acceptInvite(id: string) {

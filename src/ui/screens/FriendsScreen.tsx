@@ -9,11 +9,11 @@ import { netSession } from '@/net/session';
 import { onlineOpponent, validateRemoteSide } from '@/net/lobby';
 import { factionOfList } from '@/domain/decks';
 import { PLAYABLE_FACTIONS, type PlayableFaction } from '@/game/types';
-import { formatFriendCode, INVITE_TTL_MS, presenceStatus, type PresenceStatus } from '@/social/friends';
+import { formatFriendCode, INVITE_TTL_MS, presenceStatus } from '@/social/friends';
 import type { Unsubscribe } from '@/social/backend';
 import { confirmDialog, Modal, ScreenHeader, Spinner } from '@/ui/components/common';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
-import { FriendInfo } from '@/ui/components/FriendInfo';
+import { FriendInfo, sortFriends } from '@/ui/components/FriendInfo';
 import { CloudAccountPanel } from '@/ui/components/CloudAccount';
 import { deckIssues, decksForPicking, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
@@ -173,9 +173,7 @@ export default function FriendsScreen() {
   }
 
   const validDecks = decksForPicking(save.decks).filter((d) => deckIssues(save, d).length === 0);
-  // Online first, then in a match, then offline (most recently seen first).
-  const lastSeen = (f: FriendView) => (presenceStatus(f.presence, now) === 'offline' ? (f.presence?.lastSeen ?? 0) : 0);
-  const sorted = [...social.friends].sort((a, b) => rankStatus(presenceStatus(a.presence, now)) - rankStatus(presenceStatus(b.presence, now)) || lastSeen(b) - lastSeen(a) || a.name.localeCompare(b.name));
+  const sorted = sortFriends(social.friends, now);
 
   return (
     <div className="screen friends-screen">
@@ -334,8 +332,4 @@ export default function FriendsScreen() {
       )}
     </div>
   );
-}
-
-function rankStatus(s: PresenceStatus): number {
-  return s === 'online' ? 0 : s === 'inMatch' ? 1 : 2;
 }
