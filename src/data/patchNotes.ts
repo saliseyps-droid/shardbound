@@ -54,7 +54,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Phones: the first tap on a card only enlarges it, it no longer plays it by accident.',
           'Phones: long-pressing a target to read it no longer also uses the card or ability on it.',
           'The board no longer shifts up after the mulligan (the leave button and the enemy Warden were cut off).',
-          'PC: while choosing a target, clicks go through the raised card, so your own Warden or a unit under it can still be chosen.',
+          'PC: while choosing a target, the raised card turns see-through and clicks go through it, so your own Warden or a unit under it can be seen and chosen.',
           'Messages no longer cover the Continue and Concede buttons on phones.',
           'Tablets: the energy crystals no longer run under End turn, the targeting card no longer covers the log, and the card preview no longer sticks.',
           'An empty deck pile no longer overlaps its counter, and a freshly drawn card can be tapped right away.',

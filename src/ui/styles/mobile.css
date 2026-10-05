@@ -176,7 +176,7 @@ html[data-input='touch'] body .match.is-targeting .hand-card.is-selected .card {
 html[data-input='touch'] body .match.is-targeting .hand { z-index: 330; }
 /* Mouse: the card stays lifted in the hand as always, but clicks pass through it while you pick a
    target, so the Warden or unit underneath can still be chosen (Esc / right-click cancel). */
-html:not([data-input='touch']) body .match.is-targeting .hand-card.is-selected { pointer-events: none; }
+html:not([data-input='touch']) body .match.is-targeting .hand-card.is-selected { pointer-events: none; opacity: 0.45; transition: opacity 0.15s; }
 html:not([data-input='touch']) body .match.is-targeting .hand-card.is-selected * { pointer-events: none; }
 
 /* Card inspector on short screens: a smaller card with the text beside it. */
