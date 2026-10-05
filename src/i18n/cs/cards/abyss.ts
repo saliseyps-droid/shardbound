@@ -58,7 +58,7 @@ const cards: CardsOverlay = {
   irn_molten_bulwark: { name: 'Roztavená hradba', description: 'Vyvolej dvě Mosazné hlídky 2/3 se Stráží.', flavorText: 'Nalij mosaz, nech ji ve tmě vychladnout a z formy vstanou dvě hlídky.' },
   tid_drowned_ward: { name: 'Utopená ochrana', description: 'Vrať nepřátelskou jednotku do ruky jejího vlastníka. Zmraz všechny ostatní nepřátelské jednotky.', flavorText: 'Kruh run se uzavře. Co je uvnitř, je vzato; co je venku, je drženo.' },
   neu_abyssal_pyre: { name: 'Hranice Propasti', description: 'Způsob 3 poškození nepřátelské jednotce a jednotkám vedle ní.', flavorText: 'Zapal v Propasti jednu hranici a vzplanou i ty vedle.' },
-  neu_crown_of_the_abyss: { name: 'Koruna Propasti', description: 'Lízni si z balíčku 2 Rytíře. Rytíři v tvé ruce stojí o (1) méně.', flavorText: 'Kdo zapálí zlatou pánev, je korunován. Každý Rytíř v hlubinách odpoví.' },
+  neu_crown_of_the_abyss: { name: 'Koruna Propasti', description: 'Lízni si z balíčku 2 Rytíře. Rytíři, které máš právě v ruce, stojí o (1) méně.', flavorText: 'Kdo zapálí zlatou pánev, je korunován. Každý Rytíř v hlubinách odpoví.' },
   ast_wings_of_the_last_light: { name: 'Křídla posledního světla', description: 'Dej svým jednotkám +2/+2 a Ochranu.', flavorText: 'Poslední světlo Konkláve roztáhlo křídla nad všemi, kdo ještě stáli.' },
   emb_cinder_kiss: { name: 'Polibek žhavého uhlíku', description: 'Způsob 1 poškození postavě. Pokud ovládáš Rytíře, lízni si kartu.', flavorText: 'Polibek z hranice. Rytíři se ho naučí vítat.' },
   irn_gild_the_blade: { name: 'Pozlacení čepele', description: 'Dej spřátelené jednotce +1/+2 a Stráž.', flavorText: 'Zlato na čepel, zlato na štít a slib, že bude stát vepředu.' },

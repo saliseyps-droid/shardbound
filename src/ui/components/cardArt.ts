@@ -25,6 +25,8 @@ export function cardArtPosition(card: CardDefinition): string {
 
 const TAG_GLYPH: Record<string, string> = {
   Drake: 'wing',
+  Dragon: 'wing',
+  Fae: 'crystal',
   Beast: 'paw',
   Construct: 'gear',
   Elemental: 'flame',

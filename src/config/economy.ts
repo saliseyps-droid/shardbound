@@ -25,6 +25,9 @@ export const SHOP_OFFERS: ShopOffer[] = [
   { id: 'abyss_1', setId: 'ABYSS', packs: 1, price: 100, label: '1 Pack' },
   { id: 'abyss_5', setId: 'ABYSS', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
   { id: 'abyss_10', setId: 'ABYSS', packs: 10, price: 1000, label: '10 Packs', badge: '+2 Bonus Packs' },
+  { id: 'dragon_1', setId: 'DRAGON', packs: 1, price: 100, label: '1 Pack' },
+  { id: 'dragon_5', setId: 'DRAGON', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
+  { id: 'dragon_10', setId: 'DRAGON', packs: 10, price: 1000, label: '10 Packs', badge: '+2 Bonus Packs' },
 ];
 
 /** One-time bundles for a set: packs plus cosmetics for less than buying them apart. */
@@ -40,11 +43,12 @@ export interface Bundle {
 }
 
 export const BUNDLES: Bundle[] = [
+  { id: 'dragon_bundle', setId: 'DRAGON', name: 'Dragon Realm Bundle', packs: 10, cardBack: 'crimson_dragon', portrait: 'tide_sapphire_dragon', discount: 0.3 },
   { id: 'abyss_bundle', setId: 'ABYSS', name: 'Legions of Shadow Bundle', packs: 10, cardBack: 'hollow_vortex', portrait: 'tide_frost_lich', discount: 0.3 },
 ];
 
 /** Offers with a bonus badge grant this many extra packs (10 + 2 for 1000 Gold ≈ 83 Gold/pack, the best deal). */
-export const SHOP_BONUS_PACKS: Record<string, number> = { core_10: 2, deep_10: 2, abyss_10: 2 };
+export const SHOP_BONUS_PACKS: Record<string, number> = { core_10: 2, deep_10: 2, abyss_10: 2, dragon_10: 2 };
 
 export const PACK_CONFIG = {
   cardsPerPack: 5,
@@ -72,4 +76,5 @@ export const SET_INFO: Record<SetId, { name: string; tagline: string; releaseOrd
   CORE: { name: 'Kingdoms at War', tagline: 'Banners rise, crowns clash. The Wardens take the field.', releaseOrder: 1 },
   DEEP: { name: 'Fantasy Realms', tagline: 'Dragons wake in the realms beyond the map.', releaseOrder: 2 },
   ABYSS: { name: 'Legions of Shadow', tagline: 'Knights of every banner, marching for the shadow.', releaseOrder: 3 },
+  DRAGON: { name: 'Dragon Realm', tagline: 'Dragons take the sky, and their knights and the Fae ride with them.', releaseOrder: 4 },
 };

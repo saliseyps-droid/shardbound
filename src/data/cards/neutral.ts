@@ -150,7 +150,7 @@ export const NEUTRAL_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'neu_skyrift_wyrm', name: 'Skyrift Wyrm', cardType: 'UNIT', rarity: 'EPIC', set: 'DEEP',
-    manaCost: 6, attack: 5, health: 5, keywords: ['WARD', 'RUSH'], tags: ['Drake'],
+    manaCost: 6, attack: 5, health: 5, keywords: ['WARD', 'RUSH'], tags: ['Dragon'],
     flavorText: 'It nests in the tears the Crown left in the sky.',
   },
 

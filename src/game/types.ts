@@ -17,7 +17,7 @@ export const RARITIES: readonly Rarity[] = ['COMMON', 'RARE', 'EPIC', 'LEGENDARY
 export type Variant = 'NORMAL' | 'FOIL' | 'PRISMATIC';
 export const VARIANTS: readonly Variant[] = ['NORMAL', 'FOIL', 'PRISMATIC'];
 
-export type SetId = 'CORE' | 'DEEP' | 'ABYSS';
+export type SetId = 'CORE' | 'DEEP' | 'ABYSS' | 'DRAGON';
 
 /** Static keywords live on units/cards. Trigger keywords are derived from abilities. */
 export type KeywordId =

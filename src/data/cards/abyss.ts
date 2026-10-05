@@ -403,7 +403,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
     ...spell, id: 'neu_crown_of_the_abyss', name: 'Crown of the Abyss', faction: 'NEUTRAL', rarity: 'LEGENDARY',
     manaCost: 5,
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DRAW_CARDS', amount: 2, filter: { tag: 'Knight' } }, { type: 'REDUCE_COST', amount: 1, scope: 'HAND', filter: { tag: 'Knight' } }] }],
-    description: 'Draw 2 Knights from your deck. Knights in your hand cost (1) less.',
+    description: 'Draw 2 Knights from your deck. Knights currently in your hand cost (1) less.',
     flavorText: 'Whoever lights the golden brazier is crowned. Every Knight below answers the call.',
   },
   {

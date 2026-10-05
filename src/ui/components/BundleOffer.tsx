@@ -24,6 +24,7 @@ export function BundleOffer({ bundle }: { bundle: Bundle }) {
   const portrait = getPortrait(bundle.portrait);
   const setName = SET_INFO[bundle.setId].name;
   const theme = PACK_THEME[bundle.setId];
+  const newest = SET_INFO[bundle.setId].releaseOrder === Math.max(...Object.values(SET_INFO).map((s) => s.releaseOrder));
   const buy = async () => {
     const ok = await confirmDialog({
       title: t('Buy the {name}?', { name: t(bundle.name) }),
@@ -45,7 +46,7 @@ export function BundleOffer({ bundle }: { bundle: Bundle }) {
         {portrait && <WardenPortrait faction={portrait.faction} portrait={portrait.id} size={84} className="bundle-portrait" />}
       </div>
       <div className="bundle-body">
-        <span className="bundle-tag">{t('New set bundle')}</span>
+        <span className="bundle-tag">{newest ? t('New set bundle') : t('Set bundle')}</span>
         <h3 id={`bundle-${bundle.id}`}>{t(bundle.name)}</h3>
         <ul className="bundle-items">
           <li>{t('{n}× {set} pack', { n: bundle.packs, set: setName })}</li>

@@ -61,7 +61,7 @@ export const EMBER_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'emb_cinderbreath_drake', name: 'Cinderbreath Drake', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 5, attack: 4, health: 4, keywords: ['SWIFT'], tags: ['Drake'], archetypes: ['Blitz'],
+    manaCost: 5, attack: 4, health: 4, keywords: ['SWIFT'], tags: ['Dragon'], archetypes: ['Blitz'],
     flavorText: 'Legion riders bond with their drakes in the caldera. Survivors are promoted.',
   },
   {
@@ -141,7 +141,7 @@ export const EMBER_CARDS: CardDefinition[] = [
   // ----- Legendaries -----
   {
     ...base, id: 'emb_vulkara', name: 'Vulkara, Mother of Drakes', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'CORE',
-    manaCost: 8, attack: 6, health: 6, keywords: ['SWIFT'], tags: ['Drake'], archetypes: ['Blitz'],
+    manaCost: 8, attack: 6, health: 6, keywords: ['SWIFT'], tags: ['Dragon'], archetypes: ['Blitz'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ALL_ENEMIES' }, { type: 'SUMMON', cardId: 'token_drakeling', count: 2 }] }],
     flavorText: 'Every drake in the caldera answers to one voice.',
   },

@@ -60,7 +60,7 @@ export function titlesUpTo(level: number): string[] {
 }
 
 /** Pack rewards cycle through the sets so every set shows up while levelling. */
-const PACK_ROTATION: SetId[] = ['CORE', 'DEEP', 'ABYSS'];
+const PACK_ROTATION: SetId[] = ['CORE', 'DEEP', 'ABYSS', 'DRAGON'];
 const rotatingSet = (n: number): SetId => PACK_ROTATION[n % PACK_ROTATION.length];
 
 function levelReward(level: number): LevelReward[] {

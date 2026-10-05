@@ -1,6 +1,21 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.0': {
+    title: 'Dragon Realm',
+    summary: 'Nový set 70 karet: draci, dračí rytíři a víly ve všech frakcích.',
+    sections: [
+      [
+        'Dragon Realm: 70 nových karet (48 jednotek, 16 kouzel, 3 relikvie, 3 lokace) pro všechny frakce, včetně 7 legendárních: Pyraxis, Glacivar, Nyxarath, Maelis, Selunith, Valdrek a Aurumvex.',
+        'Draci, dračí rytíři a víly: spousta karet zesílí, když ovládáš draka, a víly mají vlastní bonusy.',
+        'Balíčky Dragon Realm, bundle Dragon Realm v Obchodě a balíčky Dragon Realm v Aréně, v odměnách za úrovně a jako výhra v turnaji.',
+      ],
+      [
+        'Popelavý dráček, Cinderbreath Drake, Skyrift Wyrm a Vulkara jsou teď Draci, takže fungují s novým setem.',
+        'Karty, které zlevňují kouzla nebo Rytíře v ruce (Zahalená astromantka, Koruna Propasti), teď jasně říkají, že zlevní jen karty, které máš právě v ruce.',
+      ],
+    ],
+  },
   '0.25.3': {
     title: 'Míření na PC',
     summary: 'Na PC zůstává hraná karta při výběru cíle v ruce a zprůhlední.',

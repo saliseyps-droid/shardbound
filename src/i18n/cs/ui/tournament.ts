@@ -3,7 +3,7 @@ const d: Record<string, string> = {
   'A knockout for 4 to 32 players. Empty seats are filled with bots.': 'Vyřazovací turnaj pro 4 až 32 hráčů. Prázdná místa obsadí boti.',
   Prizes: 'Ceny',
   '{gold} Gold': '{gold} zlata',
-  '{gold} Gold and {packs}× Legions of Shadow pack': '{gold} zlata a {packs}× booster Legions of Shadow',
+  '{gold} Gold and {packs}× {set} pack': '{gold} zlata a {packs}× booster {set}',
   'Every match also gives the usual Gold, XP and quest progress. Bigger tournaments pay bigger prizes.': 'Každý zápas dává i obvyklé zlato, XP a postup úkolů. Čím větší turnaj, tím větší ceny.',
   '{n} open seats. Bots take the seats nobody joins.': 'Volná místa: {n}. Místa, kam se nikdo nepřipojí, obsadí boti.',
   'Prize: {prize}.': 'Výhra: {prize}.',

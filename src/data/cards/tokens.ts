@@ -40,7 +40,7 @@ export const TOKEN_CARDS: CardDefinition[] = [
   { id: 'token_frog', name: 'Bog Toad', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'COMMON', manaCost: 0, attack: 0, health: 1, set: 'CORE', collectible: false, tags: ['Beast'] },
   { id: 'token_deckhand', name: 'Deckhand', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, set: 'CORE', collectible: false, tags: ['Pirate'] },
   { id: 'token_recruit', name: 'Caravan Recruit', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, set: 'CORE', collectible: false },
-  { id: 'token_drakeling', name: 'Cinder Drakeling', cardType: 'UNIT', faction: 'EMBER', rarity: 'COMMON', manaCost: 2, attack: 2, health: 2, keywords: ['SWIFT'], set: 'CORE', collectible: false, tags: ['Drake'] },
+  { id: 'token_drakeling', name: 'Cinder Drakeling', cardType: 'UNIT', faction: 'EMBER', rarity: 'COMMON', manaCost: 2, attack: 2, health: 2, keywords: ['SWIFT'], set: 'CORE', collectible: false, tags: ['Dragon'] },
   { id: 'token_golem', name: 'Siege Golem', cardType: 'UNIT', faction: 'IRON', rarity: 'COMMON', manaCost: 6, attack: 6, health: 6, keywords: ['GUARD'], set: 'CORE', collectible: false, tags: ['Construct'] },
   { id: 'token_kraken_tentacle', name: 'Grasping Tentacle', cardType: 'UNIT', faction: 'TIDE', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, keywords: ['GUARD'], set: 'DEEP', collectible: false, tags: ['Leviathan'] },
   // Placeholder the AI substitutes for hidden cards (never appears in real games).

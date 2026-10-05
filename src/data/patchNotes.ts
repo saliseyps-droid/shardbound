@@ -19,6 +19,30 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.0',
+    date: '2026-10-05',
+    title: 'Dragon Realm',
+    summary: 'A new set of 70 cards: Dragons, Dragon Knights and Fae across every faction.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Dragon Realm: 70 new cards (48 units, 16 spells, 3 relics, 3 locations) for every faction, including 7 Legendaries: Pyraxis, Glacivar, Nyxarath, Maelis, Selunith, Valdrek and Aurumvex.',
+          'Dragons, Dragon Knights and Fae: many cards get stronger while you control a Dragon, and Fae have their own payoffs.',
+          'Dragon Realm packs, a Dragon Realm bundle in the Shop, and Dragon Realm packs in the Arena, level rewards and as tournament prizes.',
+        ],
+      },
+      {
+        kind: 'improved',
+        items: [
+          'Cinder Drakeling, Cinderbreath Drake, Skyrift Wyrm and Vulkara are now Dragons, so they work with the new set.',
+          'Cards that make spells or Knights in your hand cheaper (Veiled Astromancer, Crown of the Abyss) now say clearly that only the cards currently in your hand get cheaper.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.25.3',
     date: '2026-10-05',
     title: 'Targeting on PC',

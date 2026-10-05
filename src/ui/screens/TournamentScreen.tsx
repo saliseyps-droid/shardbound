@@ -4,11 +4,12 @@ import { useAccount } from '@/state/accountStore';
 import { useTournament, myMatch } from '@/state/tournamentStore';
 import { toast } from '@/state/uiStore';
 import { DIFFICULTIES, type Difficulty } from '@/config/progression';
-import { TOURNAMENT_CONFIG, TOURNAMENT_SIZES, matchLabel, playerById, placementOf, roundDepths, roundLabel, roundMatches, sizeOf, tournamentPrizes, type PlacePrize, type Tournament, type TournamentMatch, type TournamentSize } from '@/domain/tournament';
+import { TOURNAMENT_CONFIG, TOURNAMENT_PACK_SET, TOURNAMENT_SIZES, matchLabel, playerById, placementOf, roundDepths, roundLabel, roundMatches, sizeOf, tournamentPrizes, type PlacePrize, type Tournament, type TournamentMatch, type TournamentSize } from '@/domain/tournament';
 import { ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { TournamentInvites } from '@/ui/components/TournamentInvites';
+import { SET_INFO } from '@/config/economy';
 import { tr } from '@/i18n';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/online.css';
@@ -16,7 +17,7 @@ import '@/ui/styles/online.css';
 const DIFF_LABEL: Record<Difficulty, string> = { EASY: 'Easy', NORMAL: 'Normal', HARD: 'Hard', EXPERT: 'Expert' };
 
 function prizeText(p: PlacePrize): string {
-  return p.packs > 0 ? tr('{gold} Gold and {packs}× Legions of Shadow pack', { gold: p.gold, packs: p.packs }) : tr('{gold} Gold', { gold: p.gold });
+  return p.packs > 0 ? tr('{gold} Gold and {packs}× {set} pack', { gold: p.gold, packs: p.packs, set: SET_INFO[TOURNAMENT_PACK_SET].name }) : tr('{gold} Gold', { gold: p.gold });
 }
 
 function PrizeList({ size }: { size: TournamentSize }) {

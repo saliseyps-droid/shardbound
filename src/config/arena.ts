@@ -10,7 +10,7 @@ export const ARENA = {
   rarityWeights: { COMMON: 70, RARE: 22, EPIC: 6, LEGENDARY: 2 } as Record<Rarity, number>,
   /** Opponent difficulty by the number of wins so far. */
   difficultyByWins: ['NORMAL', 'NORMAL', 'HARD', 'EXPERT'] as Difficulty[],
-  packSets: ['CORE', 'DEEP', 'ABYSS'] as SetId[],
+  packSets: ['CORE', 'DEEP', 'ABYSS', 'DRAGON'] as SetId[],
   /** Rewards by wins (index = wins). */
   rewards: [
     { gold: 50, packs: 1 },

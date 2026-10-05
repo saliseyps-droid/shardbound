@@ -113,9 +113,15 @@ function targetText(sel: TargetSelector | undefined, card: CardDefinition): stri
   }
 }
 
+/** Tags whose plural is the same word ("2 Fae", not "2 Faes"). */
+const INVARIANT_PLURALS = new Set(['Fae']);
+
 function plural(n: string, word: string) {
-  return n === '1' ? `${word}` : `${word}s`;
+  return n === '1' || INVARIANT_PLURALS.has(word) ? `${word}` : `${word}s`;
 }
+
+/** Plural of a tag or card type used as a noun ("Dragons", "Fae", "spells"). */
+const pluralOf = (word: string) => plural('2', word);
 
 function cardName(id: string, lookup?: (id: string) => CardDefinition | undefined): string {
   const c = lookup?.(id);
@@ -183,7 +189,7 @@ export function describeEffect(effect: Effect, card: CardDefinition, lookup?: (i
     case 'REDUCE_COST': {
       const kind = effect.filter?.cardType ? effect.filter.cardType.toLowerCase() : effect.filter?.tag ?? 'card';
       const scope =
-        effect.scope === 'HAND' ? `${kind}s in your hand cost` : effect.scope === 'RANDOM_HAND_CARD' ? `a random ${kind} in your hand costs` : `the most expensive ${kind} in your hand costs`;
+        effect.scope === 'HAND' ? `${pluralOf(kind)} currently in your hand cost` : effect.scope === 'RANDOM_HAND_CARD' ? `a random ${kind} in your hand costs` : `the most expensive ${kind} in your hand costs`;
       text = `${scope} (${effect.amount}) less.`;
       break;
     }
@@ -336,7 +342,7 @@ export function describeCard(card: CardDefinition, lookup?: (id: string) => Card
   if (kw) parts.push(kw + '.');
   if (card.aura) {
     const who = card.aura.target === 'ENEMY_UNITS' ? 'Enemy units' : card.aura.target === 'OTHER_ALLY_UNITS' ? 'Your other' : 'Your';
-    const noun = card.aura.tag ? `${card.aura.tag}s` : 'units';
+    const noun = card.aura.tag ? pluralOf(card.aura.tag) : 'units';
     const subject = card.aura.target === 'ENEMY_UNITS' ? who : `${who} ${noun}`;
     const bits: string[] = [];
     if (card.aura.attack) bits.push(`have ${card.aura.attack > 0 ? '+' : ''}${card.aura.attack} Attack`);
@@ -345,7 +351,7 @@ export function describeCard(card: CardDefinition, lookup?: (id: string) => Card
   }
   if (card.costAura) {
     const who = card.costAura.side === 'ALLY' ? 'Your' : "Your opponent's";
-    const noun = card.costAura.tag ? `${card.costAura.tag}s` : card.costAura.cardType ? `${card.costAura.cardType.toLowerCase()}s` : 'cards';
+    const noun = card.costAura.tag ? pluralOf(card.costAura.tag) : card.costAura.cardType ? `${card.costAura.cardType.toLowerCase()}s` : 'cards';
     const n = Math.abs(card.costAura.amount);
     parts.push(`${who} ${noun} cost (${n}) ${card.costAura.amount < 0 ? 'less' : 'more'}.`);
   }

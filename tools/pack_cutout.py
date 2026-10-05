@@ -11,7 +11,7 @@ Very dark packs whose sides are invisible borrow the side profile of another pac
 the same sheet row (--shape-from), since all packs share one template.
 
 Usage (Pillow + numpy):
-  python tools/pack_cutout.py SHEET.jpg COL ROW OUT.webp [--shape-from COL ROW] [--kingdoms-patch] [--row-shift DY] [--bg-flood] [--mirror]
+  python tools/pack_cutout.py SHEET.jpg COL ROW OUT.webp [--shape-from COL ROW] [--kingdoms-patch] [--row-shift DY] [--bg-flood] [--mirror] [--vmirror]
 Check the result on a magenta background and the outline over a brightened original before shipping.
 """
 import argparse
@@ -162,6 +162,17 @@ def mirror_left_edge(img: Image.Image) -> Image.Image:
     return res.crop(res.getchannel('A').point(lambda v: 255 if v > 8 else 0).getbbox())
 
 
+def mirror_vertical_fill(img: Image.Image) -> Image.Image:
+    """Packs are also symmetric top/bottom: a row keeps at least the width of its mirror row, which
+    restores side pieces under the top seal that blended into the background (Whispers of the Wild)."""
+    A = np.asarray(img).copy()
+    a = A[:, :, 3]
+    h = a.shape[0]
+    out = np.maximum(a, a[::-1, :])
+    A[:, :, 3] = out
+    return Image.fromarray(A, 'RGBA')
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('sheet')
@@ -172,6 +183,7 @@ def main():
     ap.add_argument('--kingdoms-patch', action='store_true', help='cover the stray line in the Kingdoms at War art')
     ap.add_argument('--threshold', type=int, default=16, help='side-profile background level (packs4: 30)')
     ap.add_argument('--edges', nargs=2, type=int, metavar=('TOP', 'BOTTOM'), help='seal top/bottom in crop pixels when the texture measurement fails (packs4 Legions: 17 803)')
+    ap.add_argument('--vmirror', action='store_true', help='also make each row at least as wide as its top/bottom mirror row')
     ap.add_argument('--mirror', action='store_true', help='make the right edge a mirror of the left (packs4 Legions of Shadow)')
     ap.add_argument('--bg-flood', action='store_true', help='remove the even background instead of measuring edges (packs4)')
     ap.add_argument('--erode', type=int, default=0, help='with --bg-flood: shrink by this many px to drop the drop shadow (packs4: 12)')
@@ -190,6 +202,8 @@ def main():
     img = bg_flood_cutout(A, erode=a.erode) if a.bg_flood else cutout(A, template, tuple(a.edges) if a.edges else None)
     if a.mirror:
         img = mirror_left_edge(img)
+    if a.vmirror:
+        img = mirror_vertical_fill(img)
     img.save(a.out, quality=92, method=6)
     print(a.out, img.size)
 

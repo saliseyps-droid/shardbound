@@ -208,6 +208,7 @@ export default function DebugScreen() {
               <option value="CORE">Kingdoms at War</option>
               <option value="DEEP">Fantasy Realms</option>
               <option value="ABYSS">Legions of Shadow</option>
+              <option value="DRAGON">Dragon Realm</option>
             </select>
             <button className="btn btn-sm btn-cyan" onClick={() => setSim(simulatePacks(simSet, 1000))}>
               Simulate 1000 packs

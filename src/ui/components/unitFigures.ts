@@ -37,6 +37,8 @@ const TAG_FIGURE: Record<string, FigureKind> = {
   Leviathan: 'leviathan',
   Spirit: 'spirit',
   Drake: 'drake',
+  Dragon: 'drake',
+  Fae: 'spirit',
 };
 
 export function figureKind(card: CardDefinition): FigureKind {

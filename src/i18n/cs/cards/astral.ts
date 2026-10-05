@@ -16,7 +16,7 @@ const cards: CardsOverlay = {
   ast_starfall: { name: 'Pád hvězd', description: 'Způsob 3 poškození nepřátelské jednotce a jejím sousedům.', flavorText: 'Konkláve hvězdy nehází. Prostě je přestane držet nahoře.' },
   ast_astrolabe_of_seers: { name: 'Astroláb věštců', description: 'Když sešleš kouzlo, lízni si kartu. Náboje: 3.', flavorText: 'Srovnej prstence, vyslov kouzlo a budoucnost za tebe obrátí stránku.' },
   ast_starlight_mirror: { name: 'Zrcadlo hvězdného svitu', description: 'Přidej si do ruky kopii jednotky.', flavorText: 'Co zrcadlo spatří, to si Konkláve ponechá.' },
-  ast_veiled_astromancer: { name: 'Zahalená astromantka', description: 'Ochrana. Při nasazení: Kouzla v tvé ruce stojí o (1) méně.', flavorText: 'Za jejím závojem je nebe, jaké nikdy nikdo jiný neviděl.' },
+  ast_veiled_astromancer: { name: 'Zahalená astromantka', description: 'Ochrana. Při nasazení: Kouzla, která máš právě v ruce, stojí o (1) méně.', flavorText: 'Za jejím závojem je nebe, jaké nikdy nikdo jiný neviděl.' },
   ast_archive_unbound: { name: 'Rozpoutaný archiv', description: 'Lízni si 2 karty. Přebití 2: Lízni si další kartu a získej 3 brnění.', flavorText: 'Některé knihy jsou spoutané kvůli bezpečí čtenáře. Některé kvůli bezpečí světa.' },
   ast_glass_observatory: { name: 'Skleněná observatoř', description: 'Na začátku tvého tahu si přidej do ruky náhodné kouzlo Lumenu. Trvá 3 tahy.', flavorText: 'Její kopule je vybroušená z jediného padlého Střepu. Hvězdy se dívají zpátky.' },
   ast_collapse_of_heaven: { name: 'Zhroucení nebes', description: 'Způsob 4 poškození všem jednotkám.', flavorText: 'Astromanti tomu říkají „přepsání mapy“. Všichni ostatní tomu říkají konec.' },

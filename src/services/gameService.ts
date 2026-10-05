@@ -18,6 +18,7 @@ import { emptyVariants, pushReward, type GameSave, type Quest } from '@/domain/s
 import { decodeDeck } from '@/domain/deckCode';
 import { buyPortrait, choosePortrait } from '@/domain/portraits';
 import { buyBundle } from '@/domain/bundles';
+import { TOURNAMENT_PACK_SET } from '@/domain/tournament';
 import { setActiveMatch, settleAbandonedMatch, type ActiveMatch } from '@/domain/activeMatch';
 import { applyRedeem, findCode } from '@/domain/redeem';
 import { recordAchievementMatch, settleAchievements } from '@/domain/achievements';
@@ -403,8 +404,9 @@ export class GameService {
   grantTournamentPrize(gold: number, source: string, packs = 0, champion = false) {
     const prev = this.require();
     const save = champion ? { ...prev, profile: { ...prev.profile, tournamentsWon: (prev.profile.tournamentsWon ?? 0) + 1 } } : prev;
-    const economy = packs > 0 ? { ...save.economy, packs: { ...save.economy.packs, ABYSS: (save.economy.packs.ABYSS ?? 0) + packs } } : save.economy;
-    this.commit(pushReward({ ...save, economy, profile: { ...save.profile, gold: save.profile.gold + gold } }, { source, gold, packs: packs > 0 ? { setId: 'ABYSS', amount: packs } : undefined }, this.now()));
+    const set = TOURNAMENT_PACK_SET;
+    const economy = packs > 0 ? { ...save.economy, packs: { ...save.economy.packs, [set]: (save.economy.packs[set] ?? 0) + packs } } : save.economy;
+    this.commit(pushReward({ ...save, economy, profile: { ...save.profile, gold: save.profile.gold + gold } }, { source, gold, packs: packs > 0 ? { setId: set, amount: packs } : undefined }, this.now()));
   }
 
   // -------------------------------------------------------------------------

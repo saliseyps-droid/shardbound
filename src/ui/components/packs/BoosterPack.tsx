@@ -5,16 +5,18 @@ import { t } from '@/i18n';
 import kingdomsAtWar from '@/assets/packs/kingdoms_at_war.webp';
 import fantasyRealms from '@/assets/packs/fantasy_realms.webp';
 import legionsOfShadow from '@/assets/packs/legions_of_shadow.webp';
+import dragonRealm from '@/assets/packs/dragon_realm.webp';
 
 /** Per-set accent colours (glows around the pack, the pack-opening stage). */
 export const PACK_THEME: Record<SetId, { a: string; b: string; c: string; glow: string; emblem: string }> = {
   CORE: { a: '#e9d9b0', b: '#8a6a3a', c: '#2a1f14', glow: '#f6cf7a', emblem: '#f6cf7a' },
   DEEP: { a: '#d9b25a', b: '#1b2440', c: '#0b1020', glow: '#e0b34a', emblem: '#e0b34a' },
   ABYSS: { a: '#e0464a', b: '#2a1416', c: '#0c0708', glow: '#d8343a', emblem: '#e0464a' },
+  DRAGON: { a: '#f39a45', b: '#3a1a10', c: '#120806', glow: '#ff8a2a', emblem: '#f39a45' },
 };
 
 /** Pack artwork per set (src/assets/packs). */
-const PACK_ART: Record<SetId, string> = { CORE: kingdomsAtWar, DEEP: fantasyRealms, ABYSS: legionsOfShadow };
+const PACK_ART: Record<SetId, string> = { CORE: kingdomsAtWar, DEEP: fantasyRealms, ABYSS: legionsOfShadow, DRAGON: dragonRealm };
 
 export function BoosterPack({ setId, width = 180, className = '', style }: { setId: SetId; width?: number; className?: string; style?: CSSProperties }) {
   const art = PACK_ART[setId];

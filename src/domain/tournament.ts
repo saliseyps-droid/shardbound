@@ -1,5 +1,5 @@
 import type { Difficulty } from '@/config/progression';
-import type { PlayableFaction } from '@/game/types';
+import type { PlayableFaction, SetId } from '@/game/types';
 import type { SideSetup } from '@/engine/types';
 
 /**
@@ -54,9 +54,12 @@ export const TOURNAMENT_CONFIG = {
   minHumans: 2,
 };
 
+/** Tournament prize packs come from the newest set. */
+export const TOURNAMENT_PACK_SET: SetId = 'DRAGON';
+
 export interface PlacePrize {
   gold: number;
-  /** Legions of Shadow packs. */
+  /** Packs of TOURNAMENT_PACK_SET. */
   packs: number;
 }
 
