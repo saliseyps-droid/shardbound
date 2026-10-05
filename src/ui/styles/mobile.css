@@ -160,22 +160,24 @@ html[data-input='touch'] body .hand-card:focus-within:not(.is-selected) {
   transform-origin: 50% 120%;
 }
 html[data-input='touch'] body .unit:hover:not(.is-selected) { transform: none; }
-/* Choosing a target for a card (mouse and touch): the card moves to the bottom-right corner of the
-   board (over End turn, left of the battle log when it is shown), enlarged, so it covers neither your
-   Warden nor any unit; no transitions, so nothing pulses. A click on it does nothing (MatchScreen),
-   so it also keeps End turn from being hit by accident. */
-body .match.is-targeting .hand-card.is-selected {
+/* Touch, choosing a target for a card: the card moves to the bottom-right corner of the board
+   (over End turn, left of the battle log when it is shown), enlarged, so it covers neither your
+   Warden nor any unit; no transitions, so nothing pulses. A tap on it does nothing (MatchScreen). */
+html[data-input='touch'] body .match.is-targeting .hand-card.is-selected {
   position: fixed; z-index: 320;
   left: auto; right: calc(var(--sidebar-w) + 10px + var(--safe-right, 0px)); bottom: calc(8px + var(--safe-bottom, 0px));
-  transform: scale(1.45); transform-origin: 100% 100%;
+  transform: scale(1.7); transform-origin: 100% 100%;
   transition: none;
 }
-html[data-input='touch'] body .match.is-targeting .hand-card.is-selected { transform: scale(1.7); }
-body .match.is-targeting .hand-card.is-selected .card {
+html[data-input='touch'] body .match.is-targeting .hand-card.is-selected .card {
   filter: drop-shadow(0 0 6px var(--gold-bright)) drop-shadow(0 0 14px rgba(232, 176, 75, 0.75));
 }
 /* The hand is its own stacking layer: lift it above End turn while the card waits there. */
-body .match.is-targeting .hand { z-index: 330; }
+html[data-input='touch'] body .match.is-targeting .hand { z-index: 330; }
+/* Mouse: the card stays lifted in the hand as always, but clicks pass through it while you pick a
+   target, so the Warden or unit underneath can still be chosen (Esc / right-click cancel). */
+html:not([data-input='touch']) body .match.is-targeting .hand-card.is-selected { pointer-events: none; }
+html:not([data-input='touch']) body .match.is-targeting .hand-card.is-selected * { pointer-events: none; }
 
 /* Card inspector on short screens: a smaller card with the text beside it. */
 @media (max-height: 520px) {
