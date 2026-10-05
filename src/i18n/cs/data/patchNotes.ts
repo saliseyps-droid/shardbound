@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.3': {
+    title: 'Portrét v bundlu Dragon Realm',
+    summary: 'Bundle Dragon Realm teď obsahuje portrét Černého draka.',
+    sections: [['Bundle Dragon Realm: portrét Strážce je teď Černý drak (dříve Safírový drak).']],
+  },
   '0.26.2': {
     title: 'Názvy frakcí na kartách',
     summary: 'Texty karet jmenují frakce tak, jak je zná hra.',

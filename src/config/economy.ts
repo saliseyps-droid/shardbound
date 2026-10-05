@@ -43,7 +43,7 @@ export interface Bundle {
 }
 
 export const BUNDLES: Bundle[] = [
-  { id: 'dragon_bundle', setId: 'DRAGON', name: 'Dragon Realm Bundle', packs: 10, cardBack: 'crimson_dragon', portrait: 'tide_sapphire_dragon', discount: 0.3 },
+  { id: 'dragon_bundle', setId: 'DRAGON', name: 'Dragon Realm Bundle', packs: 10, cardBack: 'crimson_dragon', portrait: 'ember_black_drake', discount: 0.3 },
   { id: 'abyss_bundle', setId: 'ABYSS', name: 'Legions of Shadow Bundle', packs: 10, cardBack: 'hollow_vortex', portrait: 'tide_frost_lich', discount: 0.3 },
 ];
 

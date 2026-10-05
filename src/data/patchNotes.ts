@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.3',
+    date: '2026-10-06',
+    title: 'Dragon Realm bundle portrait',
+    summary: 'The Dragon Realm bundle now comes with the Black Drake portrait.',
+    sections: [{ kind: 'improved', items: ['Dragon Realm bundle: the Warden portrait is now the Black Drake (was the Sapphire Dragon).'] }],
+    commits: [],
+  },
+  {
     version: '0.26.2',
     date: '2026-10-05',
     title: 'Faction names on cards',
