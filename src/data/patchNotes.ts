@@ -33,6 +33,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Deck editor: craft cards you are missing right on the card (Craft button with its Essence cost); the new copy goes straight into your deck.',
         ],
       },
+      { kind: 'fixed', items: ['The Legions of Shadow pack no longer has a notch in its right edge.'] },
     ],
     commits: [],
   },

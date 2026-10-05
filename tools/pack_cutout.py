@@ -11,7 +11,7 @@ Very dark packs whose sides are invisible borrow the side profile of another pac
 the same sheet row (--shape-from), since all packs share one template.
 
 Usage (Pillow + numpy):
-  python tools/pack_cutout.py SHEET.jpg COL ROW OUT.webp [--shape-from COL ROW] [--kingdoms-patch] [--row-shift DY]
+  python tools/pack_cutout.py SHEET.jpg COL ROW OUT.webp [--shape-from COL ROW] [--kingdoms-patch] [--row-shift DY] [--bg-flood] [--mirror]
 Check the result on a magenta background and the outline over a brightened original before shipping.
 """
 import argparse
@@ -142,6 +142,26 @@ def bg_flood_cutout(A: np.ndarray, tol: int = 7, erode: int = 0) -> Image.Image:
     return rgba.crop(rgba.getchannel('A').point(lambda v: 255 if v > 8 else 0).getbbox())
 
 
+def mirror_left_edge(img: Image.Image) -> Image.Image:
+    """Packs are symmetric: rebuild the right edge of the alpha mask by mirroring the left one
+    across the pack axis (fixes notches where the background leaked through a gap in the rim)."""
+    A = np.asarray(img).copy()
+    a = A[:, :, 3]
+    h, w = a.shape
+    rows = [y for y in range(h) if (a[y] > 128).any()]
+    lefts = np.array([np.where(a[y] > 128)[0].min() for y in rows])
+    rights = np.array([np.where(a[y] > 128)[0].max() for y in rows])
+    axis2 = float(np.median(lefts + rights))  # 2 x axis, robust against the notch rows
+    out = a.copy()
+    for y in rows:
+        for x in range(int(np.ceil(axis2 / 2)), w):
+            src = int(round(axis2 - x))
+            out[y, x] = a[y, src] if 0 <= src < w else 0
+    A[:, :, 3] = out
+    res = Image.fromarray(A, 'RGBA')
+    return res.crop(res.getchannel('A').point(lambda v: 255 if v > 8 else 0).getbbox())
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('sheet')
@@ -152,6 +172,7 @@ def main():
     ap.add_argument('--kingdoms-patch', action='store_true', help='cover the stray line in the Kingdoms at War art')
     ap.add_argument('--threshold', type=int, default=16, help='side-profile background level (packs4: 30)')
     ap.add_argument('--edges', nargs=2, type=int, metavar=('TOP', 'BOTTOM'), help='seal top/bottom in crop pixels when the texture measurement fails (packs4 Legions: 17 803)')
+    ap.add_argument('--mirror', action='store_true', help='make the right edge a mirror of the left (packs4 Legions of Shadow)')
     ap.add_argument('--bg-flood', action='store_true', help='remove the even background instead of measuring edges (packs4)')
     ap.add_argument('--erode', type=int, default=0, help='with --bg-flood: shrink by this many px to drop the drop shadow (packs4: 12)')
     ap.add_argument('--row-shift', type=int, default=0, help='move the row ranges by this many 1x pixels (packs4: -18)')
@@ -167,6 +188,8 @@ def main():
             A[y, 38 * S + M: 166 * S + M] = A[src[t % len(src)], 38 * S + M: 166 * S + M]
     template = crop(sheet, *a.shape_from) if a.shape_from else None
     img = bg_flood_cutout(A, erode=a.erode) if a.bg_flood else cutout(A, template, tuple(a.edges) if a.edges else None)
+    if a.mirror:
+        img = mirror_left_edge(img)
     img.save(a.out, quality=92, method=6)
     print(a.out, img.size)
 

@@ -11,6 +11,7 @@ const notes: PatchNotesOverlay = {
         'Schopnosti Strážce mají jemný nádech barvy jeho frakce.',
         'Editor balíčku: chybějící karty vyrobíš přímo na kartě (tlačítko Vyrobit s cenou v esenci); nová kopie jde rovnou do balíčku.',
       ],
+      ['Balíček Legions of Shadow už nemá zářez na pravém okraji.'],
     ],
   },
   '0.24.3': {
