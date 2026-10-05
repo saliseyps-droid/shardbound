@@ -1,6 +1,26 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.25.1': {
+    title: 'Plynulejší zápasy na každé obrazovce',
+    summary: 'Várka oprav hratelnosti pro mobily, tablety i PC a k tomu záznam zápasu a detail Strážce na mobilu.',
+    sections: [
+      [
+        'Mobily: tlačítko záznamu (pod tlačítkem odchodu) otevře záznam zápasu; ťuknutím na jméno karty si ji prohlédneš.',
+        'Mobily: podržením prstu na schopnosti Strážce si ji přečteš, aniž by se použila.',
+        'Pravým tlačítkem nebo podržením prstu na Strážci uvidíš jeho životy, brnění a obě schopnosti.',
+      ],
+      [
+        'Mobily: první ťuknutí kartu jen zvětší, už ji omylem nezahraje.',
+        'Mobily: podržení prstu na cíli kvůli prohlédnutí už na něj zároveň nepoužije kartu ani schopnost.',
+        'Bojiště se po výměně ruky už neposune nahoru (tlačítko odchodu a nepřátelský Strážce byly oříznuté).',
+        'PC: při výběru cíle se karta odsune stranou, takže už nezakrývá tvého Strážce.',
+        'Oznámení už na mobilu nezakrývají tlačítka Pokračovat a Vzdát se.',
+        'Tablety: krystaly energie už nezasahují pod Ukončit tah, karta při míření nezakrývá záznam a náhled karty nezůstává viset.',
+        'Prázdný balíček už se nepřekrývá s počítadlem a právě líznutou kartu jde ťuknout hned.',
+      ],
+    ],
+  },
   '0.25.0': {
     title: 'Začátek s průvodcem a plynulejší mobily',
     summary: 'Přísnější výuka s úvodem do světa, bohatší seznam přátel a spousta oprav pro mobily a menší obrazovky.',

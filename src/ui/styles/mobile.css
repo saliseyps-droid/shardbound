@@ -160,20 +160,22 @@ html[data-input='touch'] body .hand-card:focus-within:not(.is-selected) {
   transform-origin: 50% 120%;
 }
 html[data-input='touch'] body .unit:hover:not(.is-selected) { transform: none; }
-/* Touch, choosing a target for a card: the card moves to the bottom-right corner (over End turn),
-   enlarged, so it covers neither your units nor the enemy's; no transitions, so nothing pulses. */
-html[data-input='touch'] body .match.is-targeting .hand-card.is-selected {
+/* Choosing a target for a card (mouse and touch): the card moves to the bottom-right corner of the
+   board (over End turn, left of the battle log when it is shown), enlarged, so it covers neither your
+   Warden nor any unit; no transitions, so nothing pulses. A click on it does nothing (MatchScreen),
+   so it also keeps End turn from being hit by accident. */
+body .match.is-targeting .hand-card.is-selected {
   position: fixed; z-index: 320;
-  left: auto; right: calc(10px + var(--safe-right, 0px)); bottom: calc(8px + var(--safe-bottom, 0px));
-  transform: scale(1.7); transform-origin: 100% 100%;
-  transition: none; pointer-events: none;
+  left: auto; right: calc(var(--sidebar-w) + 10px + var(--safe-right, 0px)); bottom: calc(8px + var(--safe-bottom, 0px));
+  transform: scale(1.45); transform-origin: 100% 100%;
+  transition: none;
 }
-html[data-input='touch'] body .match.is-targeting .hand-card.is-selected .card {
+html[data-input='touch'] body .match.is-targeting .hand-card.is-selected { transform: scale(1.7); }
+body .match.is-targeting .hand-card.is-selected .card {
   filter: drop-shadow(0 0 6px var(--gold-bright)) drop-shadow(0 0 14px rgba(232, 176, 75, 0.75));
 }
-html[data-input='touch'] body .match.is-targeting .hand-card.is-selected .hand-cancel { pointer-events: auto; }
 /* The hand is its own stacking layer: lift it above End turn while the card waits there. */
-html[data-input='touch'] body .match.is-targeting .hand { z-index: 330; }
+body .match.is-targeting .hand { z-index: 330; }
 
 /* Card inspector on short screens: a smaller card with the text beside it. */
 @media (max-height: 520px) {
@@ -347,3 +349,40 @@ html[data-input='touch'] body .hand-cancel {
   body .tutorial-intro-lore, body .tutorial-intro-keywords dd { font-size: var(--t-xs); }
   body .tutorial-intro-actions .btn { min-height: 40px; padding: 0 28px; font-size: 1rem; }
 }
+
+/* Phones sideways: no sidebar, so a scroll button (under the leave cross) opens the battle log as a
+   sheet from the bottom. Card names in it open the inspector. */
+@media (max-height: 520px) {
+  body .log-btn {
+    display: grid; place-items: center; position: absolute; z-index: 50;
+    top: calc(44px + var(--safe-top)); left: calc(4px + var(--safe-left)); width: 36px; height: 36px;
+  }
+  body .log-btn.is-first { top: calc(4px + var(--safe-top)); }
+  body .log-sheet-backdrop { display: block; position: fixed; inset: 0; z-index: 440; background: rgba(4, 2, 16, 0.55); }
+  body .match-sidebar.is-open {
+    display: flex; flex-direction: column; gap: 6px;
+    position: fixed; z-index: 450; left: 0; right: 0; bottom: 0; height: min(78dvh, 320px);
+    padding: 8px max(14px, var(--safe-right)) calc(8px + var(--safe-bottom)) max(14px, var(--safe-left));
+    background: linear-gradient(180deg, #221c3d, #141126); border-top: 1px solid var(--line-strong);
+    border-left: 0; border-radius: 14px 14px 0 0; box-shadow: 0 -12px 30px -8px #000;
+  }
+  body .match-sidebar.is-open .hover-preview, body .match-sidebar.is-open .match-meta { display: none; }
+  body .match-sidebar.is-open .log-sheet-head { display: flex; align-items: center; justify-content: space-between; flex: none; }
+  body .match-sidebar.is-open .log-sheet-head strong { font-family: var(--font-display); color: var(--gold-bright); }
+  body .match-sidebar.is-open .log-sheet-head .icon-btn { width: 36px; height: 36px; }
+  body .match-sidebar.is-open .battle-log { flex: 1; min-height: 0; font-size: var(--t-xs); }
+  body .match-sidebar.is-open .log-card { padding: 2px 0; }
+}
+
+/* Toasts on phones held sideways: top centre and compact, so they never cover End turn / Concede
+   or the results buttons at the bottom. */
+@media (max-height: 520px) {
+  body .toast-host {
+    top: calc(6px + var(--safe-top)); bottom: auto; left: 50%; right: auto; transform: translateX(-50%);
+    width: max-content; max-width: min(420px, calc(100vw - 120px)); gap: 4px;
+  }
+  body .app-shell:not(.in-match) ~ .toast-host { top: calc(var(--header-h) + var(--safe-top) + 6px); }
+  body .toast { padding: 6px 12px; font-size: var(--t-xs); }
+}
+/* The results screen keeps its buttons at the bottom: toasts go to the top there on every screen size. */
+body:has(.match-overlay.results) .toast-host { top: calc(10px + var(--safe-top)); bottom: auto; }

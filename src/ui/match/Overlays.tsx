@@ -11,6 +11,7 @@ import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import type { GameEvent, GameState } from '@/engine/types';
 import { useMatch, HUMAN, AI } from '@/state/matchStore';
 import { useAccount } from '@/state/accountStore';
+import { useUi } from '@/state/uiStore';
 import { useMatchLaunch } from '@/state/matchLaunch';
 import { xpToNext } from '@/domain/progression';
 import { CardView, isTouchScreen } from '@/ui/components/CardView';
@@ -174,6 +175,8 @@ function LogText({ text, onHover }: { text: string; onHover: (h: { id: string; r
             data-card-id={part}
             onMouseEnter={(e) => !isTouchScreen() && onHover({ id: part, rect: e.currentTarget.getBoundingClientRect() })}
             onMouseLeave={() => onHover(null)}
+            // Tapping a card name (phones have no hover) opens it in the inspector.
+            onClick={() => useUi.getState().inspectCard(part)}
           >
             {getCardSafe(part).name}
           </span>

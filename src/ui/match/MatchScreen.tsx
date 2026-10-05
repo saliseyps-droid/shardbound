@@ -2,7 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, typ
 import { Navigate, useNavigate } from 'react-router-dom';
 import { getCardSafe } from '@/data/cards';
 import { effectiveCost, canPlayCard } from '@/engine/queries';
-import type { GameState } from '@/engine/types';
+import type { GameState, PlayerId } from '@/engine/types';
 import { useMatch, HUMAN, AI, parseEntity } from '@/state/matchStore';
 import { useMatchLaunch, type MatchConfig } from '@/state/matchLaunch';
 import { useSettings } from '@/state/settingsStore';
@@ -12,7 +12,9 @@ import { confirmDialog, Spinner } from '@/ui/components/common';
 import { audio } from '@/audio/audioService';
 import { usingTouch } from '@/ui/inputMode';
 import { AudioToggles } from './AudioToggles';
-import { DrawPile, EmpowerBadge, EnergyBar, HeroAbilities, HeroPanel, PermanentsRow, UnitView } from './BoardParts';
+import { DrawPile, EmpowerBadge, EnergyBar, HeroAbilities, HeroInspector, HeroPanel, PermanentsRow, UnitView } from './BoardParts';
+import { showTipFor } from '@/ui/components/Tooltip';
+import { LONG_PRESS_CLICK_GUARD_MS, LONG_PRESS_MS, TAP_SLOP_PX, isActingTap, peekClickAllowed } from './touchGuards';
 import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
 import { t, tn, useT } from '@/i18n';
 import { BrandLogo } from '@/ui/components/BrandLogo';
@@ -150,18 +152,34 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const [drag, setDrag] = useState<Drag | null>(null);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [hover, setHover] = useState<{ cardId: string; uid?: number } | null>(null);
-  const setHoverCard = (cardId: string | null, uid?: number) => setHover(cardId ? { cardId, uid } : null);
+  // Touch screens send a mouseenter on tap but never a mouseleave: the sidebar preview would stick
+  // on the last tapped card, so it only follows a real mouse (a long press opens the inspector instead).
+  const setHoverCard = (cardId: string | null, uid?: number) => {
+    if (cardId && usingTouch()) return;
+    setHover(cardId ? { cardId, uid } : null);
+  };
   const hoverCard = hover?.cardId ?? null;
   const hoverSilenced = hover?.uid !== undefined && !!game.players.some((p) => p.board.some((u) => u.uid === hover.uid && u.silenced));
   const [newCards, setNewCards] = useState<Set<number>>(new Set());
   const prevHand = useRef<number[]>([]);
   const boardRef = useRef<HTMLDivElement>(null);
-  const longPress = useRef<{ timer?: number }>({});
+  /** Touch long press: its timer, whether it fired (inspected) for the current press, and until when clicks are swallowed. */
+  const longPress = useRef<{ timer?: number; fired: boolean; suppressUntil: number }>({ fired: false, suppressUntil: 0 });
+  /** Phones: the battle log opened as a sheet over the board. */
+  const [logOpen, setLogOpen] = useState(false);
+  /** A Warden shown in the hero inspector (right-click / long press). */
+  const [heroInspect, setHeroInspect] = useState<PlayerId | null>(null);
   useEffect(() => startMatchFullscreen(), []);
   /** Touch: the hand card shown enlarged above the hand (tap it again to play it). */
   const [peek, setPeek] = useState<number | null>(null);
   const peekRef = useRef<number | null>(null);
   peekRef.current = peek;
+  /** When the peek opened, and whether a new press has started on it since (see peekClickAllowed). */
+  const peekOpened = useRef({ at: 0, fresh: false });
+  const openPeek = (uid: number | null) => {
+    peekOpened.current = { at: performance.now(), fresh: false };
+    setPeek(uid);
+  };
 
   const me = game.players[HUMAN];
   const opp = game.players[AI];
@@ -176,13 +194,14 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
     for (const uid of newCards) {
       const el = document.querySelector<HTMLElement>(`[data-hand-uid="${uid}"]`);
       if (!el) continue;
-      // Measure the card's resting place without the fly-in transform, then restart the animation.
-      el.style.animation = 'none';
+      // The wrapper sits in the card's resting place (only the card inside flies); restart the animation.
+      const inner = el.querySelector<HTMLElement>(':scope > .card');
+      if (inner) inner.style.animation = 'none';
       const r = el.getBoundingClientRect();
       el.style.setProperty('--dx', `${pile.left + pile.width / 2 - (r.left + r.width / 2)}px`);
       el.style.setProperty('--dy', `${pile.top + pile.height / 2 - (r.top + r.height / 2)}px`);
       void el.offsetWidth;
-      el.style.animation = '';
+      if (inner) inner.style.animation = '';
     }
   }, [newCards]);
 
@@ -218,6 +237,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement)?.tagName === 'INPUT') return;
+      // Esc with an inspector / dialog open only closes that, the card keeps waiting for its target.
+      if (document.querySelector('.modal-backdrop')) return;
       if (e.key === 'Escape') store.getState().cancelSelection();
       if ((e.key === 'e' || e.key === 'E') && !e.ctrlKey) void endTurn();
     };
@@ -271,8 +292,11 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       const s = store.getState();
       const moved = d.active || Math.hypot(e.clientX - d.startX, e.clientY - d.startY) > DRAG_THRESHOLD;
       if (!moved) {
+        // The card waiting for a target (moved aside, enlarged): a click on it does nothing, so it
+        // can't cancel by accident; the cross, Esc and right-click cancel.
+        if (d.kind === 'card' && s.selection?.kind === 'card' && s.selection.uid === d.uid) return;
         if (d.kind === 'card' && d.touch && peekRef.current !== d.uid) {
-          setPeek(d.uid);
+          openPeek(d.uid);
           return;
         }
         setPeek(null);
@@ -316,7 +340,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
     // Touch: cards can always be enlarged to read them, even on the opponent's turn.
     if (e.pointerType === 'touch' && !interactive) {
       e.preventDefault();
-      setPeek(peekRef.current === uid ? null : uid);
+      openPeek(peekRef.current === uid ? null : uid);
       return;
     }
     if (!interactive) {
@@ -326,17 +350,27 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
     e.preventDefault();
     beginDrag({ kind: 'card', uid, startX: e.clientX, startY: e.clientY, x: e.clientX, y: e.clientY, active: false, touch: e.pointerType === 'touch' });
   };
+  /** Touch: runs `act` when the press ends as a tap (no movement, no long press), so holding only inspects. */
+  const onTap = (e: RPointerEvent, act: () => void) => {
+    const x0 = e.clientX;
+    const y0 = e.clientY;
+    const done = (ev: PointerEvent) => {
+      window.removeEventListener('pointerup', done);
+      window.removeEventListener('pointercancel', done);
+      if (ev.type === 'pointerup' && isActingTap(x0, y0, ev.clientX, ev.clientY, longPress.current.fired)) act();
+    };
+    window.addEventListener('pointerup', done);
+    window.addEventListener('pointercancel', done);
+  };
   const startUnitDrag = (e: RPointerEvent, uid: number) => {
     if (e.button !== 0 || !interactive) return;
     const s = store.getState();
-    // A pending selection wants this unit as a target: click semantics.
-    if (s.selection && s.targets.includes(`u:${uid}`)) {
-      s.clickUnit(uid);
-      return;
-    }
     const isMine = me.board.some((u) => u.uid === uid);
-    if (!isMine) {
-      s.clickUnit(uid);
+    // A pending selection wants this unit as a target (or it's an enemy unit): click semantics.
+    // Touch acts on release, so a long press on a target only opens the inspector.
+    if ((s.selection && s.targets.includes(`u:${uid}`)) || !isMine) {
+      if (e.pointerType === 'touch') onTap(e, () => store.getState().clickUnit(uid));
+      else s.clickUnit(uid);
       return;
     }
     e.preventDefault();
@@ -408,8 +442,18 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
     // Anything else showing a card (relics, location, mulligan, cast preview, revealed enemy
     // cards, card names in the log, the sidebar preview) carries data-card-id.
     const cardId = (handUid ? me.hand.find((c) => c.uid === Number(handUid))?.cardId : unit?.cardId) ?? el.closest('[data-card-id]')?.getAttribute('data-card-id') ?? undefined;
-    if (cardId) useUi.getState().inspectCard(cardId, undefined, { silenced: unit?.silenced });
-    return !!cardId;
+    if (cardId) {
+      useUi.getState().inspectCard(cardId, undefined, { silenced: unit?.silenced });
+      return true;
+    }
+    // A Warden: its name, health and abilities.
+    const hero = el.closest('[data-entity^="h:"]')?.getAttribute('data-entity');
+    if (hero) {
+      setHeroInspect(Number(hero.slice(2)) as PlayerId);
+      return true;
+    }
+    // Anything with a tooltip (Warden abilities, keyword badges): touch has no hover, so show it.
+    return usingTouch() && showTipFor(el);
   };
 
   return (
@@ -419,34 +463,54 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       ref={boardRef}
       onContextMenu={(e) => {
         e.preventDefault();
+        // Touch: a long press already inspects (below); its contextmenu must not also cancel the selection.
+        if (usingTouch()) return;
         const s = store.getState();
         if (s.selection) return s.cancelSelection();
         // Right-click inspects a card in hand or a unit on the battlefield.
         inspectAt(e.target as HTMLElement);
       }}
       onPointerUpCapture={(e) => e.pointerType === 'touch' && maybeAutoFullscreen()}
+      onClickCapture={(e) => {
+        // The click a browser may still send after a long press must not also play / use / attack.
+        if (performance.now() < longPress.current.suppressUntil) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+      }}
       onPointerDownCapture={(e) => {
-        // Touch: press and hold a card or unit to inspect it (phones have no right click).
+        // Touch: press and hold a card, unit, Warden or ability to inspect it (phones have no right click).
         if (e.pointerType !== 'touch') return;
         const el = e.target as HTMLElement;
         if (peekRef.current !== null && !el.closest('[data-hand-uid], .hand-peek')) setPeek(null);
+        const lp = longPress.current;
+        lp.fired = false;
+        lp.suppressUntil = 0;
         const x0 = e.clientX;
         const y0 = e.clientY;
-        clearTimeout(longPress.current.timer);
-        const stop = () => {
-          clearTimeout(longPress.current.timer);
+        clearTimeout(lp.timer);
+        const stopWatching = () => {
+          clearTimeout(lp.timer);
           window.removeEventListener('pointermove', onMove);
-          window.removeEventListener('pointerup', stop);
-          window.removeEventListener('pointercancel', stop);
         };
-        const onMove = (ev: PointerEvent) => Math.hypot(ev.clientX - x0, ev.clientY - y0) > 10 && stop();
+        const end = () => {
+          stopWatching();
+          window.removeEventListener('pointerup', end);
+          window.removeEventListener('pointercancel', end);
+          if (lp.fired) lp.suppressUntil = performance.now() + LONG_PRESS_CLICK_GUARD_MS;
+        };
+        const onMove = (ev: PointerEvent) => Math.hypot(ev.clientX - x0, ev.clientY - y0) > TAP_SLOP_PX && stopWatching();
         window.addEventListener('pointermove', onMove);
-        window.addEventListener('pointerup', stop);
-        window.addEventListener('pointercancel', stop);
-        longPress.current.timer = window.setTimeout(() => {
-          stop();
-          if (inspectAt(el)) endDrag.current?.();
-        }, 500);
+        window.addEventListener('pointerup', end);
+        window.addEventListener('pointercancel', end);
+        lp.timer = window.setTimeout(() => {
+          stopWatching();
+          if (inspectAt(el)) {
+            lp.fired = true;
+            lp.suppressUntil = Infinity;
+            endDrag.current?.();
+          }
+        }, LONG_PRESS_MS);
       }}
     >
       <div className="board-mat" aria-hidden />
@@ -518,6 +582,9 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
                 data-hand-uid={c.uid}
                 data-card-id={c.cardId}
                 style={{ '--o': offset } as CSSProperties}
+                // On the wrapper, not the card: the card itself flies in from the deck (is-new) while
+                // the wrapper already sits in its slot, so a just-drawn card can be grabbed right away.
+                onPointerDown={(e) => startCardDrag(e, c.uid)}
               >
                 <CardView
                   card={c.cardId}
@@ -526,7 +593,6 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
                   playable={playable}
                   dimmed={myTurn && !playable}
                   selected={selected}
-                  onPointerDown={(e) => startCardDrag(e, c.uid)}
                   onClick={(e) => e.detail === 0 && store.getState().clickHandCard(c.uid)}
                   ariaLabel={`${t(playable ? '{name}, costs {cost}, playable.' : '{name}, costs {cost}.', { name: getCardSafe(c.cardId).name, cost })} ${getCardSafe(c.cardId).description ?? ''}`}
                 />
@@ -570,7 +636,14 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         </div>
       </section>
 
-      <aside className="match-sidebar">
+      {logOpen && <div className="log-sheet-backdrop" onClick={() => setLogOpen(false)} aria-hidden />}
+      <aside className={`match-sidebar ${logOpen ? 'is-open' : ''}`}>
+        <div className="log-sheet-head">
+          <strong>{t('Battle log')}</strong>
+          <button type="button" className="icon-btn" aria-label={t('Close')} onClick={() => setLogOpen(false)}>
+            ✕
+          </button>
+        </div>
         <div className="hover-preview" aria-hidden data-card-id={hoverCard ?? undefined}>
           {hoverCard ? <CardView card={hoverCard} width={220} silenced={hoverSilenced} /> : <BrandLogo size={200} className="sidebar-logo" />}
         </div>
@@ -601,13 +674,16 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       )}
 
       {peekCard && (
-        <div className="hand-peek" style={{ '--peek-w': `${peekW}px` } as CSSProperties}>
+        <div className="hand-peek" style={{ '--peek-w': `${peekW}px` } as CSSProperties} onPointerDown={() => (peekOpened.current.fresh = true)}>
           <CardView
             card={peekCard.cardId}
             width={peekW}
             cost={effectiveCost(game, HUMAN, peekCard)}
             playable={interactive && canPlayCard(game, HUMAN, peekCard).ok}
             onClick={() => {
+              // The tap that opened the peek ends with a click right here (the peek sits over the
+              // hand): only a deliberate second tap plays the card.
+              if (!peekClickAllowed(peekOpened.current.at, performance.now(), peekOpened.current.fresh)) return;
               setPeek(null);
               if (interactive) store.getState().clickHandCard(peekCard.uid);
               else toast('Wait for your turn.', 'info');
@@ -636,6 +712,28 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       {phase === 'mulligan' && <MulliganOverlay game={game} />}
       {phase === 'ended' && <ResultsOverlay game={game} />}
       <AudioToggles />
+      {/* Phones: the sidebar is hidden, so the battle log opens as a sheet from this button. */}
+      <button
+        type="button"
+        className={`log-btn icon-btn ${config?.mode === 'TUTORIAL' ? 'is-first' : ''}`}
+        aria-label={t('Battle log')}
+        title={t('Battle log')}
+        onClick={() => {
+          setLogOpen(true);
+          requestAnimationFrame(() => {
+            const box = boardRef.current?.querySelector('.match-sidebar .battle-log');
+            if (box) box.scrollTop = box.scrollHeight;
+          });
+        }}
+      >
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M8 3h11a2 2 0 012 2v2h-4" />
+          <path d="M17 7v12a2 2 0 01-2 2H6a2 2 0 01-2-2v-2h9" />
+          <path d="M8 3a2 2 0 00-2 2v12" />
+          <path d="M10 8h4M10 12h4" />
+        </svg>
+      </button>
+      {heroInspect !== null && <HeroInspector game={game} player={heroInspect} onClose={() => setHeroInspect(null)} />}
       {phase !== 'ended' && config?.mode !== 'TUTORIAL' && (
         <button className="leave-btn icon-btn" aria-label={t('Leave match (concede)')} onClick={() => void concede()}>
           ✕

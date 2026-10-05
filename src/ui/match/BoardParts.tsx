@@ -11,6 +11,7 @@ import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait, portraitUrl } from '@/ui/components/WardenPortrait';
 import type { Faction } from '@/game/types';
 import { Tip } from '@/ui/components/Tooltip';
+import { Modal } from '@/ui/components/common';
 import type { StaticKeyword } from '@/game/types';
 import { useMatch, HUMAN, type Fx } from '@/state/matchStore';
 import { t } from '@/i18n';
@@ -202,6 +203,57 @@ export function HeroPanel({
       {targetable && <span className="target-mark" aria-hidden>◎</span>}
       <FxLayer fx={fx} />
     </div>
+  );
+}
+
+/** Right-click / long press on a Warden: its name, faction, health and both abilities. */
+export function HeroInspector({ game, player, onClose }: { game: GameState; player: PlayerId; onClose: () => void }) {
+  const hero = game.players[player].hero;
+  const faction = hero.faction ? FACTIONS[hero.faction as Faction] : undefined;
+  return (
+    <Modal open onClose={onClose} title={hero.name} labelledBy="hero-inspector-title" className="hero-inspector">
+      <div className="hero-inspector-body">
+        <WardenPortrait faction={hero.faction as Faction} portrait={hero.portrait} size={96} />
+        <dl className="info-grid">
+          {faction && (
+            <>
+              <dt>{t('Faction')}</dt>
+              <dd style={{ color: faction.colors.primary }}>{faction.name}</dd>
+            </>
+          )}
+          <dt>{t('Health')}</dt>
+          <dd className="num">
+            {hero.health} / {hero.maxHealth}
+          </dd>
+          {hero.armor > 0 && (
+            <>
+              <dt>{t('Armor')}</dt>
+              <dd className="num">{hero.armor}</dd>
+            </>
+          )}
+        </dl>
+      </div>
+      {hero.abilities.length > 0 && (
+        <>
+          <h4 className="hero-inspector-sub">{t('Warden abilities')}</h4>
+          <ul className="keyword-list">
+            {hero.abilities.map((a, i) => {
+              const talent = getTalent(a.id);
+              const level = talent?.levels[a.level];
+              if (!talent || !level) return null;
+              return (
+                <li key={i}>
+                  <strong>
+                    {`${talent.name} ${RANK_LABEL[a.level] ?? ''}`.trim()} · {talent.kind === 'PASSIVE' ? t('Passive') : t('Active ({cost})', { cost: 'cost' in level ? level.cost : 0 })}
+                  </strong>
+                  <span>{level.description}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
+    </Modal>
   );
 }
 

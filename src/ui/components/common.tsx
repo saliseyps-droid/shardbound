@@ -30,7 +30,7 @@ export function Modal({
   useEffect(() => {
     if (!open) return;
     const prev = document.activeElement as HTMLElement | null;
-    ref.current?.focus();
+    ref.current?.focus({ preventScroll: true });
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && onClose) {
         e.stopPropagation();
@@ -40,12 +40,14 @@ export function Modal({
     window.addEventListener('keydown', onKey);
     return () => {
       window.removeEventListener('keydown', onKey);
-      prev?.focus?.();
+      prev?.focus?.({ preventScroll: true });
     };
   }, [open, onClose]);
   if (!open) return null;
   return (
-    <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose?.()}>
+    // pointerdown, not mousedown: after a touch long press opens a modal, the browser sends a compat
+    // mousedown to wherever the finger lifts (often the backdrop), which closed the modal at once.
+    <div className="modal-backdrop" onPointerDown={(e) => e.target === e.currentTarget && onClose?.()}>
       <div ref={ref} className={`modal panel ${wide ? 'modal-wide' : ''} ${className}`} role="dialog" aria-modal="true" aria-labelledby={labelledBy} tabIndex={-1}>
         {title && (
           <div className="modal-head">

@@ -19,6 +19,35 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.25.1',
+    date: '2026-10-05',
+    title: 'Smoother matches on every screen',
+    summary: 'A round of gameplay fixes for phones, tablets and PC, plus the battle log and Warden details on phones.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Phones: a log button (under the leave button) opens the battle log; tap a card name in it to inspect the card.',
+          'Phones: long-press a Warden ability to read it without using it.',
+          'Right-click or long-press a Warden to see its health, armor and both abilities.',
+        ],
+      },
+      {
+        kind: 'fixed',
+        items: [
+          'Phones: the first tap on a card only enlarges it, it no longer plays it by accident.',
+          'Phones: long-pressing a target to read it no longer also uses the card or ability on it.',
+          'The board no longer shifts up after the mulligan (the leave button and the enemy Warden were cut off).',
+          'PC: while choosing a target, the card moves aside so it no longer covers your own Warden.',
+          'Messages no longer cover the Continue and Concede buttons on phones.',
+          'Tablets: the energy crystals no longer run under End turn, the targeting card no longer covers the log, and the card preview no longer sticks.',
+          'An empty deck pile no longer overlaps its counter, and a freshly drawn card can be tapped right away.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.25.0',
     date: '2026-10-05',
     title: 'A guided start and smoother phones',

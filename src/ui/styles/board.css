@@ -16,6 +16,9 @@
     'field sidebar'
     'self sidebar';
   overflow: hidden;
+  /* clip, not hidden: a hidden box can still be scrolled by focus() / scrollIntoView, and the hand
+     cards that hang below the bottom edge made it scroll up and cut off the top of the board. */
+  overflow: clip;
   background: #17142b;
   isolation: isolate;
   user-select: none;
@@ -156,7 +159,7 @@
   box-shadow: 1px 1px 0 #0b0916;
 }
 .draw-pile-slot {
-  position: absolute; inset: 0; display: grid; place-items: center;
+  position: absolute; inset: 0; display: grid; place-items: start center; padding-top: 22%;
   border: 2px dashed rgba(232, 176, 75, 0.35); border-radius: 6px;
   font-size: var(--t-xs); color: var(--parchment-faint);
 }
@@ -168,7 +171,7 @@
   min-width: 38px; padding: 2px 10px; text-align: center; font-weight: 800; font-size: var(--t-md, 1rem); color: var(--parchment);
   background: rgba(10, 8, 22, 0.75); border: 1px solid var(--gold-deep); border-radius: 999px;
 }
-.draw-pile.is-empty .draw-pile-count { color: var(--damage); transform: translateX(-50%); bottom: 50%; }
+.draw-pile.is-empty .draw-pile-count { color: var(--damage); transform: translateX(-50%); bottom: 18%; }
 .hero-col-left { display: flex; align-items: center; gap: 10px; }
 .empower-chip { color: var(--gold-bright); }
 
@@ -369,10 +372,12 @@
   transform-origin: 50% 100%;
 }
 .hand-card.is-dragging { opacity: 0.25; }
-.hand-card.is-new { animation: draw-in 0.6s var(--ease-out); }
+/* The card inside flies in, not the .hand-card wrapper: the wrapper (which takes the taps) is in its
+   slot from the start, so a just-drawn card can be played during the animation. */
+.hand-card.is-new > .card, .hand-card.is-new.is-fleeting > .card { animation: draw-in 0.6s var(--ease-out); }
 /* From the draw pile (--dx/--dy are set when the card arrives) into its slot in the hand. */
 @keyframes draw-in {
-  from { transform: translateX(calc(-50% + var(--o) * var(--spread))) translate(var(--dx, -40vw), var(--dy, -10vh)) rotate(-12deg) scale(0.55); opacity: 0.2; }
+  from { transform: translate(var(--dx, -40vw), var(--dy, -10vh)) rotate(-12deg) scale(0.55); opacity: 0.2; }
   30% { opacity: 1; }
 }
 .fleeting-tag {
@@ -585,3 +590,25 @@
 .tutorial-intro-keywords dd { margin: 2px 0 0; font-size: var(--t-sm); }
 .tutorial-intro-actions { display: flex; justify-content: center; }
 @media (max-width: 760px) { .tutorial-intro-cols { grid-template-columns: 1fr; } }
+
+/* Narrow screens (tablets): ten energy pips in two rows of five and End turn closer to the edge,
+   so the pips never run under the button. */
+@media (max-width: 1200px) {
+  .energy-crystals { flex-wrap: wrap; max-width: calc(11px * 5 + 2px * 4); }
+  .turn-controls { right: 16px; }
+  .end-turn { min-width: 130px; padding: 0 18px; }
+  .turn-timer { width: 130px; }
+}
+/* Narrower still: the 10/10 count alone, as on phones. */
+@media (max-width: 960px) { .energy-crystals { display: none; } }
+
+/* Battle log as a sheet (phones, see mobile.css): its head and the open button are hidden elsewhere. */
+.log-sheet-head, .log-btn, .log-sheet-backdrop { display: none; }
+.log-card { cursor: pointer; }
+
+/* Warden details (right-click / long press on a Warden) */
+.hero-inspector { width: min(460px, 100%); }
+.hero-inspector-body { display: flex; gap: var(--space-4); align-items: center; margin-bottom: var(--space-3); }
+.hero-inspector-body .info-grid { flex: 1; }
+.hero-inspector-sub { margin: 0 0 var(--space-2); color: var(--cyan); }
+.hero-inspector .keyword-list { margin-bottom: 0; }
