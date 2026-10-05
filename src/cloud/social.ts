@@ -94,11 +94,19 @@ export async function createSocialBackend(db: Firestore): Promise<SocialBackend>
       };
     },
     async putProfile(uid, p) {
-      const body: Record<string, unknown> = { name: p.name, avatar: p.avatar, portrait: p.portrait, friendCode: p.friendCode, updatedAt: serverTimestamp() };
-      if (p.level !== undefined) body.level = p.level;
-      if (p.title !== undefined) body.title = p.title || null;
-      if (p.cardsOwned !== undefined && p.cardsTotal !== undefined) Object.assign(body, { cardsOwned: p.cardsOwned, cardsTotal: p.cardsTotal });
-      await setDoc(doc(db, 'profiles', uid), body);
+      const base: Record<string, unknown> = { name: p.name, avatar: p.avatar, portrait: p.portrait, friendCode: p.friendCode, updatedAt: serverTimestamp() };
+      const stats: Record<string, unknown> = {};
+      if (p.level !== undefined) stats.level = p.level;
+      if (p.title !== undefined) stats.title = p.title || null;
+      if (p.cardsOwned !== undefined && p.cardsTotal !== undefined) Object.assign(stats, { cardsOwned: p.cardsOwned, cardsTotal: p.cardsTotal });
+      try {
+        await setDoc(doc(db, 'profiles', uid), { ...base, ...stats });
+      } catch (e) {
+        // Older published rules don't know level/title/cards yet: keep friends working without them.
+        if ((e as { code?: string }).code !== 'permission-denied' || Object.keys(stats).length === 0) throw e;
+        console.warn('[social] profile stats refused by the Firestore rules; publish the current firestore.rules');
+        await setDoc(doc(db, 'profiles', uid), base);
+      }
     },
     async claimFriendCode(uid, code) {
       const ref = doc(db, 'friendCodes', code);
