@@ -19,6 +19,21 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.25.3',
+    date: '2026-10-05',
+    title: 'Targeting on PC',
+    summary: 'On PC the card you are playing stays in your hand while you choose its target, and turns see-through.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'PC: while choosing a target, the card stays raised in your hand as before (instead of moving to the corner), turns see-through, and clicks go through it, so your Warden or a unit under it can be seen and chosen.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.25.2',
     date: '2026-10-05',
     title: 'Invite friends to tournaments',
@@ -54,7 +69,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Phones: the first tap on a card only enlarges it, it no longer plays it by accident.',
           'Phones: long-pressing a target to read it no longer also uses the card or ability on it.',
           'The board no longer shifts up after the mulligan (the leave button and the enemy Warden were cut off).',
-          'PC: while choosing a target, the raised card turns see-through and clicks go through it, so your own Warden or a unit under it can be seen and chosen.',
+          'PC: while choosing a target, the card moves aside so it no longer covers your own Warden.',
           'Messages no longer cover the Continue and Concede buttons on phones.',
           'Tablets: the energy crystals no longer run under End turn, the targeting card no longer covers the log, and the card preview no longer sticks.',
           'An empty deck pile no longer overlaps its counter, and a freshly drawn card can be tapped right away.',

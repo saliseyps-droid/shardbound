@@ -1,6 +1,13 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.25.3': {
+    title: 'Míření na PC',
+    summary: 'Na PC zůstává hraná karta při výběru cíle v ruce a zprůhlední.',
+    sections: [
+      ['PC: při výběru cíle zůstane karta zvednutá v ruce jako dřív (místo přesunu do rohu), zprůhlední a klik projde skrz ni, takže tvého Strážce nebo jednotku pod ní uvidíš i vybereš.'],
+    ],
+  },
   '0.25.2': {
     title: 'Pozvánky přátel do turnaje',
     summary: 'Organizátor turnaje může jedním klikem pozvat přátele a velké turnaje ukazují všechna místa.',
@@ -22,7 +29,7 @@ const notes: PatchNotesOverlay = {
         'Mobily: první ťuknutí kartu jen zvětší, už ji omylem nezahraje.',
         'Mobily: podržení prstu na cíli kvůli prohlédnutí už na něj zároveň nepoužije kartu ani schopnost.',
         'Bojiště se po výměně ruky už neposune nahoru (tlačítko odchodu a nepřátelský Strážce byly oříznuté).',
-        'PC: při výběru cíle zvednutá karta zprůhlední a klik projde skrz ni, takže tvého Strážce nebo jednotku pod ní uvidíš i vybereš.',
+        'PC: při výběru cíle se karta odsune stranou, takže už nezakrývá tvého Strážce.',
         'Oznámení už na mobilu nezakrývají tlačítka Pokračovat a Vzdát se.',
         'Tablety: krystaly energie už nezasahují pod Ukončit tah, karta při míření nezakrývá záznam a náhled karty nezůstává viset.',
         'Prázdný balíček už se nepřekrývá s počítadlem a právě líznutou kartu jde ťuknout hned.',
