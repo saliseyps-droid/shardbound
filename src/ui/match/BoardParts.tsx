@@ -228,8 +228,10 @@ export function HeroAbilities({ game, player, slots }: { game: GameState; player
   const shown = (slots ?? abilities.map((_, i) => i)).filter((i) => abilities[i]);
   if (shown.length === 0) return null;
   const firstActive = abilities.findIndex((a) => getTalent(a.id)?.kind === 'ACTIVE');
+  // Faction colour for the soft tint behind the ability buttons.
+  const tint = FACTIONS[game.players[player].hero.faction as Faction]?.colors.primary;
   return (
-    <div className="hero-abilities">
+    <div className="hero-abilities" style={tint ? ({ '--ability-tint': tint } as CSSProperties) : undefined}>
       {shown.map((slot) => (
         <HeroAbilitySlot key={slot} game={game} player={player} slot={slot} tutorial={player === HUMAN && slot === firstActive} />
       ))}
@@ -292,7 +294,7 @@ export function PermanentsRow({ game, player, onHover }: { game: GameState; play
     <div className="permanents">
       {p.location && (
         <Tip title={getCardSafe(p.location.cardId).name} body={getCardSafe(p.location.cardId).description ?? ''}>
-          <div className="permanent location" onMouseEnter={() => onHover(p.location!.cardId)} onMouseLeave={() => onHover(null)}>
+          <div className="permanent location" data-card-id={p.location.cardId} onMouseEnter={() => onHover(p.location!.cardId)} onMouseLeave={() => onHover(null)}>
             <img src={cardArtUri(getCardSafe(p.location.cardId))} alt="" />
             {p.location.turnsRemaining !== null && <span className="perm-count num">{p.location.turnsRemaining}</span>}
           </div>
@@ -300,7 +302,7 @@ export function PermanentsRow({ game, player, onHover }: { game: GameState; play
       )}
       {p.relics.map((r) => (
         <Tip key={r.uid} title={getCardSafe(r.cardId).name} body={getCardSafe(r.cardId).description ?? ''}>
-          <div className="permanent relic" onMouseEnter={() => onHover(r.cardId)} onMouseLeave={() => onHover(null)}>
+          <div className="permanent relic" data-card-id={r.cardId} onMouseEnter={() => onHover(r.cardId)} onMouseLeave={() => onHover(null)}>
             <img src={cardArtUri(getCardSafe(r.cardId))} alt="" />
             {r.charges !== null && <span className="perm-count num">{r.charges}</span>}
           </div>

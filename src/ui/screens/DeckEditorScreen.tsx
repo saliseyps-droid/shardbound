@@ -12,7 +12,8 @@ import { gameService, useAccount } from '@/state/accountStore';
 import { toast, useUi } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
 import { CardView, isTouchScreen } from '@/ui/components/CardView';
-import { confirmDialog, ScreenHeader } from '@/ui/components/common';
+import { confirmDialog, Essence, ScreenHeader } from '@/ui/components/common';
+import { craftCost } from '@/domain/economy';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { TalentTree } from '@/ui/components/TalentTree';
@@ -90,6 +91,7 @@ export default function DeckEditorScreen() {
   }, [saved?.id]);
 
   const owned = useCallback((id: string) => (collection ? ownedCopies(collection, id) : 0), [collection]);
+  const essence = useAccount((s) => s.save?.profile.essence ?? 0);
   const second = draft ? deckFactions(draft).find((f) => f !== draft.heroFaction) ?? null : null;
   const allowed: Faction[] = useMemo(() => {
     if (!draft) return [];
@@ -125,6 +127,19 @@ export default function DeckEditorScreen() {
   const size = deckSize(draft);
   const factionsOrder: Faction[] = [draft.heroFaction, ...PLAYABLE_FACTIONS.filter((f) => f !== draft.heroFaction), 'NEUTRAL'];
   const disabledFactions = second ? PLAYABLE_FACTIONS.filter((f) => f !== draft.heroFaction && f !== second) : [];
+
+  /** Crafts one normal copy without leaving the editor, then adds it to the deck if it fits. */
+  const craftAndAdd = (card: CardDefinition) => {
+    const res = gameService.craft(card.id, 'NORMAL');
+    if (!res.ok) {
+      audio.play('error');
+      toast(t(res.error), 'error');
+      return;
+    }
+    const fits = !canAddCard(draft, card.id, owned(card.id) + 1);
+    if (fits) setDraft({ ...draft, cards: { ...draft.cards, [card.id]: (draft.cards[card.id] ?? 0) + 1 } });
+    toast(fits ? t('Crafted {name} and added it to the deck.', { name: card.name }) : t('Crafted normal {name}.', { name: card.name }), 'success');
+  };
 
   const add = (card: CardDefinition) => {
     const reason = canAddCard(draft, card.id, owned(card.id));
@@ -224,6 +239,23 @@ export default function DeckEditorScreen() {
           </span>{" "}
           {t('in deck')}
         </div>
+        {/* Missing copies can be crafted right here instead of going back to the collection. */}
+        {have < maxCopiesFor(card) && Number.isFinite(craftCost(card.id)) && (
+          <button
+            type="button"
+            className={`btn btn-sm deck-craft-btn ${have === 0 ? 'is-missing' : ''}`}
+            style={{ top: Math.round(cardWidth * 1.4) - 40 }}
+            disabled={essence < craftCost(card.id)}
+            title={essence < craftCost(card.id) ? t('Not enough Essence') : t('Craft one copy and add it to the deck')}
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              craftAndAdd(card);
+            }}
+          >
+            {t('Craft')} <Essence amount={craftCost(card.id)} size={13} />
+          </button>
+        )}
       </div>
     );
   };

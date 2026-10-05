@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.24.4': {
+    title: 'Pohodlnější zápas a editor balíčku',
+    summary: 'Jména karet v záznamu zápasu, náhled pravým tlačítkem všude v zápase, schopnosti Strážce v barvě frakce a výroba karet přímo v editoru balíčku.',
+    sections: [
+      [
+        'Záznam zápasu: jména karet jsou zvýrazněná zlatě; najetím myší kartu uvidíš.',
+        'Zápas: pravým tlačítkem na kteroukoli viditelnou kartu (ruka, jednotky, relikvie, lokace, výměna ruky, právě zahraná karta, odhalené karty soupeře, jména v záznamu) otevřeš velký náhled karty.',
+        'Schopnosti Strážce mají jemný nádech barvy jeho frakce.',
+        'Editor balíčku: chybějící karty vyrobíš přímo na kartě (tlačítko Vyrobit s cenou v esenci); nová kopie jde rovnou do balíčku.',
+      ],
+    ],
+  },
   '0.24.3': {
     title: 'Lehčí online zápasy',
     summary: 'Online zápasy posílají zhruba 30× méně dat a hostovo bojiště se vždy přesně shoduje s hostitelovým.',

@@ -1,5 +1,8 @@
 /** Czech UI text: collection, decks, deck editor, packs, shop, card backs, arena, card views. */
 const d: Record<string, string> = {
+  'Crafted {name} and added it to the deck.': 'Vyrobeno: {name}, přidáno do balíčku.',
+  'Not enough Essence': 'Nemáš dost esence',
+  'Craft one copy and add it to the deck': 'Vyrob jednu kopii a přidej ji do balíčku',
   // CollectionScreen
   'Recycle all surplus cards?': 'Recyklovat všechny přebytečné karty?',
   'Recycles {n} cards you own beyond the playable limit for':

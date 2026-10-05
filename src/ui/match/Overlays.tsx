@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { getCardSafe } from '@/data/cards';
 import { getTalent } from '@/data/wardenTalents';
@@ -42,7 +43,7 @@ export function MulliganOverlay({ game }: { game: GameState }) {
       <p className="muted">{t('Select any cards you want to replace, then keep your hand.')}{!first && ` ${t('Going second grants an Aether Shard.')}`}</p>
       <div className="mulligan-cards">
         {hand.map((c) => (
-          <div key={c.uid} className={`mulligan-card ${picks.includes(c.uid) ? 'is-replaced' : ''}`}>
+          <div key={c.uid} className={`mulligan-card ${picks.includes(c.uid) ? 'is-replaced' : ''}`} data-card-id={c.cardId}>
             <CardView card={c.cardId} size="lg" onClick={() => toggle(c.uid)} ariaLabel={picks.includes(c.uid) ? t('{name}, marked for replacement', { name: getCardSafe(c.cardId).name }) : getCardSafe(c.cardId).name} />
             {picks.includes(c.uid) && <span className="replace-mark">{t('Replace')}</span>}
           </div>
@@ -76,7 +77,7 @@ export function CastPreview() {
   const cast = useMatch((s) => s.cast);
   if (!cast) return null;
   return (
-    <div className={`cast-preview ${cast.player === AI ? 'from-enemy' : 'from-self'}`} key={cast.id} role="status" aria-label={t('{who} played {card}', { who: cast.player === AI ? t('Opponent') : t('You'), card: getCardSafe(cast.cardId).name })}>
+    <div className={`cast-preview ${cast.player === AI ? 'from-enemy' : 'from-self'}`} key={cast.id} data-card-id={cast.cardId} role="status" aria-label={t('{who} played {card}', { who: cast.player === AI ? t('Opponent') : t('You'), card: getCardSafe(cast.cardId).name })}>
       <CardView card={cast.cardId} size="lg" />
     </div>
   );
@@ -106,9 +107,12 @@ export function TurnTimer() {
   );
 }
 
+/** Marks a card inside a log line; BattleLog turns marked ids into highlighted, hoverable names. */
+const CARD_MARK = '\u0001';
+
 function describeEvent(e: GameEvent, game: GameState): string | null {
   const who = (p: number) => (p === HUMAN ? t('You') : game.players[AI].hero.name);
-  const name = (id: string) => getCardSafe(id).name;
+  const name = (id: string) => `${CARD_MARK}${id}${CARD_MARK}`;
   switch (e.type) {
     case 'CARD_PLAYED':
       return t('{who} played {card}', { who: who(e.player), card: name(e.cardId) });
@@ -137,6 +141,45 @@ function describeEvent(e: GameEvent, game: GameState): string | null {
 
 type LogLine = { seq: number; text: string };
 
+const LOG_PREVIEW_W = 220;
+
+/** The hovered card from the log, drawn large to the left of the log (portal: panels clip). */
+function LogCardPreview({ id, rect }: { id: string; rect: DOMRect }) {
+  const h = LOG_PREVIEW_W * 1.4;
+  const top = Math.max(8, Math.min(window.innerHeight - h - 8, rect.top + rect.height / 2 - h / 2));
+  const left = Math.max(8, rect.left - LOG_PREVIEW_W - 24);
+  return createPortal(
+    <div className="log-card-preview" style={{ top, left }} aria-hidden>
+      <CardView card={id} width={LOG_PREVIEW_W} />
+    </div>,
+    document.body,
+  );
+}
+
+/** A log line with its card names highlighted; hovering one shows the card. */
+function LogText({ text, onHover }: { text: string; onHover: (h: { id: string; rect: DOMRect } | null) => void }) {
+  const parts = text.split(CARD_MARK);
+  return (
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 1 ? (
+          <span
+            key={i}
+            className="log-card"
+            data-card-id={part}
+            onMouseEnter={(e) => !isTouchScreen() && onHover({ id: part, rect: e.currentTarget.getBoundingClientRect() })}
+            onMouseLeave={() => onHover(null)}
+          >
+            {getCardSafe(part).name}
+          </span>
+        ) : (
+          part
+        ),
+      )}
+    </>
+  );
+}
+
 /**
  * The whole match, line by line. The engine keeps only a rolling window of events,
  * so lines are collected here as they arrive and kept for the rest of the match.
@@ -146,6 +189,7 @@ export function BattleLog({ game }: { game: GameState }) {
   const store = useRef<{ match: unknown; lastSeq: number; lines: LogLine[] }>({ match: null, lastSeq: -1, lines: [] });
   const box = useRef<HTMLDivElement>(null);
   const stick = useRef(true);
+  const [hover, setHover] = useState<{ id: string; rect: DOMRect } | null>(null);
   const memo = store.current;
   if (memo.match !== startedAt) Object.assign(memo, { match: startedAt, lastSeq: -1, lines: [] });
   for (const e of game.log) {
@@ -169,13 +213,15 @@ export function BattleLog({ game }: { game: GameState }) {
       onScroll={(e) => {
         const el = e.currentTarget;
         stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 24;
+        setHover(null);
       }}
     >
       {lines.map((l) => (
         <div key={l.seq} className="log-line">
-          {l.text}
+          <LogText text={l.text} onHover={setHover} />
         </div>
       ))}
+      {hover && <LogCardPreview id={hover.id} rect={hover.rect} />}
     </div>
   );
 }

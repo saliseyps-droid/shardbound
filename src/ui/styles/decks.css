@@ -273,3 +273,10 @@
 .deck-row-preview { position: fixed; z-index: 400; pointer-events: none; filter: drop-shadow(0 18px 30px rgba(4, 2, 16, 0.85)); animation: deck-preview-in 0.12s var(--ease-out); }
 @keyframes deck-preview-in { from { opacity: 0; transform: translateX(8px); } }
 @media (hover: none) { .deck-row-preview { display: none; } }
+
+/* Craft a missing card from the deck editor pool */
+/* Sits on the lower part of the card: always shown for cards you don't own, on hover otherwise. */
+.coll-item { position: relative; }
+.deck-craft-btn { position: absolute; left: 0; right: 0; margin: 0 auto; width: max-content; z-index: 3; padding: 4px 12px; font-size: var(--t-xs); gap: 6px; white-space: nowrap; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6); opacity: 0; pointer-events: none; transition: opacity 0.15s; }
+.deck-craft-btn.is-missing, .coll-item:hover .deck-craft-btn, .deck-craft-btn:focus-visible { opacity: 1; pointer-events: auto; }
+@media (hover: none) { .deck-craft-btn { opacity: 1; pointer-events: auto; } }

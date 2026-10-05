@@ -404,7 +404,9 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
     const handUid = el.closest('[data-hand-uid]')?.getAttribute('data-hand-uid');
     const entity = el.closest('[data-entity^="u:"]')?.getAttribute('data-entity');
     const unit = entity ? game.players.flatMap((p) => p.board).find((u) => `u:${u.uid}` === entity) : undefined;
-    const cardId = handUid ? me.hand.find((c) => c.uid === Number(handUid))?.cardId : unit?.cardId;
+    // Anything else showing a card (relics, location, mulligan, cast preview, revealed enemy
+    // cards, card names in the log, the sidebar preview) carries data-card-id.
+    const cardId = (handUid ? me.hand.find((c) => c.uid === Number(handUid))?.cardId : unit?.cardId) ?? el.closest('[data-card-id]')?.getAttribute('data-card-id') ?? undefined;
     if (cardId) useUi.getState().inspectCard(cardId, undefined, { silenced: unit?.silenced });
     return !!cardId;
   };
@@ -451,7 +453,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       <section className="side enemy-side" aria-label={t('Opponent')}>
         <div className="enemy-hand" aria-label={tn(opp.hand.length, 'Opponent has {n} cards', 'Opponent has {n} cards')}>
           {opp.hand.map((c, i) => (
-            <div key={c.uid} className="enemy-hand-card" style={{ '--i': i - (opp.hand.length - 1) / 2 } as CSSProperties}>
+            <div key={c.uid} className="enemy-hand-card" data-card-id={c.revealed ? c.cardId : undefined} style={{ '--i': i - (opp.hand.length - 1) / 2 } as CSSProperties}>
               {c.revealed ? <CardView card={c.cardId} width={64} /> : <CardBack width={64} design={opp.hero.cardBack} />}
             </div>
           ))}
@@ -552,7 +554,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       </section>
 
       <aside className="match-sidebar">
-        <div className="hover-preview" aria-hidden>
+        <div className="hover-preview" aria-hidden data-card-id={hoverCard ?? undefined}>
           {hoverCard ? <CardView card={hoverCard} width={220} silenced={hoverSilenced} /> : <BrandLogo size={200} className="sidebar-logo" />}
         </div>
         <BattleLog game={game} />

@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.24.4',
+    date: '2026-10-05',
+    title: 'Match and deck builder comforts',
+    summary: 'Card names in the battle log, right-click previews everywhere in a match, faction-tinted Warden abilities and crafting from the deck editor.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Battle log: card names are highlighted in gold; hover one to see the card.',
+          'Match: right-click any card you can see (hand, units, relics, location, mulligan, the card just played, revealed enemy cards, names in the log) to open the full card view.',
+          'Warden abilities have a soft tint of their faction colour.',
+          'Deck editor: craft cards you are missing right on the card (Craft button with its Essence cost); the new copy goes straight into your deck.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.24.3',
     date: '2026-10-05',
     title: 'Lighter online matches',
