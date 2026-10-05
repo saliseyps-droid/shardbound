@@ -47,6 +47,8 @@ export default function FriendsScreen() {
   // The friend joined the hosted room: start the match as host (same as the room-code lobby).
   const [netStatus, setNetStatus] = useState(netSession.status);
   useEffect(() => netSession.onStatus(() => setNetStatus(netSession.status)), []);
+  // Fresh level / title / cards whenever the list is opened.
+  useEffect(() => useSocial.getState().refreshFriendProfiles(), [social.friends.length]);
   useEffect(() => {
     if (!invite || netStatus !== 'connected' || netSession.role !== 'host' || !netSession.remoteSide) return;
     audio.play('turn');

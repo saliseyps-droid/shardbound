@@ -326,12 +326,14 @@ body .audio-toggles { left: calc(10px + var(--safe-left)); bottom: calc(10px + v
 /* Touch: red cross beside a card that is waiting for a target, to cancel playing it. */
 body .hand-cancel { display: none; }
 html[data-input='touch'] body .hand-cancel {
-  display: grid; place-items: center; position: absolute; z-index: 5; top: -14px; right: -18px;
-  width: 30px; height: 30px; border-radius: 50%; border: 2px solid #ffd2d2; padding: 0;
-  background: #c62828; color: #fff; font: 700 15px/1 var(--font-body); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6); cursor: pointer;
-  width: 36px; height: 36px; top: -16px;
-  /* Inside the 1.7x card: shrink back to finger size, on its top-left (screen edge is on the right). */
-  right: auto; left: -18px; transform: scale(0.6); transform-origin: 50% 50%;
+  /* Above the card (centred), no red fill: a red outlined cross on a dark disc. */
+  display: grid; place-items: center; position: absolute; z-index: 5;
+  top: -26px; left: 50%; right: auto;
+  width: 36px; height: 36px; border-radius: 50%; padding: 0;
+  border: 2px solid #ff5a5a; background: rgba(10, 8, 24, 0.85); color: #ff5a5a;
+  font: 800 17px/1 var(--font-body); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6); cursor: pointer;
+  /* Inside the 1.7x card: shrink back to finger size. */
+  transform: translateX(-50%) scale(0.6); transform-origin: 50% 50%;
 }
 
 /* Phones sideways: the tutorial intro fills the screen as a sheet (no floating modal), two columns,

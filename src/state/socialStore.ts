@@ -46,6 +46,8 @@ interface SocialStore {
   start: (uid: string, backend: SocialBackend, mode: 'real' | 'mock') => void;
   stop: () => void;
   setInMatch: (inMatch: boolean) => void;
+  /** Re-reads every friend's public profile (level, title, cards change over time). */
+  refreshFriendProfiles: () => void;
 }
 
 let unsubs: Unsubscribe[] = [];
@@ -134,9 +136,23 @@ export const useSocial = create<SocialStore>((set, get) => ({
       }),
     );
 
-    const beat = () => void service.heartbeat(inMatchNow).catch((e) => console.warn('[social] presence failed', e));
+    const beat = () => {
+      void service.heartbeat(inMatchNow).catch((e) => console.warn('[social] presence failed', e));
+      get().refreshFriendProfiles();
+    };
     beat();
     heartbeat = setInterval(beat, PRESENCE_INTERVAL_MS);
+  },
+
+  refreshFriendProfiles: () => {
+    const backend = get().service?.backend;
+    if (!backend) return;
+    for (const f of get().friends) {
+      void backend
+        .getProfile(f.uid)
+        .then((p) => p && set({ friends: get().friends.map((x) => (x.uid === f.uid ? { ...x, ...friendFields(p) } : x)) }))
+        .catch(() => undefined);
+    }
   },
 
   stop: () => {
