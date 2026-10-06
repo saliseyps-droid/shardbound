@@ -23,7 +23,10 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-06',
     title: 'New art for Bubblemaker Qinny',
     summary: 'Bubblemaker Qinny has new card art.',
-    sections: [{ kind: 'improved', items: ['Bubblemaker Qinny has new, sharper card art.'] }],
+    sections: [
+      { kind: 'improved', items: ['Bubblemaker Qinny has new, sharper card art.'] },
+      { kind: 'fixed', items: ['The Dragon Realm pack no longer has see-through gaps along both sides.'] },
+    ],
     commits: [],
   },
   {

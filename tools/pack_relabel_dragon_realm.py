@@ -54,6 +54,14 @@ for ch, cw in zip(label, widths):
     x += cw + spacing
 
 out = Image.merge('RGBA', (*rgb.split(), img.getchannel('A')))
+# 3) Fill holes inside the outline (the dark side rim blended into the background, leaving 18px gaps).
+O = np.asarray(out).copy(); oa = O[:, :, 3]
+for yy in range(oa.shape[0]):
+    xs = np.where(oa[yy] > 128)[0]
+    if len(xs):
+        oa[yy, xs.min() + 2: xs.max() - 1] = 255
+O[:, :, 3] = oa
+out = Image.fromarray(O, 'RGBA')
 out.save(f'{S}/dr_fixed.webp', quality=92, method=6)
 bg = Image.new('RGBA', out.size, (255, 0, 255, 255)); bg.alpha_composite(out)
 bg.convert('RGB').save(f'{S}/dr_fixed_mag.png')

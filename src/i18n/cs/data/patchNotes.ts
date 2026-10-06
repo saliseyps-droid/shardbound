@@ -4,7 +4,10 @@ const notes: PatchNotesOverlay = {
   '0.26.8': {
     title: 'Nový obrázek pro Bublináře Qinnyho',
     summary: 'Bublinář Qinny má nový obrázek karty.',
-    sections: [['Bublinář Qinny má nový, ostřejší obrázek karty.']],
+    sections: [
+      ['Bublinář Qinny má nový, ostřejší obrázek karty.'],
+      ['Balíček Dragon Realm už nemá průhledné mezery podél obou boků.'],
+    ],
   },
   '0.26.7': {
     title: 'Kompaktní náhled karty na mobilu',
