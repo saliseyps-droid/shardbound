@@ -20,7 +20,7 @@
 .stack-layer { position: relative; transition: transform 0.3s var(--ease-spring); }
 /* Same tilt as the packs in the Shop. */
 .stack-0 { transform: rotate(-4deg); }
-.inventory-stack:not(:disabled):hover .stack-0 { transform: rotate(0deg) translateY(-6px) scale(1.03); }
+html:not([data-input='touch']) .inventory-stack:not(:disabled):hover .stack-0 { transform: rotate(0deg) translateY(-6px) scale(1.03); }
 .stack-count {
   position: absolute; right: 4px; bottom: 8px;
   font-weight: 800; font-size: var(--t-xl); color: var(--parchment);
@@ -64,7 +64,7 @@
 .pack-open-btn { position: relative; background: none; border: 0; padding: 0; cursor: pointer; }
 .pack-open-btn:focus-visible { outline: none; filter: drop-shadow(0 0 16px var(--cyan)); }
 .pack-hero { animation: pack-float 3s ease-in-out infinite; }
-.pack-open-btn:not(:disabled):hover .pack-hero { filter: drop-shadow(0 0 26px var(--pack-glow)); }
+html:not([data-input='touch']) .pack-open-btn:not(:disabled):hover .pack-hero { filter: drop-shadow(0 0 26px var(--pack-glow)); }
 @keyframes pack-float { 50% { transform: translateY(-10px) rotate(1.5deg); } }
 .pack-instruction { color: var(--parchment-dim); font-size: var(--t-lg); margin: 0; text-align: center; }
 .pack-cancel { margin-top: var(--space-2); }
@@ -130,7 +130,7 @@
   transform-style: preserve-3d;
   transition: transform calc(0.7s * var(--anim-scale)) var(--ease-out);
 }
-.pack-slot:not(.is-up) .flip-card:hover .flip-inner { transform: translateY(-10px) rotateX(6deg); }
+html:not([data-input='touch']) .pack-slot:not(.is-up) .flip-card:hover .flip-inner { transform: translateY(-10px) rotateX(6deg); }
 .pack-slot.is-up .flip-inner { transform: rotateY(180deg); }
 .flip-face { position: absolute; inset: 0; display: block; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .flip-front { transform: rotateY(180deg); }
@@ -234,3 +234,36 @@
 }
 
 .pack-summary-actions a.btn { text-decoration: none; }
+
+/* Phones held upright: three cards per row (3 + 2, width from packCardWidth), a compact summary,
+   and the stage scrolls instead of pushing the top row off the screen if anything is still too tall. */
+@media (max-width: 600px) and (orientation: portrait) {
+  .pack-stage {
+    grid-template-rows: auto auto; align-content: safe center; row-gap: var(--space-3);
+    overflow-y: auto; overscroll-behavior: contain;
+    padding: calc(var(--space-4) + var(--safe-top, 0px)) max(12px, var(--safe-right, 0px)) calc(var(--space-4) + var(--safe-bottom, 0px)) max(12px, var(--safe-left, 0px));
+  }
+  .pack-stage-bg { position: fixed; }
+  .pack-center { grid-row: auto; }
+  .pack-cards { flex-wrap: wrap; gap: 8px; max-width: calc(3 * var(--pack-card-w) + 16px); }
+  .slot-meta { min-height: 40px; gap: 0; font-size: var(--t-xs); }
+  .pack-controls { margin-top: 0; min-height: 0; gap: var(--space-3); }
+  .pack-summary { gap: var(--space-3); padding: var(--space-3); text-align: center; }
+  .pack-summary-text { justify-items: center; }
+  .pack-summary-actions { justify-content: center; gap: var(--space-2); }
+}
+/* Phones held sideways: one row, labels and the summary right under it. */
+@media (max-height: 520px) {
+  .pack-stage {
+    grid-template-rows: auto auto; align-content: safe center; row-gap: var(--space-2);
+    overflow-y: auto; overscroll-behavior: contain;
+    padding: calc(var(--space-3) + var(--safe-top, 0px)) max(var(--space-4), var(--safe-right, 0px)) calc(var(--space-3) + var(--safe-bottom, 0px)) max(var(--space-4), var(--safe-left, 0px));
+  }
+  .pack-stage-bg { position: fixed; }
+  .pack-center { grid-row: auto; gap: var(--space-2); }
+  .pack-cards { flex-wrap: nowrap; }
+  .pack-slot:nth-child(n) { transform: none; }
+  .slot-meta { min-height: 40px; gap: 0; font-size: var(--t-xs); }
+  .pack-controls { margin-top: 0; min-height: 0; }
+  .pack-summary { padding: var(--space-2) var(--space-4); gap: var(--space-3); }
+}

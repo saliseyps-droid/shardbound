@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.4': {
+    title: 'Opravy pro mobil: balíčky, aréna, Stráž',
+    summary: 'Otevírání balíčků a výběr karet do arény na mobilu fungují správně a rámeček Stráže sedí i na malé jednotky.',
+    sections: [
+      [
+        'Mobily: otevírání balíčků na výšku už neodsune karty nad horní okraj ani tlačítko Hotovo pod spodní; karty jsou po 3 + 2 a zavřený balíček se vejde i na šířku.',
+        'Mobily: při výběru karet do arény už další karta nevypadá jako vybraná na místě, kam jsi ťukl, a na šířku se nabízené karty vejdou na obrazovku.',
+        'Mobily: rámeček Stráže kolem jednotky je teď poměrně stejně tenký jako na PC, žádný těžký pruh.',
+        'Mobily: otevírání balíčků a aréna říkají ťukni a podrž prst místo klikni a pravé tlačítko.',
+      ],
+    ],
+  },
   '0.26.3': {
     title: 'Portrét v bundlu Dragon Realm',
     summary: 'Bundle Dragon Realm teď obsahuje portrét Černého draka.',

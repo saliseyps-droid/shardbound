@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.4',
+    date: '2026-10-06',
+    title: 'Phone fixes: packs, Arena draft, Guard',
+    summary: 'Opening packs and drafting in the Arena work properly on phones, and the Guard frame fits small units.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          'Phones: opening packs in portrait no longer pushes cards off the top or the Done button off the bottom; cards are laid out 3 + 2, and the sealed pack fits in landscape.',
+          'Phones: in the Arena draft the next card no longer looks selected at the spot you just tapped, and in landscape the offered cards fit the screen.',
+          'Phones: the Guard frame around a unit is now as thick as on PC relative to the unit, instead of a heavy band.',
+          'Phones: pack opening and the Arena say tap and long-press instead of click and right-click.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.26.3',
     date: '2026-10-06',
     title: 'Dragon Realm bundle portrait',

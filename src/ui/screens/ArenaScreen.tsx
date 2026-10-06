@@ -12,7 +12,7 @@ import { gameService, useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
 import { toast, useUi } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
-import { CardBack, CardView } from '@/ui/components/CardView';
+import { CardBack, CardView, isTouchScreen } from '@/ui/components/CardView';
 import { confirmDialog, Gold, ScreenHeader } from '@/ui/components/common';
 import { Glyph, PackIcon } from '@/ui/components/Icons';
 import { TalentTree } from '@/ui/components/TalentTree';
@@ -240,17 +240,22 @@ function Draft({ run }: { run: ArenaRun }) {
             {t('Pick')} <strong className="num">{run.picks.length + 1}</strong> / {ARENA.deckSize}
           </span>
           {rarity && <span className={`arena-rarity rarity-text-${rarity.toLowerCase()}`}>{t(rarity.charAt(0) + rarity.slice(1).toLowerCase())}</span>}
-          <span className="faint small">{t('Click a card to add it to your deck · right-click to inspect')}</span>
+          <span className="faint small arena-offer-hint">{isTouchScreen() ? t('Tap a card to add it to your deck · long-press to inspect') : t('Click a card to add it to your deck · right-click to inspect')}</span>
         </div>
         <div className="arena-offer" key={run.picks.length}>
           {offer.map((id, i) => {
             const card = getCard(id) as CardDefinition;
             return (
-              <div key={id} className="arena-offer-card" style={{ '--i': i } as CSSProperties}>
+              // Keyed by pick and slot: every offer gets fresh elements, so no hover/focus state carries over.
+              <div key={`${run.picks.length}-${i}-${id}`} className="arena-offer-card" style={{ '--i': i } as CSSProperties}>
                 <CardView
                   card={card}
                   width={230}
-                  onClick={() => report(gameService.arenaPick(id), 'click')}
+                  onClick={(e) => {
+                    // The next offer appears under the finger: drop focus so nothing looks selected there.
+                    (e.currentTarget as HTMLElement).blur();
+                    report(gameService.arenaPick(id), 'click');
+                  }}
                   onContextMenu={(e) => {
                     e.preventDefault();
                     useUi.getState().inspectCard(id);

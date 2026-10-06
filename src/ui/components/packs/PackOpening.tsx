@@ -10,9 +10,10 @@ import { gameService, useAccount } from '@/state/accountStore';
 import { anim, useSettings } from '@/state/settingsStore';
 import { toast, useUi } from '@/state/uiStore';
 import { audio, type SoundEvent } from '@/audio/audioService';
-import { CardBack, CardView } from '@/ui/components/CardView';
+import { CardBack, CardView, isTouchScreen } from '@/ui/components/CardView';
 import { Essence } from '@/ui/components/common';
 import { BoosterPack, PACK_THEME } from './BoosterPack';
+import { packCardWidth, packHeroWidth } from './packLayout';
 import { t, tn } from '@/i18n';
 
 type Phase = 'intro' | 'opening' | 'reveal' | 'summary';
@@ -21,7 +22,7 @@ const REVEAL_SOUND: Record<Rarity, SoundEvent> = { COMMON: 'reveal', RARE: 'rare
 const RARITY_LABEL: Record<Rarity, string> = { COMMON: 'Common', RARE: 'Rare', EPIC: 'Epic', LEGENDARY: 'Legendary' };
 
 function useCardWidth(): number {
-  const calc = () => Math.round(Math.max(120, Math.min(250, (window.innerWidth - 160) / 5.8, (window.innerHeight - 330) / 1.4)));
+  const calc = () => packCardWidth(window.innerWidth, window.innerHeight);
   const [w, setW] = useState(calc);
   useEffect(() => {
     const on = () => setW(calc());
@@ -53,6 +54,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
   const openBtn = useRef<HTMLButtonElement>(null);
   const timers = useRef<number[]>([]);
   const theme = PACK_THEME[setId];
+  const touch = isTouchScreen();
 
   const later = (fn: () => void, ms: number) => {
     timers.current.push(window.setTimeout(fn, ms));
@@ -160,7 +162,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
       {(phase === 'intro' || phase === 'opening') && (
         <div className="pack-center">
           <button ref={openBtn} className="pack-open-btn" onClick={open} disabled={phase !== 'intro'} aria-label={t('Open the pack')}>
-            <BoosterPack setId={setId} width={Math.min(260, cardW * 1.15)} className="pack-hero" />
+            <BoosterPack setId={setId} width={packHeroWidth(cardW, window.innerHeight)} className="pack-hero" />
             {phase === 'opening' && (
               <>
                 <span className="pack-burst" aria-hidden />
@@ -169,7 +171,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
             )}
           </button>
           <p className="pack-instruction" aria-live="polite">
-            {phase === 'intro' ? t('Click the pack or press Space to open it') : t('The seal breaks…')}
+            {phase === 'intro' ? (touch ? t('Tap the pack to open it') : t('Click the pack or press Space to open it')) : t('The seal breaks…')}
           </p>
           {phase === 'intro' && (
             <button className="btn btn-ghost pack-cancel" onClick={onClose}>
@@ -230,7 +232,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
           <div className="pack-controls">
             {phase === 'reveal' && !allRevealed && (
               <>
-                <span className="muted">{t('Click a card to reveal it')}</span>
+                <span className="muted">{touch ? t('Tap a card to reveal it') : t('Click a card to reveal it')}</span>
                 <button className="btn btn-cyan" onClick={revealAll}>
                   {t('Reveal all')}
                 </button>
@@ -254,14 +256,14 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
                 </div>
                 <div className="pack-summary-actions">
                   {remaining > 0 && (
-                    <button className="btn btn-primary" onClick={onOpenAnother} autoFocus>
+                    <button className="btn btn-primary" onClick={onOpenAnother} autoFocus={!touch}>
                       {t('Open another ({n} left)', { n: remaining })}
                     </button>
                   )}
                   <a className="btn" href="#/collection">
                     {t('View collection')}
                   </a>
-                  <button className="btn btn-ghost" onClick={onClose} autoFocus={remaining === 0}>
+                  <button className="btn btn-ghost" onClick={onClose} autoFocus={remaining === 0 && !touch}>
                     {t('Done')}
                   </button>
                 </div>

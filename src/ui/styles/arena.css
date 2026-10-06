@@ -28,7 +28,7 @@
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fc) 55%, transparent);
   transition: transform 0.2s var(--ease-spring), box-shadow 0.2s;
 }
-.arena-faction:hover { transform: translateY(-6px); box-shadow: inset 0 0 0 2px var(--fc), 0 0 30px color-mix(in srgb, var(--fc) 40%, transparent); }
+html:not([data-input='touch']) .arena-faction:hover { transform: translateY(-6px); box-shadow: inset 0 0 0 2px var(--fc), 0 0 30px color-mix(in srgb, var(--fc) 40%, transparent); }
 .arena-faction-name { font-family: var(--font-display); font-size: var(--t-xl); }
 .arena-faction-identity { color: var(--parchment-dim); font-size: var(--t-sm); margin-bottom: var(--space-2); }
 
@@ -42,7 +42,10 @@
 .arena-offer { display: flex; gap: var(--space-5); flex-wrap: wrap; justify-content: center; padding: 18px 0 24px; }
 .arena-offer-card { animation: arena-deal 0.45s var(--ease-spring) both; animation-delay: calc(var(--i) * 90ms); }
 .arena-offer-card .card { transition: transform 0.18s var(--ease-out), filter 0.18s; }
-.arena-offer-card .card:hover { transform: translateY(-10px) scale(1.04); filter: drop-shadow(0 0 10px var(--gold)) drop-shadow(0 14px 18px rgba(4, 2, 16, 0.7)); }
+/* Mouse only: on touch a tap leaves :hover on whatever is under the finger, and the next offer's card
+   appears right there, so it looked picked/highlighted (html[data-input], src/ui/inputMode.ts). */
+html:not([data-input='touch']) .arena-offer-card .card:hover { transform: translateY(-10px) scale(1.04); filter: drop-shadow(0 0 10px var(--gold)) drop-shadow(0 14px 18px rgba(4, 2, 16, 0.7)); }
+html[data-input='touch'] .arena-offer-card .card:active { transform: scale(0.97); }
 @keyframes arena-deal { from { opacity: 0; transform: translateY(30px) rotate(-4deg) scale(0.92); } }
 
 .arena-deck { display: grid; gap: var(--space-3); max-height: calc(100vh - 220px); overflow-y: auto; }
