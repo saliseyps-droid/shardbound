@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.8',
+    date: '2026-10-06',
+    title: 'New art for Bubblemaker Qinny',
+    summary: 'Bubblemaker Qinny has new card art.',
+    sections: [{ kind: 'improved', items: ['Bubblemaker Qinny has new, sharper card art.'] }],
+    commits: [],
+  },
+  {
     version: '0.26.7',
     date: '2026-10-06',
     title: 'Compact card view on phones',

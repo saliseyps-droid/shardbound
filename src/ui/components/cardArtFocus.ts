@@ -13,7 +13,7 @@ export const CARD_ART_FOCUS: Record<string, number> = {
   ast_halberdier_of_last_light: 20,
   ast_hush_of_stars: 50,
   ast_isera_of_the_violet_blade: 20,
-  ast_bubblemaker_qinny: 30,
+  ast_bubblemaker_qinny: 22,
   ast_liu_kano: 20,
   ast_lumen_acolyte: 22,
   ast_moonlit_duelist: 20,

@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.8': {
+    title: 'Nový obrázek pro Bublináře Qinnyho',
+    summary: 'Bublinář Qinny má nový obrázek karty.',
+    sections: [['Bublinář Qinny má nový, ostřejší obrázek karty.']],
+  },
   '0.26.7': {
     title: 'Kompaktní náhled karty na mobilu',
     summary: 'Velký náhled karty je na mobilu kompaktní okno, které se vejde bez posouvání.',
