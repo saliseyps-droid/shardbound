@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.5',
+    date: '2026-10-06',
+    title: 'A new battlefield',
+    summary: 'A new match background: a castle play-mat in blue and gold.',
+    sections: [{ kind: 'new', items: ['New match background: a heraldic castle play-mat in blue and gold, in rotation with the others.'] }],
+    commits: [],
+  },
+  {
     version: '0.26.4',
     date: '2026-10-06',
     title: 'Phone fixes: packs, Arena draft, Guard',

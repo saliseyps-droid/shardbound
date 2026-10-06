@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.5': {
+    title: 'Nové bojiště',
+    summary: 'Nové pozadí zápasů: hradní hrací plocha v modré a zlaté.',
+    sections: [['Nové pozadí zápasů: heraldická hradní hrací plocha v modré a zlaté, střídá se s ostatními.']],
+  },
   '0.26.4': {
     title: 'Opravy pro mobil: balíčky, aréna, Stráž',
     summary: 'Otevírání balíčků a výběr karet do arény na mobilu fungují správně a rámeček Stráže sedí i na malé jednotky.',
