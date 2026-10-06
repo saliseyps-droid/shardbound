@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.7',
+    date: '2026-10-06',
+    title: 'Compact card view on phones',
+    summary: 'The large card view on phones is a compact window that fits without scrolling.',
+    sections: [{ kind: 'improved', items: ['Phones: the large card view (long-press a card) is a compact window in portrait and landscape and fits on screen without scrolling.'] }],
+    commits: [],
+  },
+  {
     version: '0.26.6',
     date: '2026-10-06',
     title: 'Fire and ice battlefields',

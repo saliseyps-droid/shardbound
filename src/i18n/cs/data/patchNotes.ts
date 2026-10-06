@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.7': {
+    title: 'Kompaktní náhled karty na mobilu',
+    summary: 'Velký náhled karty je na mobilu kompaktní okno, které se vejde bez posouvání.',
+    sections: [['Mobily: velký náhled karty (podržení prstu na kartě) je na výšku i na šířku kompaktní okno a vejde se na obrazovku bez posouvání.']],
+  },
   '0.26.6': {
     title: 'Bojiště ohně a ledu',
     summary: 'Dvě nová pozadí zápasů: rozžhavená láva a popraskaný led.',

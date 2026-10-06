@@ -418,3 +418,26 @@ html[data-input='touch'] body .hand-cancel {
 }
 /* The results screen keeps its buttons at the bottom: toasts go to the top there on every screen size. */
 body:has(.match-overlay.results) .toast-host { top: calc(10px + var(--safe-top)); bottom: auto; }
+
+/* Card inspector on phones: a compact window instead of a full-screen sheet. The card itself already
+   shows the rules and flavor text, so the text block is dropped; keywords and the info stay. */
+@media (max-width: 760px) and (orientation: portrait) {
+  body .modal.inspector { width: min(340px, 92vw); max-height: 86dvh; padding: 12px 14px; }
+  body .modal.inspector .modal-head { margin-bottom: 8px; }
+  body .modal.inspector .modal-head h3 { font-size: 1.1rem; }
+  body .inspector-card { padding: 0; }
+  body .inspector-card .card { --card-w: min(52vw, 200px) !important; }
+  body .inspector-body { gap: 10px; }
+  body .inspector .info-grid { gap: 2px 10px; font-size: var(--t-xs); margin-bottom: 8px; }
+  body .inspector .inspector-text { display: none; }
+  body .inspector .keyword-list li { padding: 4px 8px; font-size: var(--t-xs); }
+}
+@media (max-height: 520px) {
+  body .modal.inspector { width: min(620px, 94vw); max-height: 92dvh; }
+  body .inspector-card .card { --card-w: min(44vh, 160px) !important; }
+  body .inspector .info-grid { gap: 1px 10px; font-size: var(--t-xs); margin-bottom: 6px; }
+  body .inspector .inspector-text { display: none; }
+  body .inspector .keyword-list li { padding: 3px 8px; font-size: var(--t-xs); }
+  body .modal.inspector .modal-head { margin-bottom: 6px; }
+  body .modal.inspector .modal-head h3 { font-size: 1.1rem; }
+}
