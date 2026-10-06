@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.6': {
+    title: 'Bojiště ohně a ledu',
+    summary: 'Dvě nová pozadí zápasů: rozžhavená láva a popraskaný led.',
+    sections: [['Nová pozadí zápasů: lávové pole z černého kamene se žhnoucími trhlinami a zamrzlé pole z popraskaného modrého ledu, střídají se s ostatními.']],
+  },
   '0.26.5': {
     title: 'Nové bojiště',
     summary: 'Nové pozadí zápasů: hradní hrací plocha v modré a zlaté.',

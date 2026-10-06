@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.6',
+    date: '2026-10-06',
+    title: 'Fire and ice battlefields',
+    summary: 'Two new match backgrounds: molten lava rock and cracked ice.',
+    sections: [{ kind: 'new', items: ['New match backgrounds: a lava field of black rock with glowing cracks, and a frozen field of cracked blue ice, in rotation with the others.'] }],
+    commits: [],
+  },
+  {
     version: '0.26.5',
     date: '2026-10-06',
     title: 'A new battlefield',
