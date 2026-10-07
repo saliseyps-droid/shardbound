@@ -34,6 +34,8 @@ export const TOKEN_CARDS: CardDefinition[] = [
   { id: 'token_sentry', name: 'Brass Sentry', cardType: 'UNIT', faction: 'IRON', rarity: 'COMMON', manaCost: 2, attack: 2, health: 3, keywords: ['GUARD'], set: 'CORE', collectible: false, tags: ['Construct'] },
   { id: 'token_star_fragment', name: 'Star Fragment', cardType: 'UNIT', faction: 'ASTRAL', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, keywords: ['EMPOWER'], keywordValues: { EMPOWER: 1 }, set: 'CORE', collectible: false, tags: ['Spirit'] },
   { id: 'token_skeleton', name: 'Risen Bones', cardType: 'UNIT', faction: 'VOID', rarity: 'COMMON', manaCost: 2, attack: 2, health: 2, set: 'CORE', collectible: false, tags: ['Undead'] },
+  // Hollow Summons II-III: a frailer version of Risen Bones.
+  { id: 'token_skeleton_frail', name: 'Risen Bones', cardType: 'UNIT', faction: 'VOID', rarity: 'COMMON', manaCost: 2, attack: 2, health: 1, set: 'CORE', collectible: false, tags: ['Undead'] },
   { id: 'token_horror', name: 'Hollow Horror', cardType: 'UNIT', faction: 'VOID', rarity: 'COMMON', manaCost: 5, attack: 5, health: 5, set: 'CORE', collectible: false, tags: ['Wraith'] },
   { id: 'token_ice_shard', name: 'Rime Shard', cardType: 'SPELL', faction: 'TIDE', rarity: 'COMMON', manaCost: 1, set: 'CORE', collectible: false, target: { kind: 'ENEMY_UNIT' }, abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'TARGET' }, { type: 'APPLY_STATUS', status: 'FROZEN', target: 'TARGET' }] }] },
   { id: 'token_tidepup', name: 'Tidepup', cardType: 'UNIT', faction: 'TIDE', rarity: 'COMMON', manaCost: 1, attack: 1, health: 2, set: 'CORE', collectible: false, tags: ['Leviathan'] },

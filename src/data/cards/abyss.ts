@@ -211,7 +211,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   // ----- Commons -----
   {
     ...knight, id: 'ver_briarhelm_knight', name: 'Briarhelm Knight', faction: 'VERDANT', rarity: 'COMMON',
-    manaCost: 3, attack: 2, health: 3, archetypes: ['Overgrowth'],
+    manaCost: 2, attack: 2, health: 3, archetypes: ['Overgrowth'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'RANDOM_OTHER_ALLY_UNIT' }] }],
     flavorText: 'Wherever he plants his blade, something nearby starts to grow.',
   },

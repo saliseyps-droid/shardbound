@@ -21,7 +21,7 @@ export const VERDANT_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'ver_grove_tender', name: 'Grove Tender', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 2, attack: 2, health: 1, tags: ['Druid'], archetypes: ['Overgrowth'],
+    manaCost: 1, attack: 2, health: 1, tags: ['Druid'], archetypes: ['Overgrowth'],
     target: { kind: 'OTHER_ALLY_UNIT' },
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TARGET' }] }],
     flavorText: 'A little water, a little song, and a great deal of patience.',

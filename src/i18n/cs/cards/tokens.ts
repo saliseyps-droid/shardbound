@@ -13,6 +13,7 @@ const cards: CardsOverlay = {
   token_sentry: { name: 'Mosazná hlídka', description: 'Stráž.' },
   token_star_fragment: { name: 'Hvězdný úlomek', description: 'Posílení 1.' },
   token_skeleton: { name: 'Povstalé kosti' },
+  token_skeleton_frail: { name: 'Povstalé kosti' },
   token_horror: { name: 'Prázdná hrůza' },
   token_ice_shard: { name: 'Střep jinovatky', description: 'Způsob 1 poškození nepřátelské jednotce. Zmraz nepřátelskou jednotku.' },
   token_tidepup: { name: 'Přílivové štěně' },

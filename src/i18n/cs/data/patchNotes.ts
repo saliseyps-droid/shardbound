@@ -8,6 +8,9 @@ const notes: PatchNotesOverlay = {
       'Spodní proud (talent Dvora Jinovatky): po použití se během tvého dalšího tahu nabíjí a znovu ho použiješ až v tahu potom (ob tah). Tlačítko ukazuje, že se nabíjí.',
       'Kůra místo kůže (talent Kruhu Trnoboru), stupeň III: působí na jednu jednotku za tah (dříve dvě), pořád +1/+2.',
       'Míza z kořene (talent Kruhu Trnoboru), stupeň III: stojí 1 místo 2.',
+      'Prázdné vyvolání (talent Prázdného chóru), stupně II a III: vyvolá Povstalé kosti 2/1 místo 2/2.',
+      'Ošetřovatel háje: stojí 1 místo 2.',
+      'Rytíř s trnitou přilbou: stojí 2 místo 3.',
     ]],
   },
   '0.26.9': {

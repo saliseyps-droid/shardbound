@@ -25,7 +25,7 @@ describe('0.13.5 talent nerfs', () => {
 
   it('Hollow Summons III no longer adds a Wisp', () => {
     const lv = getTalent('wt_void_hollow_summons')!.levels[2] as { effects: { type: string; cardId?: string }[] };
-    expect(summons(lv.effects)).toEqual(['1x token_skeleton']);
+    expect(summons(lv.effects)).toEqual(['1x token_skeleton_frail']);
   });
 
   it('Hollow Summons III costs 2 and no longer heals the Warden', () => {

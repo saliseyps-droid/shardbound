@@ -195,10 +195,10 @@ const talents: TalentsOverlay = {
     name: 'Prázdné vyvolání',
     levels: [
       'Vyvolej Prázdnou světlušku 1/1.',
-      'Vyvolej Povstalé kosti 2/2.',
-      'Vyvolej Povstalé kosti 2/2.',
+      'Vyvolej Povstalé kosti 2/1.',
+      'Vyvolej Povstalé kosti 2/1.',
     ],
-    upgradeNotes: ['Místo toho vyvolá Povstalé kosti 2/2.', 'Stojí 2.'],
+    upgradeNotes: ['Místo toho vyvolá Povstalé kosti 2/1.', 'Stojí 2.'],
   },
   wt_void_soul_harvest: {
     name: 'Žeň duší',
