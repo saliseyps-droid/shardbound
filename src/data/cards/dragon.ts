@@ -231,7 +231,7 @@ export const DRAGON_CARDS: CardDefinition[] = [
   {
     ...fae, id: 'vod_nightshade_fae', name: 'Nightshade Fae', faction: 'VOID', rarity: 'COMMON',
     manaCost: 2, attack: 2, health: 3, archetypes: ['Requiem'],
-    abilities: [{ trigger: 'LAST_BREATH', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY' }] }],
+    abilities: [{ trigger: 'LAST_BREATH', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'RANDOM_ENEMY' }] }],
     flavorText: 'Pluck her and she stings. Crush her and she stings harder.',
   },
   {
@@ -470,7 +470,7 @@ export const DRAGON_CARDS: CardDefinition[] = [
   },
   {
     ...dragon, id: 'neu_duskhorn_dragon', name: 'Duskhorn Dragon', faction: 'NEUTRAL', rarity: 'COMMON',
-    manaCost: 6, attack: 6, health: 6,
+    manaCost: 6, attack: 8, health: 4,
     flavorText: 'No banner, no master, no hurry. It goes where it likes and takes what it finds.',
   },
   {

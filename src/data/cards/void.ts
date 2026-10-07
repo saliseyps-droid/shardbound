@@ -29,7 +29,7 @@ export const VOID_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'vod_hollow_leech', name: 'Hollow Leech', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 2, attack: 2, health: 3, keywords: ['DRAIN'], tags: ['Wraith'], archetypes: ['Offering'],
+    manaCost: 2, attack: 3, health: 2, keywords: ['DRAIN'], tags: ['Wraith'], archetypes: ['Offering'],
     flavorText: 'It drinks warmth, not blood. The difference matters very little to its victims.',
   },
   {
@@ -78,7 +78,7 @@ export const VOID_CARDS: CardDefinition[] = [
   // ----- Rares -----
   {
     ...base, id: 'vod_reap', name: 'Reap', cardType: 'SPELL', rarity: 'RARE', set: 'CORE',
-    manaCost: 3, target: { kind: 'ENEMY_UNIT', filter: { maxAttack: 3 } }, archetypes: ['Offering', 'Requiem'],
+    manaCost: 1, target: { kind: 'ENEMY_UNIT', filter: { maxAttack: 3 } }, archetypes: ['Offering', 'Requiem'],
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DESTROY', target: 'TARGET' }] }],
     flavorText: 'The small ones go first. They always do.',
   },

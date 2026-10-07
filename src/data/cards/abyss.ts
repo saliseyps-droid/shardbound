@@ -217,7 +217,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...knight, id: 'vod_bloodcape_zealot', name: 'Bloodcape Zealot', faction: 'VOID', rarity: 'COMMON',
-    manaCost: 2, attack: 3, health: 3, archetypes: ['Offering'],
+    manaCost: 2, attack: 3, health: 4, archetypes: ['Offering'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ALLY_HERO' }] }],
     flavorText: 'His cape was white once. He offered that too.',
   },
@@ -325,7 +325,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...spell, id: 'vod_soulfire_rite', name: 'Soulfire Rite', faction: 'VOID', rarity: 'COMMON',
-    manaCost: 2, target: { kind: 'ANY_UNIT' }, archetypes: ['Offering'],
+    manaCost: 1, target: { kind: 'ANY_UNIT' }, archetypes: ['Offering'],
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 4, target: 'TARGET' }, { type: 'DEAL_DAMAGE', amount: 2, target: 'ALLY_HERO' }] }],
     description: 'Deal 4 damage to a unit. Deal 2 damage to your Warden.',
     flavorText: 'The fire burns brighter for every drop of its keeper it is fed.',
@@ -346,7 +346,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...spell, id: 'vod_choirs_lament', name: "Choir's Lament", faction: 'VOID', rarity: 'COMMON',
-    manaCost: 2, archetypes: ['Requiem'],
+    manaCost: 1, archetypes: ['Requiem'],
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'SUMMON', cardId: 'token_hollow_wisp', count: 2 }] }],
     flavorText: 'The lament has two voices. Neither of them is alive.',
   },
@@ -517,7 +517,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   },
   {
     ...spell, id: 'neu_sigil_of_the_abyss_lord', name: 'Sigil of the Abyss Lord', faction: 'NEUTRAL', rarity: 'LEGENDARY',
-    manaCost: 6, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 5 } },
+    manaCost: 5, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 5 } },
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'TAKE_CONTROL', target: 'TARGET' }] }],
     description: 'Take control of an enemy unit that costs 5 or less.',
     flavorText: 'Burn the winged sigil into the ground, and whoever stands on it swears to you.',

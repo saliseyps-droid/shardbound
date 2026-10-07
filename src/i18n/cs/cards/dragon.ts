@@ -36,7 +36,7 @@ const cards: CardsOverlay = {
   vod_duskmaw_dragon: { name: 'Soumračná tlama', description: 'Vysátí. Kdykoli tato jednotka zničí jednotku, získá +2/+2.', flavorText: 'Za soumraku otevře tlamu a světlo do ní vejde jako první.' },
   vod_duskblade_dragonknight: { name: 'Dračí rytíř se soumračnou čepelí', description: 'Při nasazení: Pokud ovládáš Draka, získá Vysátí.', flavorText: 'Jeho čepel pije stejně jako jeho drak: pomalu a nikdy dost.' },
   vod_bloodwing_reaver: { name: 'Žnec krvavých křídel', description: 'Poslední dech: Lízni si z balíčku Draka.', flavorText: 'Když padne, jeho poslední výkřik doletí až k hnízdišti. Vždycky něco odpoví.' },
-  vod_nightshade_fae: { name: 'Víla rulíku', description: 'Poslední dech: Způsob 1 poškození náhodnému nepříteli.', flavorText: 'Utrhni ji a píchne. Rozmačkej ji a píchne víc.' },
+  vod_nightshade_fae: { name: 'Víla rulíku', description: 'Poslední dech: Způsob 2 poškození náhodnému nepříteli.', flavorText: 'Utrhni ji a píchne. Rozmačkej ji a píchne víc.' },
   vod_gloamveil_fae: { name: 'Víla soumračného závoje', description: 'Léčka, Jed.', flavorText: 'Její křídla uvidíš jednou, v šeru mezi dvěma stromy. Jednou to stačí.' },
   vod_soulflame_orb: { name: 'Koule duševního plamene', description: 'Způsob 3 poškození jednotce. Pokud v tomto tahu zemřela spřátelená jednotka, lízni si kartu.', flavorText: 'Hoří vším, co se dnes ztratilo. Některé dny hoří velmi jasně.' },
   vod_wyrmsoul_rebirth: { name: 'Znovuzrození dračí duše', description: 'Oživ 2 náhodné spřátelené jednotky za 5 nebo méně, které v této hře zemřely.', flavorText: 'Chór zazpívá staré jméno pozpátku a kosti si vzpomenou, jak se stojí.' },
