@@ -2,7 +2,7 @@ import type { CardsOverlay } from '../../overlayTypes';
 
 const cards: CardsOverlay = {
   tid_frostfin_scout: { name: 'Mrazoploutvý zvěd', description: 'Při nasazení: Zmraz nepřátelskou jednotku.', flavorText: 'Mihne se pod ledem a zanechá za sebou stopu jinovatky.' },
-  tid_rimebound_acolyte: { name: 'Akolyta spoutaný jinovatkou', flavorText: 'Novicové Dvora stráví rok pod ledem, než smějí promluvit.' },
+  tid_rimebound_acolyte: { name: 'Akolyta spoutaný jinovatkou', description: 'Posílení 1.', flavorText: 'Novicové Dvora stráví rok pod ledem, než smějí promluvit.' },
   tid_chill_snap: { name: 'Náhlý mráz', description: 'Zmraz nepřátelskou jednotku. Lízni si kartu.', flavorText: 'Moře si pamatuje každou teplou věc, kterou kdy utišilo.' },
   tid_tidecaller_eel: { name: 'Úhoř volající příliv', description: 'Léčka.', flavorText: 'Než zahlédneš vlnku, už udeřil.' },
   tid_drowned_sentinel: { name: 'Utonulý hlídač', description: 'Stráž.', flavorText: 'Jeho přísaha přežila jeho plíce.' },

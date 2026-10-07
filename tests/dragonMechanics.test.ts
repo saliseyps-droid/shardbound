@@ -181,12 +181,12 @@ describe('Dragon Realm: relic triggers on summoned Dragons', () => {
 });
 
 describe('Dragon Realm: other cards', () => {
-  it('Nyxarath can only target an enemy with 4 or less Attack', () => {
-    const s = newGame({ board1: ['token_golem'] });
+  it('Nyxarath can only target an enemy with 4 or more Attack', () => {
+    const s = newGame({ board1: ['token_wolf'] });
     setEnergy(s, 0, 7);
     const uid = giveCard(s, 0, 'vod_nyxarath_hollow_wyrm');
     expect(applyAction(s, { type: 'PLAY_CARD', player: 0, cardUid: uid, target: unitRef(s.players[1].board[0]) }).error).toBeTruthy();
-    let t = newGame({ board1: ['irn_anvilwing_drake'] });
+    let t = newGame({ board1: ['token_golem'] });
     setEnergy(t, 0, 7);
     t = play(t, 0, 'vod_nyxarath_hollow_wyrm', t.players[1].board[0]);
     expect(t.players[1].board).toHaveLength(0);

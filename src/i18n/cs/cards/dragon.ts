@@ -30,7 +30,7 @@ const cards: CardsOverlay = {
   tid_deep_current_rite: { name: 'Obřad hlubinného proudu', description: 'Vrať nepřátelskou jednotku do ruky jejího vlastníka. Lízni si kartu.', flavorText: 'Obřad přivolá hlubinný proud skrz kámen. Jednoho hosta si vezme s sebou dolů.' },
 
   // Void
-  vod_nyxarath_hollow_wyrm: { name: 'Nyxarath, Prázdný drak', description: 'Vysátí. Při nasazení: Znič nepřátelskou jednotku s útokem 4 nebo méně.', flavorText: 'Chór mu zpívá každou noc. On nikdy nezazpíval nazpátek. Jen žral.' },
+  vod_nyxarath_hollow_wyrm: { name: 'Nyxarath, Prázdný drak', description: 'Vysátí. Při nasazení: Znič nepřátelskou jednotku s útokem 4 nebo více.', flavorText: 'Chór mu zpívá každou noc. On nikdy nezazpíval nazpátek. Jen žral.' },
   vod_ruinwing_drake: { name: 'Drak zkázonosných křídel', description: 'Poslední dech: Způsob 2 poškození náhodnému nepříteli.', flavorText: 'Hnízdí v troskách, které sám způsobil. Když padne, padnou trosky s ním.' },
   vod_gloomcoil_serpent: { name: 'Drak šerých smyček', description: 'Kdykoli zemře jiná spřátelená jednotka, získá +1/+1.', flavorText: 'Každá duše, která kolem něj proklouzne, mu prodlouží smyčky.' },
   vod_duskmaw_dragon: { name: 'Soumračná tlama', description: 'Vysátí. Kdykoli tato jednotka zničí jednotku, získá +2/+2.', flavorText: 'Za soumraku otevře tlamu a světlo do ní vejde jako první.' },

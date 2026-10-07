@@ -11,6 +11,9 @@ const notes: PatchNotesOverlay = {
       'Prázdné vyvolání (talent Prázdného chóru), stupně II a III: vyvolá Povstalé kosti 2/1 místo 2/2.',
       'Ošetřovatel háje: stojí 1 místo 2.',
       'Rytíř s trnitou přilbou: stojí 2 místo 3.',
+      'Akolyta spoutaný jinovatkou: teď má Posílení 1.',
+      'Popelozubý nájezdník: 3/2 → 4/1.',
+      'Nyxarath, Prázdný drak: zničí nepřátelskou jednotku s útokem 4 nebo více (dříve 4 nebo méně).',
     ]],
   },
   '0.26.9': {

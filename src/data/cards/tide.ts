@@ -17,7 +17,7 @@ export const TIDE_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'tid_rimebound_acolyte', name: 'Rimebound Acolyte', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 2, attack: 2, health: 3, tags: ['Mage'], archetypes: ['Deep Freeze'],
+    manaCost: 2, attack: 2, health: 3, keywords: ['EMPOWER'], keywordValues: { EMPOWER: 1 }, tags: ['Mage'], archetypes: ['Deep Freeze'],
     flavorText: 'Novices of the Court spend a year beneath the ice before they may speak.',
   },
   {

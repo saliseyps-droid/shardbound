@@ -193,7 +193,7 @@ export const DRAGON_CARDS: CardDefinition[] = [
   {
     ...dragon, id: 'vod_nyxarath_hollow_wyrm', name: 'Nyxarath, the Hollow Wyrm', faction: 'VOID', rarity: 'LEGENDARY',
     manaCost: 7, attack: 6, health: 6, keywords: ['DRAIN'], archetypes: ['Offering'],
-    target: { kind: 'ENEMY_UNIT', optional: true, filter: { maxAttack: 4 } },
+    target: { kind: 'ENEMY_UNIT', optional: true, filter: { minAttack: 4 } },
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DESTROY', target: 'TARGET' }] }],
     flavorText: 'The Hollow Choir sings to it every night. It has never once sung back, only eaten.',
   },
