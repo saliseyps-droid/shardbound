@@ -4,15 +4,15 @@ import { unitAttack } from '@/engine/queries';
 import { act, endTurn, giveCard, hero, newGame, ready, setEnergy, unitAt } from './helpers';
 
 describe('Meowchick', () => {
-  it('is a 3-cost neutral Legendary 1/1 with Swift', () => {
+  it('is a 4-cost neutral Legendary 1/1 without keywords', () => {
     const c = getCard('neu_meowchick')!;
-    expect(c).toMatchObject({ faction: 'NEUTRAL', rarity: 'LEGENDARY', manaCost: 3, attack: 1, health: 1, collectible: true });
-    expect(c.keywords).toEqual(['SWIFT']);
+    expect(c).toMatchObject({ faction: 'NEUTRAL', rarity: 'LEGENDARY', manaCost: 4, attack: 1, health: 1, collectible: true });
+    expect(c.keywords ?? []).toEqual([]);
   });
 
   it('gives all your units, itself included, +2 Attack for good when it arrives', () => {
     let s = newGame({ board0: ['token_recruit', 'token_recruit'] });
-    setEnergy(s, 0, 3);
+    setEnergy(s, 0, 4);
     const card = giveCard(s, 0, 'neu_meowchick');
     s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: card });
     const meow = s.players[0].board.find((u) => u.cardId === 'neu_meowchick')!;

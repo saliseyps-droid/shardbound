@@ -7,7 +7,7 @@ const notes: PatchNotesOverlay = {
     sections: [
       [
         'Prázdné vyvolání (talent Prázdného chóru), stupeň III: stojí 2 místo 3, ale už neobnovuje životy tvému Strážci.',
-        'Meowchick: teď za 3 energie, 1/1 se Spěchem. Při nasazení: dej všem svým jednotkám, včetně sebe, +2 k útoku. Kdykoli zaútočí, nejdřív získá +1 k útoku. Na konci tvého tahu způsobí 3 poškození náhodnému nepříteli. (Dříve za 4 energie, 3/4 s Bariérou, a když zaútočil, dal ostatním jednotkám v tomto tahu +1 k útoku.)',
+        'Meowchick: teď za 4 energie, 1/1. Při nasazení: dej všem svým jednotkám, včetně sebe, +2 k útoku. Kdykoli zaútočí, nejdřív získá +1 k útoku. Na konci tvého tahu způsobí 3 poškození náhodnému nepříteli. (Dříve za 4 energie, 3/4 s Bariérou, a když zaútočil, dal ostatním jednotkám v tomto tahu +1 k útoku.)',
       ],
     ],
   },
