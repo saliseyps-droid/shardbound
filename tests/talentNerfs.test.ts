@@ -28,6 +28,12 @@ describe('0.13.5 talent nerfs', () => {
     expect(summons(lv.effects)).toEqual(['1x token_skeleton']);
   });
 
+  it('Hollow Summons III costs 2 and no longer heals the Warden', () => {
+    const lv = getTalent('wt_void_hollow_summons')!.levels[2] as { cost: number; effects: { type: string }[] };
+    expect(lv.cost).toBe(2);
+    expect(lv.effects.some((e) => e.type === 'HEAL')).toBe(false);
+  });
+
   it('Unending summons Risen Bones only at rank III', () => {
     const levels = getTalent('wt_void_unending')!.levels as { abilities: { effects: { type: string; cardId?: string }[] }[] }[];
     expect(summons(levels[1].abilities[0].effects)).toEqual(['1x token_hollow_wisp']);

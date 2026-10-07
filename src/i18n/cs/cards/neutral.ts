@@ -29,7 +29,7 @@ const cards: CardsOverlay = {
   neu_oskar_vell: { name: 'Oskar Vell, kupecký kníže', description: 'Na konci tvého tahu si přidej do ruky náhodnou kartu, která stojí 3 nebo méně.', flavorText: 'Prodal Střepy všem frakcím. Dvakrát.' },
   neu_aeon_pale_wanderer: { name: 'Aeon, Bledý poutník', description: 'Při nasazení: Znič všechny ostatní jednotky.', flavorText: 'Vyšel z Koruny v den, kdy se roztříštila, a od té doby všemu přináší konec.' },
   neu_captain_abandoneer: { name: 'Kapitánka Abandoneer', description: 'Výpad. Při nasazení: Ukradni náhodnou kartu z ruky soupeře. Poslední dech: Vyvolej 2 Plavčíky (1/1).', flavorText: 'Opustila tři lodě, dvě posádky a jedno království. Poklad nikdy.' },
-  neu_meowchick: { name: 'Meowchick', description: 'Bariéra. Kdykoli tato jednotka zaútočí, dej svým ostatním jednotkám v tomto tahu +1/+0.', flavorText: 'Nikdo neví, odkud se vzal. Do boje ho ale stejně všichni následují.' },
+  neu_meowchick: { name: 'Meowchick', description: 'Spěch. Při nasazení: Dej všem svým jednotkám, včetně této, +2 k útoku.', flavorText: 'Nikdo neví, odkud se vzal. Do boje ho ale stejně všichni následují.' },
 };
 
 export default cards;

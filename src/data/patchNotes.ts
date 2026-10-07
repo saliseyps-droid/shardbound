@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.9',
+    date: '2026-10-07',
+    title: 'Hollow Summons and Meowchick',
+    summary: 'Hollow Summons is cheaper at rank III without its heal, and Meowchick is reworked.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Hollow Summons (Hollow Choir talent), rank III: costs 2 instead of 3, but no longer restores Health to your Warden.',
+          'Meowchick: now 3 energy 1/1 with Swift. On Deploy: give all your units, including itself, +2 Attack. (Was 4 energy 3/4 with Barrier that gave your other units +1 Attack this turn when it attacked.)',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.26.8',
     date: '2026-10-06',
     title: 'New art for Bubblemaker Qinny',

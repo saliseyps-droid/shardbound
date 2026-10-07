@@ -196,9 +196,9 @@ const talents: TalentsOverlay = {
     levels: [
       'Vyvolej Prázdnou světlušku 1/1.',
       'Vyvolej Povstalé kosti 2/2.',
-      'Vyvolej Povstalé kosti 2/2. Pokud v tomto tahu zemřela spřátelená jednotka, obnov 2 životy tvému Strážci.',
+      'Vyvolej Povstalé kosti 2/2.',
     ],
-    upgradeNotes: ['Místo toho vyvolá Povstalé kosti 2/2.', 'Navíc obnoví 2 životy tvému Strážci, pokud v tomto tahu zemřela spřátelená jednotka.'],
+    upgradeNotes: ['Místo toho vyvolá Povstalé kosti 2/2.', 'Stojí 2.'],
   },
   wt_void_soul_harvest: {
     name: 'Žeň duší',

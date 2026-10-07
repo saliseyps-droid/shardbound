@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.9': {
+    title: 'Prázdné vyvolání a Meowchick',
+    summary: 'Prázdné vyvolání je na stupni III levnější, ale bez léčení, a Meowchick je předělaný.',
+    sections: [
+      [
+        'Prázdné vyvolání (talent Prázdného chóru), stupeň III: stojí 2 místo 3, ale už neobnovuje životy tvému Strážci.',
+        'Meowchick: teď za 3 energie, 1/1 se Spěchem. Při nasazení: dej všem svým jednotkám, včetně sebe, +2 k útoku. (Dříve za 4 energie, 3/4 s Bariérou, a když zaútočil, dal ostatním jednotkám v tomto tahu +1 k útoku.)',
+      ],
+    ],
+  },
   '0.26.8': {
     title: 'Nový obrázek pro Bublináře Qinnyho',
     summary: 'Bublinář Qinny má nový obrázek karty.',

@@ -172,8 +172,8 @@ const VOID: TalentAbility[] = [
   active('VOID', 'hollow_summons', 'Hollow Summons', [
     { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_hollow_wisp' }], description: 'Summon a 1/1 Hollow Wisp.' },
     { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }], description: 'Summon 2/2 Risen Bones.' },
-    { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO', condition: { kind: 'ALLY_DIED_THIS_TURN' } }], description: 'Summon 2/2 Risen Bones. If a friendly unit died this turn, restore 2 Health to your Warden.' },
-  ], ['Summon 2/2 Risen Bones instead.', 'Also restores 2 Health to your Warden if a friendly unit died this turn.']),
+    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_skeleton' }], description: 'Summon 2/2 Risen Bones.' },
+  ], ['Summon 2/2 Risen Bones instead.', 'Costs 2.']),
   passive('VOID', 'soul_harvest', 'Soul Harvest', [
     { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_DIED', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ENEMY_HERO' }] }], description: 'Whenever a friendly unit dies, deal 1 damage to the enemy Warden. Twice per turn.' },
     { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_DIED', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ENEMY_HERO' }, { type: 'HEAL', amount: 1, target: 'ALLY_HERO' }] }], description: 'Whenever a friendly unit dies, deal 1 damage to the enemy Warden and restore 1 Health to yours. Twice per turn.' },
