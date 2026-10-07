@@ -179,8 +179,12 @@ export const NEUTRAL_CARDS: CardDefinition[] = [
   {
     ...base, id: 'neu_meowchick', name: 'Meowchick', cardType: 'UNIT', rarity: 'LEGENDARY', set: 'DEEP',
     manaCost: 3, attack: 1, health: 1, keywords: ['SWIFT'], tags: ['Beast'],
-    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: 2, target: 'ALL_ALLY_UNITS' }] }],
-    description: 'Swift. On Deploy: Give all your units, including this one, +2 Attack.',
+    abilities: [
+      { trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: 2, target: 'ALL_ALLY_UNITS' }] },
+      { trigger: 'ON_ATTACK', effects: [{ type: 'BUFF', attack: 1, target: 'SELF' }] },
+      { trigger: 'TURN_END', effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'RANDOM_ENEMY' }] },
+    ],
+    description: 'Swift. On Deploy: Give all your units, including this one, +2 Attack. Whenever this attacks, it gains +1 Attack first. At the end of your turn, deal 3 damage to a random enemy.',
     flavorText: 'Nobody knows where it came from. Everybody follows it into battle anyway.',
   },
 ];

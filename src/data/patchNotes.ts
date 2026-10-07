@@ -28,7 +28,7 @@ export const PATCH_NOTES: PatchNote[] = [
         kind: 'balance',
         items: [
           'Hollow Summons (Hollow Choir talent), rank III: costs 2 instead of 3, but no longer restores Health to your Warden.',
-          'Meowchick: now 3 energy 1/1 with Swift. On Deploy: give all your units, including itself, +2 Attack. (Was 4 energy 3/4 with Barrier that gave your other units +1 Attack this turn when it attacked.)',
+          'Meowchick: now 3 energy 1/1 with Swift. On Deploy: give all your units, including itself, +2 Attack. Whenever it attacks, it first gains +1 Attack. At the end of your turn, it deals 3 damage to a random enemy. (Was 4 energy 3/4 with Barrier that gave your other units +1 Attack this turn when it attacked.)',
         ],
       },
     ],
