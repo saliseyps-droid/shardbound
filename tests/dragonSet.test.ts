@@ -32,12 +32,12 @@ describe('Dragon Realm set', () => {
     expect(cards.filter((c) => c.cardType === 'LOCATION')).toHaveLength(3);
   });
 
-  it('has a rarity spread like the other sets (commons most, 7 legendaries)', () => {
+  it('has a rarity spread like the other sets (commons most, 8 legendaries)', () => {
     const count = (r: string) => cards.filter((c) => c.rarity === r).length;
     expect(count('COMMON')).toBe(30);
     expect(count('RARE')).toBe(22);
-    expect(count('EPIC')).toBe(12);
-    expect(count('LEGENDARY')).toBe(7);
+    expect(count('EPIC')).toBe(11);
+    expect(count('LEGENDARY')).toBe(8);
   });
 
   it('every card has painted art, an art focus and Czech text', () => {
