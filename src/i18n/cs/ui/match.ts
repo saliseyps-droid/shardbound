@@ -195,6 +195,7 @@ const d: Record<string, string> = {
   'No valid targets': 'Žádné platné cíle',
   'No Warden ability to use': 'Žádná schopnost Strážce k použití',
   'Already used this turn': 'V tomto tahu už použito',
+  'Recharging: usable again next turn': 'Nabíjí se: znovu použitelné v příštím tahu',
   'Unit is dead': 'Jednotka je mrtvá',
   'No Attack': 'Nulový útok',
   'Already attacked': 'Už útočila',

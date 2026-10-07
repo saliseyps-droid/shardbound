@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.10': {
+    title: 'Odpočet Spodního proudu',
+    summary: 'Spodní proud jde teď použít jen ob tah.',
+    sections: [['Spodní proud (talent Dvora Jinovatky): po použití se během tvého dalšího tahu nabíjí a znovu ho použiješ až v tahu potom (ob tah). Tlačítko ukazuje, že se nabíjí.']],
+  },
   '0.26.9': {
     title: 'Prázdné vyvolání a Meowchick',
     summary: 'Prázdné vyvolání je na stupni III levnější, ale bez léčení, a Meowchick je předělaný.',

@@ -250,9 +250,9 @@ const talents: TalentsOverlay = {
   wt_tide_undertow: {
     name: 'Spodní proud',
     levels: [
-      'Vrať nepřátelskou jednotku, která stojí 3 nebo méně, do ruky jejího vlastníka.',
-      'Vrať nepřátelskou jednotku, která stojí 3 nebo méně, do ruky jejího vlastníka.',
-      'Vrať nepřátelskou jednotku, která stojí 4 nebo méně, do ruky jejího vlastníka.',
+      'Vrať nepřátelskou jednotku, která stojí 3 nebo méně, do ruky jejího vlastníka. Lze použít jen ob tah.',
+      'Vrať nepřátelskou jednotku, která stojí 3 nebo méně, do ruky jejího vlastníka. Lze použít jen ob tah.',
+      'Vrať nepřátelskou jednotku, která stojí 4 nebo méně, do ruky jejího vlastníka. Lze použít jen ob tah.',
     ],
     upgradeNotes: ['Cena 3 → 2.', 'Zasáhne jednotky s cenou až 4.'],
   },

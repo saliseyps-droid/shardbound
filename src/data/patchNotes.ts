@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.10',
+    date: '2026-10-07',
+    title: 'Undertow cooldown',
+    summary: 'Undertow can now be used every other turn.',
+    sections: [
+      {
+        kind: 'balance',
+        items: ['Undertow (Rimetide Court talent): after you use it, it recharges during your next turn and can be used again the turn after (every other turn). The button shows when it is recharging.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.26.9',
     date: '2026-10-07',
     title: 'Hollow Summons and Meowchick',

@@ -321,7 +321,8 @@ function HeroAbilitySlot({ game, player, slot, tutorial }: { game: GameState; pl
   }
   const active = talent.levels[state.level];
   const usable = player === HUMAN && canUseHeroPower(game, player, slot).ok;
-  const used = state.uses >= (active.usesPerTurn ?? 1);
+  const recharging = (state.cooldown ?? 0) > 0;
+  const used = state.uses >= (active.usesPerTurn ?? 1) || recharging;
   return (
     <Tip title={`${title} · ${t('Active ({cost})', { cost: active.cost })}`} body={active.description}>
       <button
@@ -330,7 +331,7 @@ function HeroAbilitySlot({ game, player, slot, tutorial }: { game: GameState; pl
         className={`hero-power ${usable ? 'is-usable' : ''} ${used ? 'is-used' : ''} ${selected ? 'is-selected' : ''}`}
         onClick={player === HUMAN ? () => click(slot) : undefined}
         disabled={player !== HUMAN}
-        aria-label={`${t('Warden ability: {title}, costs {cost}.', { title, cost: active.cost })} ${active.description}${used ? ` ${t('Already used this turn.')}` : ''}`}
+        aria-label={`${t('Warden ability: {title}, costs {cost}.', { title, cost: active.cost })} ${active.description}${recharging ? ` ${t('Recharging: usable again next turn')}.` : used ? ` ${t('Already used this turn.')}` : ''}`}
       >
         <Glyph name={glyph} size={22} />
         <span className="hero-power-cost num">{active.cost}</span>

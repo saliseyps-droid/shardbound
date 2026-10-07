@@ -69,6 +69,8 @@ export interface HeroAbilityState {
   level: 0 | 1 | 2;
   /** Activations (active) or triggers (passive) this turn. */
   uses: number;
+  /** Active abilities with a cooldown: owner's turns left before it can be used again. */
+  cooldown?: number;
 }
 
 export interface HeroState {

@@ -146,6 +146,8 @@ function startTurn(ctx: EngineContext, playerId: PlayerId) {
   p.energy = p.maxEnergy;
   // Per-turn ability counters reset for both Wardens: passives can also trigger on the opponent's turn.
   for (const pl of state.players) for (const a of pl.hero.abilities) a.uses = 0;
+  // Cooldowns count down on their owner's turns.
+  for (const a of p.hero.abilities) if (a.cooldown) a.cooldown -= 1;
   p.spellsCastThisTurn = 0;
   p.cardsPlayedThisTurn = 0;
   p.allyDiedThisTurn = false;
@@ -370,6 +372,8 @@ function doHeroPower(ctx: EngineContext, playerId: PlayerId, slot: number, targe
   } else target = undefined;
   p.energy -= power.cost;
   ability.uses++;
+  // +1: the turn-start countdown of the next turn already ticks once.
+  if (power.cooldown) ability.cooldown = power.cooldown + 1;
   emit(ctx, { type: 'HERO_POWER_USED', player: playerId, slot, abilityId: ability.id, target });
   emit(ctx, { type: 'ENERGY_CHANGED', player: playerId, energy: p.energy, maxEnergy: p.maxEnergy });
   runAbility(ctx, {

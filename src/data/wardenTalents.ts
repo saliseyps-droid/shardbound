@@ -19,6 +19,8 @@ export interface ActiveLevel {
   effects: Effect[];
   /** Uses per turn (default 1). */
   usesPerTurn?: number;
+  /** After a use, this many of your turns must pass before it can be used again (1 = every other turn). */
+  cooldown?: number;
   description: string;
 }
 
@@ -203,9 +205,9 @@ const TIDE: TalentAbility[] = [
     { cost: 1, target: { kind: 'ENEMY_UNIT' }, effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'TARGET' }, { type: 'APPLY_STATUS', status: 'FROZEN', target: 'TARGET' }], description: 'Deal 2 damage to an enemy unit and Freeze it.' },
   ], ['Cost 2 → 1.', 'Deals 2 damage instead of 1.']),
   active('TIDE', 'undertow', 'Undertow', [
-    { cost: 3, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 3 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 3 or less to its owner's hand." },
-    { cost: 2, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 3 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 3 or less to its owner's hand." },
-    { cost: 2, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 4 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 4 or less to its owner's hand." },
+    { cost: 3, cooldown: 1, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 3 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 3 or less to its owner's hand. Usable every other turn." },
+    { cost: 2, cooldown: 1, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 3 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 3 or less to its owner's hand. Usable every other turn." },
+    { cost: 2, cooldown: 1, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 4 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 4 or less to its owner's hand. Usable every other turn." },
   ], ['Cost 3 → 2.', 'Reaches units costing up to 4.']),
   passive('TIDE', 'cold_snap', 'Cold Snap', [
     { abilities: [{ trigger: 'TURN_START', condition: { kind: 'HAND_SIZE_LTE', n: 3 }, effects: [{ type: 'CREATE_CARD', cardId: 'token_ice_shard', destination: 'HAND', fleeting: true }] }], description: 'At the start of your turn, if you have 3 or fewer cards in hand, add a Fleeting Rime Shard to your hand.' },

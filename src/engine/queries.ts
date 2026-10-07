@@ -225,6 +225,7 @@ export function canUseHeroPower(state: GameState, playerId: PlayerId, slot: numb
   const power = activeLevelOf(state, playerId, slot);
   if (!power) return { ok: false, reason: 'No Warden ability to use' };
   if (state.players[playerId].hero.abilities[slot].uses >= (power.usesPerTurn ?? 1)) return { ok: false, reason: 'Already used this turn' };
+  if ((state.players[playerId].hero.abilities[slot].cooldown ?? 0) > 0) return { ok: false, reason: 'Recharging: usable again next turn' };
   if (state.players[playerId].energy < power.cost) return { ok: false, reason: 'Not enough energy' };
   if (power.target && !power.target.optional && validTargets(state, playerId, power.target, { spellLike: true }).length === 0) {
     return { ok: false, reason: 'No valid targets' };
