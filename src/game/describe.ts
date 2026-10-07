@@ -244,6 +244,9 @@ export function describeEffect(effect: Effect, card: CardDefinition, lookup?: (i
     case 'GAIN_ARMOR':
       text = `gain ${value(effect.amount)} Armor.${valueNote(effect.amount)}`;
       break;
+    case 'REMOVE_ARMOR':
+      text = 'your Warden loses all Armor.';
+      break;
     case 'TRANSFORM':
       text = `transform ${t} into ${cardName(effect.cardId, lookup)}.`;
       break;

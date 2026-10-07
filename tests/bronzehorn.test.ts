@@ -15,5 +15,6 @@ describe('R3-D3', () => {
     s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: uid });
     const u = s.players[0].board.find((x) => x.cardId === 'irn_bronzehorn_colossus')!;
     expect([u.baseAttack + u.attackBuff, u.baseHealth + u.healthBuff]).toEqual([8, 8]);
+    expect(s.players[0].hero.armor).toBe(0);
   });
 });

@@ -178,6 +178,7 @@ export type EffectType =
   | 'STEAL_CARD'
   | 'TAKE_CONTROL'
   | 'GAIN_ARMOR'
+  | 'REMOVE_ARMOR'
   | 'TRANSFORM'
   | 'RESURRECT'
   | 'READY_UNIT'
@@ -298,6 +299,10 @@ export interface StealCardEffect extends EffectBase {
 export interface TakeControlEffect extends EffectBase {
   type: 'TAKE_CONTROL';
 }
+/** Your Warden loses all Armor. */
+export interface RemoveArmorEffect extends EffectBase {
+  type: 'REMOVE_ARMOR';
+}
 export interface GainArmorEffect extends EffectBase {
   type: 'GAIN_ARMOR';
   amount: ValueExpr;
@@ -343,6 +348,7 @@ export type Effect =
   | StealCardEffect
   | TakeControlEffect
   | GainArmorEffect
+  | RemoveArmorEffect
   | TransformEffect
   | ResurrectEffect
   | ReadyUnitEffect

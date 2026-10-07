@@ -4,7 +4,7 @@ const notes: PatchNotesOverlay = {
   '0.26.13': {
     title: 'R3-D3',
     summary: 'Do Dragon Realm přibyla nová legendární karta Mosazného dominia.',
-    sections: [['R3-D3 (Mosazné dominium, legendární, Dragon Realm): 8 energie, 1/1, Konstrukt. Při nasazení: získá +1/+1 za každý bod brnění, který máš.']],
+    sections: [['R3-D3 (Mosazné dominium, legendární, Dragon Realm): 8 energie, 1/1, Konstrukt. Při nasazení: získá +1/+1 za každý bod brnění, který máš, a tvůj Strážce pak přijde o všechno brnění.']],
   },
   '0.26.12': {
     title: 'Doladění vyváženosti',

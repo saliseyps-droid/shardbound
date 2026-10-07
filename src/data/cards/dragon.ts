@@ -438,8 +438,8 @@ export const DRAGON_CARDS: CardDefinition[] = [
     cardType: 'UNIT', set: 'DRAGON', collectible: true, tags: ['Construct'],
     id: 'irn_bronzehorn_colossus', name: 'R3-D3', faction: 'IRON', rarity: 'LEGENDARY',
     manaCost: 8, attack: 1, health: 1, archetypes: ['Bulwark'],
-    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: { kind: 'ARMOR' }, health: { kind: 'ARMOR' }, target: 'SELF' }] }],
-    description: 'On Deploy: Gain +1/+1 for each Armor you have.',
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: { kind: 'ARMOR' }, health: { kind: 'ARMOR' }, target: 'SELF' }, { type: 'REMOVE_ARMOR' }] }],
+    description: 'On Deploy: Gain +1/+1 for each Armor you have, then your Warden loses all Armor.',
     flavorText: 'It wears the whole armoury of the Dominion and still asks the smiths for more.',
   },
   {

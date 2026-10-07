@@ -23,7 +23,7 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-07',
     title: 'R3-D3',
     summary: 'A new Brass Dominion Legendary joins Dragon Realm.',
-    sections: [{ kind: 'new', items: ['R3-D3 (Brass Dominion, Legendary, Dragon Realm): 8 energy 1/1 Construct. On Deploy: gain +1/+1 for each Armor you have.'] }],
+    sections: [{ kind: 'new', items: ['R3-D3 (Brass Dominion, Legendary, Dragon Realm): 8 energy 1/1 Construct. On Deploy: gain +1/+1 for each Armor you have, then your Warden loses all Armor.'] }],
     commits: [],
   },
   {

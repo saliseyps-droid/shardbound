@@ -222,6 +222,7 @@ export function resolveTargets(
 function defaultSelector(effect: Effect): TargetSelector {
   switch (effect.type) {
     case 'GAIN_ARMOR':
+    case 'REMOVE_ARMOR':
     case 'DRAW_CARDS':
     case 'GAIN_ENERGY':
     case 'GAIN_MAX_ENERGY':
@@ -488,6 +489,12 @@ export function executeEffect(
     case 'GAIN_ARMOR':
       gainArmor(ctx, me, evalValue(ctx, effect.amount, source, chosen));
       return true;
+    case 'REMOVE_ARMOR': {
+      const hero = state.players[me].hero;
+      if (hero.armor <= 0) return false;
+      hero.armor = 0;
+      return true;
+    }
     case 'TRANSFORM': {
       const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
       for (const u of units) transformUnit(ctx, u, effect.cardId);
