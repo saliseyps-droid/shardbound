@@ -2,9 +2,9 @@ import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
   '0.26.13': {
-    title: 'Bronzorohý kolos',
+    title: 'R3-D3',
     summary: 'Do Dragon Realm přibyla nová epická karta Mosazného dominia.',
-    sections: [['Bronzorohý kolos (Mosazné dominium, epická, Dragon Realm): 8 energie, 1/1, Konstrukt. Při nasazení: získá +1/+1 za každý bod brnění, který máš.']],
+    sections: [['R3-D3 (Mosazné dominium, epická, Dragon Realm): 8 energie, 1/1, Konstrukt. Při nasazení: získá +1/+1 za každý bod brnění, který máš.']],
   },
   '0.26.12': {
     title: 'Doladění vyváženosti',

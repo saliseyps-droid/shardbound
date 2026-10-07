@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { getCard } from '@/data/cards';
 import { act, giveCard, newGame, setEnergy } from './helpers';
 
-describe('Bronzehorn Colossus', () => {
+describe('R3-D3', () => {
   it('is an 8-cost Brass Dominion Epic 1/1 in Dragon Realm', () => {
     expect(getCard('irn_bronzehorn_colossus')).toMatchObject({ faction: 'IRON', rarity: 'EPIC', set: 'DRAGON', manaCost: 8, attack: 1, health: 1 });
   });

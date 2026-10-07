@@ -21,9 +21,9 @@ export const PATCH_NOTES: PatchNote[] = [
   {
     version: '0.26.13',
     date: '2026-10-07',
-    title: 'Bronzehorn Colossus',
+    title: 'R3-D3',
     summary: 'A new Brass Dominion Epic joins Dragon Realm.',
-    sections: [{ kind: 'new', items: ['Bronzehorn Colossus (Brass Dominion, Epic, Dragon Realm): 8 energy 1/1 Construct. On Deploy: gain +1/+1 for each Armor you have.'] }],
+    sections: [{ kind: 'new', items: ['R3-D3 (Brass Dominion, Epic, Dragon Realm): 8 energy 1/1 Construct. On Deploy: gain +1/+1 for each Armor you have.'] }],
     commits: [],
   },
   {
