@@ -10,7 +10,7 @@ export const TIDE_CARDS: CardDefinition[] = [
   // ----- Commons -----
   {
     ...base, id: 'tid_frostfin_scout', name: 'Frostfin Scout', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 1, attack: 1, health: 2, tags: ['Leviathan'], archetypes: ['Deep Freeze'],
+    manaCost: 1, attack: 2, health: 1, tags: ['Leviathan'], archetypes: ['Deep Freeze'],
     target: { kind: 'ENEMY_UNIT', optional: true },
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'TARGET' }] }],
     flavorText: 'It darts beneath the ice, leaving a trail of hoarfrost in its wake.',

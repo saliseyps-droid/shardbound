@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.11': {
+    title: 'Mrazoploutvý zvěd',
+    summary: 'Mrazoploutvý zvěd je teď 2/1.',
+    sections: [['Mrazoploutvý zvěd: 1/2 → 2/1.']],
+  },
   '0.26.10': {
     title: 'Úpravy talentů Strážců',
     summary: 'Spodní proud jde použít ob tah; Kůra místo kůže a Míza z kořene se mění na stupni III.',

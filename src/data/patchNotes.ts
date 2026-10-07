@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.11',
+    date: '2026-10-07',
+    title: 'Frostfin Scout',
+    summary: 'Frostfin Scout is now 2/1.',
+    sections: [{ kind: 'balance', items: ['Frostfin Scout: 1/2 → 2/1.'] }],
+    commits: [],
+  },
+  {
     version: '0.26.10',
     date: '2026-10-07',
     title: 'Warden talent changes',
