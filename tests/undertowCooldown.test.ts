@@ -21,3 +21,12 @@ describe('Undertow cooldown', () => {
     expect(canUseHeroPower(s, 0, 0).ok).toBe(true);
   });
 });
+
+import { getTalent } from '@/data/wardenTalents';
+
+describe('Thornweald talent changes', () => {
+  it('Barkskin III works once per turn and Sap of the Root III costs 1', () => {
+    expect((getTalent('wt_verdant_barkskin')!.levels[2] as { limitPerTurn?: number }).limitPerTurn).toBe(1);
+    expect((getTalent('wt_verdant_sap_of_the_root')!.levels[2] as { cost: number }).cost).toBe(1);
+  });
+});

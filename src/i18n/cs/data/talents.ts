@@ -57,7 +57,7 @@ const talents: TalentsOverlay = {
       'Obnov 3 životy spřátelené postavě.',
       'Obnov 4 životy spřátelené postavě.',
     ],
-    upgradeNotes: ['Obnoví 3 místo 2.', 'Obnoví 4 místo 3.'],
+    upgradeNotes: ['Obnoví 3 místo 2.', 'Obnoví 4 místo 3 a stojí 1.'],
   },
   wt_verdant_sprout: {
     name: 'Výhonek',
@@ -82,9 +82,9 @@ const talents: TalentsOverlay = {
     levels: [
       'Když poprvé v tahu vyvoláš jednotku, dej jí +0/+1.',
       'Když poprvé v tahu vyvoláš jednotku, dej jí +0/+2.',
-      'Když poprvé a podruhé v tahu vyvoláš jednotku, dej jí +1/+2.',
+      'Když poprvé v tahu vyvoláš jednotku, dej jí +1/+2.',
     ],
-    upgradeNotes: ['+0/+1 → +0/+2.', '+1/+2 a funguje dvakrát za tah.'],
+    upgradeNotes: ['+0/+1 → +0/+2.', '+0/+2 → +1/+2.'],
   },
   wt_verdant_thornguard: {
     name: 'Trnová stráž',

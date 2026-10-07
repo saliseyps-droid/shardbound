@@ -90,8 +90,8 @@ const VERDANT: TalentAbility[] = [
   active('VERDANT', 'sap_of_the_root', 'Sap of the Root', [
     { cost: 2, target: { kind: 'ALLY' }, effects: [{ type: 'HEAL', amount: 2, target: 'TARGET' }], description: 'Restore 2 Health to a friendly character.' },
     { cost: 2, target: { kind: 'ALLY' }, effects: [{ type: 'HEAL', amount: 3, target: 'TARGET' }], description: 'Restore 3 Health to a friendly character.' },
-    { cost: 2, target: { kind: 'ALLY' }, effects: [{ type: 'HEAL', amount: 4, target: 'TARGET' }], description: 'Restore 4 Health to a friendly character.' },
-  ], ['Restores 3 instead of 2.', 'Restores 4 instead of 3.']),
+    { cost: 1, target: { kind: 'ALLY' }, effects: [{ type: 'HEAL', amount: 4, target: 'TARGET' }], description: 'Restore 4 Health to a friendly character.' },
+  ], ['Restores 3 instead of 2.', 'Restores 4 instead of 3, and costs 1.']),
   active('VERDANT', 'sprout', 'Sprout', [
     { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_sapling' }], description: 'Summon a 1/2 Sapling.' },
     { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_sapling' }, { type: 'HEAL', amount: 1, target: 'ALLY_HERO' }], description: 'Summon a 1/2 Sapling and restore 1 Health to your Warden.' },
@@ -105,8 +105,8 @@ const VERDANT: TalentAbility[] = [
   passive('VERDANT', 'barkskin', 'Barkskin', [
     { limitPerTurn: 1, abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', health: 1, target: 'TRIGGER_UNIT' }] }], description: 'The first time you summon a unit each turn, give it +0/+1.' },
     { limitPerTurn: 1, abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', health: 2, target: 'TRIGGER_UNIT' }] }], description: 'The first time you summon a unit each turn, give it +0/+2.' },
-    { limitPerTurn: 2, abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', attack: 1, health: 2, target: 'TRIGGER_UNIT' }] }], description: 'The first two times you summon a unit each turn, give it +1/+2.' },
-  ], ['+0/+1 → +0/+2.', '+1/+2, and works twice per turn.']),
+    { limitPerTurn: 1, abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', attack: 1, health: 2, target: 'TRIGGER_UNIT' }] }], description: 'The first time you summon a unit each turn, give it +1/+2.' },
+  ], ['+0/+1 → +0/+2.', '+0/+2 → +1/+2.']),
   active('VERDANT', 'thornguard', 'Thornguard', [
     { cost: 3, target: { kind: 'ALLY_UNIT' }, effects: [{ type: 'BUFF', health: 2, target: 'TARGET' }, { type: 'GRANT_KEYWORD', keyword: 'GUARD', target: 'TARGET' }], description: 'Give a friendly unit +0/+2 and Guard.' },
     { cost: 2, target: { kind: 'ALLY_UNIT' }, effects: [{ type: 'BUFF', health: 2, target: 'TARGET' }, { type: 'GRANT_KEYWORD', keyword: 'GUARD', target: 'TARGET' }], description: 'Give a friendly unit +0/+2 and Guard.' },

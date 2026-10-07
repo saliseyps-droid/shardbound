@@ -21,12 +21,16 @@ export const PATCH_NOTES: PatchNote[] = [
   {
     version: '0.26.10',
     date: '2026-10-07',
-    title: 'Undertow cooldown',
-    summary: 'Undertow can now be used every other turn.',
+    title: 'Warden talent changes',
+    summary: 'Undertow is usable every other turn; Barkskin and Sap of the Root change at rank III.',
     sections: [
       {
         kind: 'balance',
-        items: ['Undertow (Rimetide Court talent): after you use it, it recharges during your next turn and can be used again the turn after (every other turn). The button shows when it is recharging.'],
+        items: [
+          'Undertow (Rimetide Court talent): after you use it, it recharges during your next turn and can be used again the turn after (every other turn). The button shows when it is recharging.',
+          'Barkskin (Thornweald Circle talent), rank III: works on one unit per turn (was two), still +1/+2.',
+          'Sap of the Root (Thornweald Circle talent), rank III: costs 1 instead of 2.',
+        ],
       },
     ],
     commits: [],
