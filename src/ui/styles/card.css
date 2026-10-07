@@ -82,14 +82,16 @@
 .card-typeline {
   position: relative;
   z-index: 2;
-  display: flex;
+  /* Equal side columns keep the rarity gem in the middle of the card whatever the label lengths. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
   gap: 2cqw;
   padding: 1.2cqw 6cqw 0;
   font-size: 5.2cqw;
   color: var(--parchment-dim);
 }
+.card-typeline > span:first-child, .card-tags { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card-tags { text-align: right; }
 
 .rarity-gem {
