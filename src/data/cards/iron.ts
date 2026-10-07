@@ -34,7 +34,7 @@ export const IRON_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'irn_steamstride_walker', name: 'Steamstride Walker', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 3, attack: 4, health: 4, tags: ['Construct'], archetypes: ['Assembly Line'],
+    manaCost: 3, attack: 4, health: 5, tags: ['Construct'], archetypes: ['Assembly Line'],
     flavorText: 'Each step vents a sigh of scalding steam. It sounds almost tired.',
   },
   {
@@ -52,7 +52,7 @@ export const IRON_CARDS: CardDefinition[] = [
   {
     ...base, id: 'irn_rivet_volley', name: 'Rivet Volley', cardType: 'SPELL', rarity: 'COMMON', set: 'CORE',
     manaCost: 2, target: { kind: 'ENEMY_UNIT' }, archetypes: ['Bulwark'],
-    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'TARGET' }, { type: 'GAIN_ARMOR', amount: 2 }] }],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'TARGET' }, { type: 'GAIN_ARMOR', amount: 2 }] }],
     flavorText: 'Hot rivets for them. Cold plating for us.',
   },
   {

@@ -8,7 +8,7 @@ const cards: CardsOverlay = {
   irn_steamstride_walker: { name: 'Parní kráčivec', flavorText: 'Každý krok vypustí povzdech vařící páry. Zní to skoro unaveně.' },
   irn_boilerplate_knight: { name: 'Rytíř z kotlového plechu', description: 'Stráž. Při nasazení: Získej 3 brnění.', flavorText: 'Zbroj je povinná. Rytíř uvnitř je nepovinný.' },
   irn_foundry_crusher: { name: 'Slévárenský drtič', description: 'Poslední dech: Vyvolej 2 Šrotoboty 1/1.', flavorText: 'I rozbitý dál vyrábí.' },
-  irn_rivet_volley: { name: 'Nýtová salva', description: 'Způsob 2 poškození nepřátelské jednotce. Získej 2 brnění.', flavorText: 'Žhavé nýty pro ně. Chladné pláty pro nás.' },
+  irn_rivet_volley: { name: 'Nýtová salva', description: 'Způsob 3 poškození nepřátelské jednotce. Získej 2 brnění.', flavorText: 'Žhavé nýty pro ně. Chladné pláty pro nás.' },
   irn_aether_capacitor: { name: 'Éterový kondenzátor', description: 'Získej prázdný krystal energie.', flavorText: 'Ulož si dnes trochu světla Střepů, zítra ho utratíš hodně.' },
   irn_bulwark_drone: { name: 'Obranný dron', description: 'Kdykoli získáš brnění, získá tato jednotka +1/+0.', flavorText: 'Přebytečné pláty přetavuje v přebytečnou agresi.' },
   irn_slag_smelter: { name: 'Tavič strusky', description: 'Při nasazení: Nejdražší karta v tvé ruce stojí o 2 méně.', flavorText: 'Přetaví šrot v něco velkolepějšího.' },

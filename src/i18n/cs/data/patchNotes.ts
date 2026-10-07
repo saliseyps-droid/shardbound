@@ -3,11 +3,14 @@ import type { PatchNotesOverlay } from '../../overlayTypes';
 const notes: PatchNotesOverlay = {
   '0.26.12': {
     title: 'Doladění vyváženosti',
-    summary: 'Míza z kořene se vrací na 2 energie, Popelozubý nájezdník dostává Spěch a Soumrakorohý drak zlevňuje.',
+    summary: 'Míza z kořene se vrací na 2 energie a pár drobných posílení, z toho tři pro Mosazné dominium.',
     sections: [[
       'Míza z kořene (talent Kruhu Trnoboru), stupeň III: zpět na 2 energie (léčí dál 4). Za 1 energii dělala Kruh Trnoboru mnohem silnějším.',
       'Popelozubý nájezdník: teď 3/1 se Spěchem.',
       'Soumrakorohý drak: stojí 5 místo 6.',
+      'Nýtová salva: způsobí 3 poškození místo 2.',
+      'Sestavení (talent Mosazného dominia), stupeň III: stojí 3 místo 4.',
+      'Parní kráčivec: 4/4 → 4/5.',
     ]],
   },
   '0.26.11': {

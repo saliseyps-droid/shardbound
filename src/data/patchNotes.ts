@@ -22,7 +22,7 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.26.12',
     date: '2026-10-07',
     title: 'Balance follow-up',
-    summary: 'Sap of the Root goes back to 2 energy, Ashfang Raider gets Swift, Duskhorn Dragon gets cheaper.',
+    summary: 'Sap of the Root goes back to 2 energy, a few small buffs including three for the Brass Dominion.',
     sections: [
       {
         kind: 'balance',
@@ -30,6 +30,9 @@ export const PATCH_NOTES: PatchNote[] = [
           'Sap of the Root (Thornweald Circle talent), rank III: back to 2 energy (still heals 4). At 1 energy it made the Thornweald Circle far too strong.',
           'Ashfang Raider: now 3/1 with Swift.',
           'Duskhorn Dragon: costs 5 instead of 6.',
+          'Rivet Volley: deals 3 damage instead of 2.',
+          'Assemble (Brass Dominion talent), rank III: costs 3 instead of 4.',
+          'Steamstride Walker: 4/4 → 4/5.',
         ],
       },
     ],

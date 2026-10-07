@@ -113,7 +113,7 @@ const talents: TalentsOverlay = {
       'Vyvolej Šrotobota 1/1 a získej 1 brnění.',
       'Vyvolej dva Šrotoboty 1/1.',
     ],
-    upgradeNotes: ['Navíc získáš 1 brnění.', 'Místo toho vyvolá dva Šrotoboty (bez brnění); cena 3 → 4.'],
+    upgradeNotes: ['Navíc získáš 1 brnění.', 'Místo toho vyvolá dva Šrotoboty (bez brnění).'],
   },
   wt_iron_reinforced_hull: {
     name: 'Zesílený trup',

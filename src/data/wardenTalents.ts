@@ -123,8 +123,8 @@ const IRON: TalentAbility[] = [
   active('IRON', 'assemble', 'Assemble', [
     { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot' }], description: 'Summon a 1/1 Scrapbot.' },
     { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot' }, { type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }], description: 'Summon a 1/1 Scrapbot and gain 1 Armor.' },
-    { cost: 4, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot', count: 2 }], description: 'Summon two 1/1 Scrapbots.' },
-  ], ['Also gain 1 Armor.', 'Summon two Scrapbots instead (no Armor); cost 3 → 4.']),
+    { cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot', count: 2 }], description: 'Summon two 1/1 Scrapbots.' },
+  ], ['Also gain 1 Armor.', 'Summon two Scrapbots instead (no Armor).']),
   passive('IRON', 'reinforced_hull', 'Reinforced Hull', [
     { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'GAIN_ARMOR', amount: 1, target: 'ALLY_HERO' }] }], description: 'At the end of your turn, gain 1 Armor.' },
     { abilities: [{ trigger: 'TURN_END', effects: [{ type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }] }], description: 'At the end of your turn, gain 2 Armor.' },

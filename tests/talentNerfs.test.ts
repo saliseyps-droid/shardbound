@@ -8,9 +8,9 @@ const summons = (effects: { type: string; cardId?: string; count?: number }[]) =
   effects.filter((e) => e.type === 'SUMMON').map((e) => `${e.count ?? 1}x ${e.cardId}`);
 
 describe('0.13.5 talent nerfs', () => {
-  it('Assemble III costs 4 energy', () => {
+  it('Assemble III costs 3 energy (buffed back in 0.26.12)', () => {
     const lv = getTalent('wt_iron_assemble')!.levels[2] as { cost: number };
-    expect(lv.cost).toBe(4);
+    expect(lv.cost).toBe(3);
   });
 
   it('Assembly Protocol II gives +1/+0 and 1 Armor; +1/+1 only at III', () => {
