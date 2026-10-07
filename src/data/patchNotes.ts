@@ -23,7 +23,7 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-07',
     title: 'Frostfin Scout',
     summary: 'Frostfin Scout is now 2/1.',
-    sections: [{ kind: 'balance', items: ['Frostfin Scout: 1/2 → 2/1.'] }],
+    sections: [{ kind: 'balance', items: ['Frostfin Scout: 1/2 → 2/1.', 'Reap: costs 2 (was 1 since the last update, 3 before).'] }],
     commits: [],
   },
   {

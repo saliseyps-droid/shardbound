@@ -4,7 +4,7 @@ const notes: PatchNotesOverlay = {
   '0.26.11': {
     title: 'Mrazoploutvý zvěd',
     summary: 'Mrazoploutvý zvěd je teď 2/1.',
-    sections: [['Mrazoploutvý zvěd: 1/2 → 2/1.']],
+    sections: [['Mrazoploutvý zvěd: 1/2 → 2/1.', 'Žeň: stojí 2 (od minulé aktualizace 1, předtím 3).']],
   },
   '0.26.10': {
     title: 'Úpravy talentů Strážců',

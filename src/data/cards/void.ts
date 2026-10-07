@@ -78,7 +78,7 @@ export const VOID_CARDS: CardDefinition[] = [
   // ----- Rares -----
   {
     ...base, id: 'vod_reap', name: 'Reap', cardType: 'SPELL', rarity: 'RARE', set: 'CORE',
-    manaCost: 1, target: { kind: 'ENEMY_UNIT', filter: { maxAttack: 3 } }, archetypes: ['Offering', 'Requiem'],
+    manaCost: 2, target: { kind: 'ENEMY_UNIT', filter: { maxAttack: 3 } }, archetypes: ['Offering', 'Requiem'],
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DESTROY', target: 'TARGET' }] }],
     flavorText: 'The small ones go first. They always do.',
   },
