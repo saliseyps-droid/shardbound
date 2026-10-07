@@ -2,7 +2,7 @@ import type { CardsOverlay } from '../../overlayTypes';
 
 const cards: CardsOverlay = {
   emb_kindling_imp: { name: 'Jiskřivý skřítek', description: 'Spěch.', flavorText: 'Malý, hladový a dokonale hořlavý.' },
-  emb_ashfang_raider: { name: 'Popelozubý nájezdník', flavorText: 'Nájezdníci Legie se nikdy nenaučili slovo „ústup“. Shořelo se zbytkem slovníku.' },
+  emb_ashfang_raider: { name: 'Popelozubý nájezdník', description: 'Spěch.', flavorText: 'Nájezdníci Legie se nikdy nenaučili slovo „ústup“. Shořelo se zbytkem slovníku.' },
   emb_flame_jolt: { name: 'Plamenný šleh', description: 'Způsob 3 poškození postavě.', flavorText: 'První kouzlo, které se naučí každý pyromant. Poslední, které spatří mnoho nepřátel.' },
   emb_scorch_adept: { name: 'Ožehnutá adeptka', description: 'Posílení 1.', flavorText: 'Obočí jí doroste. Časem.' },
   emb_pyre_hound: { name: 'Hranicový ohař', description: 'Spěch.', flavorText: 'Aport? Raději „zapal“.' },

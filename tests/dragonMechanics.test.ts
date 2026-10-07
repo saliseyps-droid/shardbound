@@ -62,12 +62,12 @@ describe('Dragon Realm: cost reduction', () => {
     const knight = giveCard(s, 0, 'irn_goldwing_vanguard');
     const token = giveCard(s, 0, 'token_drakeling');
     const cost = (uid: number) => effectiveCost(s, 0, s.players[0].hand.find((c) => c.uid === uid)!);
-    expect(cost(wyrm)).toBe(5);
+    expect(cost(wyrm)).toBe(4);
     expect(cost(knight)).toBe(3);
     expect(cost(token)).toBe(1);
     // The opponent's Dragons are unaffected.
     const theirs = giveCard(s, 1, 'neu_duskhorn_dragon');
-    expect(effectiveCost(s, 1, s.players[1].hand.find((c) => c.uid === theirs)!)).toBe(6);
+    expect(effectiveCost(s, 1, s.players[1].hand.find((c) => c.uid === theirs)!)).toBe(5);
   });
 
   it('Faerie Ring and Maelis stack on Fae and never push a cost below 0', () => {

@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.12',
+    date: '2026-10-07',
+    title: 'Balance follow-up',
+    summary: 'Sap of the Root goes back to 2 energy, Ashfang Raider gets Swift, Duskhorn Dragon gets cheaper.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Sap of the Root (Thornweald Circle talent), rank III: back to 2 energy (still heals 4). At 1 energy it made the Thornweald Circle far too strong.',
+          'Ashfang Raider: now 3/1 with Swift.',
+          'Duskhorn Dragon: costs 5 instead of 6.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.26.11',
     date: '2026-10-07',
     title: 'Frostfin Scout',

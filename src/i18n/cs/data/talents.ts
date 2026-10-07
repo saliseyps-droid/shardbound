@@ -57,7 +57,7 @@ const talents: TalentsOverlay = {
       'Obnov 3 životy spřátelené postavě.',
       'Obnov 4 životy spřátelené postavě.',
     ],
-    upgradeNotes: ['Obnoví 3 místo 2.', 'Obnoví 4 místo 3 a stojí 1.'],
+    upgradeNotes: ['Obnoví 3 místo 2.', 'Obnoví 4 místo 3.'],
   },
   wt_verdant_sprout: {
     name: 'Výhonek',

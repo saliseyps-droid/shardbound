@@ -470,7 +470,7 @@ export const DRAGON_CARDS: CardDefinition[] = [
   },
   {
     ...dragon, id: 'neu_duskhorn_dragon', name: 'Duskhorn Dragon', faction: 'NEUTRAL', rarity: 'COMMON',
-    manaCost: 6, attack: 8, health: 4,
+    manaCost: 5, attack: 8, health: 4,
     flavorText: 'No banner, no master, no hurry. It goes where it likes and takes what it finds.',
   },
   {

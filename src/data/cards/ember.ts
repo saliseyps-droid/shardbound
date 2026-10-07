@@ -15,7 +15,7 @@ export const EMBER_CARDS: CardDefinition[] = [
   },
   {
     ...base, id: 'emb_ashfang_raider', name: 'Ashfang Raider', cardType: 'UNIT', rarity: 'COMMON', set: 'CORE', starter: true,
-    manaCost: 2, attack: 4, health: 1, archetypes: ['Blitz'],
+    manaCost: 2, attack: 3, health: 1, keywords: ['SWIFT'], archetypes: ['Blitz'],
     flavorText: 'Raiders of the Legion never learned the word "retreat". It burned with the rest of the dictionary.',
   },
   {

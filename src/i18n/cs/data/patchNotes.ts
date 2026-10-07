@@ -1,6 +1,15 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.12': {
+    title: 'Doladění vyváženosti',
+    summary: 'Míza z kořene se vrací na 2 energie, Popelozubý nájezdník dostává Spěch a Soumrakorohý drak zlevňuje.',
+    sections: [[
+      'Míza z kořene (talent Kruhu Trnoboru), stupeň III: zpět na 2 energie (léčí dál 4). Za 1 energii dělala Kruh Trnoboru mnohem silnějším.',
+      'Popelozubý nájezdník: teď 3/1 se Spěchem.',
+      'Soumrakorohý drak: stojí 5 místo 6.',
+    ]],
+  },
   '0.26.11': {
     title: 'Mrazoploutvý zvěd',
     summary: 'Mrazoploutvý zvěd je teď 2/1.',
