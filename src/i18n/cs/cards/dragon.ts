@@ -74,6 +74,7 @@ const cards: CardsOverlay = {
   irn_bronzecoil_wyrm: { name: 'Drak bronzových smyček', description: 'Stráž. Při nasazení: Získej 4 brnění.', flavorText: 'Obtáčí slévárny Dominia a dovnitř se nedostane nic, co sám nepustí.' },
   irn_ironspine_dragon: { name: 'Drak s železnou páteří', description: 'Stráž. Při nasazení: Získej 3 brnění. Kdykoli získáš brnění, získá tato jednotka +1/+1.', flavorText: 'Každý plát, který mu kováři přidají, nosí jako trofej.' },
   irn_goldwing_vanguard: { name: 'Předvoj zlatých křídel', description: 'Stráž. Při nasazení: Získej 2 brnění. Pokud ovládáš Draka, získá +1/+1.', flavorText: 'Stojí před draky, aby draci mohli stát před všemi ostatními.' },
+  irn_bronzehorn_colossus: { name: 'Bronzorohý kolos', description: 'Při nasazení: Získá +1/+1 za každý bod brnění, který máš.', flavorText: 'Nosí celou zbrojnici Dominia a od kovářů pořád chce víc.' },
   irn_valdrek_wingmarshal: { name: 'Valdrek, Maršál křídel', description: 'Tví Draci mají +1 k útoku. Při nasazení: Lízni si z balíčku 2 Draky.', flavorText: 'Dominium mu dalo pevnost. Vyměnil ji za nebe plné křídel.' },
   irn_dragonforge_star: { name: 'Hvězda dračí výhně', description: 'Kdykoli vyvoláš Draka, získej 3 brnění. Náboje: 3.', flavorText: 'Ukovaná v dračím ohni. Rozzáří se, kdykoli je nablízku některý z jejích tvůrců.' },
   irn_runeforged_scales: { name: 'Runami kované šupiny', description: 'Získej 4 brnění. Pokud ovládáš Draka, lízni si kartu.', flavorText: 'Shozené dračí šupiny, vyklepané naplocho a pokryté runou. Lepší než jakákoli ocel.' },

@@ -194,6 +194,7 @@ export const CARD_ART_FOCUS: Record<string, number> = {
   token_scrapbot: 35,
   token_sentry: 35,
   token_skeleton: 30,
+  irn_bronzehorn_colossus: 20,
   token_skeleton_frail: 30,
   token_star_fragment: 40,
   token_tidepup: 38,

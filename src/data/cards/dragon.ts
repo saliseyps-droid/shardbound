@@ -435,6 +435,14 @@ export const DRAGON_CARDS: CardDefinition[] = [
     flavorText: 'Every plate the smiths add, it wears like a trophy.',
   },
   {
+    cardType: 'UNIT', set: 'DRAGON', collectible: true, tags: ['Construct'],
+    id: 'irn_bronzehorn_colossus', name: 'Bronzehorn Colossus', faction: 'IRON', rarity: 'EPIC',
+    manaCost: 8, attack: 1, health: 1, archetypes: ['Bulwark'],
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: { kind: 'ARMOR' }, health: { kind: 'ARMOR' }, target: 'SELF' }] }],
+    description: 'On Deploy: Gain +1/+1 for each Armor you have.',
+    flavorText: 'It wears the whole armoury of the Dominion and still asks the smiths for more.',
+  },
+  {
     ...knight, id: 'irn_goldwing_vanguard', name: 'Goldwing Vanguard', faction: 'IRON', rarity: 'COMMON',
     manaCost: 3, attack: 3, health: 5, keywords: ['GUARD'], archetypes: ['Bulwark'],
     abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }, { type: 'BUFF', attack: 1, health: 1, target: 'SELF', condition: HAS_DRAGON }] }],

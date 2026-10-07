@@ -18,9 +18,9 @@ const cards = cardsBy({ set: 'DRAGON' });
 const tagged = (tag: string) => cards.filter((c) => c.tags?.includes(tag));
 
 describe('Dragon Realm set', () => {
-  it('has 70 cards: Dragons, Dragon Knights and Fae across every faction, plus spells, relics and locations', () => {
-    expect(cards).toHaveLength(70);
-    expect(new Set(cards.map((c) => c.id)).size).toBe(70);
+  it('has 71 cards: Dragons, Dragon Knights and Fae across every faction, plus spells, relics and locations', () => {
+    expect(cards).toHaveLength(71);
+    expect(new Set(cards.map((c) => c.id)).size).toBe(71);
     expect(new Set(cards.map((c) => c.faction))).toEqual(new Set(['EMBER', 'VERDANT', 'IRON', 'ASTRAL', 'VOID', 'TIDE', 'NEUTRAL']));
     expect(tagged('Dragon')).toHaveLength(25);
     expect(tagged('Knight')).toHaveLength(11);
@@ -36,7 +36,7 @@ describe('Dragon Realm set', () => {
     const count = (r: string) => cards.filter((c) => c.rarity === r).length;
     expect(count('COMMON')).toBe(30);
     expect(count('RARE')).toBe(22);
-    expect(count('EPIC')).toBe(11);
+    expect(count('EPIC')).toBe(12);
     expect(count('LEGENDARY')).toBe(7);
   });
 
