@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.27.4': {
+    title: 'Úpravy portrétů',
+    summary: 'Dva portréty odcházejí z obchodu, dva jsou světlejší.',
+    sections: [
+      [
+        'Portréty Děsivý vládce a Zakuklený přízrak byly staženy. Pokud sis některý koupil, zlato ti bylo vráceno.',
+        'Portréty Přízračný král a Mrazivý elfí pán jsou světlejší.',
+      ],
+      ['Kurzor nad portrétem v obchodě je zase normální šipka místo lupy.'],
+    ],
+  },
   '0.27.3': {
     title: 'Názvy karet v poznámkách k verzi',
     summary: 'Názvy karet v poznámkách k verzi jsou zvýrazněné a portréty jde zobrazit ve velkém.',

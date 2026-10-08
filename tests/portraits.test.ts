@@ -15,10 +15,21 @@ const rich = () => {
   return { ...s, profile: { ...s.profile, gold: 5000 } };
 };
 
+describe('withdrawn portraits', () => {
+  it('a bought portrait that left the game is refunded and dropped, together with its faction choice', () => {
+    const s = rich();
+    const profile = { ...s.profile, gold: 100, portraits: ['iron_dread_overlord', 'void_hooded_wraith', 'void_night_elf'], factionPortraits: { IRON: 'iron_dread_overlord' } };
+    const out = migrateSave({ ...s, saveVersion: CURRENT_SAVE_VERSION, profile }).save.profile;
+    expect(out.gold).toBe(100 + 250 + 150);
+    expect(out.portraits).toEqual(['void_night_elf']);
+    expect(out.factionPortraits.IRON).toBeUndefined();
+  });
+});
+
 describe('Warden portraits', () => {
-  it('has 27 portraits, at least two for every faction', () => {
-    expect(PORTRAITS).toHaveLength(27);
-    expect(new Set(PORTRAITS.map((p) => p.id)).size).toBe(27);
+  it('has 25 portraits, at least two for every faction', () => {
+    expect(PORTRAITS).toHaveLength(25);
+    expect(new Set(PORTRAITS.map((p) => p.id)).size).toBe(25);
     for (const f of PLAYABLE_FACTIONS) expect(PORTRAITS.filter((p) => p.faction === f).length).toBeGreaterThanOrEqual(2);
   });
 

@@ -72,6 +72,9 @@ function repairTalents(faction: PlayableFaction, raw: unknown, deckName: string,
   return defaultBuild(faction);
 }
 
+/** Portraits once sold and later removed (0.27.4): id -> Gold refunded. */
+const WITHDRAWN_PORTRAITS: Record<string, number> = { iron_dread_overlord: 250, void_hooded_wraith: 150 };
+
 export function migrateSave(input: Raw): MigrationReport {
   const notes: string[] = [];
   let raw: Raw = { ...input };
@@ -96,6 +99,10 @@ export function migrateSave(input: Raw): MigrationReport {
   const backs = Array.isArray(p.cardBacks) ? p.cardBacks.filter((b: unknown) => typeof b === 'string' && getCardBack(b)) : [];
   p.cardBacks = [DEFAULT_CARD_BACK, ...new Set(backs.filter((b: string) => b !== DEFAULT_CARD_BACK))];
   if (!p.cardBacks.includes(p.cardBack)) p.cardBack = DEFAULT_CARD_BACK;
+  // Portraits taken out of the game: refund what they cost.
+  if (Array.isArray(p.portraits)) {
+    for (const id of new Set(p.portraits)) if (typeof id === 'string' && WITHDRAWN_PORTRAITS[id]) p.gold += WITHDRAWN_PORTRAITS[id];
+  }
   // Portraits: keep known ones; a faction choice must be an owned portrait of that faction.
   p.portraits = Array.isArray(p.portraits) ? [...new Set(p.portraits.filter((id: unknown) => typeof id === 'string' && getPortrait(id)))] : [];
   const fp: Record<string, string> = {};

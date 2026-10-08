@@ -33,12 +33,10 @@ export const PORTRAITS: PortraitDef[] = [
   { id: 'ember_crimson_dragon', faction: 'EMBER', name: 'Crimson Dragon', price: 250 },
   { id: 'ember_fire_demon', faction: 'EMBER', name: 'Fire Demon', price: 250 },
   { id: 'verdant_forest_elf', faction: 'VERDANT', name: 'Forest Elf', price: 150 },
-  { id: 'iron_dread_overlord', faction: 'IRON', name: 'Dread Overlord', price: 250 },
   { id: 'astral_golden_eagle', faction: 'ASTRAL', name: 'Golden Eagle', price: 150 },
   { id: 'astral_starlit_elf', faction: 'ASTRAL', name: 'Starlit Elf', price: 150 },
   { id: 'void_shadow_tyrant', faction: 'VOID', name: 'Shadow Tyrant', price: 250 },
   { id: 'void_spectral_king', faction: 'VOID', name: 'Spectral King', price: 250 },
-  { id: 'void_hooded_wraith', faction: 'VOID', name: 'Hooded Wraith', price: 150 },
   { id: 'tide_frost_elf_lord', faction: 'TIDE', name: 'Frost Elf Lord', price: 150 },
 ];
 

@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.27.4',
+    date: '2026-10-08',
+    title: 'Portrait touch-ups',
+    summary: 'Two portraits leave the Shop, two get brighter.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'The Dread Overlord and Hooded Wraith portraits have been withdrawn. If you bought one, its Gold has been refunded.',
+          'The Spectral King and Frost Elf Lord portraits are brighter.',
+        ],
+      },
+      { kind: 'fixed', items: ['Hovering a portrait in the Shop shows the normal pointer again instead of a magnifier.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.27.3',
     date: '2026-10-08',
     title: 'Card names in patch notes',

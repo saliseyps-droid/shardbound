@@ -8,4 +8,4 @@
 .portrait-inspector-faction { font-size: var(--t-sm); font-weight: 700; color: var(--fc); }
 /* Portraits that open large on right-click / long press. */
 .portrait-tile-art, .portrait-option { -webkit-touch-callout: none; user-select: none; }
-.portrait-tile-art { display: inline-block; cursor: zoom-in; }
+.portrait-tile-art { display: inline-block; }
