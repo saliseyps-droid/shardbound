@@ -1,4 +1,4 @@
-/* Premium packs: Stars Eternal shimmers in rainbow colours, Divine Ascension in gold.
+/* Premium packs: both shimmer in gold (the rainbow variant stays available as plain .is-prismatic).
    The effects are masked to the pack's own shape and only lighten the art a little. */
 .booster.is-prismatic { animation: prism-glow 6s linear infinite; }
 .booster.is-gold { animation: gold-glow 3.5s ease-in-out infinite; }

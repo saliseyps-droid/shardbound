@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.31.2',
+    date: '2026-10-08',
+    title: 'Gears of Invention',
+    summary: 'The 1000 Gold Prismatic pack has new art and a gold shimmer.',
+    sections: [{ kind: 'improved', items: ['The Prismatic pack (1000 Gold) is now Gears of Invention, with new art and the same gold shimmer as Divine Ascension. What it holds has not changed.'] }],
+    commits: [],
+  },
+  {
     version: '0.31.1',
     date: '2026-10-08',
     title: 'Prismatic pack touch-ups',

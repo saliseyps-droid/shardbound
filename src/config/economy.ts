@@ -11,7 +11,7 @@ export type PackId = SetId | 'PRISMATIC' | 'PRISMATIC_LEGEND';
 
 export const PRISMATIC_PACK = {
   price: 1000,
-  name: 'Stars Eternal',
+  name: 'Gears of Invention',
   tagline: 'Prismatic pack: five Prismatic cards from every set. A Legendary at least every ten packs.',
   /** Pity: a Legendary is guaranteed by this many packs without one. */
   pityLegendary: 10,

@@ -27,7 +27,7 @@ const PACK_ART: Record<PackId, string> = { CORE: kingdomsAtWar, DEEP: fantasyRea
 export function BoosterPack({ setId, width = 180, className = '', style }: { setId: PackId; width?: number; className?: string; style?: CSSProperties }) {
   const art = PACK_ART[setId];
   return (
-    <div className={`booster ${setId === 'PRISMATIC' ? 'is-prismatic' : setId === 'PRISMATIC_LEGEND' ? 'is-prismatic is-gold' : ''} ${className}`} style={{ width, '--pack-art': `url(${art})`, ...style } as CSSProperties} role="img" aria-label={t('{name} booster pack', { name: t(packInfo(setId).name) })}>
+    <div className={`booster ${setId === 'PRISMATIC' || setId === 'PRISMATIC_LEGEND' ? 'is-prismatic is-gold' : ''} ${className}`} style={{ width, '--pack-art': `url(${art})`, ...style } as CSSProperties} role="img" aria-label={t('{name} booster pack', { name: t(packInfo(setId).name) })}>
       <img className="booster-art" src={art} alt="" draggable={false} />
       <span className="booster-sheen" aria-hidden />
       {isPrismaticPack(setId) && <span className="booster-prism" aria-hidden />}

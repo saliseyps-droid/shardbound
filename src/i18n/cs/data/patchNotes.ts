@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.31.2': {
+    title: 'Gears of Invention',
+    summary: 'Prismatický balíček za 1000 zlata má nový obrázek a zlatý třpyt.',
+    sections: [['Prismatický balíček (1000 zlata) je teď Gears of Invention, s novým obrázkem a stejným zlatým třpytem jako Divine Ascension. Obsah se nemění.']],
+  },
   '0.31.1': {
     title: 'Úpravy prismatických balíčků',
     summary: 'Čistěji oříznuté obrázky balíčků a prismatické balíčky v obchodě jako první.',
