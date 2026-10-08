@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.27.1': {
+    title: 'Přehlednější obrazovka Hrát',
+    summary: 'Tutoriál má vlastní pruh nad herními režimy.',
+    sections: [['Hrát: tutoriál se přesunul z režimů proti AI do vlastního pruhu nahoře, takže dlaždice režimů mají víc místa. Po dokončení zůstane pruh malý a nabídne zahrát si ho znovu.']],
+  },
   '0.27.0': {
     title: 'Brawl',
     summary: 'Nový režim: dva fighty se zvláštními pravidly proti AI na úrovni Expert, nové každé tři dny.',

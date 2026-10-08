@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.27.1',
+    date: '2026-10-08',
+    title: 'Tidier Play screen',
+    summary: 'The Tutorial has its own strip above the game modes.',
+    sections: [{ kind: 'improved', items: ['Play: the Tutorial moved out of the AI modes into its own strip at the top, so the mode tiles have more room. Once you have finished it, the strip stays small and offers a replay.'] }],
+    commits: [],
+  },
+  {
     version: '0.27.0',
     date: '2026-10-08',
     title: 'Brawl',

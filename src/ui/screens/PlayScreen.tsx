@@ -87,10 +87,9 @@ function brawlTile(save: GameSave): ModeTile {
   };
 }
 
-function modeTiles(save: GameSave, startTutorial: () => void): { ai: ModeTile[]; pvp: ModeTile[] } {
+function modeTiles(save: GameSave): { ai: ModeTile[]; pvp: ModeTile[] } {
   const camp = campaignProgress(save);
   const run = save.arena.run;
-  const tutorialDone = save.profile.tutorialCompleted;
   const ai: ModeTile[] = [
     { key: 'campaign', icon: 'map', title: t('Campaign'), text: t('Follow the story across nine chapters of rivals and bosses.'), status: camp.cleared >= camp.total ? t('Completed') : t('{n} of {total} cleared', { n: camp.cleared, total: camp.total }), to: '/campaign' },
     { key: 'ai-ranked', icon: 'star', title: t('Ranked vs AI'), text: t('Climb from Bronze to Crown against the AI. It gets stronger with every rank.'), status: aiRankLabel(save.profile.aiRanked.rank), to: '/ai-ranked', board: '/leaderboard' },
@@ -100,7 +99,6 @@ function modeTiles(save: GameSave, startTutorial: () => void): { ai: ModeTile[];
       status: run ? t('Run in progress: {w} of {max} wins', { w: run.results.filter((r) => r === 'WIN').length, max: ARENA.maxWins }) : hasFreeArenaEntry(save, Date.now()) ? t('Free entry today') : t('Entry: {n} Gold', { n: ARENA.entryGold }),
       to: '/arena', highlight: !run && hasFreeArenaEntry(save, Date.now()),
     },
-    { key: 'tutorial', icon: 'compass', title: t('Tutorial'), text: tutorialDone ? t('Replay the guided lesson any time.') : t('New to Shardbound? Learn the basics in a guided match.'), status: tutorialDone ? t('Completed') : t('Start here'), onClick: startTutorial, highlight: !tutorialDone },
   ];
   const pvp: ModeTile[] = [
     { key: 'ranked', icon: 'crown', title: t('Ranked'), text: t('Get matched against a random player who is searching right now and climb the ladder.'), status: `${t(tierFor(save.profile.ranked.rating).name)} · ${save.profile.ranked.rating}`, to: '/ranked', board: '/leaderboard?board=ranked' },
@@ -127,11 +125,29 @@ export default function PlayScreen() {
     launchMatch({ mode: 'PRACTICE', deckId, opponent: { ...opp, difficulty, rarities: DIFFICULTY_POOLS[difficulty] } }, navigate);
   };
 
-  const tiles = modeTiles(save, () => launchMatch({ mode: 'TUTORIAL', deckId: null, opponent: TUTORIAL_OPPONENT }, navigate));
+  const tiles = modeTiles(save);
+  const tutorialDone = save.profile.tutorialCompleted;
+  const startTutorial = () => {
+    audio.play('click');
+    launchMatch({ mode: 'TUTORIAL', deckId: null, opponent: TUTORIAL_OPPONENT }, navigate);
+  };
 
   return (
     <div className="screen play-screen">
       <ScreenHeader title={t('Play')} subtitle={t('Choose how you want to play.')} />
+      <section className={`tutorial-banner panel ${tutorialDone ? 'is-done' : ''}`} aria-labelledby="tutorial-banner-title">
+        <span className="tutorial-banner-icon" aria-hidden>
+          <Glyph name="compass" size={tutorialDone ? 22 : 28} />
+        </span>
+        <div className="tutorial-banner-text">
+          <strong id="tutorial-banner-title">{t('Tutorial')}</strong>
+          <span className="muted">{tutorialDone ? t('Replay the guided lesson any time.') : t('New to Shardbound? Learn the basics in a guided match.')}</span>
+        </div>
+        {tutorialDone && <span className="tutorial-banner-done">{t('Completed')}</span>}
+        <button type="button" className={`btn ${tutorialDone ? 'btn-ghost' : 'btn-primary'} tutorial-banner-btn`} onClick={startTutorial}>
+          {tutorialDone ? t('Replay') : t('Start here')}
+        </button>
+      </section>
       <div className="mode-groups">
         <ModeGrid title={t('Against the AI')} tiles={tiles.ai} />
         <ModeGrid title={t('Against players')} tiles={tiles.pvp} variant="pvp" />
