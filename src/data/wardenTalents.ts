@@ -207,8 +207,8 @@ const TIDE: TalentAbility[] = [
   active('TIDE', 'undertow', 'Undertow', [
     { cost: 3, cooldown: 1, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 3 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 3 or less to its owner's hand. Usable every other turn." },
     { cost: 2, cooldown: 1, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 3 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 3 or less to its owner's hand. Usable every other turn." },
-    { cost: 2, cooldown: 1, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 4 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 4 or less to its owner's hand. Usable every other turn." },
-  ], ['Cost 3 → 2.', 'Reaches units costing up to 4.']),
+    { cost: 3, cooldown: 1, target: { kind: 'ENEMY_UNIT', filter: { maxCost: 4 } }, effects: [{ type: 'RETURN_TO_HAND', target: 'TARGET' }], description: "Return an enemy unit that costs 4 or less to its owner's hand. Usable every other turn." },
+  ], ['Cost 3 → 2.', 'Cost 2 → 3, reaches units costing up to 4.']),
   passive('TIDE', 'cold_snap', 'Cold Snap', [
     { abilities: [{ trigger: 'TURN_START', condition: { kind: 'HAND_SIZE_LTE', n: 3 }, effects: [{ type: 'CREATE_CARD', cardId: 'token_ice_shard', destination: 'HAND', fleeting: true }] }], description: 'At the start of your turn, if you have 3 or fewer cards in hand, add a Fleeting Rime Shard to your hand.' },
     { abilities: [{ trigger: 'TURN_START', condition: { kind: 'HAND_SIZE_LTE', n: 4 }, effects: [{ type: 'CREATE_CARD', cardId: 'token_ice_shard', destination: 'HAND' }] }], description: 'At the start of your turn, if you have 4 or fewer cards in hand, add a Rime Shard to your hand.' },

@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.16',
+    date: '2026-10-08',
+    title: 'Undertow',
+    summary: 'Undertow rank III costs 3.',
+    sections: [{ kind: 'balance', items: ['Undertow (Rimetide Court talent), rank III: costs 3 (was 2). It still returns an enemy unit that costs 4 or less.'] }],
+    commits: [],
+  },
+  {
     version: '0.26.15',
     date: '2026-10-08',
     title: 'Glacial Thornwings',

@@ -254,7 +254,7 @@ const talents: TalentsOverlay = {
       'Vrať nepřátelskou jednotku, která stojí 3 nebo méně, do ruky jejího vlastníka. Lze použít jen ob tah.',
       'Vrať nepřátelskou jednotku, která stojí 4 nebo méně, do ruky jejího vlastníka. Lze použít jen ob tah.',
     ],
-    upgradeNotes: ['Cena 3 → 2.', 'Zasáhne jednotky s cenou až 4.'],
+    upgradeNotes: ['Cena 3 → 2.', 'Cena 2 → 3, zasáhne jednotky s cenou až 4.'],
   },
   wt_tide_cold_snap: {
     name: 'Náhlý mráz',

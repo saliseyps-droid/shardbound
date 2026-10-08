@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.16': {
+    title: 'Spodní proud',
+    summary: 'Spodní proud na stupni III stojí 3.',
+    sections: [['Spodní proud (talent Dvora Jinovatky), stupeň III: stojí 3 (dříve 2). Dál vrací nepřátelskou jednotku, která stojí 4 nebo méně.']],
+  },
   '0.26.15': {
     title: 'Ledová trnitá křídla',
     summary: 'Ledová trnitá křídla už nejsou kopií Krupobití.',
