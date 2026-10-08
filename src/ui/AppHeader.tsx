@@ -30,7 +30,7 @@ const NAV: { to: string; label: MessageKey; icon: string }[] = [
 export function AppHeader() {
   const profile = useAccount((s) => s.save?.profile);
   const packs = useAccount((s) => Object.values(s.save?.economy.packs ?? {}).reduce((a, b) => a + (b ?? 0), 0));
-  const claimable = useAccount((s) => s.save?.quests.active.filter((q) => q.completed && !q.claimed).length ?? 0);
+  const claimable = useAccount((s) => (s.save ? [...s.save.quests.active, ...s.save.quests.weekly].filter((q) => q.completed && !q.claimed).length : 0));
   const t = useT();
   const patchSeen = usePatchNotesSeen((s) => s.seen);
   // Phones: the menu lives in a drawer behind a menu button.

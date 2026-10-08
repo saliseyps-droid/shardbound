@@ -1,3 +1,4 @@
+import { migrateSave } from '@/persistence/migrations';
 import { describe, expect, it } from 'vitest';
 import { createNewSave } from '@/domain/newAccount';
 import { decodeDeck, encodeDeck } from '@/domain/deckCode';
@@ -44,32 +45,47 @@ describe('deck codes', () => {
   });
 });
 
-describe('weekly quest', () => {
-  it('appears once per week and rewards a pack', () => {
+describe('weekly quests', () => {
+  it('three different weekly quests each week, each rewarding a pack', () => {
     let s = fresh();
-    const weekly = s.quests.weekly!;
-    expect(weekly).toBeTruthy();
-    expect(weekly.packs?.amount).toBeGreaterThan(0);
+    const weekly = s.quests.weekly;
+    expect(weekly).toHaveLength(3);
+    expect(new Set(weekly.map((q) => q.templateId)).size).toBe(3);
+    for (const q of weekly) expect(q.packs?.amount).toBeGreaterThan(0);
     // Same week: unchanged.
-    expect(refreshQuests(s, MON + 3 * DAY, createRng(2)).quests.weekly!.id).toBe(weekly.id);
-    // Progress and claim.
-    s = applyQuestProgress(s, [{ type: weekly.type, amount: weekly.target, faction: weekly.faction }]).save;
-    const claimed = claimQuest(s, weekly.id, MON + DAY);
+    expect(refreshQuests(s, MON + 3 * DAY, createRng(2)).quests.weekly.map((q) => q.id)).toEqual(weekly.map((q) => q.id));
+    // Progress and claim one.
+    const w = weekly[1];
+    s = applyQuestProgress(s, [{ type: w.type, amount: w.target, faction: w.faction }]).save;
+    const claimed = claimQuest(s, w.id, MON + DAY);
     expect(claimed.ok).toBe(true);
     if (!claimed.ok) return;
-    const packsBefore = s.economy.packs[weekly.packs!.setId] ?? 0;
-    expect(claimed.value.save.economy.packs[weekly.packs!.setId]).toBe(packsBefore + weekly.packs!.amount);
-    // Next week: a new one.
-    const next = refreshQuests(claimed.value.save, MON + 7 * DAY, createRng(3)).quests.weekly!;
-    expect(next.id).not.toBe(weekly.id);
-    expect(next.claimed).toBe(false);
+    const packsBefore = s.economy.packs[w.packs!.setId] ?? 0;
+    expect(claimed.value.save.economy.packs[w.packs!.setId]).toBe(packsBefore + w.packs!.amount);
+    expect(claimed.value.save.quests.weekly.find((q) => q.id === w.id)?.claimed).toBe(true);
+    // Next week: three new ones.
+    const next = refreshQuests(claimed.value.save, MON + 7 * DAY, createRng(3)).quests.weekly;
+    expect(next).toHaveLength(3);
+    for (const q of next) expect(weekly.map((x) => x.id)).not.toContain(q.id);
+    expect(next.every((q) => !q.claimed)).toBe(true);
   });
 
-  it('keeps a finished but unclaimed weekly quest into the next week', () => {
+  it('keeps a finished but unclaimed weekly quest into the next week, next to two new ones', () => {
     let s = fresh();
-    const w = s.quests.weekly!;
+    const w = s.quests.weekly[0];
     s = applyQuestProgress(s, [{ type: w.type, amount: w.target, faction: w.faction }]).save;
-    expect(refreshQuests(s, MON + 8 * DAY, createRng(4)).quests.weekly!.id).toBe(w.id);
+    const next = refreshQuests(s, MON + 8 * DAY, createRng(4)).quests.weekly;
+    expect(next).toHaveLength(3);
+    expect(next[0].id).toBe(w.id);
+    expect(new Set(next.map((q) => q.templateId)).size).toBe(3);
+  });
+
+  it('an old save with a single weekly quest keeps it as one of the list', () => {
+    const s = fresh();
+    const one = s.quests.weekly[0];
+    const migrated = migrateSave({ ...s, quests: { ...s.quests, weekly: one } }).save;
+    expect(migrated.quests.weekly.map((q) => q.id)).toEqual([one.id]);
+    expect(migrateSave({ ...s, quests: { ...s.quests, weekly: null } }).save.quests.weekly).toEqual([]);
   });
 });
 

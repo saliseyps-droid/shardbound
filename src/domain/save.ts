@@ -103,7 +103,8 @@ export interface QuestState {
   rerollsUsed: number;
   totalCompleted: number;
   /** One bigger quest per week (Monday to Sunday). */
-  weekly: Quest | null;
+  /** The quests of the week (WEEKLY_QUEST_COUNT). */
+  weekly: Quest[];
   /** dayKey of the Monday the weekly quest belongs to. */
   weekKey: string | null;
 }

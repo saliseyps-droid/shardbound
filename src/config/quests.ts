@@ -30,13 +30,17 @@ export const QUEST_CONFIG = {
   rerollsPerDay: 1,
 };
 
-/** One of these is the quest of the week; each also gives a booster pack of the newest set. */
+/** Three of these are the quests of the week; each also gives a booster pack. */
+export const WEEKLY_QUEST_COUNT = 3;
 export const WEEKLY_QUEST_TEMPLATES: QuestTemplate[] = [
   { id: 'w_win_10', type: 'WIN_MATCHES', name: 'Warlord of the Week', description: 'Win 10 matches.', target: 10, gold: 150, xp: 400 },
   { id: 'w_play_15', type: 'PLAY_MATCHES', name: 'Seasoned Campaigner', description: 'Play 15 matches.', target: 15, gold: 150, xp: 400 },
   { id: 'w_destroy_60', type: 'DESTROY_UNITS', name: 'Scourge of the Field', description: 'Destroy 60 enemy units.', target: 60, gold: 150, xp: 400 },
   { id: 'w_cards_120', type: 'PLAY_CARDS', name: 'Master of the Deck', description: 'Play 120 cards.', target: 120, gold: 150, xp: 400 },
   { id: 'w_damage_300', type: 'DEAL_DAMAGE', name: 'Unstoppable', description: 'Deal 300 damage.', target: 300, gold: 150, xp: 400 },
+  { id: 'w_spells_40', type: 'PLAY_SPELLS', name: 'Archmage of the Week', description: 'Play 40 spells.', target: 40, gold: 150, xp: 400 },
+  { id: 'w_units_70', type: 'PLAY_UNITS', name: 'Lord of Legions', description: 'Play 70 units.', target: 70, gold: 150, xp: 400 },
+  { id: 'w_win_5', type: 'WIN_MATCHES', name: 'Steady Victor', description: 'Win 5 matches.', target: 5, gold: 120, xp: 300 },
 ];
 export const WEEKLY_QUEST_PACKS = { setId: 'ABYSS' as const, amount: 1 };
 

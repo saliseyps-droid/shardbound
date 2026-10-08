@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.27.6',
+    date: '2026-10-08',
+    title: 'Three weekly quests',
+    summary: 'There are now three weekly quests every week instead of one.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Weekly quests: three different ones every Monday, each with its Gold, XP and a booster pack. A finished one you have not claimed yet stays until you do.',
+          'Three new weekly quests in the rotation: Archmage of the Week (play 40 spells), Lord of Legions (play 70 units) and Steady Victor (win 5 matches).',
+          'The quest badge in the menu now also counts finished weekly quests.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.27.5',
     date: '2026-10-08',
     title: 'Shop portraits aligned',

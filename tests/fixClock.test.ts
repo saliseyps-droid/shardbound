@@ -43,9 +43,9 @@ describe('clock moved backwards', () => {
 
   it('the weekly quest does not change when the clock goes back a week', () => {
     const s = refreshQuests(fresh(), T0, createRng(1));
-    const weekly = s.quests.weekly!;
-    const back = refreshQuests({ ...s, quests: { ...s.quests, weekly: { ...weekly, completed: true, claimed: true } } }, T0 - 7 * DAY, createRng(9));
-    expect(back.quests.weekly!.id).toBe(weekly.id);
+    const weekly = s.quests.weekly;
+    const back = refreshQuests({ ...s, quests: { ...s.quests, weekly: weekly.map((q) => ({ ...q, completed: true, claimed: true })) } }, T0 - 7 * DAY, createRng(9));
+    expect(back.quests.weekly.map((q) => q.id)).toEqual(weekly.map((q) => q.id));
   });
 
   it('rerolls are not reset by going back a day', () => {

@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.27.6': {
+    title: 'Tři týdenní úkoly',
+    summary: 'Místo jednoho týdenního úkolu jsou teď každý týden tři.',
+    sections: [
+      [
+        'Týdenní úkoly: každé pondělí tři různé, každý se zlatem, XP a boosterem. Splněný úkol, za který sis ještě nevyzvedl odměnu, zůstane, dokud ji nevyzvedneš.',
+        'Tři nové týdenní úkoly: Arcimág týdne (zahraj 40 kouzel), Pán legií (zahraj 70 jednotek) a Spolehlivý vítěz (vyhraj 5 zápasů).',
+        'Odznak úkolů v menu teď počítá i splněné týdenní úkoly.',
+      ],
+    ],
+  },
   '0.27.5': {
     title: 'Zarovnané portréty v obchodě',
     summary: 'Portréty všech frakcí v obchodě začínají nahoře.',

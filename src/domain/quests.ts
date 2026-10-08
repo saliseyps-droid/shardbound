@@ -1,4 +1,4 @@
-import { QUEST_CONFIG, QUEST_TEMPLATES, WEEKLY_QUEST_PACKS, WEEKLY_QUEST_TEMPLATES, type QuestTemplate, type QuestType } from '@/config/quests';
+import { QUEST_CONFIG, QUEST_TEMPLATES, WEEKLY_QUEST_COUNT, WEEKLY_QUEST_PACKS, WEEKLY_QUEST_TEMPLATES, type QuestTemplate, type QuestType } from '@/config/quests';
 import type { RngState } from '@/core/rng';
 import { pickOne } from '@/core/rng';
 import { dayKey, err, ok, type Result } from '@/core/utils';
@@ -44,15 +44,27 @@ export function weekKey(now: number): string {
   return dayKey(d.getTime());
 }
 
-/** A new weekly quest each week. A finished one waits until its reward is claimed. */
+/**
+ * New weekly quests each week (WEEKLY_QUEST_COUNT, all different). A finished one whose reward
+ * has not been claimed stays until it is; the rest are replaced, preferring last week's unused ones.
+ */
 function refreshWeekly(save: GameSave, now: number, rng: RngState): GameSave {
   const week = weekKey(trustedNow(save, now));
   const q = save.quests;
-  if (q.weekly && !isLaterKey(week, q.weekKey)) return save;
-  if (q.weekly && q.weekly.completed && !q.weekly.claimed) return save;
-  const previous = q.weekly?.templateId;
-  const t = pickOne(rng, WEEKLY_QUEST_TEMPLATES.filter((x) => x.id !== previous)) ?? WEEKLY_QUEST_TEMPLATES[0];
-  const weekly: Quest = { ...fromTemplate(t, now, 0), id: `weekly_${week}_${t.id}`, packs: { ...WEEKLY_QUEST_PACKS } };
+  if (q.weekly.length >= WEEKLY_QUEST_COUNT && !isLaterKey(week, q.weekKey)) return save;
+  const newWeek = isLaterKey(week, q.weekKey);
+  const kept = newWeek ? q.weekly.filter((x) => x.completed && !x.claimed) : q.weekly;
+  const taken = new Set(kept.map((x) => x.templateId));
+  const previous = new Set(q.weekly.map((x) => x.templateId));
+  const weekly = [...kept];
+  while (weekly.length < WEEKLY_QUEST_COUNT) {
+    const free = WEEKLY_QUEST_TEMPLATES.filter((x) => !taken.has(x.id));
+    const fresh = free.filter((x) => !previous.has(x.id));
+    const t = pickOne(rng, fresh.length ? fresh : free);
+    if (!t) break;
+    taken.add(t.id);
+    weekly.push({ ...fromTemplate(t, now, weekly.length), id: `weekly_${week}_${t.id}`, packs: { ...WEEKLY_QUEST_PACKS } });
+  }
   return { ...save, quests: { ...q, weekly, weekKey: week } };
 }
 
@@ -92,13 +104,14 @@ export function applyQuestProgress(save: GameSave, events: QuestProgressEvent[])
     return next;
   };
   const active = save.quests.active.map(advance);
-  const weekly = save.quests.weekly ? advance(save.quests.weekly) : null;
+  const weekly = save.quests.weekly.map(advance);
   return { save: { ...save, quests: { ...save.quests, active, weekly } }, completed };
 }
 
 export function claimQuest(save: GameSave, questId: string, now: number): Result<{ save: GameSave; quest: Quest; levelUps: LevelUp[] }> {
-  const isWeekly = save.quests.weekly?.id === questId;
-  const quest = isWeekly ? save.quests.weekly! : save.quests.active.find((q) => q.id === questId);
+  const weeklyQuest = save.quests.weekly.find((q) => q.id === questId);
+  const isWeekly = !!weeklyQuest;
+  const quest = weeklyQuest ?? save.quests.active.find((q) => q.id === questId);
   if (!quest) return err('Quest not found.');
   if (!quest.completed) return err('Quest is not complete yet.');
   if (quest.claimed) return err('Reward already claimed.');
@@ -110,7 +123,7 @@ export function claimQuest(save: GameSave, questId: string, now: number): Result
     quests: {
       ...save.quests,
       active: isWeekly ? save.quests.active : save.quests.active.map((q) => (q.id === questId ? { ...q, claimed: true } : q)),
-      weekly: isWeekly ? { ...quest, claimed: true } : save.quests.weekly,
+      weekly: isWeekly ? save.quests.weekly.map((q) => (q.id === questId ? { ...q, claimed: true } : q)) : save.quests.weekly,
       totalCompleted: save.quests.totalCompleted + 1,
     },
   };

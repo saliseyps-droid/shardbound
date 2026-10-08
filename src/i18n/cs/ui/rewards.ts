@@ -13,6 +13,14 @@ const d: Record<string, string> = {
   'Play 120 cards.': 'Zahraj 120 karet.',
   Unstoppable: 'Nezastavitelný',
   'Deal 300 damage.': 'Způsob 300 poškození.',
+  'Weekly quests': 'Týdenní úkoly',
+  'Archmage of the Week': 'Arcimág týdne',
+  'Play 40 spells.': 'Zahraj 40 kouzel.',
+  'Lord of Legions': 'Pán legií',
+  'Play 70 units.': 'Zahraj 70 jednotek.',
+  'Steady Victor': 'Spolehlivý vítěz',
+  'Win 5 matches.': 'Vyhraj 5 zápasů.',
+  'A new set every Monday': 'Nová sada každé pondělí',
   'Quest complete: +{gold} Gold, +{xp} XP and a booster pack': 'Úkol splněn: +{gold} zlata, +{xp} XP a booster',
 
   // Arena

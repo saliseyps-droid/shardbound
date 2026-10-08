@@ -35,14 +35,16 @@ export default function QuestsScreen() {
             </div>
           )}
         </section>
-        {save.quests.weekly && (
+        {save.quests.weekly.length > 0 && (
           <section className="panel" aria-labelledby="q-weekly">
             <div className="panel-title">
-              <span id="q-weekly">{t('Weekly quest')}</span>
-              <span className="faint">{t('A new one every Monday')}</span>
+              <span id="q-weekly">{t('Weekly quests')}</span>
+              <span className="faint">{t('A new set every Monday')}</span>
             </div>
             <div className="quest-list">
-              <QuestRow quest={save.quests.weekly} save={save} allowReroll={false} />
+              {save.quests.weekly.map((q) => (
+                <QuestRow key={q.id} quest={q} save={save} allowReroll={false} />
+              ))}
             </div>
           </section>
         )}

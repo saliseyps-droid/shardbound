@@ -179,8 +179,11 @@ export function migrateSave(input: Raw): MigrationReport {
         .filter((q: Raw) => q && typeof q.id === 'string')
         .map((q: Raw) => ({ ...q, target: num(q.target, 1, 1), progress: Math.min(num(q.progress, 0), num(q.target, 1, 1)) }))
     : [];
-  const w = quests.weekly as Raw;
-  quests.weekly = w && typeof w === 'object' && typeof w.id === 'string' ? { ...w, target: num(w.target, 1, 1), progress: Math.min(num(w.progress, 0), num(w.target, 1, 1)) } : null;
+  // Weekly quests: a list since 0.27.6 (older saves had a single quest or null).
+  const rawWeekly: Raw[] = Array.isArray(quests.weekly) ? quests.weekly : quests.weekly ? [quests.weekly] : [];
+  quests.weekly = rawWeekly
+    .filter((w) => w && typeof w === 'object' && typeof w.id === 'string')
+    .map((w) => ({ ...w, target: num(w.target, 1, 1), progress: Math.min(num(w.progress, 0), num(w.target, 1, 1)) }));
   if (typeof quests.weekKey !== 'string') quests.weekKey = null;
 
   const save: GameSave = {
