@@ -27,9 +27,9 @@ describe('withdrawn portraits', () => {
 });
 
 describe('Warden portraits', () => {
-  it('has 28 portraits, at least two for every faction', () => {
-    expect(PORTRAITS).toHaveLength(28);
-    expect(new Set(PORTRAITS.map((p) => p.id)).size).toBe(28);
+  it('has 33 portraits, at least two for every faction', () => {
+    expect(PORTRAITS).toHaveLength(33);
+    expect(new Set(PORTRAITS.map((p) => p.id)).size).toBe(33);
     for (const f of PLAYABLE_FACTIONS) expect(PORTRAITS.filter((p) => p.faction === f).length).toBeGreaterThanOrEqual(2);
   });
 

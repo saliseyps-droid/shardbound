@@ -41,6 +41,11 @@ export const PORTRAITS: PortraitDef[] = [
   { id: 'verdant_bloom_cat', faction: 'VERDANT', name: 'Bloomcrown Cat', price: 250 },
   { id: 'astral_silver_cat', faction: 'ASTRAL', name: 'Silvermoon Cat', price: 250 },
   { id: 'void_moon_cat', faction: 'VOID', name: 'Shadowmark Cat', price: 250 },
+  { id: 'iron_candle_cat', faction: 'IRON', name: 'Candlelit Seer Cat', price: 250 },
+  { id: 'tide_frosthood_cat', faction: 'TIDE', name: 'Frosthood Cat', price: 250 },
+  { id: 'ember_emberhood_cat', faction: 'EMBER', name: 'Emberhood Cat', price: 250 },
+  { id: 'void_starhood_cat', faction: 'VOID', name: 'Starhood Cat', price: 250 },
+  { id: 'astral_goldhood_cat', faction: 'ASTRAL', name: 'Goldhood Cat', price: 250 },
 ];
 
 const BY_ID = new Map(PORTRAITS.map((p) => [p.id, p]));

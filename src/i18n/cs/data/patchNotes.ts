@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.31.5': {
+    title: 'Kočky v kápích',
+    summary: 'Pět nových portrétů koček v kápích v obchodě.',
+    sections: [['Nové portréty Strážců v obchodě (po 250 zlata): Kočičí věštec při svíci (Mosazné dominium), Kočka v mrazivé kápi (Dvůr Jinovatky), Kocour v žhnoucí kápi (Popelavá legie), Kocour v hvězdné kápi (Prázdný chór) a Kočka ve zlaté kápi (Konkláve Lumenu).']],
+  },
   '0.31.4': {
     title: 'Tři kočičí portréty',
     summary: 'Tři nové kočičí portréty Strážců v obchodě.',

@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.31.5',
+    date: '2026-10-09',
+    title: 'Hooded cat portraits',
+    summary: 'Five new hooded cat Warden portraits in the Shop.',
+    sections: [{ kind: 'new', items: ['New Warden portraits in the Shop (250 Gold each): Candlelit Seer Cat (Brass Dominion), Frosthood Cat (Rimetide Court), Emberhood Cat (Cinder Legion), Starhood Cat (Hollow Choir) and Goldhood Cat (Lumen Conclave).'] }],
+    commits: [],
+  },
+  {
     version: '0.31.4',
     date: '2026-10-09',
     title: 'Three cat portraits',
