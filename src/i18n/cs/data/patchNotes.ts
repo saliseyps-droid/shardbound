@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.30.1': {
+    title: 'Deset nových rubových stran',
+    summary: 'Deset nových rubových stran karet v obchodě.',
+    sections: [['Deset nových rubových stran karet v obchodě: Půlnoční havran, Lávový hranol, Zimní krystal, Lví štít, Brána propasti, Kormidlo navigátora, Čepel smrti, Hranolová růže, Démonská koruna a Stříbrný půlměsíc.']],
+  },
   '0.30.0': {
     title: 'Denní puzzle',
     summary: 'Každý den nové puzzle: najdi cestu, jak vyhrát v jednom tahu.',

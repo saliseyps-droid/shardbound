@@ -16,9 +16,9 @@ const fresh = (gold = 5000) => {
 };
 
 describe('card backs', () => {
-  it('has 32 backs with unique ids; only the default is free', () => {
-    expect(CARD_BACKS).toHaveLength(32);
-    expect(new Set(CARD_BACKS.map((b) => b.id)).size).toBe(32);
+  it('has 42 backs with unique ids; only the default is free', () => {
+    expect(CARD_BACKS).toHaveLength(42);
+    expect(new Set(CARD_BACKS.map((b) => b.id)).size).toBe(42);
     expect(CARD_BACKS[0].id).toBe(DEFAULT_CARD_BACK);
     expect(CARD_BACKS.filter((b) => b.price === 0).map((b) => b.id)).toEqual([DEFAULT_CARD_BACK]);
   });

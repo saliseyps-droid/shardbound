@@ -42,6 +42,17 @@ export const CARD_BACKS: CardBackDef[] = [
   { id: 'molten_core', name: 'Molten Core', price: 450, description: 'A burning rune in cracked, glowing rock.' },
   { id: 'elder_oak', name: 'Elder Oak', price: 300, description: 'The great oak of the Circle carved in old wood.' },
   { id: 'nebula_spiral', name: 'Nebula Spiral', price: 750, description: 'A galaxy turning in a frame of dark silver.' },
+  // Third collection (backy)
+  { id: 'midnight_raven', name: 'Midnight Raven', price: 450, description: 'A black raven carved in dark stone.' },
+  { id: 'lava_prism', name: 'Lava Prism', price: 450, description: 'A diamond of glowing cracks in cooling lava.' },
+  { id: 'winter_crystal', name: 'Winter Crystal', price: 450, description: 'A blue snowflake on silvered frost.' },
+  { id: 'lion_bulwark', name: 'Lion Bulwark', price: 600, description: 'A golden lion on a guarded shield.' },
+  { id: 'abyssal_gate', name: 'Abyssal Gate', price: 600, description: 'A violet rift tearing open in the dark.' },
+  { id: 'navigators_wheel', name: "Navigator's Wheel", price: 300, description: 'A brass wheel turning around a sapphire.' },
+  { id: 'deaths_blade', name: "Death's Blade", price: 600, description: 'A horned skull pierced by a long blade.' },
+  { id: 'prism_rose', name: 'Prism Rose', price: 1000, description: 'A star of coloured glass in a leaded window.' },
+  { id: 'demon_crown', name: 'Demon Crown', price: 750, description: 'Crimson horns rising from blood-red stone.' },
+  { id: 'silver_crescent', name: 'Silver Crescent', price: 450, description: 'A silver crescent in a ring of runes.' },
 ];
 
 const BY_ID = new Map(CARD_BACKS.map((b) => [b.id, b]));

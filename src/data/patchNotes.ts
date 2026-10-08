@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.30.1',
+    date: '2026-10-08',
+    title: 'Ten new card backs',
+    summary: 'Ten new card backs in the Shop.',
+    sections: [{ kind: 'new', items: ["Ten new card backs in the Shop: Midnight Raven, Lava Prism, Winter Crystal, Lion Bulwark, Abyssal Gate, Navigator's Wheel, Death's Blade, Prism Rose, Demon Crown and Silver Crescent."] }],
+    commits: [],
+  },
+  {
     version: '0.30.0',
     date: '2026-10-08',
     title: 'Daily puzzle',
