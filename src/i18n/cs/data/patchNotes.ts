@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.14': {
+    title: 'Kůra místo kůže',
+    summary: 'Kůra místo kůže na stupni III dává +1/+1.',
+    sections: [['Kůra místo kůže (talent Kruhu Trnoboru), stupeň III: první jednotka, kterou v tahu vyvoláš, dostane +1/+1 (dříve +1/+2).']],
+  },
   '0.26.13': {
     title: 'R3-D3',
     summary: 'Do Dragon Realm přibyla nová legendární karta Mosazného dominia.',

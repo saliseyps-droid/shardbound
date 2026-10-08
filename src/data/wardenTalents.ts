@@ -105,8 +105,8 @@ const VERDANT: TalentAbility[] = [
   passive('VERDANT', 'barkskin', 'Barkskin', [
     { limitPerTurn: 1, abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', health: 1, target: 'TRIGGER_UNIT' }] }], description: 'The first time you summon a unit each turn, give it +0/+1.' },
     { limitPerTurn: 1, abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', health: 2, target: 'TRIGGER_UNIT' }] }], description: 'The first time you summon a unit each turn, give it +0/+2.' },
-    { limitPerTurn: 1, abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', attack: 1, health: 2, target: 'TRIGGER_UNIT' }] }], description: 'The first time you summon a unit each turn, give it +1/+2.' },
-  ], ['+0/+1 → +0/+2.', '+0/+2 → +1/+2.']),
+    { limitPerTurn: 1, abilities: [{ trigger: 'ALLY_SUMMONED', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TRIGGER_UNIT' }] }], description: 'The first time you summon a unit each turn, give it +1/+1.' },
+  ], ['+0/+1 → +0/+2.', '+0/+2 → +1/+1.']),
   active('VERDANT', 'thornguard', 'Thornguard', [
     { cost: 3, target: { kind: 'ALLY_UNIT' }, effects: [{ type: 'BUFF', health: 2, target: 'TARGET' }, { type: 'GRANT_KEYWORD', keyword: 'GUARD', target: 'TARGET' }], description: 'Give a friendly unit +0/+2 and Guard.' },
     { cost: 2, target: { kind: 'ALLY_UNIT' }, effects: [{ type: 'BUFF', health: 2, target: 'TARGET' }, { type: 'GRANT_KEYWORD', keyword: 'GUARD', target: 'TARGET' }], description: 'Give a friendly unit +0/+2 and Guard.' },

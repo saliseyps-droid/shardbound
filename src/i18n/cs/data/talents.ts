@@ -82,9 +82,9 @@ const talents: TalentsOverlay = {
     levels: [
       'Když poprvé v tahu vyvoláš jednotku, dej jí +0/+1.',
       'Když poprvé v tahu vyvoláš jednotku, dej jí +0/+2.',
-      'Když poprvé v tahu vyvoláš jednotku, dej jí +1/+2.',
+      'Když poprvé v tahu vyvoláš jednotku, dej jí +1/+1.',
     ],
-    upgradeNotes: ['+0/+1 → +0/+2.', '+0/+2 → +1/+2.'],
+    upgradeNotes: ['+0/+1 → +0/+2.', '+0/+2 → +1/+1.'],
   },
   wt_verdant_thornguard: {
     name: 'Trnová stráž',

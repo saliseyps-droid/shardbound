@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.14',
+    date: '2026-10-08',
+    title: 'Barkskin',
+    summary: 'Barkskin rank III gives +1/+1.',
+    sections: [{ kind: 'balance', items: ['Barkskin (Thornweald Circle talent), rank III: the first unit you summon each turn gets +1/+1 (was +1/+2).'] }],
+    commits: [],
+  },
+  {
     version: '0.26.13',
     date: '2026-10-07',
     title: 'R3-D3',
