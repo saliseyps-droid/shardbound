@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.30.0',
+    date: '2026-10-08',
+    title: 'Daily puzzle',
+    summary: 'A new puzzle every day: find the way to win in one turn.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Daily puzzle (Play, under the Tutorial): a set board where you must win in one turn. Everyone gets the same puzzle each day, with a hint.',
+          'Ending your turn gives the puzzle up, and you can try again as often as you like. The first solve each day pays 60 Gold and 120 XP and extends your streak of days in a row.',
+          'Puzzles never count as matches won or lost and do not advance quests.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.29.0',
     date: '2026-10-08',
     title: 'The Dungeon',

@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.30.0': {
+    title: 'Denní puzzle',
+    summary: 'Každý den nové puzzle: najdi cestu, jak vyhrát v jednom tahu.',
+    sections: [
+      [
+        'Denní puzzle (Hrát, pod tutoriálem): připravená situace na stole, kde musíš vyhrát v jednom tahu. Všichni mají každý den stejné puzzle, s nápovědou.',
+        'Ukončením tahu puzzle vzdáš a můžeš to zkoušet, kolikrát chceš. První vyřešení každý den dá 60 zlata a 120 XP a prodlouží tvou řadu dní po sobě.',
+        'Puzzle se nepočítá jako vyhraný ani prohraný zápas a neposouvá úkoly.',
+      ],
+    ],
+  },
   '0.29.0': {
     title: 'Dungeon',
     summary: 'Nový roguelike režim: tři patra, devět nepřátel, jeden život.',

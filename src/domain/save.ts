@@ -8,6 +8,7 @@ import type { Deck } from './decks';
 import type { RankedState } from './ranked';
 import type { AiRankedState } from './aiRanked';
 import type { BrawlState } from './brawl';
+import type { PuzzleProgress } from './puzzles';
 
 export const CURRENT_SAVE_VERSION = 5;
 
@@ -63,6 +64,8 @@ export interface PlayerProfile {
   tournamentsWon: number;
   /** Brawl fights won in the current rotation (src/domain/brawl.ts); missing until the first win. */
   brawl?: BrawlState;
+  /** Daily puzzle solves and streak (src/domain/puzzles.ts); missing until the first. */
+  puzzle?: PuzzleProgress;
   /** Brawl matches won, all rotations (achievements); missing until the first. */
   brawlWins?: number;
 }
@@ -128,7 +131,7 @@ export interface MatchRecord {
   id: string;
   date: number;
   durationMs: number;
-  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'PVP' | 'RANKED' | 'TOURNAMENT' | 'ARENA' | 'AI_RANKED' | 'BRAWL' | 'DUNGEON';
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'PVP' | 'RANKED' | 'TOURNAMENT' | 'ARENA' | 'AI_RANKED' | 'BRAWL' | 'DUNGEON' | 'PUZZLE';
   /** Ranked rating change, when ranked. */
   ratingChange?: number;
   opponentId: string;

@@ -1,4 +1,5 @@
 import { arenaDeck, arenaOpponent, arenaPhase } from '@/domain/arena';
+import { createPuzzleGame, findPuzzle } from '@/domain/puzzles';
 import { dungeonDeck, dungeonOpponent, dungeonPlayerMods } from '@/domain/dungeon';
 import { applyBrawlMods, brawlPlayerMods, findBrawlFight } from '@/domain/brawl';
 import { create } from 'zustand';
@@ -245,6 +246,8 @@ export const useMatch = create<MatchStore>((set, get) => {
     if (!game || game.phase === 'ENDED' || s.phase === 'ended') return false;
     // While a dropped link is being checked nothing may change the board.
     if (s.linkCheck) return false;
+    // Puzzle: ending the turn without winning gives the puzzle up (the opponent never plays).
+    if (action.type === 'END_TURN' && s.config?.mode === 'PUZZLE') action = { type: 'CONCEDE', player: HUMAN };
     if (action.player === HUMAN && s.config?.mode === 'TUTORIAL') {
       const intent = intentOf(action, game);
       if (intent && tutorialBlocks(intent)) return false;
@@ -553,6 +556,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         firstWinReward: cfg.mode === 'PVE' ? cfg.opponent.firstWinReward : undefined,
         heroHealth: state.players[HUMAN].hero.health,
         brawlFightId: cfg.mode === 'BRAWL' ? cfg.brawlFightId : undefined,
+        puzzleDay: cfg.mode === 'PUZZLE' ? cfg.puzzle?.day : undefined,
       });
       set({ rewards });
       if (cfg.mode === 'TOURNAMENT' && cfg.tournamentMatchId) onTournamentMatchEnd?.(cfg.tournamentMatchId, result);
@@ -632,6 +636,16 @@ export const useMatch = create<MatchStore>((set, get) => {
         pendingInitial = null;
       } else if (config.mode === 'TUTORIAL') {
         setup = tutorialSetup(save.profile.username, save.profile.avatar);
+      } else if (config.mode === 'PUZZLE') {
+        const puzzle = config.puzzle ? findPuzzle(config.puzzle.id) : undefined;
+        if (!puzzle) throw new Error('This puzzle is not available.');
+        deckName = 'Puzzle';
+        initialState = createPuzzleGame(
+          puzzle,
+          { name: save.profile.username, avatar: save.profile.avatar, faction: null, cardBack: save.profile.cardBack ?? null },
+          { name: config.opponent.name, avatar: config.opponent.avatar, faction: config.opponent.faction, portrait: config.opponent.portrait ?? null },
+          config.seed ?? randomSeed(),
+        );
       } else if (config.mode === 'DUNGEON') {
         // The run's deck lives in the Dungeon state; treasures change the player's side.
         const run = save.dungeon?.run;

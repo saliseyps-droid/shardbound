@@ -1,4 +1,5 @@
 import { MATCH_REWARDS, XP_REWARDS, type Difficulty } from '@/config/progression';
+import { PUZZLE_REWARD, solvePuzzle } from './puzzles';
 import { dayKey } from '@/core/utils';
 import type { MatchStats } from '@/engine/types';
 import type { OpponentReward } from '@/data/opponents';
@@ -32,6 +33,8 @@ export interface MatchSummary {
   heroHealth?: number;
   /** Brawl: the fight played (`${rotation}-${index}`). */
   brawlFightId?: string;
+  /** Daily puzzle: its UTC day. */
+  puzzleDay?: number;
 }
 
 export interface RewardLine {
@@ -103,7 +106,16 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
 
   let s: GameSave = save;
 
-  if (summary.mode === 'TUTORIAL') {
+  const counts = summary.mode !== 'TUTORIAL' && summary.mode !== 'PUZZLE';
+  if (summary.mode === 'PUZZLE') {
+    const solved = summary.result === 'WIN' && summary.puzzleDay !== undefined ? solvePuzzle(save.profile.puzzle, summary.puzzleDay) : null;
+    if (solved) {
+      gold += PUZZLE_REWARD.gold;
+      xp += PUZZLE_REWARD.xp;
+      lines.push({ label: 'Daily puzzle solved', gold: PUZZLE_REWARD.gold, xp: PUZZLE_REWARD.xp });
+      s = { ...s, profile: { ...s.profile, puzzle: solved } };
+    }
+  } else if (summary.mode === 'TUTORIAL') {
     if (!save.profile.tutorialCompleted && summary.result === 'WIN') {
       gold += MATCH_REWARDS.tutorialGold;
       xp += XP_REWARDS.tutorialComplete;
@@ -167,18 +179,18 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
   // Profile stats.
   const p = s.profile;
   const factionWins = { ...p.factionWins };
-  if (summary.result === 'WIN') factionWins[summary.deckFaction] = (factionWins[summary.deckFaction] ?? 0) + 1;
+  if (summary.result === 'WIN' && counts) factionWins[summary.deckFaction] = (factionWins[summary.deckFaction] ?? 0) + 1;
   s = {
     ...s,
     profile: {
       ...p,
       gold: p.gold + gold,
       essence: p.essence + essence,
-      wins: p.wins + (summary.result === 'WIN' && summary.mode !== 'TUTORIAL' ? 1 : 0),
-      losses: p.losses + (summary.result === 'LOSS' && summary.mode !== 'TUTORIAL' ? 1 : 0),
-      draws: p.draws + (summary.result === 'DRAW' ? 1 : 0),
-      firstWinDay: summary.result === 'WIN' && summary.mode !== 'TUTORIAL' ? today : p.firstWinDay,
-      winsToday: summary.result === 'WIN' ? winsToday + 1 : winsToday,
+      wins: p.wins + (summary.result === 'WIN' && counts ? 1 : 0),
+      losses: p.losses + (summary.result === 'LOSS' && counts ? 1 : 0),
+      draws: p.draws + (summary.result === 'DRAW' && counts ? 1 : 0),
+      firstWinDay: summary.result === 'WIN' && counts ? today : p.firstWinDay,
+      winsToday: summary.result === 'WIN' && counts ? winsToday + 1 : winsToday,
       winsTodayDay: today,
       factionWins,
     },
@@ -186,7 +198,7 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
 
   // Quests (tutorial matches don't count).
   let questsCompleted: Quest[] = [];
-  if (summary.mode !== 'TUTORIAL' && eligible) {
+  if (counts && eligible) {
     const q = applyQuestProgress(s, questEventsFromMatch(summary));
     s = q.save;
     questsCompleted = q.completed;

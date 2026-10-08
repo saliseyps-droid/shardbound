@@ -15,6 +15,7 @@ import { tierFor } from '@/domain/ranked';
 import { ARENA } from '@/config/arena';
 import { BRAWL_FIGHTS_PER_ROTATION, brawlProgress, brawlRotation, brawlRotationEnds } from '@/domain/brawl';
 import { trustedNow } from '@/domain/clock';
+import { currentStreak, puzzleDay, puzzleForDay, PUZZLE_REWARD } from '@/domain/puzzles';
 import { dungeonOf, hasFreeDungeonEntry } from '@/domain/dungeon';
 import { DUNGEON, DUNGEON_MATCHES } from '@/config/dungeon';
 import { brawlTimeLeft } from '@/ui/components/meta/brawlUi';
@@ -121,6 +122,37 @@ function modeTiles(save: GameSave): { ai: ModeTile[]; pvp: ModeTile[] } {
   return { ai, pvp };
 }
 
+/** Today's puzzle: win in one turn; the first solve each day pays a reward. */
+function PuzzleStrip({ save }: { save: GameSave }) {
+  const navigate = useNavigate();
+  const day = puzzleDay(Date.now());
+  const puzzle = puzzleForDay(day);
+  const solved = save.profile.puzzle?.lastSolvedDay === day;
+  const streak = currentStreak(save.profile.puzzle, day);
+  const start = () => {
+    audio.play('click');
+    const base = PRACTICE_OPPONENTS[PLAYABLE_FACTIONS[day % PLAYABLE_FACTIONS.length]];
+    launchMatch({ mode: 'PUZZLE', deckId: null, puzzle: { id: puzzle.id, day }, opponent: { ...base, id: `puzzle_${puzzle.id}`, difficulty: 'EASY', rarities: DIFFICULTY_POOLS.EASY } }, navigate);
+  };
+  return (
+    <section className={`play-tutorial play-puzzle ${solved ? 'is-done' : ''}`} aria-labelledby="puzzle-strip-title">
+      <span className="play-tutorial-icon" aria-hidden>
+        <Glyph name="star" size={solved ? 22 : 28} />
+      </span>
+      <div className="play-tutorial-text">
+        <strong id="puzzle-strip-title">{t('Daily puzzle: {name}', { name: t(puzzle.name) })}</strong>
+        <span className="muted">
+          {t('Win in one turn.')} {solved ? t('Solved today.') : t('First solve today: {gold} Gold and {xp} XP.', { gold: PUZZLE_REWARD.gold, xp: PUZZLE_REWARD.xp })}
+        </span>
+      </div>
+      {streak > 0 && <span className="play-tutorial-done">{tn(streak, '{n} day streak', '{n} day streak')}</span>}
+      <button type="button" className={`btn ${solved ? 'btn-ghost' : 'btn-primary'} play-tutorial-btn`} onClick={start}>
+        {solved ? t('Play again') : t('Solve')}
+      </button>
+    </section>
+  );
+}
+
 export default function PlayScreen() {
   const save = useAccount((s) => s.save);
   const navigate = useNavigate();
@@ -161,6 +193,7 @@ export default function PlayScreen() {
           {tutorialDone ? t('Replay') : t('Start here')}
         </button>
       </section>
+      <PuzzleStrip save={save} />
       <div className="mode-groups">
         <ModeGrid title={t('Against the AI')} tiles={tiles.ai} />
         <ModeGrid title={t('Against players')} tiles={tiles.pvp} variant="pvp" />

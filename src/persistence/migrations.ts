@@ -116,6 +116,13 @@ export function migrateSave(input: Raw): MigrationReport {
   const r = p.ranked && typeof p.ranked === 'object' ? p.ranked : newRanked();
   p.ranked = { rating: num(r.rating, 1000, 100), peak: num(r.peak, 1000, 100), wins: Math.floor(num(r.wins, 0)), losses: Math.floor(num(r.losses, 0)), ...rankedSeasonFields(r) };
   p.aiRanked = repairAiRanked(p.aiRanked);
+  if (p.puzzle !== undefined) {
+    const z = p.puzzle;
+    p.puzzle = z && typeof z === 'object'
+      ? { lastSolvedDay: Number.isInteger(z.lastSolvedDay) ? z.lastSolvedDay : null, streak: Math.floor(num(z.streak, 0)), solved: Math.floor(num(z.solved, 0)) }
+      : undefined;
+    if (!p.puzzle) delete p.puzzle;
+  }
   if (p.brawlWins !== undefined) p.brawlWins = Math.floor(num(p.brawlWins, 0));
   if (p.brawl !== undefined) {
     const b = p.brawl;

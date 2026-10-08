@@ -3,7 +3,9 @@ import type { AiTuning } from '@/ai/config';
 import type { OpponentDef } from '@/data/opponents';
 
 export interface MatchConfig {
-  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE' | 'RANKED' | 'TOURNAMENT' | 'ARENA' | 'AI_RANKED' | 'BRAWL' | 'DUNGEON';
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE' | 'RANKED' | 'TOURNAMENT' | 'ARENA' | 'AI_RANKED' | 'BRAWL' | 'DUNGEON' | 'PUZZLE';
+  /** Daily puzzle: which puzzle and its UTC day. */
+  puzzle?: { id: string; day: number };
   /** Brawl: the fight being played (src/domain/brawl.ts). */
   brawlFightId?: string;
   /** Ranked: the opponent's rating when the match was found. */

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from 'react';
+import { findPuzzle } from '@/domain/puzzles';
 import { findBrawlFight } from '@/domain/brawl';
 import '@/ui/styles/brawl.css';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -58,6 +59,8 @@ function modeLabel(config: MatchConfig | null | undefined): string {
       return t('Brawl');
     case 'DUNGEON':
       return t('Dungeon');
+    case 'PUZZLE':
+      return t('Daily puzzle');
     case 'RANKED':
       return t('Ranked');
     case 'TOURNAMENT':
@@ -67,6 +70,20 @@ function modeLabel(config: MatchConfig | null | undefined): string {
     default:
       return config?.online ? t('Online match') : t('Practice');
   }
+}
+
+/** The puzzle's goal and hint, under the battle log. */
+function PuzzleGoal({ id }: { id?: string }) {
+  const puzzle = id ? findPuzzle(id) : undefined;
+  if (!puzzle) return null;
+  return (
+    <div className="match-brawl-rules">
+      <div>
+        <strong>{t(puzzle.name)}:</strong> <span>{t('Win this turn. Ending your turn gives the puzzle up.')}</span>
+      </div>
+      <div className="faint">{t(puzzle.hint)}</div>
+    </div>
+  );
 }
 
 /** The Brawl fight's rules, under the battle log. */
@@ -673,6 +690,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           {t('{mode} vs {name}', { mode: modeLabel(config), name: game.players[AI].hero.name })}
         </div>
         {config?.mode === 'BRAWL' && <BrawlRules fightId={config.brawlFightId} />}
+        {config?.mode === 'PUZZLE' && <PuzzleGoal id={config.puzzle?.id} />}
       </aside>
 
       {/* ---- Targeting arrow ---- */}

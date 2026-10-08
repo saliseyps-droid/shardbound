@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+import { findPuzzle } from '@/domain/puzzles';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { getCardSafe } from '@/data/cards';
@@ -378,10 +379,10 @@ export function ResultsOverlay({ game }: { game: GameState }) {
   const exit = (path: string) => navigate(path);
   return (
     <div className={`match-overlay results ${win ? 'is-win' : draw ? 'is-draw' : 'is-loss'}`} role="dialog" aria-label={win ? t('Victory') : draw ? t('Draw') : t('Defeat')}>
-      <h1 className="results-title">{win ? t('Victory') : draw ? t('Draw') : t('Defeat')}</h1>
+      <h1 className="results-title">{config?.mode === 'PUZZLE' ? (win ? t('Puzzle solved!') : t('Not solved')) : win ? t('Victory') : draw ? t('Draw') : t('Defeat')}</h1>
       <p className="muted">
-        {config?.mode === 'ARENA' ? t('Arena match against {name}', { name: config.opponent.name }) : config?.mode === 'DUNGEON' ? t('Dungeon match against {name}', { name: config.opponent.name }) : config?.mode === 'TOURNAMENT' ? t('Tournament match against {name}', { name: config.opponent.name }) : config?.mode === 'RANKED' ? t('Ranked match against {name}', { name: config.opponent.name }) : config?.mode === 'AI_RANKED' ? t('Ranked match against the AI {name}', { name: config.opponent.name }) : config?.online ? t('Online match against {name}', { name: config.opponent.name }) : t(`Against {name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`, { name: String(config?.opponent.name) })}
-        {game.endReason === 'CONCEDE' ? t(', by concession') : game.endReason === 'DISCONNECT' ? t(', connection lost') : ''}
+        {config?.mode === 'PUZZLE' ? t('Daily puzzle: {name}', { name: t(findPuzzle(config.puzzle?.id ?? '')?.name ?? '') }) : config?.mode === 'ARENA' ? t('Arena match against {name}', { name: config.opponent.name }) : config?.mode === 'DUNGEON' ? t('Dungeon match against {name}', { name: config.opponent.name }) : config?.mode === 'TOURNAMENT' ? t('Tournament match against {name}', { name: config.opponent.name }) : config?.mode === 'RANKED' ? t('Ranked match against {name}', { name: config.opponent.name }) : config?.mode === 'AI_RANKED' ? t('Ranked match against the AI {name}', { name: config.opponent.name }) : config?.online ? t('Online match against {name}', { name: config.opponent.name }) : t(`Against {name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`, { name: String(config?.opponent.name) })}
+        {config?.mode === 'PUZZLE' ? '' : game.endReason === 'CONCEDE' ? t(', by concession') : game.endReason === 'DISCONNECT' ? t(', connection lost') : ''}
       </p>
       <div className="results-grid">
         <div className="panel results-stats">
@@ -404,7 +405,11 @@ export function ResultsOverlay({ game }: { game: GameState }) {
         <div className="panel results-rewards">
           <h4>{t('Rewards')}</h4>
           {!rewards && <p className="muted">{t('Recording result…')}</p>}
-          {rewards && rewards.lines.length === 0 && <p className="muted">{t('No rewards — matches shorter than 3 turns don’t count.')}</p>}
+          {rewards && rewards.lines.length === 0 && (
+            <p className="muted">
+              {config?.mode === 'PUZZLE' ? (win ? t('You already solved today’s puzzle. Come back tomorrow for a new one.') : t('Solve it to earn today’s reward. You can try as often as you like.')) : t('No rewards — matches shorter than 3 turns don’t count.')}
+            </p>
+          )}
           {rewards?.lines.map((l) => (
             <div key={l.label} className="reward-line">
               <span>{t(l.label)}</span>
@@ -476,7 +481,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
             </p>
           )}
         </div>
-        {config?.mode !== 'TUTORIAL' && quests.length > 0 && (
+        {config?.mode !== 'TUTORIAL' && config?.mode !== 'PUZZLE' && quests.length > 0 && (
           <div className="panel results-quests">
             <h4>{t('Quest progress')}</h4>
             {quests.map((q) => (
@@ -521,12 +526,12 @@ export function ResultsOverlay({ game }: { game: GameState }) {
             ) : (
             <>
             <button className="btn btn-ghost" onClick={() => exit(config?.mode === 'PVE' ? '/campaign' : config?.mode === 'TOURNAMENT' ? '/tournament' : config?.mode === 'RANKED' ? '/ranked' : config?.mode === 'AI_RANKED' ? '/ai-ranked' : config?.mode === 'BRAWL' ? '/brawl' : config?.online ? '/online' : '/play')}>
-              {config?.mode === 'PVE' ? t('Back to campaign') : config?.mode === 'TOURNAMENT' ? t('Back to bracket') : config?.mode === 'RANKED' ? t('Ranked') : config?.mode === 'AI_RANKED' ? t('Next ranked match') : config?.mode === 'BRAWL' ? t('Back to Brawl') : config?.online ? t('New online match') : t('Choose opponent')}
+              {config?.mode === 'PVE' ? t('Back to campaign') : config?.mode === 'TOURNAMENT' ? t('Back to bracket') : config?.mode === 'RANKED' ? t('Ranked') : config?.mode === 'AI_RANKED' ? t('Next ranked match') : config?.mode === 'BRAWL' ? t('Back to Brawl') : config?.mode === 'PUZZLE' ? t('Back to Play') : config?.online ? t('New online match') : t('Choose opponent')}
             </button>
             {/* A ranked rematch would replay the same rival; the ladder screen rolls a new one. */}
             {!config?.online && config?.mode !== 'TOURNAMENT' && config?.mode !== 'AI_RANKED' && (
               <button className="btn" onClick={rematch}>
-                {t('Rematch')}
+                {config?.mode === 'PUZZLE' ? t('Try again') : t('Rematch')}
               </button>
             )}
             <button className="btn btn-primary btn-lg" onClick={() => exit(config?.mode === 'TOURNAMENT' ? '/tournament' : '/')} ref={focusWithoutScroll}>
