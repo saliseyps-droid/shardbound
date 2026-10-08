@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.27.5': {
+    title: 'Zarovnané portréty v obchodě',
+    summary: 'Portréty všech frakcí v obchodě začínají nahoře.',
+    sections: [['Obchod: frakce s menším počtem portrétů (třeba Mosazné dominium) už je nemá posunuté doprostřed boxu, všechny začínají nahoře.']],
+  },
   '0.27.4': {
     title: 'Úpravy portrétů',
     summary: 'Dva portréty odcházejí z obchodu, dva jsou světlejší.',

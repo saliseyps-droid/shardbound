@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.27.5',
+    date: '2026-10-08',
+    title: 'Shop portraits aligned',
+    summary: 'Every faction of portraits in the Shop lines up at the top.',
+    sections: [{ kind: 'fixed', items: ['Shop: a faction with fewer portraits (like Brass Dominion) no longer has them pushed down the middle of its box; all start at the top.'] }],
+    commits: [],
+  },
+  {
     version: '0.27.4',
     date: '2026-10-08',
     title: 'Portrait touch-ups',
