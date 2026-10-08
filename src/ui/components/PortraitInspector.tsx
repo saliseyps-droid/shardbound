@@ -4,7 +4,7 @@ import { FACTIONS } from '@/data/factions';
 import { getPortrait } from '@/data/portraits';
 import type { PlayableFaction } from '@/game/types';
 import { Modal } from './common';
-import { portraitUrl } from './WardenPortrait';
+import { fullPortraitUrl, portraitUrl } from './WardenPortrait';
 import { t } from '@/i18n';
 import '@/ui/styles/portraitInspector.css';
 
@@ -68,14 +68,15 @@ export function usePortraitPress(target: Target) {
 export function PortraitInspector() {
   const target = usePortraitInspect((s) => s.target);
   if (!target) return null;
-  const url = portraitUrl(target.faction, target.portrait);
+  const full = fullPortraitUrl(target.portrait);
+  const url = full ?? portraitUrl(target.faction, target.portrait);
   const def = getPortrait(target.portrait);
   const faction = FACTIONS[target.faction];
   const name = def ? t(def.name) : t('Default Warden');
   return (
     <Modal open onClose={() => inspectPortrait(null)} title={name} className="portrait-inspector">
       <div className="portrait-inspector-body" style={{ '--fc': faction.colors.primary } as CSSProperties}>
-        {url && <img src={url} alt={name} draggable={false} />}
+        {url && <img className={full ? 'is-oval' : undefined} src={url} alt={name} draggable={false} />}
         <span className="portrait-inspector-faction">{faction.name}</span>
       </div>
     </Modal>

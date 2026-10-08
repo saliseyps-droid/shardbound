@@ -16,6 +16,16 @@ const altModules = import.meta.glob('../../assets/portraits/*.webp', { eager: tr
 const BY_ID: Record<string, string> = {};
 for (const [path, url] of Object.entries(altModules)) BY_ID[path.split('/').pop()!.replace('.webp', '')] = url;
 
+/** Large versions for the portrait viewer (the whole oval at source resolution): src/assets/portraits/full/<id>.webp */
+const fullModules = import.meta.glob('../../assets/portraits/full/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const FULL_BY_ID: Record<string, string> = {};
+for (const [path, url] of Object.entries(fullModules)) FULL_BY_ID[path.split('/').pop()!.replace('.webp', '')] = url;
+
+/** The large oval version of an alternative portrait, when there is one. */
+export function fullPortraitUrl(portrait: string | null | undefined): string | undefined {
+  return portrait ? FULL_BY_ID[portrait] : undefined;
+}
+
 /** The faction's default portrait, or a chosen alternative when given and known. */
 export function portraitUrl(faction: Faction | null | undefined, portrait?: string | null): string | undefined {
   if (portrait && BY_ID[portrait]) return BY_ID[portrait];

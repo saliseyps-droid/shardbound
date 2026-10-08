@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.27.8',
+    date: '2026-10-08',
+    title: 'Sharper portrait previews',
+    summary: 'The large view of the newest portraits shows the whole painting at full resolution.',
+    sections: [{ kind: 'improved', items: ['Right-click (or hold) on one of the newest Warden portraits: the large view now shows the whole oval painting at its full resolution instead of the enlarged small crop.'] }],
+    commits: [],
+  },
+  {
     version: '0.27.7',
     date: '2026-10-08',
     title: 'Flame Corsair',

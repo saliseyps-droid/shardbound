@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.27.8': {
+    title: 'Ostřejší náhledy portrétů',
+    summary: 'Velký náhled nejnovějších portrétů ukazuje celou malbu v plném rozlišení.',
+    sections: [['Pravý klik (nebo podržení) na některý z nejnovějších portrétů Strážců: velký náhled teď ukazuje celou oválnou malbu v plném rozlišení místo zvětšeného malého výřezu.']],
+  },
   '0.27.7': {
     title: 'Plamenná korzárka',
     summary: 'Nový portrét Popelavé legie nahrazuje Orčího válečného náčelníka.',
