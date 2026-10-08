@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.30.2',
+    date: '2026-10-08',
+    title: 'Play screen order',
+    summary: 'Tutorial and Daily puzzle sit below the game modes.',
+    sections: [{ kind: 'improved', items: ['Play: the Tutorial and the Daily puzzle are now side by side below the game modes, just above Practice match.'] }],
+    commits: [],
+  },
+  {
     version: '0.30.1',
     date: '2026-10-08',
     title: 'Ten new card backs',

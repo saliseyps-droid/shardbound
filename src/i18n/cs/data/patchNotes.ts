@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.30.2': {
+    title: 'Pořadí na obrazovce Hrát',
+    summary: 'Tutoriál a denní puzzle jsou pod herními režimy.',
+    sections: [['Hrát: tutoriál a denní puzzle jsou teď vedle sebe pod herními režimy, těsně nad tréninkovým zápasem.']],
+  },
   '0.30.1': {
     title: 'Deset nových rubových stran',
     summary: 'Deset nových rubových stran karet v obchodě.',
