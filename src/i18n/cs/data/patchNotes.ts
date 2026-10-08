@@ -4,7 +4,7 @@ const notes: PatchNotesOverlay = {
   '0.31.1': {
     title: 'Úpravy prismatických balíčků',
     summary: 'Čistěji oříznuté obrázky balíčků a prismatické balíčky v obchodě jako první.',
-    sections: [['Divine Ascension: zlatý lesk teď plynule vjede zpoza balíčku a zase zmizí, místo aby skákal.', 'Stars Eternal a Divine Ascension: obrázky balíčků jsou čistě oříznuté ze všech stran.', 'Obchod: prismatické balíčky jsou první, před Dragon Realm.']],
+    sections: [['Divine Ascension: zlatý lesk teď plynule vjede zpoza balíčku a zase zmizí, místo aby skákal.', 'Stars Eternal a Divine Ascension: obrázky balíčků mají hladké a rovnoměrné okraje ze všech stran.', 'Obchod: prismatické balíčky jsou první, před Dragon Realm.']],
   },
   '0.31.0': {
     title: 'Prismatické balíčky',

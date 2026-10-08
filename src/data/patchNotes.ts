@@ -23,7 +23,7 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-08',
     title: 'Prismatic pack touch-ups',
     summary: 'Cleaner pack art and the Prismatic packs first in the Shop.',
-    sections: [{ kind: 'fixed', items: ['Divine Ascension: the gold gleam now glides in from off the pack and fades out smoothly instead of jumping.', 'Stars Eternal and Divine Ascension: the pack art is cut cleanly on every side.', 'Shop: the Prismatic packs come first, before Dragon Realm.'] }],
+    sections: [{ kind: 'fixed', items: ['Divine Ascension: the gold gleam now glides in from off the pack and fades out smoothly instead of jumping.', 'Stars Eternal and Divine Ascension: the pack art has smooth, even edges on every side.', 'Shop: the Prismatic packs come first, before Dragon Realm.'] }],
     commits: [],
   },
   {
