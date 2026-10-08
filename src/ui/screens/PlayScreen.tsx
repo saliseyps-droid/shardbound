@@ -15,6 +15,8 @@ import { tierFor } from '@/domain/ranked';
 import { ARENA } from '@/config/arena';
 import { BRAWL_FIGHTS_PER_ROTATION, brawlProgress, brawlRotation, brawlRotationEnds } from '@/domain/brawl';
 import { trustedNow } from '@/domain/clock';
+import { dungeonOf, hasFreeDungeonEntry } from '@/domain/dungeon';
+import { DUNGEON, DUNGEON_MATCHES } from '@/config/dungeon';
 import { brawlTimeLeft } from '@/ui/components/meta/brawlUi';
 import type { GameSave } from '@/domain/save';
 import { Glyph } from '@/ui/components/Icons';
@@ -87,6 +89,16 @@ function brawlTile(save: GameSave): ModeTile {
   };
 }
 
+function dungeonTile(save: GameSave): ModeTile {
+  const d = dungeonOf(save);
+  const free = !d.run && hasFreeDungeonEntry(save, Date.now());
+  return {
+    key: 'dungeon', icon: 'skull', title: t('Dungeon'), text: t('Three floors, nine foes, one life. Build your deck as you go down.'),
+    status: d.run ? t('Run in progress: {w} of {max} wins', { w: d.run.wins, max: DUNGEON_MATCHES }) : free ? t('Free entry today') : t('Entry: {n} Gold', { n: DUNGEON.entryGold }),
+    to: '/dungeon', highlight: free,
+  };
+}
+
 function modeTiles(save: GameSave): { ai: ModeTile[]; pvp: ModeTile[] } {
   const camp = campaignProgress(save);
   const run = save.arena.run;
@@ -94,6 +106,7 @@ function modeTiles(save: GameSave): { ai: ModeTile[]; pvp: ModeTile[] } {
     { key: 'campaign', icon: 'map', title: t('Campaign'), text: t('Follow the story across nine chapters of rivals and bosses.'), status: camp.cleared >= camp.total ? t('Completed') : t('{n} of {total} cleared', { n: camp.cleared, total: camp.total }), to: '/campaign' },
     { key: 'ai-ranked', icon: 'star', title: t('Ranked vs AI'), text: t('Climb from Bronze to Crown against the AI. It gets stronger with every rank.'), status: aiRankLabel(save.profile.aiRanked.rank), to: '/ai-ranked', board: '/leaderboard' },
     brawlTile(save),
+    dungeonTile(save),
     {
       key: 'arena', icon: 'trophy', title: t('Arena'), text: t('Draft a deck from random cards and win as many of 4 matches as you can.'),
       status: run ? t('Run in progress: {w} of {max} wins', { w: run.results.filter((r) => r === 'WIN').length, max: ARENA.maxWins }) : hasFreeArenaEntry(save, Date.now()) ? t('Free entry today') : t('Entry: {n} Gold', { n: ARENA.entryGold }),

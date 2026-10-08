@@ -19,6 +19,25 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.29.0',
+    date: '2026-10-08',
+    title: 'The Dungeon',
+    summary: 'A new roguelike mode: three floors, nine foes, one life.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Dungeon (Play → Against the AI): pick a Warden and start from 20 simple cards; you do not need to own any of them. First you choose your opening cards.',
+          'Three floors of three opponents, harder as you go down; the third on each floor is a boss from the campaign. One loss ends the run.',
+          'After each win, add cards: one of two themed bundles of three, or one strong card. After each boss, take one of ten treasures that helps in every later match (extra energy, Armor, Health, cheaper spells and more).',
+          'Rewards grow with every win, up to 600 Gold, 4 Dragon Realm packs and 250 Essence for clearing all three floors. Your first run each day is free, then it costs 200 Gold.',
+          'Dungeon achievements: Into the Depths, Dungeon Conqueror (with the title Delver of the Deep) and Many Paths Down.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.28.0',
     date: '2026-10-08',
     title: 'New achievements',

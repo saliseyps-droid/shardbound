@@ -1,4 +1,5 @@
 import { createRng, randomSeed } from '@/core/rng';
+import { acknowledgeDungeonResult, pickDungeonOffer, pickDungeonTreasure, recordDungeonMatch, retireDungeon, startDungeon } from '@/domain/dungeon';
 import { err, ok, uid, type Result } from '@/core/utils';
 import { collectibleCards, getCard } from '@/data/cards';
 import { DECK_RULES } from '@/config/gameRules';
@@ -437,6 +438,10 @@ export class GameService {
       const res = recordArenaMatch(save, summary.result, this.now());
       if (res.ok) save = res.value;
     }
+    if (summary.mode === 'DUNGEON') {
+      const res = recordDungeonMatch(save, summary.result, this.now());
+      if (res.ok) save = res.value;
+    }
     save = recordAchievementMatch(save, summary);
     const ach = settleAchievements(save, this.now(), summary);
     rewards = { ...rewards, gold: rewards.gold + ach.gold, essence: rewards.essence + ach.essence, achievements: ach.unlocked };
@@ -471,6 +476,28 @@ export class GameService {
   }
   arenaRetire(): Result<GameSave> {
     return this.applyArena(retireArena(this.require(), this.now()));
+  }
+
+  // -------------------------------------------------------------------------
+  // Dungeon
+  // -------------------------------------------------------------------------
+
+  dungeonStart(faction: PlayableFaction): Result<GameSave> {
+    return this.applyArena(startDungeon(this.require(), faction, this.now(), randomSeed()));
+  }
+  dungeonPickOffer(index: number): Result<GameSave> {
+    return this.applyArena(pickDungeonOffer(this.require(), index));
+  }
+  dungeonPickTreasure(id: string): Result<GameSave> {
+    return this.applyArena(pickDungeonTreasure(this.require(), id));
+  }
+  dungeonRetire(): Result<GameSave> {
+    return this.applyArena(retireDungeon(this.require(), this.now()));
+  }
+  dungeonAcknowledge() {
+    const save = this.require();
+    const next = acknowledgeDungeonResult(save);
+    if (next !== save) this.commit(next);
   }
 
   // -------------------------------------------------------------------------

@@ -15,7 +15,7 @@ import { findBrawlFight } from '@/domain/brawl';
  * Names, descriptions and titles are English source text, translated at display time
  * (Czech in src/i18n/cs/ui/achievements.ts). Logic lives in src/domain/achievements.ts.
  */
-export type AchievementCategory = 'BATTLE' | 'CAMPAIGN' | 'AI_RANKED' | 'ARENA' | 'BRAWL' | 'COLLECTION' | 'FACTIONS' | 'ONLINE';
+export type AchievementCategory = 'BATTLE' | 'CAMPAIGN' | 'AI_RANKED' | 'ARENA' | 'BRAWL' | 'DUNGEON' | 'COLLECTION' | 'FACTIONS' | 'ONLINE';
 export type AchievementTier = 'BRONZE' | 'SILVER' | 'GOLD';
 
 export interface AchievementProgress {
@@ -45,6 +45,7 @@ export const ACHIEVEMENT_CATEGORIES: { id: AchievementCategory; label: string; i
   { id: 'AI_RANKED', label: 'Ranked vs AI', icon: 'crown' },
   { id: 'ARENA', label: 'Arena', icon: 'trophy' },
   { id: 'BRAWL', label: 'Brawl fights', icon: 'bolt' },
+  { id: 'DUNGEON', label: 'Dungeon runs', icon: 'skull' },
   { id: 'COLLECTION', label: 'Collection', icon: 'crystal' },
   { id: 'FACTIONS', label: 'Factions', icon: 'shield' },
   { id: 'ONLINE', label: 'Online play', icon: 'compass' },
@@ -175,6 +176,14 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   },
   { id: 'brawl_10', name: 'Rule Breaker', description: 'Win 10 Brawl matches.', category: 'BRAWL', tier: 'SILVER', icon: 'bolt', rewards: [pack('DRAGON'), gold(150)], progress: (s) => count(s.profile.brawlWins ?? 0, 10) },
   { id: 'brawl_50', name: 'King of Chaos', description: 'Win 50 Brawl matches.', category: 'BRAWL', tier: 'GOLD', icon: 'crown', rewards: [title('King of Chaos'), cardBack], progress: (s) => count(s.profile.brawlWins ?? 0, 50) },
+
+  // Dungeon -----------------------------------------------------------------
+  { id: 'dungeon_floor', name: 'Into the Depths', description: 'Beat the first floor of the Dungeon.', category: 'DUNGEON', tier: 'BRONZE', icon: 'skull', rewards: [gold(150)], progress: (s) => count(s.dungeon?.bestWins ?? 0, 3) },
+  { id: 'dungeon_clear', name: 'Dungeon Conqueror', description: 'Clear all three floors of the Dungeon.', category: 'DUNGEON', tier: 'GOLD', icon: 'crown', rewards: [title('Delver of the Deep'), pack('DRAGON', 2)], progress: (s) => count(s.dungeon?.clears ?? 0, 1) },
+  {
+    id: 'dungeon_three', name: 'Many Paths Down', description: 'Clear the Dungeon with three different factions.', category: 'DUNGEON', tier: 'GOLD', icon: 'compass', rewards: [cardBack, essence(300)],
+    progress: (s) => count(s.dungeon?.clearedFactions.length ?? 0, 3),
+  },
 
   // Collection --------------------------------------------------------------
   { id: 'packs_10', name: 'Pack Rat', description: 'Open 10 booster packs.', category: 'COLLECTION', tier: 'BRONZE', icon: 'pack', rewards: [gold(100)], progress: (s) => count(s.profile.packsOpened, 10) },

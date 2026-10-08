@@ -380,7 +380,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
     <div className={`match-overlay results ${win ? 'is-win' : draw ? 'is-draw' : 'is-loss'}`} role="dialog" aria-label={win ? t('Victory') : draw ? t('Draw') : t('Defeat')}>
       <h1 className="results-title">{win ? t('Victory') : draw ? t('Draw') : t('Defeat')}</h1>
       <p className="muted">
-        {config?.mode === 'ARENA' ? t('Arena match against {name}', { name: config.opponent.name }) : config?.mode === 'TOURNAMENT' ? t('Tournament match against {name}', { name: config.opponent.name }) : config?.mode === 'RANKED' ? t('Ranked match against {name}', { name: config.opponent.name }) : config?.mode === 'AI_RANKED' ? t('Ranked match against the AI {name}', { name: config.opponent.name }) : config?.online ? t('Online match against {name}', { name: config.opponent.name }) : t(`Against {name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`, { name: String(config?.opponent.name) })}
+        {config?.mode === 'ARENA' ? t('Arena match against {name}', { name: config.opponent.name }) : config?.mode === 'DUNGEON' ? t('Dungeon match against {name}', { name: config.opponent.name }) : config?.mode === 'TOURNAMENT' ? t('Tournament match against {name}', { name: config.opponent.name }) : config?.mode === 'RANKED' ? t('Ranked match against {name}', { name: config.opponent.name }) : config?.mode === 'AI_RANKED' ? t('Ranked match against the AI {name}', { name: config.opponent.name }) : config?.online ? t('Online match against {name}', { name: config.opponent.name }) : t(`Against {name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`, { name: String(config?.opponent.name) })}
         {game.endReason === 'CONCEDE' ? t(', by concession') : game.endReason === 'DISCONNECT' ? t(', connection lost') : ''}
       </p>
       <div className="results-grid">
@@ -514,9 +514,9 @@ export function ResultsOverlay({ game }: { game: GameState }) {
           </div>
         ) : (
           <>
-            {config?.mode === 'ARENA' ? (
-              <button className="btn btn-primary btn-lg" onClick={() => exit('/arena')} ref={focusWithoutScroll}>
-                {t('Back to Arena')}
+            {config?.mode === 'ARENA' || config?.mode === 'DUNGEON' ? (
+              <button className="btn btn-primary btn-lg" onClick={() => exit(config.mode === 'ARENA' ? '/arena' : '/dungeon')} ref={focusWithoutScroll}>
+                {config.mode === 'ARENA' ? t('Back to Arena') : t('Back to the Dungeon')}
               </button>
             ) : (
             <>

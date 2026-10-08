@@ -56,6 +56,8 @@ function modeLabel(config: MatchConfig | null | undefined): string {
       return t('AI Ranked');
     case 'BRAWL':
       return t('Brawl');
+    case 'DUNGEON':
+      return t('Dungeon');
     case 'RANKED':
       return t('Ranked');
     case 'TOURNAMENT':

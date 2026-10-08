@@ -1,5 +1,6 @@
 import { titlesUpTo } from '@/config/progression';
 import { repairArena } from '@/domain/arena';
+import { repairDungeon } from '@/domain/dungeon';
 import { repairActiveMatch } from '@/domain/activeMatch';
 import { hasCard } from '@/data/cards';
 import { STARTER_DECKS, starterDeckCards } from '@/data/starterDecks';
@@ -199,6 +200,7 @@ export function migrateSave(input: Raw): MigrationReport {
     matchHistory: Array.isArray(raw.matchHistory) ? raw.matchHistory.slice(0, 100) : [],
     recentRewards: Array.isArray(raw.recentRewards) ? raw.recentRewards.slice(0, 20) : [],
     arena: repairArena(raw.arena),
+    dungeon: repairDungeon(raw.dungeon),
     redeemedCodes: Array.isArray(raw.redeemedCodes) ? raw.redeemedCodes.filter((c: unknown) => typeof c === 'string') : [],
   };
   for (const [k, v] of Object.entries(save.economy.packs)) save.economy.packs[k as keyof typeof save.economy.packs] = Math.floor(num(v, 0));

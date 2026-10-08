@@ -1,6 +1,7 @@
 import { DIFFICULTIES, type Difficulty } from '@/config/progression';
 import { PLAYABLE_FACTIONS, type PlayableFaction } from '@/game/types';
 import { recordArenaMatch } from './arena';
+import { recordDungeonMatch } from './dungeon';
 import { applyMatchResult, type MatchSummary } from './matchResults';
 import { sanitizeRating } from './ranked';
 import type { GameSave, MatchRecord } from './save';
@@ -13,7 +14,7 @@ import type { GameSave, MatchRecord } from './save';
  */
 export interface ActiveMatch {
   id: string;
-  mode: Extract<MatchRecord['mode'], 'ARENA' | 'RANKED' | 'TOURNAMENT' | 'PVP' | 'AI_RANKED'>;
+  mode: Extract<MatchRecord['mode'], 'ARENA' | 'RANKED' | 'TOURNAMENT' | 'PVP' | 'AI_RANKED' | 'DUNGEON'>;
   startedAt: number;
   opponentId: string;
   opponentName: string;
@@ -25,7 +26,7 @@ export interface ActiveMatch {
   opponentRating?: number;
 }
 
-export const STAKE_MODES: readonly ActiveMatch['mode'][] = ['ARENA', 'RANKED', 'TOURNAMENT', 'PVP', 'AI_RANKED'];
+export const STAKE_MODES: readonly ActiveMatch['mode'][] = ['ARENA', 'RANKED', 'TOURNAMENT', 'PVP', 'AI_RANKED', 'DUNGEON'];
 
 const NO_STATS = { damageDealt: 0, heroDamageDealt: 0, cardsPlayed: 0, unitsPlayed: 0, spellsPlayed: 0, unitsDestroyed: 0, healingDone: 0, cardsDrawn: 0 };
 
@@ -59,6 +60,10 @@ export function settleAbandonedMatch(save: GameSave, now: number): { save: GameS
   let next = applyMatchResult(setActiveMatch(save, null), abandonedSummary(m, now), now).save;
   if (m.mode === 'ARENA') {
     const res = recordArenaMatch(next, 'LOSS', now);
+    if (res.ok) next = res.value;
+  }
+  if (m.mode === 'DUNGEON') {
+    const res = recordDungeonMatch(next, 'LOSS', now);
     if (res.ok) next = res.value;
   }
   return { save: setActiveMatch(next, null), settled: m };

@@ -1,6 +1,19 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.29.0': {
+    title: 'Dungeon',
+    summary: 'Nový roguelike režim: tři patra, devět nepřátel, jeden život.',
+    sections: [
+      [
+        'Dungeon (Hrát → Proti AI): vyber si Strážce a začni s 20 jednoduchými kartami, žádnou z nich nemusíš mít ve sbírce. Nejdřív si vybereš úvodní karty.',
+        'Tři patra po třech soupeřích, čím hlouběji, tím těžší; třetí soupeř každého patra je boss z kampaně. Jedna prohra výpravu ukončí.',
+        'Po každé výhře si přidáš karty: jeden ze dvou tematických balíčků po třech, nebo jednu silnou kartu. Po každém bossovi si vybereš jeden z deseti pokladů, který pomáhá ve všech dalších zápasech (energie navíc, brnění, životy, levnější kouzla a další).',
+        'Odměny rostou s každou výhrou, až na 600 zlata, 4 boostery Dragon Realm a 250 esence za projití všech tří pater. První výprava každý den je zdarma, další stojí 200 zlata.',
+        'Úspěchy za Dungeon: Do hlubin, Dobyvatel Dungeonu (s titulem Průzkumník hlubin) a Mnoho cest dolů.',
+      ],
+    ],
+  },
   '0.28.0': {
     title: 'Nové úspěchy',
     summary: '20 nových úspěchů za Brawl, úkoly a sbírání, s novými tituly.',

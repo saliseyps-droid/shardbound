@@ -1,3 +1,4 @@
+import { emptyDungeon } from './dungeon';
 import { emptyArena } from './arena';
 import { STARTING_CURRENCY } from '@/config/economy';
 import { STARTER_DECKS, starterCardIds, starterDeckCards } from '@/data/starterDecks';
@@ -78,5 +79,6 @@ export function createNewSave(username: string, avatar: string, now: number, id:
     recentRewards: [],
     redeemedCodes: [],
     arena: emptyArena(),
+    dungeon: emptyDungeon(),
   };
 }

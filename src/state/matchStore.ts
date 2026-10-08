@@ -1,4 +1,5 @@
 import { arenaDeck, arenaOpponent, arenaPhase } from '@/domain/arena';
+import { dungeonDeck, dungeonOpponent, dungeonPlayerMods } from '@/domain/dungeon';
 import { applyBrawlMods, brawlPlayerMods, findBrawlFight } from '@/domain/brawl';
 import { create } from 'zustand';
 import { randomSeed } from '@/core/rng';
@@ -532,7 +533,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     audio.play(result === 'WIN' ? 'victory' : 'defeat');
     if (!cfg) return;
     const save = useAccount.getState().save;
-    const deck = cfg.mode === 'ARENA' && save?.arena.run ? arenaDeck(save.arena.run) : save?.decks.find((d) => d.id === cfg.deckId);
+    const deck = cfg.mode === 'ARENA' && save?.arena.run ? arenaDeck(save.arena.run) : cfg.mode === 'DUNGEON' && save?.dungeon?.run ? dungeonDeck(save.dungeon.run) : save?.decks.find((d) => d.id === cfg.deckId);
     try {
       const rewards = gameService.recordMatch({
         mode: cfg.mode === 'ONLINE' ? 'PVP' : cfg.mode,
@@ -631,6 +632,13 @@ export const useMatch = create<MatchStore>((set, get) => {
         pendingInitial = null;
       } else if (config.mode === 'TUTORIAL') {
         setup = tutorialSetup(save.profile.username, save.profile.avatar);
+      } else if (config.mode === 'DUNGEON') {
+        // The run's deck lives in the Dungeon state; treasures change the player's side.
+        const run = save.dungeon?.run;
+        if (!run || run.pending) throw new Error('There is no Dungeon match to play.');
+        deckName = 'Dungeon deck';
+        const me = applyBrawlMods(playerSide(save.profile, dungeonDeck(run)), dungeonPlayerMods(run));
+        setup = { seed: config.seed ?? randomSeed(), players: [me, opponentSide(dungeonOpponent(run))] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
       } else if (config.mode === 'ARENA') {
         // The drafted deck lives in the Arena run; ownership does not matter there.
         const run = save.arena.run;
@@ -660,9 +668,9 @@ export const useMatch = create<MatchStore>((set, get) => {
       if (gen !== matchGen) return;
       // Matches with stakes are remembered until their result is recorded: reloading
       // or closing the app mid-match then counts as conceding (src/domain/activeMatch.ts).
-      const stakes: ActiveMatch['mode'] | null = config.mode === 'ONLINE' ? 'PVP' : config.mode === 'RANKED' || config.mode === 'TOURNAMENT' || config.mode === 'ARENA' || config.mode === 'AI_RANKED' ? config.mode : null;
+      const stakes: ActiveMatch['mode'] | null = config.mode === 'ONLINE' ? 'PVP' : config.mode === 'RANKED' || config.mode === 'TOURNAMENT' || config.mode === 'ARENA' || config.mode === 'AI_RANKED' || config.mode === 'DUNGEON' ? config.mode : null;
       if (stakes) {
-        const deck = config.mode === 'ARENA' && save.arena.run ? arenaDeck(save.arena.run) : save.decks.find((d) => d.id === config.deckId);
+        const deck = config.mode === 'ARENA' && save.arena.run ? arenaDeck(save.arena.run) : config.mode === 'DUNGEON' && save.dungeon?.run ? dungeonDeck(save.dungeon.run) : save.decks.find((d) => d.id === config.deckId);
         gameService.beginMatch({
           id: `am_${Date.now().toString(36)}_${gen}`,
           mode: stakes,

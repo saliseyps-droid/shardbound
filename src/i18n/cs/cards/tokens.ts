@@ -2,6 +2,10 @@ import type { CardsOverlay } from '../../overlayTypes';
 
 /** Tokens and tutorial cards. These names are referenced by other cards' rules text. */
 const cards: CardsOverlay = {
+  dungeon_rule_banner: { name: 'Válečný prapor', description: 'Tvé jednotky dostanou při vyvolání +1 k útoku.' },
+  dungeon_rule_tome: { name: 'Kniha ozvěn', description: 'Tvá kouzla stojí o 1 méně (ale nikdy méně než 1).' },
+  dungeon_rule_satchel: { name: 'Učencova brašna', description: 'Na začátku tvého tahu, pokud máš v ruce 3 nebo méně karet, si lízni kartu.' },
+  dungeon_rule_spring: { name: 'Léčivý pramen', description: 'Na konci tvého tahu obnov svému Strážci 2 životy.' },
   brawl_rule_long_winter: { name: 'Dlouhá zima', description: 'Na začátku tvého tahu zmraz náhodnou nepřátelskou jednotku.' },
   brawl_rule_dragon_nest: { name: 'Dračí hnízdo', description: 'Na začátku tvého tahu si přidej do ruky náhodného draka.' },
   brawl_rule_blood_arena: { name: 'Krvavá aréna', description: 'Tvé jednotky dostanou při vyvolání +1/+1.' },

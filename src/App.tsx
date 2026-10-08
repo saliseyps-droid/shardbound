@@ -35,6 +35,7 @@ const JoinScreen = lazyWithReload(() => import('@/ui/screens/JoinScreen'));
 const RankedScreen = lazyWithReload(() => import('@/ui/screens/RankedScreen'));
 const AiRankedScreen = lazyWithReload(() => import('@/ui/screens/AiRankedScreen'));
 const BrawlScreen = lazyWithReload(() => import('@/ui/screens/BrawlScreen'));
+const DungeonScreen = lazyWithReload(() => import('@/ui/screens/DungeonScreen'));
 const PatchNotesScreen = lazyWithReload(() => import('@/ui/screens/PatchNotesScreen'));
 const TournamentScreen = lazyWithReload(() => import('@/ui/screens/TournamentScreen'));
 const AchievementsScreen = lazyWithReload(() => import('@/ui/screens/AchievementsScreen'));
@@ -73,6 +74,7 @@ function Shell() {
               <Route path="/ranked" element={<RankedScreen />} />
               <Route path="/ai-ranked" element={<AiRankedScreen />} />
               <Route path="/brawl" element={<BrawlScreen />} />
+              <Route path="/dungeon" element={<DungeonScreen />} />
               <Route path="/patch-notes" element={<PatchNotesScreen />} />
               <Route path="/tournament" element={<TournamentScreen />} />
               <Route path="/achievements" element={<AchievementsScreen />} />

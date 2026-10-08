@@ -1,6 +1,14 @@
 /** Achievements (src/data/achievements.ts, src/ui/screens/AchievementsScreen.tsx). */
 const d: Record<string, string> = {
   // 0.28.0
+  'Dungeon runs': 'Výpravy do Dungeonu',
+  'Into the Depths': 'Do hlubin',
+  'Beat the first floor of the Dungeon.': 'Projdi první patro Dungeonu.',
+  'Dungeon Conqueror': 'Dobyvatel Dungeonu',
+  'Clear all three floors of the Dungeon.': 'Projdi všechna tři patra Dungeonu.',
+  'Delver of the Deep': 'Průzkumník hlubin',
+  'Many Paths Down': 'Mnoho cest dolů',
+  'Clear the Dungeon with three different factions.': 'Projdi celý Dungeon se třemi různými frakcemi.',
   'Brawl fights': 'Fighty Brawlu',
   Brawler: 'Rváč',
   'Win a Brawl fight.': 'Vyhraj fight v Brawlu.',
