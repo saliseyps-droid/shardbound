@@ -19,6 +19,29 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.27.2',
+    date: '2026-10-08',
+    title: 'Eleven new Warden portraits',
+    summary: 'New portraits in the Shop, a Brawl panel on Home and a tidier Profile.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Eleven new Warden portraits in the Shop: Exiled Warlord, Crimson Dragon and Fire Demon (Cinder Legion), Forest Elf (Thornweald Circle), Dread Overlord (Brass Dominion), Golden Eagle and Starlit Elf (Lumen Conclave), Shadow Tyrant, Spectral King and Hooded Wraith (Hollow Choir), Frost Elf Lord (Rimetide Court).',
+          'Home shows the current Brawl: both fights, which free packs are still to win and when new fights arrive, with a link straight to it.',
+        ],
+      },
+      {
+        kind: 'improved',
+        items: [
+          'Profile on wide screens: Collection and economy spreads over two columns with its numbers as tiles beside the rarity bars, and Warden portraits fill the full width with a box per faction.',
+        ],
+      },
+      { kind: 'fixed', items: ['The tutorial banner on Home looks as before again (the new Play screen strip had restyled it).'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.27.1',
     date: '2026-10-08',
     title: 'Tidier Play screen',

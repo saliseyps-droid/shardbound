@@ -16,9 +16,9 @@ const rich = () => {
 };
 
 describe('Warden portraits', () => {
-  it('has 16 portraits, at least two for every faction', () => {
-    expect(PORTRAITS).toHaveLength(16);
-    expect(new Set(PORTRAITS.map((p) => p.id)).size).toBe(16);
+  it('has 27 portraits, at least two for every faction', () => {
+    expect(PORTRAITS).toHaveLength(27);
+    expect(new Set(PORTRAITS.map((p) => p.id)).size).toBe(27);
     for (const f of PLAYABLE_FACTIONS) expect(PORTRAITS.filter((p) => p.faction === f).length).toBeGreaterThanOrEqual(2);
   });
 

@@ -216,57 +216,22 @@ export default function ProfileScreen() {
           </ul>
         </section>
 
-        <section className="panel profile-portraits">
-          <div className="panel-title">
-            <span>{t('Warden portraits')}</span>
-            <Link to="/shop" className="small-link">
-              {t('More in the Shop')}
-            </Link>
-          </div>
-          <p className="faint">{t('The portrait every deck of that faction shows. A deck can still pick its own in the deck editor.')}</p>
-          {PLAYABLE_FACTIONS.map((f) => (
-            <div key={f} className="profile-portrait-row">
-              <span className="faint" style={{ color: FACTIONS[f].colors.primary }}>
-                {FACTIONS[f].name}
-              </span>
-              <PortraitPicker
-                faction={f}
-                owned={p.portraits}
-                value={p.factionPortraits[f] ?? null}
-                onChange={(v) => {
-                  const res = gameService.choosePortrait(f, v);
-                  if (!res.ok) toast(res.error, 'error');
-                }}
-              />
-            </div>
-          ))}
-        </section>
-
-        <section className="panel">
+        <section className="panel profile-collection">
           <div className="panel-title">{t('Collection and economy')}</div>
-          <dl className="info-grid">
-            <dt>{t('Cards discovered')}</dt>
-            <dd className="num">
-              {unique} / {all.length} ({Math.round((unique / all.length) * 100)}%)
-            </dd>
-            <dt>{t('Cards owned')}</dt>
-            <dd className="num">{totalCopies}</dd>
-            <dt>{t('Foil and prismatic')}</dt>
-            <dd className="num">{cosmetic}</dd>
-            <dt>{t('Packs opened')}</dt>
-            <dd className="num">{p.packsOpened}</dd>
-            <dt>{t('Cards crafted')}</dt>
-            <dd className="num">{p.cardsCrafted}</dd>
-            <dt>{t('Cards recycled')}</dt>
-            <dd className="num">{p.cardsRecycled}</dd>
-            <dt>{t('Quests completed')}</dt>
-            <dd className="num">{save.quests.totalCompleted}</dd>
-            <dt>{t('Campaign clears')}</dt>
-            <dd className="num">{Object.keys(save.pve.completed).length}</dd>
-            <dt>{t('Decks')}</dt>
-            <dd className="num">{save.decks.length}</dd>
-          </dl>
-          <div className="panel-title" style={{ marginTop: 'var(--space-4)' }}>
+          <div className="profile-collection-body">
+          <div className="collection-stats">
+            <CollectionStat label={t('Cards discovered')} value={`${unique} / ${all.length}`} extra={`${Math.round((unique / all.length) * 100)}%`} />
+            <CollectionStat label={t('Cards owned')} value={totalCopies} />
+            <CollectionStat label={t('Foil and prismatic')} value={cosmetic} />
+            <CollectionStat label={t('Packs opened')} value={p.packsOpened} />
+            <CollectionStat label={t('Cards crafted')} value={p.cardsCrafted} />
+            <CollectionStat label={t('Cards recycled')} value={p.cardsRecycled} />
+            <CollectionStat label={t('Quests completed')} value={save.quests.totalCompleted} />
+            <CollectionStat label={t('Campaign clears')} value={Object.keys(save.pve.completed).length} />
+            <CollectionStat label={t('Decks')} value={save.decks.length} />
+          </div>
+          <div className="profile-rarity">
+          <div className="panel-title">
             {t('By rarity')}
           </div>
           <ul className="rarity-progress">
@@ -284,8 +249,50 @@ export default function ProfileScreen() {
               );
             })}
           </ul>
+          </div>
+          </div>
+        </section>
+
+        <section className="panel profile-portraits">
+          <div className="panel-title">
+            <span>{t('Warden portraits')}</span>
+            <Link to="/shop" className="small-link">
+              {t('More in the Shop')}
+            </Link>
+          </div>
+          <p className="faint">{t('The portrait every deck of that faction shows. A deck can still pick its own in the deck editor.')}</p>
+          <div className="profile-portrait-grid">
+          {PLAYABLE_FACTIONS.map((f) => (
+            <div key={f} className="profile-portrait-row" style={factionStyle(f)}>
+              <span className="profile-portrait-faction">
+                <Glyph name={FACTIONS[f].sigil} size={14} /> {FACTIONS[f].name}
+              </span>
+              <PortraitPicker
+                faction={f}
+                owned={p.portraits}
+                value={p.factionPortraits[f] ?? null}
+                onChange={(v) => {
+                  const res = gameService.choosePortrait(f, v);
+                  if (!res.ok) toast(res.error, 'error');
+                }}
+              />
+            </div>
+          ))}
+          </div>
         </section>
       </div>
+    </div>
+  );
+}
+
+function CollectionStat({ label, value, extra }: { label: string; value: string | number; extra?: string }) {
+  return (
+    <div className="collection-stat">
+      <span className="num">
+        {value}
+        {extra && <small className="faint"> {extra}</small>}
+      </span>
+      <span className="muted">{label}</span>
     </div>
   );
 }

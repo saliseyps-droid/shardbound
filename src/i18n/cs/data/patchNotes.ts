@@ -1,6 +1,20 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.27.2': {
+    title: 'Jedenáct nových portrétů Strážců',
+    summary: 'Nové portréty v obchodě, panel Brawlu na úvodní obrazovce a přehlednější profil.',
+    sections: [
+      [
+        'Jedenáct nových portrétů Strážců v obchodě: Vyhnaný vojevůdce, Karmínový drak a Ohnivý démon (Popelavá legie), Lesní elfka (Kruh Trnoboru), Děsivý vládce (Mosazné dominium), Zlatý orel a Hvězdná elfka (Konkláve Lumenu), Stínový tyran, Přízračný král a Zakuklený přízrak (Prázdný chór), Mrazivý elfí pán (Dvůr Jinovatky).',
+        'Úvodní obrazovka ukazuje aktuální Brawl: oba fighty, které balíčky zdarma ještě můžeš vyhrát a kdy přijdou nové fighty, s prokliknutím přímo do Brawlu.',
+      ],
+      [
+        'Profil na širokých obrazovkách: Sbírka a ekonomika se roztáhne přes dva sloupce, čísla jsou v dlaždicích vedle pruhů vzácnosti a portréty Strážců vyplní celou šířku s boxem pro každou frakci.',
+      ],
+      ['Pruh s tutoriálem na úvodní obrazovce vypadá zase jako dřív (nový pruh na obrazovce Hrát ho omylem přestyloval).'],
+    ],
+  },
   '0.27.1': {
     title: 'Přehlednější obrazovka Hrát',
     summary: 'Tutoriál má vlastní pruh nad herními režimy.',
