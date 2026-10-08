@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.27.7': {
+    title: 'Plamenná korzárka',
+    summary: 'Nový portrét Popelavé legie nahrazuje Orčího válečného náčelníka.',
+    sections: [['Nový portrét Strážce v obchodě: Plamenná korzárka (Popelavá legie, 150 zlata).'], ['Portrét Orčí válečný náčelník byl stažen. Pokud sis ho koupil, zlato ti bylo vráceno.']],
+  },
   '0.27.6': {
     title: 'Tři týdenní úkoly',
     summary: 'Místo jednoho týdenního úkolu jsou teď každý týden tři.',

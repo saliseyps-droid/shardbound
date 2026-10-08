@@ -19,6 +19,17 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.27.7',
+    date: '2026-10-08',
+    title: 'Flame Corsair',
+    summary: 'A new Cinder Legion portrait replaces the Orc Warchief.',
+    sections: [
+      { kind: 'new', items: ['New Warden portrait in the Shop: Flame Corsair (Cinder Legion, 150 Gold).'] },
+      { kind: 'balance', items: ['The Orc Warchief portrait has been withdrawn. If you bought it, its Gold has been refunded.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.27.6',
     date: '2026-10-08',
     title: 'Three weekly quests',

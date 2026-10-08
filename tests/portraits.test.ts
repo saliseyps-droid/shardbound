@@ -18,9 +18,9 @@ const rich = () => {
 describe('withdrawn portraits', () => {
   it('a bought portrait that left the game is refunded and dropped, together with its faction choice', () => {
     const s = rich();
-    const profile = { ...s.profile, gold: 100, portraits: ['iron_dread_overlord', 'void_hooded_wraith', 'void_night_elf'], factionPortraits: { IRON: 'iron_dread_overlord' } };
+    const profile = { ...s.profile, gold: 100, portraits: ['iron_dread_overlord', 'void_hooded_wraith', 'ember_orc_warchief', 'void_night_elf'], factionPortraits: { IRON: 'iron_dread_overlord' } };
     const out = migrateSave({ ...s, saveVersion: CURRENT_SAVE_VERSION, profile }).save.profile;
-    expect(out.gold).toBe(100 + 250 + 150);
+    expect(out.gold).toBe(100 + 250 + 150 + 150);
     expect(out.portraits).toEqual(['void_night_elf']);
     expect(out.factionPortraits.IRON).toBeUndefined();
   });

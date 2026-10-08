@@ -72,8 +72,8 @@ function repairTalents(faction: PlayableFaction, raw: unknown, deckName: string,
   return defaultBuild(faction);
 }
 
-/** Portraits once sold and later removed (0.27.4): id -> Gold refunded. */
-const WITHDRAWN_PORTRAITS: Record<string, number> = { iron_dread_overlord: 250, void_hooded_wraith: 150 };
+/** Portraits once sold and later removed (0.27.4, 0.27.7): id -> Gold refunded. */
+const WITHDRAWN_PORTRAITS: Record<string, number> = { iron_dread_overlord: 250, void_hooded_wraith: 150, ember_orc_warchief: 150 };
 
 export function migrateSave(input: Raw): MigrationReport {
   const notes: string[] = [];

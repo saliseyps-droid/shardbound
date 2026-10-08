@@ -403,12 +403,12 @@ export const CAMPAIGN: Chapter[] = [
  * (null = the faction's default portrait). Neighbouring rivals never share one.
  */
 const CAMPAIGN_PORTRAITS: Record<string, string | null> = {
-  c1_e1: 'verdant_dryad', c1_e2: 'ember_orc_warchief', c1_e3: 'iron_goblin_tinker', c1_e4: 'void_night_elf', c1_boss: 'iron_lion_lord',
+  c1_e1: 'verdant_dryad', c1_e2: 'ember_exiled_warlord', c1_e3: 'iron_goblin_tinker', c1_e4: 'void_night_elf', c1_boss: 'iron_lion_lord',
   c2_e1: 'tide_sea_elf', c2_e2: 'astral_white_seer', c2_e3: null, c2_e4: 'ember_black_drake', c2_boss: 'tide_sapphire_dragon',
   c3_b1: 'ember_flameborn', c3_b2: 'void_horned_warlock', c3_final: 'astral_eagle_herald',
   c4_e1: 'verdant_dryad', c4_e2: 'tide_frost_lich', c4_e3: 'iron_dwarf_forgemaster', c4_e4: 'astral_white_seer', c4_boss: 'ember_flameborn',
   c5_b1: 'tide_sea_elf', c5_b2: 'void_horned_warlock', c5_final: null,
-  c6_e1: null, c6_e2: 'verdant_ancient_treant', c6_e3: 'ember_orc_warchief', c6_e4: 'verdant_bamboo_monk', c6_boss: 'ember_black_drake',
+  c6_e1: null, c6_e2: 'verdant_ancient_treant', c6_e3: 'ember_flame_corsair', c6_e4: 'verdant_bamboo_monk', c6_boss: 'ember_black_drake',
   c7_e1: 'iron_goblin_tinker', c7_e2: 'astral_white_seer', c7_e3: null, c7_e4: 'astral_eagle_herald', c7_boss: 'iron_lion_lord',
   c8_e1: 'tide_frost_lich', c8_e2: 'void_night_elf', c8_e3: null, c8_e4: 'void_horned_warlock', c8_boss: 'tide_sapphire_dragon',
   c9_b1: 'astral_eagle_herald', c9_b2: 'verdant_dryad', c9_b3: 'ember_flameborn', c9_final: null,

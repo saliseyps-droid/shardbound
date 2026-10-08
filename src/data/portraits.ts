@@ -13,7 +13,7 @@ export interface PortraitDef {
 }
 
 export const PORTRAITS: PortraitDef[] = [
-  { id: 'ember_orc_warchief', faction: 'EMBER', name: 'Orc Warchief', price: 150 },
+  { id: 'ember_flame_corsair', faction: 'EMBER', name: 'Flame Corsair', price: 150 },
   { id: 'ember_flameborn', faction: 'EMBER', name: 'Flameborn Duelist', price: 150 },
   { id: 'ember_black_drake', faction: 'EMBER', name: 'Black Drake', price: 250 },
   { id: 'verdant_ancient_treant', faction: 'VERDANT', name: 'Ancient Treant', price: 150 },

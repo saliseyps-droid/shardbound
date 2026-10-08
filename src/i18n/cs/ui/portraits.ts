@@ -21,7 +21,7 @@ const d: Record<string, string> = {
   'You do not own this portrait yet.': 'Tento portrét ještě nemáš.',
   'Invalid Warden portrait.': 'Neplatný portrét Strážce.',
   // Portrait names
-  'Orc Warchief': 'Orčí válečný náčelník',
+  'Flame Corsair': 'Plamenná korzárka',
   'Exiled Warlord': 'Vyhnaný vojevůdce',
   'Crimson Dragon': 'Karmínový drak',
   'Fire Demon': 'Ohnivý démon',
