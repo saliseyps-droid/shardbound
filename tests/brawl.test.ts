@@ -11,12 +11,12 @@ import { filler } from './helpers';
 const DAY = 86_400_000;
 
 describe('Brawl rotation', () => {
-  it('changes every 21 days from Monday 00:00 UTC', () => {
+  it('changes every 3 days from Monday 00:00 UTC', () => {
     expect(new Date(BRAWL_EPOCH).getUTCDay()).toBe(1);
     expect(brawlRotation(BRAWL_EPOCH)).toBe(0);
-    expect(brawlRotation(BRAWL_EPOCH + 21 * DAY - 1)).toBe(0);
-    expect(brawlRotation(BRAWL_EPOCH + 21 * DAY)).toBe(1);
-    expect(brawlRotationEnds(0)).toBe(BRAWL_EPOCH + 21 * DAY);
+    expect(brawlRotation(BRAWL_EPOCH + 3 * DAY - 1)).toBe(0);
+    expect(brawlRotation(BRAWL_EPOCH + 3 * DAY)).toBe(1);
+    expect(brawlRotationEnds(0)).toBe(BRAWL_EPOCH + 3 * DAY);
   });
 
   it('offers two fights of two modifiers each, four different ones, never two of the same group', () => {
@@ -97,11 +97,11 @@ describe('recording Brawl matches', () => {
     const { save: s3 } = applyMatchResult(s2, summary('WIN', '0-1'), NOW);
     expect(s3.economy.packs.DRAGON).toBe(packs0 + 2);
     // The next rotation pays again.
-    const { save: s4 } = applyMatchResult(s3, summary('WIN', '1-0'), NOW + 21 * DAY);
+    const { save: s4 } = applyMatchResult(s3, summary('WIN', '1-0'), NOW + 3 * DAY);
     expect(s4.economy.packs.DRAGON).toBe(packs0 + 3);
     expect(s4.profile.brawl).toEqual({ rotation: 1, won: ['1-0'] });
     // A win in an older rotation's fight (finished after the rotation changed) pays nothing.
-    const { save: s5 } = applyMatchResult(s4, summary('WIN', '0-1'), NOW + 21 * DAY);
+    const { save: s5 } = applyMatchResult(s4, summary('WIN', '0-1'), NOW + 3 * DAY);
     expect(s5.economy.packs.DRAGON).toBe(packs0 + 3);
   });
 

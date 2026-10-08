@@ -81,7 +81,7 @@ function brawlTile(save: GameSave): ModeTile {
   const won = brawlProgress(save.profile.brawl, rotation).won.length;
   const open = BRAWL_FIGHTS_PER_ROTATION - won;
   return {
-    key: 'brawl', icon: 'bolt', title: t('Brawl'), text: t('Two fights with special rules, new every three weeks. Your first win in each pays a free pack.'),
+    key: 'brawl', icon: 'bolt', title: t('Brawl'), text: t('Two fights with special rules, new every three days. Your first win in each pays a free pack.'),
     status: open > 0 ? tn(open, '{n} free pack to win', '{n} free packs to win') : t('New fights in {time}', { time: brawlTimeLeft(brawlRotationEnds(rotation) - now) }),
     to: '/brawl', highlight: open > 0,
   };

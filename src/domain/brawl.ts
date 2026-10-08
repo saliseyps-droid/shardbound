@@ -9,13 +9,13 @@ import type { SideSetup } from '@/engine/types';
 
 /**
  * Brawl: two fights against the AI (Expert) with special rules, played with your own deck.
- * Every three weeks (from Monday 00:00 UTC) two new fights replace the old ones. Each fight
+ * Every three days (counted from Monday 5 October 2026, 00:00 UTC) two new fights replace the old ones. Each fight
  * combines two modifiers (src/data/brawl.ts) and the two fights never share one. The first win
  * in each fight of a rotation pays a pack of the newest set.
  */
 
 const DAY_MS = 86_400_000;
-export const BRAWL_ROTATION_DAYS = 21;
+export const BRAWL_ROTATION_DAYS = 3;
 /** Monday 5 October 2026, 00:00 UTC: rotation 0 starts here. */
 export const BRAWL_EPOCH = Date.UTC(2026, 9, 5);
 export const BRAWL_FIGHTS_PER_ROTATION = 2;

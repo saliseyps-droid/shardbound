@@ -6,8 +6,8 @@ const d: Record<string, string> = {
   // Brawl
   Brawl: 'Brawl',
   'Back to Brawl': 'Zpět do Brawlu',
-  'Two fights with special rules against the Expert AI, played with your own deck. New fights every three weeks.': 'Dva fighty se zvláštními pravidly proti AI na úrovni Expert, hraješ s vlastním balíčkem. Nové fighty každé tři týdny.',
-  'Two fights with special rules, new every three weeks. Your first win in each pays a free pack.': 'Dva fighty se zvláštními pravidly, nové každé tři týdny. První výhra v každém dá balíček zdarma.',
+  'Two fights with special rules against the Expert AI, played with your own deck. New fights every three days.': 'Dva fighty se zvláštními pravidly proti AI na úrovni Expert, hraješ s vlastním balíčkem. Nové fighty každé tři dny.',
+  'Two fights with special rules, new every three days. Your first win in each pays a free pack.': 'Dva fighty se zvláštními pravidly, nové každé tři dny. První výhra v každém dá balíček zdarma.',
   'New fights in {time}': 'Nové fighty za {time}',
   '{n} hours': '{n} hodinu|{n} hodiny|{n} hodin',
   '{n} days': '{n} den|{n} dny|{n} dní',

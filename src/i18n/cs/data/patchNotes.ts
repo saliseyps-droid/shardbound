@@ -3,11 +3,11 @@ import type { PatchNotesOverlay } from '../../overlayTypes';
 const notes: PatchNotesOverlay = {
   '0.27.0': {
     title: 'Brawl',
-    summary: 'Nový režim: dva fighty se zvláštními pravidly proti AI na úrovni Expert, nové každé tři týdny.',
+    summary: 'Nový režim: dva fighty se zvláštními pravidly proti AI na úrovni Expert, nové každé tři dny.',
     sections: [
       [
         'Brawl (Hrát → Proti AI): dva fighty proti AI na úrovni Expert, hraješ s vlastním balíčkem. Každý fight spojuje dvě zvláštní pravidla a oba fighty nikdy nemají stejné.',
-        'Každé tři týdny (v pondělí 00:00 UTC) nahradí stávající fighty dva nové. První výhra v každém fightu dá balíček nejnovějšího setu zdarma.',
+        'Každé tři dny (v 00:00 UTC) nahradí stávající fighty dva nové. První výhra v každém fightu dá balíček nejnovějšího setu zdarma.',
         'Pravidla: Ohnivý příval, Dlouhá zima, Dračí hnízdo, Krvavá aréna, Magická bouře, Sklad munice, Obléhání, Bohatá pokladnice, Poslední dech a Šampion. Platná pravidla vidíš v zápase v postranním panelu.',
       ],
     ],

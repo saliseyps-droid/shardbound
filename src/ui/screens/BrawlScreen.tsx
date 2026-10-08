@@ -16,7 +16,7 @@ import { t } from '@/i18n';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/brawl.css';
 
-/** Brawl: two fights with special rules against the AI, new ones every three weeks. */
+/** Brawl: two fights with special rules against the AI, new ones every three days. */
 export default function BrawlScreen() {
   const save = useAccount((s) => s.save);
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ export default function BrawlScreen() {
 
   return (
     <div className="screen brawl-screen">
-      <ScreenHeader title={t('Brawl')} subtitle={t('Two fights with special rules against the Expert AI, played with your own deck. New fights every three weeks.')} />
+      <ScreenHeader title={t('Brawl')} subtitle={t('Two fights with special rules against the Expert AI, played with your own deck. New fights every three days.')} />
       <div className="brawl-rotation panel">
         <Glyph name="clock" size={18} />
         <span>{t('New fights in {time}', { time: brawlTimeLeft(brawlRotationEnds(rotation) - now) })}</span>
