@@ -31,6 +31,11 @@ export function applyRedeem(save: GameSave, def: RedeemCodeDef | undefined, now:
     next = { ...next, economy: { ...next.economy, packs: { ...next.economy.packs, [r.packs.setId]: (next.economy.packs[r.packs.setId] ?? 0) + r.packs.amount } } };
   }
   if (r.cards?.length) next = { ...next, collection: addCards(next.collection, r.cards) };
+  if (def.removeCards?.length) {
+    const cards = { ...next.collection.cards };
+    for (const id of def.removeCards) delete cards[id];
+    next = { ...next, collection: { cards, unseen: next.collection.unseen.filter((id) => !def.removeCards!.includes(id)) } };
+  }
   next = pushReward(next, { source: `Code: ${def.label}`, gold: r.gold, essence: r.essence, packs: r.packs, cards: r.cards }, now);
   return ok({ save: next, def });
 }

@@ -59,3 +59,20 @@ describe('card redeem codes', () => {
     expect(applyRedeem(first.value.save, def, 3).ok).toBe(false);
   });
 });
+
+describe('card removal codes', () => {
+  it('the remove-Meowchick code takes every copy of Meowchick out of the collection, once per account', async () => {
+    const { applyRedeem } = await import('@/domain/redeem');
+    const { createNewSave } = await import('@/domain/newAccount');
+    const { addCards } = await import('@/domain/save');
+    const def = REDEEM_CODES.find((c) => c.id === 'remove-meowchick');
+    expect(def).toBeTruthy();
+    const base = createNewSave('A', 'flame', 1, 'p');
+    const save = { ...base, collection: addCards(base.collection, [{ cardId: 'neu_meowchick', variant: 'PRISMATIC' }, { cardId: 'neu_meowchick', variant: 'NORMAL' }]) };
+    const res = applyRedeem(save, def, 2);
+    if (!res.ok) throw new Error(res.error);
+    expect(res.value.save.collection.cards.neu_meowchick).toBeUndefined();
+    expect(res.value.save.collection.unseen).not.toContain('neu_meowchick');
+    expect(applyRedeem(res.value.save, def, 3).ok).toBe(false);
+  });
+});

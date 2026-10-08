@@ -150,6 +150,7 @@ const d: Record<string, string> = {
   'Gift: 1000 Gold': 'Dárek: 1000 zlata',
   'Gift: 1000 Essence': 'Dárek: 1000 esence',
   'Gift: Prismatic Meowchick': 'Dárek: Prizmatická karta Meowchick',
+  'Meowchick removed from your collection': 'Meowchick byl odebrán z tvé sbírky',
 
   // --- Tournament (src/domain/tournament.ts) ---
   'Semi-final 1': 'Semifinále 1',
