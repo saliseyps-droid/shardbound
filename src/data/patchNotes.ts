@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.27.9',
+    date: '2026-10-08',
+    title: 'Hexagon portrait previews',
+    summary: 'Every portrait opens large in the same hexagon frame.',
+    sections: [{ kind: 'improved', items: ['The large portrait view (right-click or hold) shows every portrait in the same hexagon frame as in the game, in its faction colour.'] }],
+    commits: [],
+  },
+  {
     version: '0.27.8',
     date: '2026-10-08',
     title: 'Sharper portrait previews',

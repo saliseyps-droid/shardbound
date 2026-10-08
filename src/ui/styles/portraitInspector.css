@@ -1,13 +1,10 @@
-/* Large Warden portrait (right-click / long press on a portrait). */
-.modal.portrait-inspector { max-width: min(460px, calc(100vw - 32px)); }
+/* Large Warden portrait (right-click / long press on a portrait): the same hexagon as in the game. */
+.modal.portrait-inspector { max-width: min(440px, calc(100vw - 32px)); }
 .portrait-inspector-body { display: grid; justify-items: center; gap: var(--space-3); }
-.portrait-inspector-body img {
-  display: block; width: min(400px, calc(100vw - 80px)); aspect-ratio: 640 / 730; height: auto; object-fit: cover;
-  border-radius: 10px; box-shadow: 0 0 0 2px var(--fc), 0 18px 40px rgba(4, 2, 16, 0.7);
-}
-/* The whole oval from the source art, at its own size and shape. */
-.portrait-inspector-body img.is-oval { width: auto; max-width: min(420px, calc(100vw - 80px)); max-height: 68vh; aspect-ratio: auto; object-fit: contain; border-radius: 50%; }
+.portrait-inspector-hex { filter: drop-shadow(0 18px 30px rgba(4, 2, 16, 0.7)); }
+.portrait-inspector-hex img { inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); }
 .portrait-inspector-faction { font-size: var(--t-sm); font-weight: 700; color: var(--fc); }
+
 /* Portraits that open large on right-click / long press. */
 .portrait-tile-art, .portrait-option { -webkit-touch-callout: none; user-select: none; }
 .portrait-tile-art { display: inline-block; }

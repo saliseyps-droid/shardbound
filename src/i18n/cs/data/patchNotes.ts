@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.27.9': {
+    title: 'Šestiúhelníkové náhledy portrétů',
+    summary: 'Každý portrét se ve velkém otevře ve stejném šestiúhelníku.',
+    sections: [['Velký náhled portrétu (pravý klik nebo podržení) ukazuje každý portrét ve stejném šestiúhelníkovém rámu jako ve hře, v barvě jeho frakce.']],
+  },
   '0.27.8': {
     title: 'Ostřejší náhledy portrétů',
     summary: 'Velký náhled nejnovějších portrétů ukazuje celou malbu v plném rozlišení.',
