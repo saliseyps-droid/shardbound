@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.31.3': {
+    title: 'Oprava obrázků karet',
+    summary: 'Karty už neukazují prázdný obrázek, když se jejich obrázek nenačte.',
+    sections: [['Obrázek karty, který se nenačte (krátký výpadek sítě nebo aktualizace během hraní), se teď načte znovu. Když selže i podruhé, karta ukáže náhradní vygenerovaný obrázek místo prázdné plochy.']],
+  },
   '0.31.2': {
     title: 'Gears of Invention',
     summary: 'Prismatický balíček za 1000 zlata má nový obrázek a zlatý třpyt.',

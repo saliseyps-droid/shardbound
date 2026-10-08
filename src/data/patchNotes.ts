@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.31.3',
+    date: '2026-10-08',
+    title: 'Card art fix',
+    summary: 'Cards no longer show an empty picture when their art fails to load.',
+    sections: [{ kind: 'fixed', items: ['Card art that fails to load (a network hiccup, or an update while the game was open) is now loaded again, and if that fails too the card shows generated art instead of an empty picture.'] }],
+    commits: [],
+  },
+  {
     version: '0.31.2',
     date: '2026-10-08',
     title: 'Gears of Invention',

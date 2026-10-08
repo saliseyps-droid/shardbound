@@ -2,7 +2,7 @@ import { memo, useLayoutEffect, useRef, useState, type CSSProperties, type Mouse
 import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import type { CardDefinition, Variant } from '@/game/types';
-import { cardArtPosition, cardArtUri } from './cardArt';
+import { cardArtPosition, cardArtUri, proceduralArtUri } from './cardArt';
 import { Glyph } from './Icons';
 import { KeywordText } from './Tooltip';
 import { DEFAULT_CARD_BACK } from '@/data/cardBacks';
@@ -56,11 +56,30 @@ export function CardBack({ width = CARD_WIDTH.md, className = '', style, design 
   );
 }
 
+/**
+ * A card's artwork. A load that fails (a network hiccup, or a deploy while the app was open) is
+ * retried once with a cache-busting query; if that fails too the generated artwork is shown,
+ * so a card never ends up with an empty picture.
+ */
 function CardArtImage({ card }: { card: CardDefinition }) {
   const external = card.artwork && /^(\/|https?:|data:)/.test(card.artwork) ? card.artwork : null;
-  const [failed, setFailed] = useState(false);
-  const src = external && !failed ? external : cardArtUri(card);
-  return <img className="card-art" src={src} style={external ? undefined : { objectPosition: cardArtPosition(card) }} alt="" loading="lazy" decoding="async" draggable={false} onError={() => setFailed(true)} />;
+  const [failures, setFailures] = useState(0);
+  const primary = external ?? cardArtUri(card);
+  const isData = primary.startsWith('data:');
+  const src = failures === 0 || isData ? primary : failures === 1 ? `${primary}${primary.includes('?') ? '&' : '?'}retry=1` : proceduralArtUri(card);
+  return (
+    <img
+      key={src}
+      className="card-art"
+      src={src}
+      style={external && failures === 0 ? undefined : { objectPosition: cardArtPosition(card) }}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      draggable={false}
+      onError={() => setFailures((n) => Math.min(2, n + 1))}
+    />
+  );
 }
 
 /** Phones and tablets: no mouse to hover or right-click with. */

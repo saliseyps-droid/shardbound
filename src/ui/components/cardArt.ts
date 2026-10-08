@@ -122,7 +122,8 @@ export function cardArtUri(card: CardDefinition): string {
   return paintedArtUrl(card) ?? proceduralArtUri(card);
 }
 
-function proceduralArtUri(card: CardDefinition): string {
+/** The generated artwork (used when no painted art exists, or the painted art fails to load). */
+export function proceduralArtUri(card: CardDefinition): string {
   const cached = cache.get(card.id);
   if (cached) return cached;
   const f = FACTIONS[card.faction] ?? FACTIONS.NEUTRAL;
