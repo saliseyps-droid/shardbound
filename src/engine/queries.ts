@@ -48,6 +48,7 @@ export function auraBonus(state: GameState, unit: UnitInstance): AuraBonus {
   for (const p of state.players) {
     for (const u of p.board) consider(u.owner, u.uid, u.cardId, u.silenced);
     for (const r of p.relics) consider(r.owner, r.uid, r.cardId, false);
+    for (const r of p.rules ?? []) consider(p.id, r.uid, r.cardId, false);
     if (p.location) consider(p.location.owner, p.location.uid, p.location.cardId, false);
   }
   return bonus;
@@ -108,6 +109,10 @@ export function effectiveCost(state: GameState, playerId: PlayerId, card: CardIn
     for (const r of p.relics) apply(r.owner, r.cardId);
     if (p.location) apply(p.location.owner, p.location.cardId);
   }
+  // Match rules (Brawl) change costs too, but never take a card below 1.
+  const before = cost;
+  for (const p of state.players) for (const r of p.rules ?? []) apply(p.id, r.cardId);
+  if (cost < before) cost = Math.max(Math.min(before, 1), cost);
   return Math.max(0, cost);
 }
 

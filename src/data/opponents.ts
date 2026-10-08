@@ -19,6 +19,9 @@ export interface SpecialRules {
   startingBoard?: string[];
   startingRelics?: string[];
   startingLocation?: string;
+  /** Match rules (Brawl): rule card ids, src/data/brawl.ts. */
+  rules?: string[];
+  startingArmor?: number;
   /** Extra cards shuffled into the boss deck. */
   extraCards?: string[];
   description: string[];

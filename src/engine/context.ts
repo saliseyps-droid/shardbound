@@ -3,7 +3,7 @@ import type { GameEvent, GameState, NewGameEvent, PlayerId, TargetRef } from './
 
 /** Where an ability comes from. `hero` = Warden ability (no board object). */
 export interface AbilitySource {
-  kind: 'unit' | 'relic' | 'location' | 'spell' | 'hero';
+  kind: 'unit' | 'relic' | 'location' | 'spell' | 'hero' | 'rule';
   uid: number | null;
   cardId: string;
   controller: PlayerId;

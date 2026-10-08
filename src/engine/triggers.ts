@@ -35,6 +35,9 @@ function listenersFor(ctx: EngineContext, playerId: PlayerId): Listener[] {
   for (const r of p.relics) {
     out.push({ source: { kind: 'relic', uid: r.uid, cardId: r.cardId, controller: playerId }, abilities: getCard(r.cardId)?.abilities ?? [] });
   }
+  for (const r of p.rules ?? []) {
+    out.push({ source: { kind: 'rule', uid: r.uid, cardId: r.cardId, controller: playerId }, abilities: getCard(r.cardId)?.abilities ?? [] });
+  }
   if (p.location) {
     const l = p.location;
     out.push({ source: { kind: 'location', uid: l.uid, cardId: l.cardId, controller: playerId }, abilities: getCard(l.cardId)?.abilities ?? [] });
@@ -145,7 +148,7 @@ export function enqueue(ctx: EngineContext, pending: PendingAbility) {
 }
 
 function sourceStillValid(ctx: EngineContext, source: AbilitySource): boolean {
-  if (source.fromGraveyard || source.kind === 'spell' || source.kind === 'hero') return true;
+  if (source.fromGraveyard || source.kind === 'spell' || source.kind === 'hero' || source.kind === 'rule') return true;
   const p = ctx.state.players[source.controller];
   if (source.kind === 'unit') {
     const u = findUnit(ctx.state, source.uid!);

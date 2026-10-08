@@ -6,6 +6,7 @@ import type { PlayableFaction, SetId } from '@/game/types';
 import { grantXp, type LevelUp } from './progression';
 import { applyRanked } from './ranked';
 import { AI_RANKED_CONFIG, aiTierOf, applyAiRankedResult, repairAiRanked, unclaimedTierRewards, type AiTierName } from './aiRanked';
+import { brawlPackSet, brawlProgress } from './brawl';
 import { applyQuestProgress, type QuestProgressEvent } from './quests';
 import { addCards, MATCH_HISTORY_LIMIT, pushReward, type GameSave, type MatchRecord, type Quest } from './save';
 
@@ -29,6 +30,8 @@ export interface MatchSummary {
   ranked?: { opponentRating: number };
   /** The player's Warden health at the end (achievements). */
   heroHealth?: number;
+  /** Brawl: the fight played (`${rotation}-${index}`). */
+  brawlFightId?: string;
 }
 
 export interface RewardLine {
@@ -222,6 +225,26 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
       rankChange: out.rankChange,
       tierReached: out.tierReached,
     };
+  }
+
+  // Brawl: the first win in each fight of a rotation pays a pack of the newest set. A fight
+  // from an older rotation than the saved one (finished after the rotation changed) pays nothing.
+  if (summary.mode === 'BRAWL' && summary.brawlFightId && summary.result === 'WIN') {
+    const id = summary.brawlFightId;
+    const rotation = Number(id.split('-')[0]);
+    const saved = s.profile.brawl;
+    if (Number.isInteger(rotation) && rotation >= 0 && (!saved || rotation >= saved.rotation)) {
+      const progress = brawlProgress(saved, rotation);
+      if (!progress.won.includes(id)) {
+        const setId = brawlPackSet();
+        lines.push({ label: 'Brawl: first win', packs: { setId, amount: 1 } });
+        s = {
+          ...s,
+          profile: { ...s.profile, brawl: { rotation, won: [...progress.won, id] } },
+          economy: { ...s.economy, packs: { ...s.economy.packs, [setId]: (s.economy.packs[setId] ?? 0) + 1 } },
+        };
+      }
+    }
   }
 
   const xpResult = grantXp(s, xp, now);

@@ -13,6 +13,9 @@ import { aiRankLabel } from '@/ui/components/meta/aiRankedUi';
 import { hasFreeArenaEntry } from '@/domain/arena';
 import { tierFor } from '@/domain/ranked';
 import { ARENA } from '@/config/arena';
+import { BRAWL_FIGHTS_PER_ROTATION, brawlProgress, brawlRotation, brawlRotationEnds } from '@/domain/brawl';
+import { trustedNow } from '@/domain/clock';
+import { brawlTimeLeft } from '@/ui/components/meta/brawlUi';
 import type { GameSave } from '@/domain/save';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
@@ -20,7 +23,7 @@ import { DeckPicker, DIFFICULTY_INFO, factionStyle, firstValidDeck } from '@/ui/
 import { audio } from '@/audio/audioService';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/social.css';
-import { t } from '@/i18n';
+import { t, tn } from '@/i18n';
 
 interface ModeTile {
   key: string;
@@ -72,6 +75,18 @@ function ModeGrid({ title, tiles, variant }: { title: string; tiles: ModeTile[];
   );
 }
 
+function brawlTile(save: GameSave): ModeTile {
+  const now = trustedNow(save, Date.now());
+  const rotation = brawlRotation(now);
+  const won = brawlProgress(save.profile.brawl, rotation).won.length;
+  const open = BRAWL_FIGHTS_PER_ROTATION - won;
+  return {
+    key: 'brawl', icon: 'bolt', title: t('Brawl'), text: t('Two fights with special rules, new every three weeks. Your first win in each pays a free pack.'),
+    status: open > 0 ? tn(open, '{n} free pack to win', '{n} free packs to win') : t('New fights in {time}', { time: brawlTimeLeft(brawlRotationEnds(rotation) - now) }),
+    to: '/brawl', highlight: open > 0,
+  };
+}
+
 function modeTiles(save: GameSave, startTutorial: () => void): { ai: ModeTile[]; pvp: ModeTile[] } {
   const camp = campaignProgress(save);
   const run = save.arena.run;
@@ -79,6 +94,7 @@ function modeTiles(save: GameSave, startTutorial: () => void): { ai: ModeTile[];
   const ai: ModeTile[] = [
     { key: 'campaign', icon: 'map', title: t('Campaign'), text: t('Follow the story across nine chapters of rivals and bosses.'), status: camp.cleared >= camp.total ? t('Completed') : t('{n} of {total} cleared', { n: camp.cleared, total: camp.total }), to: '/campaign' },
     { key: 'ai-ranked', icon: 'star', title: t('Ranked vs AI'), text: t('Climb from Bronze to Crown against the AI. It gets stronger with every rank.'), status: aiRankLabel(save.profile.aiRanked.rank), to: '/ai-ranked', board: '/leaderboard' },
+    brawlTile(save),
     {
       key: 'arena', icon: 'trophy', title: t('Arena'), text: t('Draft a deck from random cards and win as many of 4 matches as you can.'),
       status: run ? t('Run in progress: {w} of {max} wins', { w: run.results.filter((r) => r === 'WIN').length, max: ARENA.maxWins }) : hasFreeArenaEntry(save, Date.now()) ? t('Free entry today') : t('Entry: {n} Gold', { n: ARENA.entryGold }),

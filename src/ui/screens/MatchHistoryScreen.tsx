@@ -9,7 +9,7 @@ import '@/ui/styles/meta.css';
 import { formatDateTime, t, tn } from '@/i18n';
 
 type Filter = 'ALL' | 'WIN' | 'LOSS' | 'DRAW';
-const MODE_LABEL = { PRACTICE: 'Practice', PVE: 'Campaign', TUTORIAL: 'Tutorial', PVP: 'Online', RANKED: 'Ranked', TOURNAMENT: 'Tournament', ARENA: 'Arena', AI_RANKED: 'Ranked vs AI' } as const;
+const MODE_LABEL = { PRACTICE: 'Practice', PVE: 'Campaign', TUTORIAL: 'Tutorial', PVP: 'Online', RANKED: 'Ranked', TOURNAMENT: 'Tournament', ARENA: 'Arena', AI_RANKED: 'Ranked vs AI', BRAWL: 'Brawl' } as const;
 
 function duration(ms: number) {
   if (!ms || ms < 0) return '—';

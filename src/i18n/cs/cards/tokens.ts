@@ -2,6 +2,14 @@ import type { CardsOverlay } from '../../overlayTypes';
 
 /** Tokens and tutorial cards. These names are referenced by other cards' rules text. */
 const cards: CardsOverlay = {
+  brawl_rule_long_winter: { name: 'Dlouhá zima', description: 'Na začátku tvého tahu zmraz náhodnou nepřátelskou jednotku.' },
+  brawl_rule_dragon_nest: { name: 'Dračí hnízdo', description: 'Na začátku tvého tahu si přidej do ruky náhodného draka.' },
+  brawl_rule_blood_arena: { name: 'Krvavá aréna', description: 'Tvé jednotky dostanou při vyvolání +1/+1.' },
+  brawl_rule_spell_storm: { name: 'Magická bouře', description: 'Na začátku tvého tahu si přidej do ruky náhodné kouzlo s cenou 3 nebo méně.' },
+  brawl_rule_munitions: { name: 'Sklad munice', description: 'Na začátku tvého tahu způsob 1 poškození náhodnému nepříteli.' },
+  brawl_rule_treasury: { name: 'Bohatá pokladnice', description: 'Tvé karty stojí o 1 méně (ale nikdy méně než 1).' },
+  brawl_rule_last_breath: { name: 'Poslední dech', description: 'Když zemře jedna z tvých jednotek, lízni si kartu.' },
+  token_brawl_wall: { name: 'Obléhací zeď', flavorText: 'Postavili ji, aby vydržela. Ne aby se líbila.' },
   token_aether_shard: { name: 'Éterový střep', description: 'Získej v tomto tahu 1 energii.', flavorText: 'Úlomek Koruny, který bzučí vypůjčeným časem.' },
   token_mote_insight: { name: 'Jiskra vhledu', description: 'Způsob 1 poškození náhodnému nepříteli. Pokud jsi v tomto tahu seslal 2 nebo více kouzel, lízni si kartu.' },
   token_hollow_wisp: { name: 'Prázdná světluška' },

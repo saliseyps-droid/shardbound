@@ -3,7 +3,9 @@ import type { AiTuning } from '@/ai/config';
 import type { OpponentDef } from '@/data/opponents';
 
 export interface MatchConfig {
-  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE' | 'RANKED' | 'TOURNAMENT' | 'ARENA' | 'AI_RANKED';
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE' | 'RANKED' | 'TOURNAMENT' | 'ARENA' | 'AI_RANKED' | 'BRAWL';
+  /** Brawl: the fight being played (src/domain/brawl.ts). */
+  brawlFightId?: string;
   /** Ranked: the opponent's rating when the match was found. */
   opponentRating?: number;
   /** Tournament: which bracket match this is. */

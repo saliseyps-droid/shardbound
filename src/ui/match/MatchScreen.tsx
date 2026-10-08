@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from 'react';
+import { findBrawlFight } from '@/domain/brawl';
+import '@/ui/styles/brawl.css';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { getCardSafe } from '@/data/cards';
 import { effectiveCost, canPlayCard } from '@/engine/queries';
@@ -52,6 +54,8 @@ function modeLabel(config: MatchConfig | null | undefined): string {
       return t('Tutorial');
     case 'AI_RANKED':
       return t('AI Ranked');
+    case 'BRAWL':
+      return t('Brawl');
     case 'RANKED':
       return t('Ranked');
     case 'TOURNAMENT':
@@ -61,6 +65,21 @@ function modeLabel(config: MatchConfig | null | undefined): string {
     default:
       return config?.online ? t('Online match') : t('Practice');
   }
+}
+
+/** The Brawl fight's rules, under the battle log. */
+function BrawlRules({ fightId }: { fightId?: string }) {
+  const fight = fightId ? findBrawlFight(fightId) : undefined;
+  if (!fight) return null;
+  return (
+    <div className="match-brawl-rules">
+      {fight.modifiers.map((m) => (
+        <div key={m.id}>
+          <strong>{t(m.name)}:</strong> <span className="faint">{t(m.description)}</span>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 function useViewportCardWidth() {
@@ -651,6 +670,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         <div className="match-meta faint">
           {t('{mode} vs {name}', { mode: modeLabel(config), name: game.players[AI].hero.name })}
         </div>
+        {config?.mode === 'BRAWL' && <BrawlRules fightId={config.brawlFightId} />}
       </aside>
 
       {/* ---- Targeting arrow ---- */}

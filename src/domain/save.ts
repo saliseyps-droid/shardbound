@@ -6,6 +6,7 @@ import type { PlayableFaction, SetId, Variant } from '@/game/types';
 import type { Deck } from './decks';
 import type { RankedState } from './ranked';
 import type { AiRankedState } from './aiRanked';
+import type { BrawlState } from './brawl';
 
 export const CURRENT_SAVE_VERSION = 5;
 
@@ -59,6 +60,8 @@ export interface PlayerProfile {
   bestWinStreak: number;
   /** Tournaments won as champion. */
   tournamentsWon: number;
+  /** Brawl fights won in the current rotation (src/domain/brawl.ts); missing until the first win. */
+  brawl?: BrawlState;
 }
 
 export type VariantCounts = Record<Variant, number>;
@@ -121,7 +124,7 @@ export interface MatchRecord {
   id: string;
   date: number;
   durationMs: number;
-  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'PVP' | 'RANKED' | 'TOURNAMENT' | 'ARENA' | 'AI_RANKED';
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'PVP' | 'RANKED' | 'TOURNAMENT' | 'ARENA' | 'AI_RANKED' | 'BRAWL';
   /** Ranked rating change, when ranked. */
   ratingChange?: number;
   opponentId: string;

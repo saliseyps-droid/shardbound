@@ -520,8 +520,8 @@ export function ResultsOverlay({ game }: { game: GameState }) {
               </button>
             ) : (
             <>
-            <button className="btn btn-ghost" onClick={() => exit(config?.mode === 'PVE' ? '/campaign' : config?.mode === 'TOURNAMENT' ? '/tournament' : config?.mode === 'RANKED' ? '/ranked' : config?.mode === 'AI_RANKED' ? '/ai-ranked' : config?.online ? '/online' : '/play')}>
-              {config?.mode === 'PVE' ? t('Back to campaign') : config?.mode === 'TOURNAMENT' ? t('Back to bracket') : config?.mode === 'RANKED' ? t('Ranked') : config?.mode === 'AI_RANKED' ? t('Next ranked match') : config?.online ? t('New online match') : t('Choose opponent')}
+            <button className="btn btn-ghost" onClick={() => exit(config?.mode === 'PVE' ? '/campaign' : config?.mode === 'TOURNAMENT' ? '/tournament' : config?.mode === 'RANKED' ? '/ranked' : config?.mode === 'AI_RANKED' ? '/ai-ranked' : config?.mode === 'BRAWL' ? '/brawl' : config?.online ? '/online' : '/play')}>
+              {config?.mode === 'PVE' ? t('Back to campaign') : config?.mode === 'TOURNAMENT' ? t('Back to bracket') : config?.mode === 'RANKED' ? t('Ranked') : config?.mode === 'AI_RANKED' ? t('Next ranked match') : config?.mode === 'BRAWL' ? t('Back to Brawl') : config?.online ? t('New online match') : t('Choose opponent')}
             </button>
             {/* A ranked rematch would replay the same rival; the ladder screen rolls a new one. */}
             {!config?.online && config?.mode !== 'TOURNAMENT' && config?.mode !== 'AI_RANKED' && (

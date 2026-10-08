@@ -1,4 +1,5 @@
 import { arenaDeck, arenaOpponent, arenaPhase } from '@/domain/arena';
+import { applyBrawlMods, brawlPlayerMods, findBrawlFight } from '@/domain/brawl';
 import { create } from 'zustand';
 import { randomSeed } from '@/core/rng';
 import { applyAction, createGame } from '@/engine/game';
@@ -550,6 +551,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         pveEncounterId: cfg.mode === 'PVE' ? cfg.encounterId : undefined,
         firstWinReward: cfg.mode === 'PVE' ? cfg.opponent.firstWinReward : undefined,
         heroHealth: state.players[HUMAN].hero.health,
+        brawlFightId: cfg.mode === 'BRAWL' ? cfg.brawlFightId : undefined,
       });
       set({ rewards });
       if (cfg.mode === 'TOURNAMENT' && cfg.tournamentMatchId) onTournamentMatchEnd?.(cfg.tournamentMatchId, result);
@@ -646,7 +648,13 @@ export const useMatch = create<MatchStore>((set, get) => {
         deckName = deck.name;
         const opponent = config.online === 'host' ? netSession.remoteSide : opponentSide(config.opponent);
         if (!opponent) throw new Error('Your opponent is no longer connected.');
-        setup = { seed: config.seed ?? randomSeed(), players: [playerSide(save.profile, deck), opponent] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
+        let me = playerSide(save.profile, deck);
+        if (config.mode === 'BRAWL') {
+          const fight = config.brawlFightId ? findBrawlFight(config.brawlFightId) : undefined;
+          if (!fight) throw new Error('This Brawl is over.');
+          me = applyBrawlMods(me, brawlPlayerMods(fight));
+        }
+        setup = { seed: config.seed ?? randomSeed(), players: [me, opponent] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
       }
       const state = initialState ?? createGame(setup!).state;
       if (gen !== matchGen) return;

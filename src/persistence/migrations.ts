@@ -108,6 +108,13 @@ export function migrateSave(input: Raw): MigrationReport {
   const r = p.ranked && typeof p.ranked === 'object' ? p.ranked : newRanked();
   p.ranked = { rating: num(r.rating, 1000, 100), peak: num(r.peak, 1000, 100), wins: Math.floor(num(r.wins, 0)), losses: Math.floor(num(r.losses, 0)), ...rankedSeasonFields(r) };
   p.aiRanked = repairAiRanked(p.aiRanked);
+  if (p.brawl !== undefined) {
+    const b = p.brawl;
+    p.brawl = b && typeof b === 'object' && Number.isInteger(b.rotation) && b.rotation >= 0 && Array.isArray(b.won)
+      ? { rotation: b.rotation, won: [...new Set(b.won.filter((id: unknown) => typeof id === 'string'))] }
+      : undefined;
+    if (!p.brawl) delete p.brawl;
+  }
   p.achievements = repairAchievements(p.achievements);
   for (const k of ['winStreak', 'bestWinStreak', 'tournamentsWon'] as const) p[k] = Math.floor(num(p[k], 0));
 

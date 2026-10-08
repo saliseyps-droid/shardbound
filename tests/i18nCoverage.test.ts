@@ -30,7 +30,7 @@ describe('Czech translation coverage', () => {
       return plural ? tn(5, key, key, {}, 'cs') === tn(5, key, key, {}, 'en') : tr(key, {}, 'cs') === key;
     });
     // Short brand-like or numeric strings may legitimately stay identical.
-    const SAME_IN_CZECH = new Set(['Foil', 'Boss', ', boss', '{n} min', '{xp} / {need} XP', '{name}: {reason}.']);
+    const SAME_IN_CZECH = new Set(['Foil', 'Boss', 'Brawl', ', boss', '{n} min', '{xp} / {need} XP', '{name}: {reason}.']);
     const real = missing.filter(({ key }) => /[a-z]{3,}/i.test(key) && !SAME_IN_CZECH.has(key));
     expect(real.map((m) => `${m.file}: ${m.key}`)).toEqual([]);
   });

@@ -109,6 +109,8 @@ export interface PlayerState {
   hand: CardInstance[];
   board: UnitInstance[];
   relics: RelicInstance[];
+  /** Match rules (Brawl): permanent ability sources that take no relic slot. Missing in older states. */
+  rules?: { uid: number; cardId: string }[];
   location: LocationInstance | null;
   /** Card ids of friendly units that died, in order. */
   graveyard: string[];
@@ -224,6 +226,9 @@ export interface SideSetup {
   startingBoard?: string[];
   startingRelics?: string[];
   startingLocation?: string;
+  /** Match rules (Brawl) for this side: rule card ids (src/data/brawl.ts). */
+  rules?: string[];
+  startingArmor?: number;
   keepDeckOrder?: boolean;
 }
 

@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.27.0',
+    date: '2026-10-08',
+    title: 'Brawl',
+    summary: 'A new mode: two fights with special rules against the Expert AI, new ones every three weeks.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Brawl (Play → Against the AI): two fights against the Expert AI, played with your own deck. Each fight mixes two special rules, and the two fights never share one.',
+          'Every three weeks (Monday 00:00 UTC) two new fights replace the old ones. Your first win in each fight pays a free pack of the newest set.',
+          'The rules: Fire Surge, Long Winter, Dragon Nest, Blood Arena, Spell Storm, Munitions Depot, Siege, Rich Treasury, Final Breath and Champion. The active rules are shown in the match side panel.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.26.16',
     date: '2026-10-08',
     title: 'Undertow',

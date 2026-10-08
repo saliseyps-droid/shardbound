@@ -98,6 +98,10 @@ export function createGame(setup: MatchSetup): { state: GameState; events: Actio
     if (side.startingLocation && getCard(side.startingLocation)?.cardType === 'LOCATION') {
       p.location = { uid: state.nextUid++, cardId: side.startingLocation, owner: p.id, turnsRemaining: null };
     }
+    // After the starting board, so rules like "units get +1/+1 when summoned" leave it alone.
+    const rules = (side.rules ?? []).filter((id) => !!getCard(id));
+    if (rules.length) p.rules = rules.map((cardId) => ({ uid: state.nextUid++, cardId }));
+    if (side.startingArmor) p.hero.armor = Math.max(0, Math.floor(side.startingArmor));
   });
 
   state.firstPlayer = setup.firstPlayer ?? (nextInt(state.rng, 0, 1) as PlayerId);

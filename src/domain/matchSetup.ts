@@ -38,6 +38,8 @@ export function opponentSide(opponent: OpponentDef, random: () => number = Math.
     startingBoard: s?.startingBoard,
     startingRelics: s?.startingRelics,
     startingLocation: s?.startingLocation,
+    rules: s?.rules,
+    startingArmor: s?.startingArmor,
   };
 }
 
