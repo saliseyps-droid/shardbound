@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.28.0': {
+    title: 'Nové úspěchy',
+    summary: '20 nových úspěchů za Brawl, úkoly a sbírání, s novými tituly.',
+    sections: [
+      [
+        'Úspěchy za Brawl (nová kategorie): Rváč, Dvojitá potíž (vyhraj oba fighty jedné rotace), Přemožitel obrů (poraz Šampiona), Porušitel pravidel a Král chaosu, s titulem Král chaosu.',
+        'Sběratelské úspěchy: kompletní Fantasy Realms, Legions of Shadow nebo Dragon Realm, 20 draků, 10 nebo 30 legendárek, prizmatická karta, 15 karet ve Foil nebo Prismatic, 3 nebo všechny portréty Strážců a 6 rubových stran; otevři 100 boosterů; vyrob 50 karet. Nové tituly: Pán draků, Strážce legend a Mnohotvářný.',
+        'Úspěchy za úkoly: splň 50 úkolů a vyzvedni všechny tři týdenní úkoly jednoho týdne.',
+        'Úspěchy, na které už máš nárok, se odemknou při příštím spuštění hry.',
+      ],
+    ],
+  },
   '0.27.9': {
     title: 'Šestiúhelníkové náhledy portrétů',
     summary: 'Každý portrét se ve velkém otevře ve stejném šestiúhelníku.',

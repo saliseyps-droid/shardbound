@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.28.0',
+    date: '2026-10-08',
+    title: 'New achievements',
+    summary: '20 new achievements for Brawl, quests and collecting, with new titles.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Brawl achievements (a new category): Brawler, Double Trouble (win both fights of a rotation), Giant Slayer (beat a Champion), Rule Breaker and King of Chaos, with the title King of Chaos.',
+          'Collection achievements: complete Fantasy Realms, Legions of Shadow or Dragon Realm, own 20 Dragons, 10 or 30 Legendaries, a Prismatic card, 15 Foil or Prismatic cards, 3 or every Warden portrait and 6 card backs; open 100 packs; craft 50 cards. New titles: Dragonlord, Keeper of Legends and Many-Faced.',
+          'Quest achievements: complete 50 quests, and claim all three weekly quests of one week.',
+          'Achievements you already qualify for unlock the next time you open the game.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.27.9',
     date: '2026-10-08',
     title: 'Hexagon portrait previews',

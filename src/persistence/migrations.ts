@@ -115,6 +115,7 @@ export function migrateSave(input: Raw): MigrationReport {
   const r = p.ranked && typeof p.ranked === 'object' ? p.ranked : newRanked();
   p.ranked = { rating: num(r.rating, 1000, 100), peak: num(r.peak, 1000, 100), wins: Math.floor(num(r.wins, 0)), losses: Math.floor(num(r.losses, 0)), ...rankedSeasonFields(r) };
   p.aiRanked = repairAiRanked(p.aiRanked);
+  if (p.brawlWins !== undefined) p.brawlWins = Math.floor(num(p.brawlWins, 0));
   if (p.brawl !== undefined) {
     const b = p.brawl;
     p.brawl = b && typeof b === 'object' && Number.isInteger(b.rotation) && b.rotation >= 0 && Array.isArray(b.won)

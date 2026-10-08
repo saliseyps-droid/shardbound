@@ -230,6 +230,7 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
   // Brawl: the first win in each fight of a rotation pays a pack of the newest set. A fight
   // from an older rotation than the saved one (finished after the rotation changed) pays nothing.
   if (summary.mode === 'BRAWL' && summary.brawlFightId && summary.result === 'WIN') {
+    s = { ...s, profile: { ...s.profile, brawlWins: (s.profile.brawlWins ?? 0) + 1 } };
     const id = summary.brawlFightId;
     const rotation = Number(id.split('-')[0]);
     const saved = s.profile.brawl;

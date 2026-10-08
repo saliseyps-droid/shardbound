@@ -62,6 +62,8 @@ export interface PlayerProfile {
   tournamentsWon: number;
   /** Brawl fights won in the current rotation (src/domain/brawl.ts); missing until the first win. */
   brawl?: BrawlState;
+  /** Brawl matches won, all rotations (achievements); missing until the first. */
+  brawlWins?: number;
 }
 
 export type VariantCounts = Record<Variant, number>;

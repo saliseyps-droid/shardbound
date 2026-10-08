@@ -7,13 +7,15 @@ import { AI_TIERS, aiTierIndex, type AiTierName } from '@/domain/aiRanked';
 import { ownedCopies, type GameSave, type MatchRecord } from '@/domain/save';
 import type { MatchSummary } from '@/domain/matchResults';
 import { PLAYABLE_FACTIONS, type SetId } from '@/game/types';
+import { PORTRAITS } from './portraits';
+import { findBrawlFight } from '@/domain/brawl';
 
 /**
  * Achievements: one-time goals computed from the save (and, for a few feats, the match just played).
  * Names, descriptions and titles are English source text, translated at display time
  * (Czech in src/i18n/cs/ui/achievements.ts). Logic lives in src/domain/achievements.ts.
  */
-export type AchievementCategory = 'BATTLE' | 'CAMPAIGN' | 'AI_RANKED' | 'ARENA' | 'COLLECTION' | 'FACTIONS' | 'ONLINE';
+export type AchievementCategory = 'BATTLE' | 'CAMPAIGN' | 'AI_RANKED' | 'ARENA' | 'BRAWL' | 'COLLECTION' | 'FACTIONS' | 'ONLINE';
 export type AchievementTier = 'BRONZE' | 'SILVER' | 'GOLD';
 
 export interface AchievementProgress {
@@ -42,6 +44,7 @@ export const ACHIEVEMENT_CATEGORIES: { id: AchievementCategory; label: string; i
   { id: 'CAMPAIGN', label: 'Campaign', icon: 'map' },
   { id: 'AI_RANKED', label: 'Ranked vs AI', icon: 'crown' },
   { id: 'ARENA', label: 'Arena', icon: 'trophy' },
+  { id: 'BRAWL', label: 'Brawl fights', icon: 'bolt' },
   { id: 'COLLECTION', label: 'Collection', icon: 'crystal' },
   { id: 'FACTIONS', label: 'Factions', icon: 'shield' },
   { id: 'ONLINE', label: 'Online play', icon: 'compass' },
@@ -95,6 +98,16 @@ function bestLegendaryFaction(save: GameSave): AchievementProgress {
   }
   return best;
 }
+
+const setProgress = (save: GameSave, set: SetId) => {
+  const pool = collectibleCards().filter((c) => c.set === set);
+  return count(ownedOf(save, pool), pool.length);
+};
+const shinyCards = (save: GameSave) => Object.values(save.collection.cards).filter((v) => v.FOIL + v.PRISMATIC > 0).length;
+const prismaticCards = (save: GameSave) => Object.values(save.collection.cards).filter((v) => v.PRISMATIC > 0).length;
+const dragonPool = () => collectibleCards().filter((c) => c.tags?.includes('Dragon'));
+/** Brawl fights won in the saved (latest) rotation. */
+const brawlFightsWon = (save: GameSave) => save.profile.brawl?.won.length ?? 0;
 
 /** Wardens keep at least this much health for the Untouchable feat. */
 export const FLAWLESS_HEALTH = 25;
@@ -153,6 +166,16 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'arena_2', name: 'Crowd Pleaser', description: 'Win 2 matches in one Arena run.', category: 'ARENA', tier: 'SILVER', icon: 'trophy', rewards: [pack('CORE'), gold(100)], progress: (s) => count(s.arena.bestWins, 2) },
   { id: 'arena_4', name: 'Arena Legend', description: `Win all ${ARENA.maxWins} matches of an Arena run.`, category: 'ARENA', tier: 'GOLD', icon: 'trophy', rewards: [title('Arena Legend'), pack('ABYSS', 2)], progress: (s) => count(s.arena.bestWins, ARENA.maxWins) },
 
+  // Brawl -------------------------------------------------------------------
+  { id: 'brawl_1', name: 'Brawler', description: 'Win a Brawl fight.', category: 'BRAWL', tier: 'BRONZE', icon: 'bolt', rewards: [gold(100)], progress: (s) => count(s.profile.brawlWins ?? 0, 1) },
+  { id: 'brawl_both', name: 'Double Trouble', description: 'Win both fights of one Brawl rotation.', category: 'BRAWL', tier: 'SILVER', icon: 'bolt', rewards: [pack('DRAGON')], progress: (s) => count(brawlFightsWon(s), 2) },
+  {
+    id: 'brawl_champion', name: 'Giant Slayer', description: 'Win a Brawl fight with the Champion rule.', category: 'BRAWL', tier: 'SILVER', icon: 'crown', rewards: [essence(150)],
+    check: (_s, m) => !!m && m.mode === 'BRAWL' && m.result === 'WIN' && !!findBrawlFight(m.brawlFightId ?? '')?.modifiers.some((x) => x.id === 'champion'),
+  },
+  { id: 'brawl_10', name: 'Rule Breaker', description: 'Win 10 Brawl matches.', category: 'BRAWL', tier: 'SILVER', icon: 'bolt', rewards: [pack('DRAGON'), gold(150)], progress: (s) => count(s.profile.brawlWins ?? 0, 10) },
+  { id: 'brawl_50', name: 'King of Chaos', description: 'Win 50 Brawl matches.', category: 'BRAWL', tier: 'GOLD', icon: 'crown', rewards: [title('King of Chaos'), cardBack], progress: (s) => count(s.profile.brawlWins ?? 0, 50) },
+
   // Collection --------------------------------------------------------------
   { id: 'packs_10', name: 'Pack Rat', description: 'Open 10 booster packs.', category: 'COLLECTION', tier: 'BRONZE', icon: 'pack', rewards: [gold(100)], progress: (s) => count(s.profile.packsOpened, 10) },
   { id: 'packs_50', name: 'Hoarder of Boosters', description: 'Open 50 booster packs.', category: 'COLLECTION', tier: 'SILVER', icon: 'pack', rewards: [pack('ABYSS'), essence(100)], progress: (s) => count(s.profile.packsOpened, 50) },
@@ -164,6 +187,37 @@ export const ACHIEVEMENTS: AchievementDef[] = [
       const pool = collectibleCards().filter((c) => c.set === 'CORE');
       return count(ownedOf(s, pool), pool.length);
     },
+  },
+
+  { id: 'packs_100', name: 'Pack Master', description: 'Open 100 booster packs.', category: 'COLLECTION', tier: 'GOLD', icon: 'pack', rewards: [pack('DRAGON', 3), essence(200)], progress: (s) => count(s.profile.packsOpened, 100) },
+  { id: 'craft_50', name: 'Master Shardsmith', description: 'Craft 50 cards.', category: 'COLLECTION', tier: 'SILVER', icon: 'hammer', rewards: [essence(300)], progress: (s) => count(s.profile.cardsCrafted, 50) },
+  { id: 'set_deep', name: 'Realms Explored', description: 'Own at least one copy of every card in Fantasy Realms.', category: 'COLLECTION', tier: 'GOLD', icon: 'deck', rewards: [cardBack, gold(300)], progress: (s) => setProgress(s, 'DEEP') },
+  { id: 'set_abyss', name: 'Shadow Archivist', description: 'Own at least one copy of every card in Legions of Shadow.', category: 'COLLECTION', tier: 'GOLD', icon: 'deck', rewards: [cardBack, gold(300)], progress: (s) => setProgress(s, 'ABYSS') },
+  { id: 'set_dragon', name: 'Dragon Hoard', description: 'Own at least one copy of every card in Dragon Realm.', category: 'COLLECTION', tier: 'GOLD', icon: 'wing', rewards: [title('Dragonlord'), cardBack], progress: (s) => setProgress(s, 'DRAGON') },
+  {
+    id: 'dragons_20', name: 'Dragon Tamer', description: 'Own 20 different Dragon cards.', category: 'COLLECTION', tier: 'SILVER', icon: 'wing', rewards: [pack('DRAGON', 2)],
+    progress: (s) => count(ownedOf(s, dragonPool()), Math.min(20, dragonPool().length)),
+  },
+  {
+    id: 'legend_10', name: 'Legend Collector', description: 'Own 10 different Legendary cards.', category: 'COLLECTION', tier: 'SILVER', icon: 'crystal', rewards: [essence(200)],
+    progress: (s) => count(ownedOf(s, collectibleCards().filter((c) => c.rarity === 'LEGENDARY')), 10),
+  },
+  {
+    id: 'legend_30', name: 'Keeper of Legends', description: 'Own 30 different Legendary cards.', category: 'COLLECTION', tier: 'GOLD', icon: 'crown', rewards: [title('Keeper of Legends'), essence(400)],
+    progress: (s) => count(ownedOf(s, collectibleCards().filter((c) => c.rarity === 'LEGENDARY')), 30),
+  },
+  { id: 'prismatic_1', name: 'Prismatic Prize', description: 'Own a Prismatic card.', category: 'COLLECTION', tier: 'BRONZE', icon: 'star', rewards: [gold(100)], progress: (s) => count(prismaticCards(s), 1) },
+  { id: 'shiny_15', name: 'Shimmering Collection', description: 'Own 15 different cards in Foil or Prismatic.', category: 'COLLECTION', tier: 'SILVER', icon: 'star', rewards: [essence(200)], progress: (s) => count(shinyCards(s), 15) },
+  { id: 'portraits_3', name: 'New Faces', description: 'Own 3 Warden portraits.', category: 'COLLECTION', tier: 'BRONZE', icon: 'person', rewards: [gold(150)], progress: (s) => count(s.profile.portraits.length, 3) },
+  {
+    id: 'portraits_all', name: 'Hall of Faces', description: 'Own every Warden portrait.', category: 'COLLECTION', tier: 'GOLD', icon: 'person', rewards: [title('Many-Faced'), essence(300)],
+    progress: (s) => count(PORTRAITS.filter((p) => s.profile.portraits.includes(p.id)).length, PORTRAITS.length),
+  },
+  { id: 'cardbacks_6', name: 'Back Catalogue', description: 'Own 6 card backs.', category: 'COLLECTION', tier: 'SILVER', icon: 'cardback', rewards: [gold(200)], progress: (s) => count(s.profile.cardBacks.length, 6) },
+  { id: 'quests_50', name: 'Quest Hunter', description: 'Complete 50 quests.', category: 'BATTLE', tier: 'SILVER', icon: 'scroll', rewards: [pack('DRAGON'), gold(150)], progress: (s) => count(s.quests.totalCompleted, 50) },
+  {
+    id: 'weekly_all', name: 'A Week Well Spent', description: 'Claim all three weekly quests of one week.', category: 'BATTLE', tier: 'SILVER', icon: 'scroll', rewards: [essence(150)],
+    check: (s) => s.quests.weekly.length >= 3 && s.quests.weekly.every((q) => q.claimed),
   },
 
   // Factions ----------------------------------------------------------------
