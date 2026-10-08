@@ -1,0 +1,8 @@
+/* Card names inside running text (patch notes): highlighted, hover shows the card, click opens it. */
+.text-card-name {
+  color: var(--gold-bright); font-weight: 700; border-bottom: 1px dotted rgba(255, 210, 122, 0.5); cursor: pointer;
+}
+.text-card-name:hover, .text-card-name:focus-visible { color: var(--parchment); border-bottom-color: var(--parchment); outline: none; }
+.text-card-name-preview { position: fixed; z-index: 400; pointer-events: none; filter: drop-shadow(0 18px 30px rgba(4, 2, 16, 0.85)); animation: text-card-name-preview-in 0.12s var(--ease-out); }
+@keyframes text-card-name-preview-in { from { opacity: 0; transform: translateY(6px); } }
+@media (hover: none) { .text-card-name { border-bottom: 0; } .text-card-name-preview { display: none; } }

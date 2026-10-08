@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PATCH_NOTES, LATEST_PATCH, type PatchSection } from '@/data/patchNotes';
 import { ScreenHeader } from '@/ui/components/common';
+import { CardNameText } from '@/ui/components/CardNameText';
 import { markPatchNotesSeen } from '@/ui/patchNotesSeen';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/patchnotes.css';
@@ -44,7 +45,9 @@ export default function PatchNotesScreen() {
                       <h4>{t(KIND_LABEL[s.kind])}</h4>
                       <ul>
                         {s.items.map((item) => (
-                          <li key={item}>{item}</li>
+                          <li key={item}>
+                            <CardNameText text={item} />
+                          </li>
                         ))}
                       </ul>
                     </section>
