@@ -1,4 +1,4 @@
-import { PACK_CONFIG } from '@/config/economy';
+import { PACK_CONFIG, PRISMATIC_PACK, type PackId } from '@/config/economy';
 import { cardsBy } from '@/data/cards';
 import type { RngState } from '@/core/rng';
 import { nextFloat, pickOne, pickWeighted } from '@/core/rng';
@@ -33,8 +33,12 @@ const rank = (r: Rarity) => RARITIES.indexOf(r);
  * - Duplicate protection prefers cards not yet owned at max playable copies
  * @param owned cardId -> copies owned (including cards already generated in this pack)
  */
-export function generatePack(setId: SetId, pity: PityState, owned: (cardId: string) => number, rng: RngState): PackResult {
+export function generatePack(setId: PackId, pity: PityState, owned: (cardId: string) => number, rng: RngState): PackResult {
   const cfg = PACK_CONFIG;
+  if (setId === 'PRISMATIC_LEGEND') {
+    const card = pickCard(setId, 'LEGENDARY', owned, rng);
+    return { cards: [{ cardId: card.id, rarity: card.rarity, variant: 'PRISMATIC', isNew: owned(card.id) === 0 }], pity };
+  }
   const rarities: Rarity[] = [];
   for (let i = 0; i < cfg.cardsPerPack - 1; i++) rarities.push(pickWeighted(rng, cfg.standardSlotWeights));
   let guaranteed = pickWeighted(rng, cfg.guaranteedSlotWeights);
@@ -42,7 +46,8 @@ export function generatePack(setId: SetId, pity: PityState, owned: (cardId: stri
   const packsSinceLegendary = pity.LEGENDARY + 1;
   const packsSinceEpic = pity.EPIC + 1;
   const hasAtLeast = (r: Rarity) => [...rarities, guaranteed].some((x) => rank(x) >= rank(r));
-  if (cfg.pity.LEGENDARY && packsSinceLegendary >= cfg.pity.LEGENDARY && !hasAtLeast('LEGENDARY')) guaranteed = 'LEGENDARY';
+  const legendaryPity = setId === 'PRISMATIC' ? PRISMATIC_PACK.pityLegendary : cfg.pity.LEGENDARY;
+  if (legendaryPity && packsSinceLegendary >= legendaryPity && !hasAtLeast('LEGENDARY')) guaranteed = 'LEGENDARY';
   else if (cfg.pity.EPIC && packsSinceEpic >= cfg.pity.EPIC && !hasAtLeast('EPIC')) guaranteed = 'EPIC';
   rarities.push(guaranteed);
 
@@ -51,7 +56,8 @@ export function generatePack(setId: SetId, pity: PityState, owned: (cardId: stri
     const card = pickCard(setId, rarity, (id) => owned(id) + (inPack.get(id) ?? 0), rng);
     const before = owned(card.id) + (inPack.get(card.id) ?? 0);
     inPack.set(card.id, (inPack.get(card.id) ?? 0) + 1);
-    return { cardId: card.id, rarity: card.rarity, variant: pickWeighted(rng, cfg.variantWeights), isNew: before === 0 };
+    const variant = setId === 'PRISMATIC' ? 'PRISMATIC' : pickWeighted(rng, cfg.variantWeights);
+    return { cardId: card.id, rarity: card.rarity, variant, isNew: before === 0 };
   });
 
   const gotLegendary = cards.some((c) => c.rarity === 'LEGENDARY');
@@ -62,10 +68,12 @@ export function generatePack(setId: SetId, pity: PityState, owned: (cardId: stri
   };
 }
 
-function pickCard(setId: SetId, rarity: Rarity, owned: (id: string) => number, rng: RngState): CardDefinition {
+function pickCard(setId: PackId, rarity: Rarity, owned: (id: string) => number, rng: RngState): CardDefinition {
+  // The Prismatic packs draw from every set.
+  const set: SetId | undefined = setId === 'PRISMATIC' || setId === 'PRISMATIC_LEGEND' ? undefined : setId;
   // Fall back through rarities if a set lacks cards of the rolled rarity.
-  let pool = cardsBy({ set: setId, rarity });
-  for (let r = rank(rarity); pool.length === 0 && r >= 0; r--) pool = cardsBy({ set: setId, rarity: RARITIES[r] });
+  let pool = cardsBy({ set, rarity });
+  for (let r = rank(rarity); pool.length === 0 && r >= 0; r--) pool = cardsBy({ set, rarity: RARITIES[r] });
   if (pool.length === 0) pool = cardsBy({ rarity });
   if (PACK_CONFIG.duplicateProtection[rarity]) {
     const missing = pool.filter((c) => owned(c.id) < maxCopiesFor(c));

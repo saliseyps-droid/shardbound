@@ -1,4 +1,5 @@
 import type { ActiveMatch } from './activeMatch';
+import type { PackId } from '@/config/economy';
 import type { ArenaState } from './arena';
 import type { DungeonState } from './dungeon';
 import type { Difficulty } from '@/config/progression';
@@ -79,9 +80,9 @@ export interface CollectionState {
 }
 
 export interface EconomyState {
-  packs: Partial<Record<SetId, number>>;
-  /** Packs opened since last Epic / Legendary, per set. */
-  pity: Partial<Record<SetId, { EPIC: number; LEGENDARY: number }>>;
+  packs: Partial<Record<PackId, number>>;
+  /** Packs opened since last Epic / Legendary, per set (and for the Prismatic pack). */
+  pity: Partial<Record<PackId, { EPIC: number; LEGENDARY: number }>>;
 }
 
 export interface Quest {

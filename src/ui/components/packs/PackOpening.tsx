@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { SET_INFO } from '@/config/economy';
+import { packInfo, type PackId } from '@/config/economy';
 import { getCardSafe } from '@/data/cards';
 import { maxCopiesFor } from '@/domain/decks';
 import { recycleValue } from '@/domain/economy';
 import type { PackCard } from '@/domain/packs';
 import { ownedCopies } from '@/domain/save';
-import type { Rarity, SetId } from '@/game/types';
+import type { Rarity } from '@/game/types';
 import { gameService, useAccount } from '@/state/accountStore';
 import { anim, useSettings } from '@/state/settingsStore';
 import { toast, useUi } from '@/state/uiStore';
@@ -39,7 +39,7 @@ const PARTICLES = Array.from({ length: 28 }, (_, i) => {
   return { dx: Math.cos(angle) * dist, dy: Math.sin(angle) * dist, delay: (i % 7) * 40, size: 4 + (i % 4) * 2 };
 });
 
-export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; onClose: () => void; onOpenAnother: () => void }) {
+export function PackOpening({ setId, onClose, onOpenAnother }: { setId: PackId; onClose: () => void; onOpenAnother: () => void }) {
   const [phase, setPhase] = useState<Phase>('intro');
   const [cards, setCards] = useState<PackCard[]>([]);
   const [revealed, setRevealed] = useState<boolean[]>([]);
@@ -156,7 +156,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: SetId; o
       style={{ '--pack-glow': theme.glow, '--pack-a': theme.a, '--pack-card-w': `${cardW}px` } as CSSProperties}
       role="dialog"
       aria-modal="true"
-      aria-label={t('Opening a {name} pack', { name: SET_INFO[setId].name })}
+      aria-label={t('Opening a {name} pack', { name: t(packInfo(setId).name) })}
     >
       <div className="pack-stage-bg" aria-hidden />
       {(phase === 'intro' || phase === 'opening') && (

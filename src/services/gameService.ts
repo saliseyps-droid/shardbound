@@ -9,6 +9,7 @@ import { maxCopiesFor, type Deck } from '@/domain/decks';
 import { defaultBuild, type TalentPick } from '@/data/wardenTalents';
 import { acknowledgeArenaResult, chooseArenaFaction, pickArenaCard, recordArenaMatch, retireArena, setArenaTalents, startArena } from '@/domain/arena';
 import { buyCardBack, buyOffer, craftCard, equipCardBack, openPack, recycleAllSurplus, recycleCard } from '@/domain/economy';
+import type { PackId } from '@/config/economy';
 import { claimDaily } from '@/domain/daily';
 import { applyMatchResult, type MatchRewards, type MatchSummary } from '@/domain/matchResults';
 import { createNewSave } from '@/domain/newAccount';
@@ -248,7 +249,7 @@ export class GameService {
     return res;
   }
 
-  openPack(setId: SetId): Result<PackCard[]> {
+  openPack(setId: PackId): Result<PackCard[]> {
     const res = openPack(this.require(), setId, createRng(randomSeed()));
     if (!res.ok) return res;
     const quest = applyQuestProgress(res.value.save, [{ type: 'OPEN_PACKS', amount: 1 }]);

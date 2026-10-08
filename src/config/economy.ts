@@ -6,9 +6,34 @@ export const STARTING_CURRENCY = {
   packs: { CORE: 2 } as Partial<Record<SetId, number>>,
 };
 
+/** What a booster can be: a set's pack, or the Prismatic pack (every set, Prismatic cards only). */
+export type PackId = SetId | 'PRISMATIC' | 'PRISMATIC_LEGEND';
+
+export const PRISMATIC_PACK = {
+  price: 1000,
+  name: 'Stars Eternal',
+  tagline: 'Prismatic pack: five Prismatic cards from every set. A Legendary at least every ten packs.',
+  /** Pity: a Legendary is guaranteed by this many packs without one. */
+  pityLegendary: 10,
+};
+
+/** One Prismatic Legendary from any set (unowned ones first). */
+export const PRISMATIC_LEGEND_PACK = {
+  price: 5000,
+  name: 'Divine Ascension',
+  tagline: 'Prismatic Legend: one Prismatic Legendary from any set, one you do not have yet whenever possible.',
+};
+
+/** Display name and tagline of any pack. */
+export function packInfo(id: PackId): { name: string; tagline: string } {
+  if (id === 'PRISMATIC') return { name: PRISMATIC_PACK.name, tagline: PRISMATIC_PACK.tagline };
+  if (id === 'PRISMATIC_LEGEND') return { name: PRISMATIC_LEGEND_PACK.name, tagline: PRISMATIC_LEGEND_PACK.tagline };
+  return SET_INFO[id];
+}
+
 export interface ShopOffer {
   id: string;
-  setId: SetId;
+  setId: PackId;
   packs: number;
   price: number;
   label: string;
@@ -28,6 +53,8 @@ export const SHOP_OFFERS: ShopOffer[] = [
   { id: 'dragon_1', setId: 'DRAGON', packs: 1, price: 100, label: '1 Pack' },
   { id: 'dragon_5', setId: 'DRAGON', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
   { id: 'dragon_10', setId: 'DRAGON', packs: 10, price: 1000, label: '10 Packs', badge: '+2 Bonus Packs' },
+  { id: 'prismatic_1', setId: 'PRISMATIC', packs: 1, price: PRISMATIC_PACK.price, label: '1 Pack' },
+  { id: 'prismatic_legend_1', setId: 'PRISMATIC_LEGEND', packs: 1, price: PRISMATIC_LEGEND_PACK.price, label: '1 Legendary' },
 ];
 
 /** One-time bundles for a set: packs plus cosmetics for less than buying them apart. */

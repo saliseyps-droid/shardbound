@@ -3,6 +3,11 @@ const d: Record<string, string> = {
   'Choose how you want to play.': 'Vyber si, jak chceš hrát.',
   'Against the AI': 'Proti AI',
   'Against players': 'Proti hráčům',
+  // Prismatic packs
+  'No unopened packs of this kind.': 'Žádné neotevřené balíčky tohoto druhu.',
+  'Prismatic pack: five Prismatic cards from every set. A Legendary at least every ten packs.': 'Prismatický balíček: pět prismatických karet ze všech setů. Legendárka nejméně v každém desátém balíčku.',
+  'Prismatic Legend: one Prismatic Legendary from any set, one you do not have yet whenever possible.': 'Prismatická legenda: jedna prismatická legendárka z libovolného setu, pokud možno taková, kterou ještě nemáš.',
+  '1 Legendary': '1 legendárka',
   // Daily puzzle
   'Daily puzzle': 'Denní puzzle',
   'Daily puzzle solved': 'Denní puzzle vyřešeno',

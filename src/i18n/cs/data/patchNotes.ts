@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.31.0': {
+    title: 'Prismatické balíčky',
+    summary: 'Dva prémiové balíčky v obchodě: Stars Eternal a Divine Ascension.',
+    sections: [
+      [
+        'Stars Eternal (1000 zlata): prismatický balíček s pěti kartami ze všech setů, všechny v prismatické variantě. Legendárka je zaručená nejméně v každém desátém balíčku.',
+        'Divine Ascension (5000 zlata): jedna prismatická legendárka z libovolného setu, pokud možno taková, kterou ještě nemáš.',
+        'Oba balíčky se v obchodě i na stránce balíčků třpytí: Stars Eternal v duhových barvách, Divine Ascension zlatě.',
+      ],
+    ],
+  },
   '0.30.2': {
     title: 'Pořadí na obrazovce Hrát',
     summary: 'Tutoriál a denní puzzle jsou pod herními režimy.',

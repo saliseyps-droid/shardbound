@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.31.0',
+    date: '2026-10-08',
+    title: 'Prismatic packs',
+    summary: 'Two premium packs in the Shop: Stars Eternal and Divine Ascension.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Stars Eternal (1000 Gold): a Prismatic pack of five cards from every set, all of them Prismatic. A Legendary is guaranteed at least every ten packs.',
+          'Divine Ascension (5000 Gold): one Prismatic Legendary from any set, one you do not own yet whenever possible.',
+          'Both packs shimmer in the Shop and on the Packs screen: Stars Eternal in rainbow colours, Divine Ascension in gold.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.30.2',
     date: '2026-10-08',
     title: 'Play screen order',

@@ -1,0 +1,64 @@
+/* Premium packs: Stars Eternal shimmers in rainbow colours, Divine Ascension in gold.
+   The effects are masked to the pack's own shape and only lighten the art a little. */
+.booster.is-prismatic { animation: prism-glow 6s linear infinite; }
+.booster.is-gold { animation: gold-glow 3.5s ease-in-out infinite; }
+@keyframes prism-glow {
+  0%, 100% { filter: drop-shadow(0 16px 22px rgba(4, 2, 16, 0.7)) drop-shadow(0 0 12px rgba(255, 110, 210, 0.45)); }
+  33% { filter: drop-shadow(0 16px 22px rgba(4, 2, 16, 0.7)) drop-shadow(0 0 12px rgba(90, 200, 255, 0.45)); }
+  66% { filter: drop-shadow(0 16px 22px rgba(4, 2, 16, 0.7)) drop-shadow(0 0 12px rgba(150, 255, 170, 0.4)); }
+}
+@keyframes gold-glow {
+  0%, 100% { filter: drop-shadow(0 16px 22px rgba(4, 2, 16, 0.7)) drop-shadow(0 0 10px rgba(255, 200, 80, 0.35)); }
+  50% { filter: drop-shadow(0 16px 22px rgba(4, 2, 16, 0.7)) drop-shadow(0 0 20px rgba(255, 210, 100, 0.7)); }
+}
+.booster-prism, .booster-sparkles {
+  position: absolute; inset: 0; pointer-events: none;
+  -webkit-mask: var(--pack-art) center / 100% 100% no-repeat; mask: var(--pack-art) center / 100% 100% no-repeat;
+}
+/* Rainbow foil: a soft band of colours drifting across the wrapper. */
+.booster-prism {
+  background: linear-gradient(115deg, transparent 15%, rgba(255, 80, 190, 0.55) 28%, rgba(255, 220, 90, 0.5) 39%, rgba(100, 255, 170, 0.5) 50%, rgba(80, 190, 255, 0.55) 61%, rgba(180, 110, 255, 0.55) 72%, transparent 85%);
+  background-size: 260% 260%;
+  mix-blend-mode: soft-light; opacity: 0.9;
+  animation: prism-shift 5s ease-in-out infinite alternate;
+}
+/* Gold leaf: a warm gleam sweeping over the pack. */
+.booster.is-gold .booster-prism {
+  background: linear-gradient(115deg, transparent 25%, rgba(255, 230, 150, 0.15) 38%, rgba(255, 245, 200, 0.75) 50%, rgba(255, 210, 110, 0.15) 62%, transparent 75%);
+  background-size: 300% 300%;
+  mix-blend-mode: screen; opacity: 0.8;
+  animation: gold-sweep 3.5s ease-in-out infinite;
+}
+@keyframes prism-shift {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+@keyframes gold-sweep {
+  0% { background-position: 100% 50%; }
+  60%, 100% { background-position: 0% 50%; }
+}
+.booster-sparkles {
+  background-image:
+    radial-gradient(circle at 18% 22%, #fff 0 1.2px, transparent 2.4px),
+    radial-gradient(circle at 72% 14%, #fff 0 1px, transparent 2px),
+    radial-gradient(circle at 84% 48%, #fff 0 1.4px, transparent 2.6px),
+    radial-gradient(circle at 30% 64%, #fff 0 1px, transparent 2px),
+    radial-gradient(circle at 60% 80%, #fff 0 1.2px, transparent 2.4px),
+    radial-gradient(circle at 44% 36%, #fff 0 0.9px, transparent 1.8px);
+  animation: prism-twinkle 2.4s ease-in-out infinite;
+}
+.booster.is-gold .booster-sparkles {
+  background-image:
+    radial-gradient(circle at 22% 18%, #ffe9a8 0 1.3px, transparent 2.6px),
+    radial-gradient(circle at 78% 26%, #fff3c4 0 1px, transparent 2px),
+    radial-gradient(circle at 70% 58%, #ffe08a 0 1.4px, transparent 2.8px),
+    radial-gradient(circle at 26% 70%, #fff3c4 0 1px, transparent 2px),
+    radial-gradient(circle at 52% 40%, #ffe9a8 0 0.9px, transparent 1.8px);
+}
+@keyframes prism-twinkle {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.95; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .booster.is-prismatic, .booster-prism, .booster-sparkles { animation: none; }
+}

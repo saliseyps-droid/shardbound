@@ -5,11 +5,10 @@ import { TUTORIAL_OPPONENT } from '@/ui/match/tutorialData';
 import { collectibleCards } from '@/data/cards';
 import { CAMPAIGN } from '@/data/opponents';
 import { FACTIONS } from '@/data/factions';
-import { SET_INFO } from '@/config/economy';
+import { packInfo, type PackId } from '@/config/economy';
 import { MAX_LEVEL } from '@/config/progression';
 import { xpToNext } from '@/domain/progression';
 import { ownedCopies } from '@/domain/save';
-import type { SetId } from '@/game/types';
 import { ProgressBar } from '@/ui/components/common';
 import { Glyph, PackIcon } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
@@ -32,7 +31,7 @@ export default function HomeScreen() {
   const need = xpToNext(p.level);
   const all = collectibleCards();
   const ownedUnique = all.filter((c) => ownedCopies(save.collection, c.id) > 0).length;
-  const packs = Object.entries(save.economy.packs).filter(([, n]) => (n ?? 0) > 0) as [SetId, number][];
+  const packs = Object.entries(save.economy.packs).filter(([, n]) => (n ?? 0) > 0) as [PackId, number][];
   const next = nextEncounter(save);
   const camp = campaignProgress(save);
   const quests = save.quests.active;
@@ -194,7 +193,7 @@ export default function HomeScreen() {
                 <Link key={setId} to="/packs" className="pack-mini">
                   <PackIcon size={28} />
                   <span>
-                    <strong>{SET_INFO[setId].name}</strong>
+                    <strong>{t(packInfo(setId).name)}</strong>
                     <span className="faint num">{t('{n} unopened', { n })}</span>
                   </span>
                 </Link>

@@ -1,3 +1,4 @@
+import { packInfo, type PackId } from '@/config/economy';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BUNDLES, PACK_CONFIG, SET_INFO, SHOP_BONUS_PACKS, SHOP_OFFERS, type ShopOffer } from '@/config/economy';
@@ -16,6 +17,8 @@ import '@/ui/styles/shop.css';
 
 /** Newest set first. */
 const SETS = (Object.keys(SET_INFO) as SetId[]).sort((a, b) => SET_INFO[b].releaseOrder - SET_INFO[a].releaseOrder);
+/** Set packs, newest first, then the Prismatic packs. */
+const SHOP_PACKS: PackId[] = [...SETS, 'PRISMATIC', 'PRISMATIC_LEGEND'];
 const RARITY_LABEL: Record<Rarity, string> = { COMMON: 'Common', RARE: 'Rare', EPIC: 'Epic', LEGENDARY: 'Legendary' };
 const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic' };
 
@@ -107,7 +110,7 @@ function OfferButton({ offer, gold, busy, onBuy }: { offer: ShopOffer; gold: num
         className="btn btn-primary offer-buy"
         disabled={!affordable || busy}
         onClick={() => onBuy(offer)}
-        aria-label={t('Buy {offer} of {set} for {price} Gold', { offer: t(offer.label), set: SET_INFO[offer.setId].name, price: offer.price })}
+        aria-label={t('Buy {offer} of {set} for {price} Gold', { offer: t(offer.label), set: t(packInfo(offer.setId).name), price: offer.price })}
       >
         <GoldIcon size={18} />
         <span className="num">{offer.price.toLocaleString()}</span>
@@ -135,11 +138,11 @@ export default function ShopScreen() {
   const gold = useAccount((s) => s.save?.profile.gold ?? 0);
   const packs = useAccount((s) => s.save?.economy.packs ?? {});
   const [busy, setBusy] = useState(false);
-  const [flash, setFlash] = useState<SetId | null>(null);
+  const [flash, setFlash] = useState<PackId | null>(null);
 
   const buy = async (offer: ShopOffer) => {
     const total = offer.packs + (SHOP_BONUS_PACKS[offer.id] ?? 0);
-    const setName = SET_INFO[offer.setId].name;
+    const setName = t(packInfo(offer.setId).name);
     if (offer.packs > 1) {
       const ok = await confirmDialog({
         title: t('Buy {n} {set} packs?', { n: total, set: setName }),
@@ -186,8 +189,8 @@ export default function ShopScreen() {
         <BundleOffer key={b.id} bundle={b} />
       ))}
       <div className="shop-sets">
-        {SETS.map((setId) => {
-          const info = SET_INFO[setId];
+        {SHOP_PACKS.map((setId) => {
+          const info = packInfo(setId);
           const owned = packs[setId] ?? 0;
           return (
             <section key={setId} className={`shop-set panel set-${setId.toLowerCase()} ${flash === setId ? 'just-bought' : ''}`} aria-labelledby={`set-${setId}`}>
@@ -200,8 +203,8 @@ export default function ShopScreen() {
                 )}
               </div>
               <div className="shop-set-body">
-                <h3 id={`set-${setId}`}>{info.name}</h3>
-                <p className="muted">{info.tagline}</p>
+                <h3 id={`set-${setId}`}>{t(info.name)}</h3>
+                <p className="muted">{t(info.tagline)}</p>
                 <div className="offers">
                   {SHOP_OFFERS.filter((o) => o.setId === setId).map((o) => (
                     <OfferButton key={o.id} offer={o} gold={gold} busy={busy} onBuy={buy} />
@@ -209,7 +212,7 @@ export default function ShopScreen() {
                 </div>
                 <div className="shop-set-foot">
                   <span className="muted">
-                    {owned > 0 ? tn(owned, 'You have {n} unopened pack.', 'You have {n} unopened packs.') : t('No unopened packs of this set.')}
+                    {owned > 0 ? tn(owned, 'You have {n} unopened pack.', 'You have {n} unopened packs.') : t('No unopened packs of this kind.')}
                   </span>
                   {owned > 0 && (
                     <button className="btn btn-sm" onClick={() => navigate(`/packs?set=${setId}`)}>

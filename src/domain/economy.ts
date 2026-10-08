@@ -1,9 +1,9 @@
-import { CRAFTING, SHOP_BONUS_PACKS, SHOP_OFFERS } from '@/config/economy';
+import { CRAFTING, SHOP_BONUS_PACKS, SHOP_OFFERS, packInfo, type PackId } from '@/config/economy';
 import { getCardBack } from '@/data/cardBacks';
 import { getCard } from '@/data/cards';
 import type { RngState } from '@/core/rng';
 import { err, ok, type Result } from '@/core/utils';
-import type { SetId, Variant } from '@/game/types';
+import type { Variant } from '@/game/types';
 import { VARIANTS } from '@/game/types';
 import { maxCopiesFor } from './decks';
 import { generatePack, type PackCard } from './packs';
@@ -20,7 +20,10 @@ export function buyOffer(save: GameSave, offerId: string, now: number): Result<G
   const amount = offer.packs + (SHOP_BONUS_PACKS[offer.id] ?? 0);
   const packs = { ...save.economy.packs, [offer.setId]: (save.economy.packs[offer.setId] ?? 0) + amount };
   let next: GameSave = { ...save, profile: { ...save.profile, gold: save.profile.gold - offer.price }, economy: { ...save.economy, packs } };
-  next = pushReward(next, { source: `Purchased ${amount} pack${amount > 1 ? 's' : ''}`, packs: { setId: offer.setId, amount } }, now);
+  const setId = offer.setId;
+  next = setId === 'PRISMATIC' || setId === 'PRISMATIC_LEGEND'
+    ? pushReward(next, { source: `Purchased ${packInfo(setId).name}` }, now)
+    : pushReward(next, { source: `Purchased ${amount} pack${amount > 1 ? 's' : ''}`, packs: { setId, amount } }, now);
   return ok(next);
 }
 
@@ -43,7 +46,7 @@ export function equipCardBack(save: GameSave, backId: string): Result<GameSave> 
 // Packs
 // ---------------------------------------------------------------------------
 
-export function openPack(save: GameSave, setId: SetId, rng: RngState): Result<{ save: GameSave; cards: PackCard[] }> {
+export function openPack(save: GameSave, setId: PackId, rng: RngState): Result<{ save: GameSave; cards: PackCard[] }> {
   const available = save.economy.packs[setId] ?? 0;
   if (available <= 0) return err('You have no unopened packs of this set.');
   const pity = save.economy.pity[setId] ?? { EPIC: 0, LEGENDARY: 0 };
