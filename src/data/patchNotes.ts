@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.27.3',
+    date: '2026-10-08',
+    title: 'Card names in patch notes',
+    summary: 'Card names in the patch notes are highlighted, and portraits can be viewed large.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Patch notes: every card name is highlighted. Hover it to see the card, click it to open the large view.',
+          'Warden portraits: right-click one (or hold it on a phone) in the Shop, Profile or deck editor to see it large.',
+          'Dread Overlord and Hooded Wraith portraits are framed closer and brighter, so they read better when small.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.27.2',
     date: '2026-10-08',
     title: 'Eleven new Warden portraits',

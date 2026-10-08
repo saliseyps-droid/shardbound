@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.27.3': {
+    title: 'Názvy karet v poznámkách k verzi',
+    summary: 'Názvy karet v poznámkách k verzi jsou zvýrazněné a portréty jde zobrazit ve velkém.',
+    sections: [
+      [
+        'Poznámky k verzi: každý název karty je zvýrazněný. Najetím myší kartu uvidíš, kliknutím otevřeš velký náhled.',
+        'Portréty Strážců: pravým klikem (na mobilu podržením) v obchodě, profilu nebo editoru balíčku portrét zvětšíš.',
+        'Portréty Děsivý vládce a Zakuklený přízrak jsou víc přiblížené a světlejší, takže se v malém lépe čtou.',
+      ],
+    ],
+  },
   '0.27.2': {
     title: 'Jedenáct nových portrétů Strážců',
     summary: 'Nové portréty v obchodě, panel Brawlu na úvodní obrazovce a přehlednější profil.',

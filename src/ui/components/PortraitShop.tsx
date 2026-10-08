@@ -1,7 +1,8 @@
 import type { CSSProperties } from 'react';
 import { FACTIONS } from '@/data/factions';
 import { portraitsOf, type PortraitDef } from '@/data/portraits';
-import { PLAYABLE_FACTIONS } from '@/game/types';
+import { PLAYABLE_FACTIONS, type PlayableFaction } from '@/game/types';
+import { usePortraitPress } from './PortraitInspector';
 import { gameService, useAccount } from '@/state/accountStore';
 import { toast } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
@@ -9,6 +10,16 @@ import { confirmDialog } from './common';
 import { GoldIcon } from './Icons';
 import { WardenPortrait } from './WardenPortrait';
 import { t } from '@/i18n';
+
+/** A shop portrait; right-click or a long press shows it large. */
+function PressablePortrait({ faction, portrait }: { faction: PlayableFaction; portrait: string }) {
+  const { swallowClick, ...press } = usePortraitPress({ faction, portrait });
+  return (
+    <span className="portrait-tile-art" {...press} onClick={() => swallowClick()} title={t('Right-click or hold to enlarge')}>
+      <WardenPortrait faction={faction} portrait={portrait} size={92} />
+    </span>
+  );
+}
 
 /** Shop section: alternative Warden portraits, grouped by faction. */
 export function PortraitShop() {
@@ -42,7 +53,7 @@ export function PortraitShop() {
               const have = owned.includes(p.id);
               return (
                 <div key={p.id} className={`portrait-tile ${have ? 'is-owned' : ''}`}>
-                  <WardenPortrait faction={f} portrait={p.id} size={92} />
+                  <PressablePortrait faction={f} portrait={p.id} />
                   <strong>{t(p.name)}</strong>
                   {have ? (
                     <span className="portrait-owned">{t('Owned')}</span>

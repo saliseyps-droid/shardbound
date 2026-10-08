@@ -1,0 +1,11 @@
+/* Large Warden portrait (right-click / long press on a portrait). */
+.modal.portrait-inspector { max-width: min(460px, calc(100vw - 32px)); }
+.portrait-inspector-body { display: grid; justify-items: center; gap: var(--space-3); }
+.portrait-inspector-body img {
+  display: block; width: min(400px, calc(100vw - 80px)); aspect-ratio: 640 / 730; height: auto; object-fit: cover;
+  border-radius: 10px; box-shadow: 0 0 0 2px var(--fc), 0 18px 40px rgba(4, 2, 16, 0.7);
+}
+.portrait-inspector-faction { font-size: var(--t-sm); font-weight: 700; color: var(--fc); }
+/* Portraits that open large on right-click / long press. */
+.portrait-tile-art, .portrait-option { -webkit-touch-callout: none; user-select: none; }
+.portrait-tile-art { display: inline-block; cursor: zoom-in; }

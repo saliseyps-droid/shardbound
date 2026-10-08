@@ -1,4 +1,5 @@
 import { getPortrait, portraitsOf } from '@/data/portraits';
+import { usePortraitPress } from './PortraitInspector';
 import type { PlayableFaction } from '@/game/types';
 import { t } from '@/i18n';
 import { WardenPortrait } from './WardenPortrait';
@@ -37,20 +38,31 @@ export function PortraitPicker({
   return (
     <div className="portrait-picker" role="radiogroup" aria-label={t('Warden portrait')}>
       {options.map((o) => (
-        <button
-          key={o.value ?? 'default'}
-          type="button"
-          role="radio"
-          aria-checked={value === o.value}
-          className={`portrait-option ${value === o.value ? 'is-selected' : ''}`}
-          title={o.label}
-          onClick={() => onChange(o.value)}
-        >
-          <WardenPortrait faction={faction} portrait={o.portrait} size={46} />
-          <span className="portrait-option-label">{o.label}</span>
-        </button>
+        <PortraitOptionButton key={o.value ?? 'default'} faction={faction} option={o} selected={value === o.value} onPick={() => onChange(o.value)} />
       ))}
     </div>
+  );
+}
+
+/** One option; right-click or a long press shows the portrait large. */
+function PortraitOptionButton({ faction, option, selected, onPick }: { faction: PlayableFaction; option: PortraitOption; selected: boolean; onPick: () => void }) {
+  const { swallowClick, ...press } = usePortraitPress({ faction, portrait: option.portrait });
+  return (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={selected}
+      className={`portrait-option ${selected ? 'is-selected' : ''}`}
+      title={option.label}
+      {...press}
+      onClick={() => {
+        if (swallowClick()) return;
+        onPick();
+      }}
+    >
+      <WardenPortrait faction={faction} portrait={option.portrait} size={46} />
+      <span className="portrait-option-label">{option.label}</span>
+    </button>
   );
 }
 

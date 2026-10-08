@@ -3,6 +3,7 @@ const d: Record<string, string> = {
   'Warden portraits': 'Portréty Strážců',
   'Warden portrait': 'Portrét Strážce',
   'Default Warden': 'Výchozí Strážce',
+  'Right-click or hold to enlarge': 'Pravým klikem nebo podržením zvětšíš',
   Portrait: 'Portrét',
   'Same as in Profile': 'Podle Profilu',
   'More in the Shop': 'Další v obchodě',
