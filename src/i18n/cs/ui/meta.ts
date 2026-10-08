@@ -18,6 +18,8 @@ const d: Record<string, string> = {
   'Fight {n}': 'Zápas {n}',
   'vs {name} · {faction}': 'proti: {name} · {faction}',
   'Pack claimed': 'Balíček získán',
+  'Free pack': 'Balíček zdarma',
+  'Go to Brawl': 'Do Brawlu',
   'Start fight {n}': 'Začít fight {n}',
   'Brawl: first win': 'Brawl: první výhra',
   'Fire Surge': 'Ohnivý příval',

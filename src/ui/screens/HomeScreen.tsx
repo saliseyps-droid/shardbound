@@ -17,6 +17,9 @@ import { effectivePortrait } from '@/domain/portraits';
 import { DailyTrack, DeckBox, QuestRow, RewardSummary, timeAgo, DIFFICULTY_INFO } from '@/ui/components/meta/MetaWidgets';
 import { campaignProgress, nextEncounter } from '@/ui/components/meta/campaign';
 import { audio } from '@/audio/audioService';
+import { brawlFights, brawlProgress, brawlRotation, brawlRotationEnds } from '@/domain/brawl';
+import { trustedNow } from '@/domain/clock';
+import { brawlFightTitle, brawlTimeLeft } from '@/ui/components/meta/brawlUi';
 import '@/ui/styles/meta.css';
 import { t, tn } from '@/i18n';
 
@@ -34,6 +37,10 @@ export default function HomeScreen() {
   const camp = campaignProgress(save);
   const quests = save.quests.active;
   const faction = deck ? FACTIONS[deck.heroFaction] : null;
+  const now = trustedNow(save, Date.now());
+  const brawlRot = brawlRotation(now);
+  const brawl = brawlFights(brawlRot);
+  const brawlWon = brawlProgress(p.brawl, brawlRot).won;
 
   const startTutorial = () => {
     audio.play('click');
@@ -143,6 +150,35 @@ export default function HomeScreen() {
           ) : (
             <p className="muted">{t('You have conquered the Crown Ascendant. Replay any encounter from the campaign map.')}</p>
           )}
+        </section>
+
+        <section className="panel home-brawl" aria-labelledby="home-brawl-title">
+          <div className="panel-title">
+            <span id="home-brawl-title">{t('Brawl')}</span>
+            <span className="faint">{t('New fights in {time}', { time: brawlTimeLeft(brawlRotationEnds(brawlRot) - now) })}</span>
+          </div>
+          <div className="home-brawl-fights">
+            {brawl.map((f) => {
+              const won = brawlWon.includes(f.id);
+              return (
+                <Link key={f.id} to="/brawl" className="home-brawl-fight" style={{ '--f1': FACTIONS[f.opponent.faction].colors.primary } as React.CSSProperties}>
+                  <span className="enc-sigil" aria-hidden>
+                    <WardenPortrait faction={f.opponent.faction} fill inset={2} />
+                  </span>
+                  <span>
+                    <strong>{brawlFightTitle(f)}</strong>
+                    <span className="faint">{t('vs {name} · {faction}', { name: f.opponent.name, faction: FACTIONS[f.opponent.faction].name })}</span>
+                  </span>
+                  <span className={`home-brawl-status ${won ? 'is-claimed' : ''}`}>
+                    {won ? <Glyph name="star" size={12} /> : <PackIcon size={12} />} {won ? t('Pack claimed') : t('Free pack')}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+          <Link className="btn btn-cyan btn-sm" to="/brawl">
+            {t('Go to Brawl')}
+          </Link>
         </section>
 
         <section className="panel home-packs" aria-labelledby="home-packs-title">

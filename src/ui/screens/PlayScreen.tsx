@@ -135,16 +135,16 @@ export default function PlayScreen() {
   return (
     <div className="screen play-screen">
       <ScreenHeader title={t('Play')} subtitle={t('Choose how you want to play.')} />
-      <section className={`tutorial-banner panel ${tutorialDone ? 'is-done' : ''}`} aria-labelledby="tutorial-banner-title">
-        <span className="tutorial-banner-icon" aria-hidden>
+      <section className={`play-tutorial panel ${tutorialDone ? 'is-done' : ''}`} aria-labelledby="play-tutorial-title">
+        <span className="play-tutorial-icon" aria-hidden>
           <Glyph name="compass" size={tutorialDone ? 22 : 28} />
         </span>
-        <div className="tutorial-banner-text">
-          <strong id="tutorial-banner-title">{t('Tutorial')}</strong>
+        <div className="play-tutorial-text">
+          <strong id="play-tutorial-title">{t('Tutorial')}</strong>
           <span className="muted">{tutorialDone ? t('Replay the guided lesson any time.') : t('New to Shardbound? Learn the basics in a guided match.')}</span>
         </div>
-        {tutorialDone && <span className="tutorial-banner-done">{t('Completed')}</span>}
-        <button type="button" className={`btn ${tutorialDone ? 'btn-ghost' : 'btn-primary'} tutorial-banner-btn`} onClick={startTutorial}>
+        {tutorialDone && <span className="play-tutorial-done">{t('Completed')}</span>}
+        <button type="button" className={`btn ${tutorialDone ? 'btn-ghost' : 'btn-primary'} play-tutorial-btn`} onClick={startTutorial}>
           {tutorialDone ? t('Replay') : t('Start here')}
         </button>
       </section>

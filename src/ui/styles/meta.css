@@ -84,16 +84,18 @@ blockquote { margin: var(--space-3) 0; padding-left: var(--space-3); border-left
 .home-daily { grid-column: span 5; }
 .home-campaign { grid-column: span 4; }
 .home-packs { grid-column: span 4; }
+.home-brawl { grid-column: span 4; }
 .home-collection { grid-column: span 4; }
-.home-rewards { grid-column: span 12; }
+.home-rewards { grid-column: span 8; }
 @media (max-width: 1250px) {
   .home-quests, .home-daily { grid-column: span 12; }
-  .home-campaign, .home-packs, .home-collection { grid-column: span 6; }
+  .home-campaign, .home-packs, .home-collection, .home-brawl { grid-column: span 6; }
+  .home-rewards { grid-column: span 12; }
   .home-hero { grid-template-columns: 1fr auto; }
   .home-deck { grid-column: 1 / -1; justify-self: stretch; width: auto; }
 }
 @media (max-width: 760px) {
-  .home-campaign, .home-packs, .home-collection { grid-column: span 12; }
+  .home-campaign, .home-packs, .home-collection, .home-brawl { grid-column: span 12; }
   .home-hero { grid-template-columns: 1fr; justify-items: center; text-align: center; }
   .home-hero-warden { flex-direction: column; }
   .tutorial-banner { grid-template-columns: 1fr; }
@@ -101,6 +103,15 @@ blockquote { margin: var(--space-3) 0; padding-left: var(--space-3); border-left
 
 .next-encounter { display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-3); align-items: center; margin-top: var(--space-4); }
 .next-encounter > div { display: grid; min-width: 0; }
+.home-brawl-fights { display: grid; gap: var(--space-2); margin: var(--space-3) 0; }
+.home-brawl-fight { display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-3); align-items: center; padding: var(--space-2); color: inherit; text-decoration: none; background: rgba(0, 0, 0, 0.22); border-left: 3px solid var(--f1); }
+.home-brawl-fight:hover { background: rgba(255, 255, 255, 0.05); }
+.home-brawl-fight .enc-sigil { width: 40px; height: 45px; }
+.home-brawl-fight > span:nth-child(2) { display: grid; min-width: 0; }
+.home-brawl-fight strong { font-size: var(--t-sm); }
+.home-brawl-fight .faint { font-size: var(--t-xs); }
+.home-brawl-status { display: inline-flex; align-items: center; gap: 4px; font-size: var(--t-xs); color: var(--cyan); white-space: nowrap; }
+.home-brawl-status.is-claimed { color: var(--gold, #ffd27a); }
 .enc-sigil { width: 50px; height: 56px; display: grid; place-items: center; color: var(--f1); background: var(--ink-1); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); box-shadow: inset 0 0 0 2px var(--f1); }
 .boss-tag { margin-left: 8px; font: 700 var(--t-xs) var(--font-body); color: #1b0a06; background: var(--damage); padding: 1px 7px; border-radius: 2px; vertical-align: middle; }
 
@@ -381,22 +392,22 @@ label.toggle-row { cursor: pointer; }
 
 /* Play hub: every mode at a glance, practice below */
 /* Tutorial: its own strip above the modes (prominent until it is done, quiet after). */
-.tutorial-banner {
+.play-tutorial {
   display: flex; align-items: center; gap: var(--space-4); padding: var(--space-3) var(--space-5); margin-bottom: var(--space-5);
   background: linear-gradient(100deg, color-mix(in srgb, var(--cyan) 22%, var(--ink-2)), var(--ink-1) 70%);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cyan) 55%, transparent);
 }
-.tutorial-banner-icon { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: rgba(0, 0, 0, 0.3); color: var(--cyan); }
-.tutorial-banner-text { display: grid; gap: 2px; min-width: 0; flex: 1; }
-.tutorial-banner-text strong { font-family: var(--font-display); font-size: 1.25rem; }
-.tutorial-banner-text .muted { font-size: var(--t-sm); }
-.tutorial-banner-done { font-size: var(--t-xs); font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.05em; }
-.tutorial-banner-btn { flex: none; }
-.tutorial-banner.is-done { padding-block: var(--space-2); background: rgba(0, 0, 0, 0.18); box-shadow: inset 0 0 0 1px var(--line); }
-.tutorial-banner.is-done .tutorial-banner-icon { width: 40px; height: 40px; }
-.tutorial-banner.is-done .tutorial-banner-text strong { font-size: 1.05rem; }
+.play-tutorial-icon { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: rgba(0, 0, 0, 0.3); color: var(--cyan); }
+.play-tutorial-text { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.play-tutorial-text strong { font-family: var(--font-display); font-size: 1.25rem; }
+.play-tutorial-text .muted { font-size: var(--t-sm); }
+.play-tutorial-done { font-size: var(--t-xs); font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.05em; }
+.play-tutorial-btn { flex: none; }
+.play-tutorial.is-done { padding-block: var(--space-2); background: rgba(0, 0, 0, 0.18); box-shadow: inset 0 0 0 1px var(--line); }
+.play-tutorial.is-done .play-tutorial-icon { width: 40px; height: 40px; }
+.play-tutorial.is-done .play-tutorial-text strong { font-size: 1.05rem; }
 @media (max-width: 760px) {
-  .tutorial-banner { gap: var(--space-3); padding: var(--space-2) var(--space-3); margin-bottom: var(--space-4); }
+  .play-tutorial { gap: var(--space-3); padding: var(--space-2) var(--space-3); margin-bottom: var(--space-4); }
   .tutorial-banner-icon { width: 40px; height: 40px; }
   .tutorial-banner-text .muted, .tutorial-banner-done { display: none; }
 }
