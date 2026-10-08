@@ -22,20 +22,22 @@
   mix-blend-mode: soft-light; opacity: 0.9;
   animation: prism-shift 5s ease-in-out infinite alternate;
 }
-/* Gold leaf: a warm gleam sweeping over the pack. */
-.booster.is-gold .booster-prism {
-  background: linear-gradient(115deg, transparent 25%, rgba(255, 230, 150, 0.15) 38%, rgba(255, 245, 200, 0.75) 50%, rgba(255, 210, 110, 0.15) 62%, transparent 75%);
-  background-size: 300% 300%;
-  mix-blend-mode: screen; opacity: 0.8;
-  animation: gold-sweep 3.5s ease-in-out infinite;
+/* Gold leaf: a warm gleam that enters from off the left edge, crosses the pack and leaves on the
+   right, then waits off-pack (like the sheen on the other packs), so it never pops in or out. */
+.booster.is-gold .booster-prism { background: none; mix-blend-mode: screen; opacity: 1; animation: none; overflow: hidden; }
+.booster.is-gold .booster-prism::before {
+  content: ''; position: absolute; top: -10%; bottom: -10%; left: -70%; width: 55%;
+  background: linear-gradient(90deg, transparent, rgba(255, 225, 140, 0.25) 35%, rgba(255, 245, 205, 0.7) 50%, rgba(255, 225, 140, 0.25) 65%, transparent);
+  transform: skewX(-18deg);
+  animation: gold-sweep 4.5s ease-in-out infinite;
 }
 @keyframes prism-shift {
   from { background-position: 0% 50%; }
   to { background-position: 100% 50%; }
 }
 @keyframes gold-sweep {
-  0% { background-position: 100% 50%; }
-  60%, 100% { background-position: 0% 50%; }
+  0%, 45% { left: -70%; }
+  100% { left: 130%; }
 }
 .booster-sparkles {
   background-image:
@@ -60,5 +62,5 @@
   50% { opacity: 0.95; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .booster.is-prismatic, .booster-prism, .booster-sparkles { animation: none; }
+  .booster.is-prismatic, .booster-prism, .booster-sparkles, .booster.is-gold .booster-prism::before { animation: none; }
 }
