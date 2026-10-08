@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.31.1',
+    date: '2026-10-08',
+    title: 'Prismatic pack touch-ups',
+    summary: 'Cleaner pack art and the Prismatic packs first in the Shop.',
+    sections: [{ kind: 'fixed', items: ['Stars Eternal and Divine Ascension: the pack art is cut cleanly on every side.', 'Shop: the Prismatic packs come first, before Dragon Realm.'] }],
+    commits: [],
+  },
+  {
     version: '0.31.0',
     date: '2026-10-08',
     title: 'Prismatic packs',

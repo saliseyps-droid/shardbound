@@ -17,8 +17,8 @@ import '@/ui/styles/shop.css';
 
 /** Newest set first. */
 const SETS = (Object.keys(SET_INFO) as SetId[]).sort((a, b) => SET_INFO[b].releaseOrder - SET_INFO[a].releaseOrder);
-/** Set packs, newest first, then the Prismatic packs. */
-const SHOP_PACKS: PackId[] = [...SETS, 'PRISMATIC', 'PRISMATIC_LEGEND'];
+/** The Prismatic packs (newest), then set packs, newest first. */
+const SHOP_PACKS: PackId[] = ['PRISMATIC_LEGEND', 'PRISMATIC', ...SETS];
 const RARITY_LABEL: Record<Rarity, string> = { COMMON: 'Common', RARE: 'Rare', EPIC: 'Epic', LEGENDARY: 'Legendary' };
 const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic' };
 

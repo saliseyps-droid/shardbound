@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.31.1': {
+    title: 'Úpravy prismatických balíčků',
+    summary: 'Čistěji oříznuté obrázky balíčků a prismatické balíčky v obchodě jako první.',
+    sections: [['Stars Eternal a Divine Ascension: obrázky balíčků jsou čistě oříznuté ze všech stran.', 'Obchod: prismatické balíčky jsou první, před Dragon Realm.']],
+  },
   '0.31.0': {
     title: 'Prismatické balíčky',
     summary: 'Dva prémiové balíčky v obchodě: Stars Eternal a Divine Ascension.',
