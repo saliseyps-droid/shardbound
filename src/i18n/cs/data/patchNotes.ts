@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.31.4': {
+    title: 'Tři kočičí portréty',
+    summary: 'Tři nové kočičí portréty Strážců v obchodě.',
+    sections: [['Nové portréty Strážců v obchodě (po 250 zlata): Kocour s květinovou korunou (Kruh Trnoboru), Stříbrná kočka (Konkláve Lumenu) a Kocour se stínovým znamením (Prázdný chór).']],
+  },
   '0.31.3': {
     title: 'Oprava obrázků karet',
     summary: 'Karty už neukazují prázdný obrázek, když se jejich obrázek nenačte.',

@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.31.4',
+    date: '2026-10-09',
+    title: 'Three cat portraits',
+    summary: 'Three new cat Warden portraits in the Shop.',
+    sections: [{ kind: 'new', items: ['New Warden portraits in the Shop (250 Gold each): Bloomcrown Cat (Thornweald Circle), Silvermoon Cat (Lumen Conclave) and Shadowmark Cat (Hollow Choir).'] }],
+    commits: [],
+  },
+  {
     version: '0.31.3',
     date: '2026-10-08',
     title: 'Card art fix',
