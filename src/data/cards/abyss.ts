@@ -496,8 +496,8 @@ export const ABYSS_CARDS: CardDefinition[] = [
   {
     ...spell, id: 'tid_glacial_thornwings', name: 'Glacial Thornwings', faction: 'TIDE', rarity: 'EPIC',
     manaCost: 4, archetypes: ['Deep Freeze'],
-    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'ALL_ENEMY_UNITS' }, { type: 'DEAL_DAMAGE', amount: 1, target: 'ALL_ENEMY_UNITS' }] }],
-    description: 'Freeze all enemy units and deal 1 damage to them.',
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'FROZEN_ENEMY_UNITS' }, { type: 'APPLY_STATUS', status: 'FROZEN', target: 'ALL_ENEMY_UNITS' }] }],
+    description: 'Deal 2 damage to all enemy units that are already Frozen. Then Freeze all enemy units.',
     flavorText: 'Thorns of ice unfold like wings, and everything they touch stops.',
   },
   {

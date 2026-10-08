@@ -99,6 +99,7 @@ export type TargetSelector =
   | 'ALL_ALLY_UNITS'
   | 'OTHER_ALLY_UNITS'
   | 'ALL_ENEMY_UNITS'
+  | 'FROZEN_ENEMY_UNITS' // enemy units that are Frozen when the effect resolves
   | 'ALL_UNITS'
   | 'ALL_OTHER_UNITS'
   | 'ALL_ENEMIES' // enemy units + enemy hero

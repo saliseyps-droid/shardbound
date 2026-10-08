@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.26.15',
+    date: '2026-10-08',
+    title: 'Glacial Thornwings',
+    summary: 'Glacial Thornwings is no longer a copy of Hailstorm.',
+    sections: [{ kind: 'balance', items: ['Glacial Thornwings (Rimetide Court, Epic): now deals 2 damage to all enemy units that are already Frozen, then Freezes all enemy units (was: Freeze all enemy units and deal 1 damage to them).'] }],
+    commits: [],
+  },
+  {
     version: '0.26.14',
     date: '2026-10-08',
     title: 'Barkskin',

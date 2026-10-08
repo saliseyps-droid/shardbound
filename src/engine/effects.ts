@@ -181,6 +181,8 @@ export function resolveTargets(
       return liveUnits(ctx, me).filter((u) => u.uid !== selfUid).map(unitRef);
     case 'ALL_ENEMY_UNITS':
       return liveUnits(ctx, them).map(unitRef);
+    case 'FROZEN_ENEMY_UNITS':
+      return liveUnits(ctx, them).filter((u) => u.frozen).map(unitRef);
     case 'ALL_UNITS':
       return [...liveUnits(ctx, me), ...liveUnits(ctx, them)].map(unitRef);
     case 'ALL_OTHER_UNITS':

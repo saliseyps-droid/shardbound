@@ -121,6 +121,15 @@ describe('Legions of Shadow: spells', () => {
     expect(s.players[1].board[0].damage).toBe(3);
   });
 
+  it('Glacial Thornwings deals 2 damage only to enemy units that were already Frozen, then Freezes all', () => {
+    let s = newGame({ board1: ['token_treant', 'token_treant'] });
+    s.players[1].board[0].frozen = true;
+    setEnergy(s, 0, 4);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'tid_glacial_thornwings') });
+    expect(s.players[1].board.map((u) => u.damage)).toEqual([2, 0]);
+    expect(s.players[1].board.every((u) => u.frozen)).toBe(true);
+  });
+
   it('Crown of the Abyss draws 2 Knights and makes Knights in hand cheaper', () => {
     const deck = [...Array(20).fill('token_recruit'), 'ver_thornmail_knight', 'irn_bastion_dreadknight', ...Array(8).fill('token_recruit')];
     let s = newGame({ deck0: deck });

@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.26.15': {
+    title: 'Ledová trnitá křídla',
+    summary: 'Ledová trnitá křídla už nejsou kopií Krupobití.',
+    sections: [['Ledová trnitá křídla (epická): nově způsobí 2 poškození všem nepřátelským jednotkám, které už jsou zmrazené, a pak zmrazí všechny nepřátelské jednotky (dříve: zmraz všechny nepřátelské jednotky a způsob jim 1 poškození).']],
+  },
   '0.26.14': {
     title: 'Kůra místo kůže',
     summary: 'Kůra místo kůže na stupni III dává +1/+1.',

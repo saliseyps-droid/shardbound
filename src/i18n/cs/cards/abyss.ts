@@ -71,7 +71,7 @@ const cards: CardsOverlay = {
   ver_emerald_ward: { name: 'Smaragdová ochrana', description: 'Dej spřátelené jednotce +2/+3 a Regeneraci.', flavorText: 'Kruh zeleného ohně a v něm něco, co nezůstane zraněné.' },
   ast_azure_maelstrom: { name: 'Azurový vír', description: 'Způsob 2 poškození všem nepřátelským jednotkám.', flavorText: 'Nebe se složí do víru a vylije se na bojiště.' },
   irn_forgefire_ring: { name: 'Kruh výhňového ohně', description: 'Získej 5 brnění. Dej svým jednotkám +1/+1.', flavorText: 'Uvnitř kruhu výhně vyjde všechno tvrdší, než do něj vešlo.' },
-  tid_glacial_thornwings: { name: 'Ledová trnitá křídla', description: 'Zmraz všechny nepřátelské jednotky a způsob jim 1 poškození.', flavorText: 'Ledové trny se rozevřou jako křídla a vše, čeho se dotknou, se zastaví.' },
+  tid_glacial_thornwings: { name: 'Ledová trnitá křídla', description: 'Způsob 2 poškození všem nepřátelským jednotkám, které už jsou zmrazené. Pak zmraz všechny nepřátelské jednotky.', flavorText: 'Ledové trny se rozevřou jako křídla a vše, čeho se dotknou, se zastaví.' },
   vod_pentacle_of_souls: { name: 'Pentakl duší', description: 'Znič nepřátelskou jednotku. Způsob 3 poškození svému Strážci.', flavorText: 'Pět cípů, pět cen. Tu poslední Chór platí vždycky sám.' },
   ast_sunburst_covenant: { name: 'Úmluva slunečního zášlehu', description: 'Způsob 3 poškození všem nepřátelům. Obnov 3 životy všem spřáteleným postavám.', flavorText: 'Nejstarší úmluva Konkláve: slunce spálí tmu a uzdraví světlo.' },
   neu_sigil_of_the_abyss_lord: { name: 'Pečeť Pána Propasti', description: 'Převezmi kontrolu nad nepřátelskou jednotkou s cenou 5 nebo méně.', flavorText: 'Vypal okřídlenou pečeť do země a kdo na ní stojí, přísahá tobě.' },

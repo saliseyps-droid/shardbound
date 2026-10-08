@@ -89,6 +89,8 @@ function targetText(sel: TargetSelector | undefined, card: CardDefinition): stri
       return 'your other units';
     case 'ALL_ENEMY_UNITS':
       return 'all enemy units';
+    case 'FROZEN_ENEMY_UNITS':
+      return 'all Frozen enemy units';
     case 'ALL_UNITS':
       return 'all units';
     case 'ALL_OTHER_UNITS':
