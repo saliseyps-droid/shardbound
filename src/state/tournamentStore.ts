@@ -324,7 +324,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
         }
       });
       conn.on('open', () =>
-        conn.send({ t: 't-join', protocol: PROTOCOL_VERSION, content: CONTENT_HASH, name: save.profile.username, avatar: save.profile.avatar, side: playerSide(save.profile, deck) } satisfies TMsg),
+        conn.send({ t: 't-join', protocol: PROTOCOL_VERSION, content: CONTENT_HASH, name: save.profile.username, avatar: save.profile.avatar, side: playerSide(save.profile, deck, save.collection) } satisfies TMsg),
       );
       conn.on('data', (raw) => {
         const msg = raw as TMsg;
@@ -388,7 +388,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
           }
         }
       }
-      const me: TournamentPlayer = { id: 'p0', name: save.profile.username, avatar: save.profile.avatar, faction: deck.heroFaction, bot: false, side: playerSide(save.profile, deck), connected: true };
+      const me: TournamentPlayer = { id: 'p0', name: save.profile.username, avatar: save.profile.avatar, faction: deck.heroFaction, bot: false, side: playerSide(save.profile, deck, save.collection), connected: true };
       set({ role: 'organizer', status: 'active', code, myId: 'p0', tournament: newTournament(code, me, size) });
       setTournamentMatchHandler(report);
       startHeartbeat();
@@ -494,7 +494,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
       // Human vs human: a dedicated 1v1 connection, hosted by the match's host player.
       set({ connectingMatch: m.id });
       try {
-        const side = playerSide(save.profile, deck);
+        const side = playerSide(save.profile, deck, save.collection);
         let role1v1: 'host' | 'guest';
         if (m.hostId === myId) {
           await netSession.host(save.profile.username, save.profile.avatar, (hello) => validateRemoteSide(hello.side), { code: m.room! });

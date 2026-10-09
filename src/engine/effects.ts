@@ -405,7 +405,7 @@ export function executeEffect(
         removeUnitFromBoard(ctx, u);
         emit(ctx, { type: 'UNIT_RETURNED', player: u.owner, uid: u.uid, cardId: u.cardId });
         if (getCard(u.cardId)?.collectible !== false) {
-          addToHand(ctx, u.owner, makeCardInstance(ctx, u.cardId, { costMod: -(effect.costReduction ?? 0), revealed: true }));
+          addToHand(ctx, u.owner, makeCardInstance(ctx, u.cardId, { costMod: -(effect.costReduction ?? 0), revealed: true, ...(u.variant ? { variant: u.variant } : {}) }));
         }
       }
       return units.length > 0;

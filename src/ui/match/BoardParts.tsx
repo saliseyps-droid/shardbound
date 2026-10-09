@@ -90,6 +90,7 @@ export const UnitView = memo(function UnitView({
     ghost ? 'is-dying' : '',
     fx.some((f) => f.kind === 'damage') ? 'is-hit' : '',
     fx.some((f) => f.kind === 'summon') ? 'is-summoned' : '',
+    unit.variant === 'PRISMATIC' ? 'is-prismatic' : unit.variant === 'FOIL' ? 'is-foil' : '',
   ].join(' ');
   const status = [
     t('{name}, {atk} attack, {hp} of {max} health', { name: card.name, atk, hp, max: maxHp }),
@@ -118,12 +119,18 @@ export const UnitView = memo(function UnitView({
       onMouseLeave={() => onHover?.(null)}
     >
       <div className="unit-body">
+        {unit.variant === 'PRISMATIC' && <div className="unit-prism-frame" aria-hidden />}
         <img className="unit-art" src={cardArtUri(card)} alt="" draggable={false} />
+        {unit.variant && <div className="unit-shine" aria-hidden />}
         {unit.frozen && <div className="unit-ice" aria-hidden />}
-        {unit.barrier && <div className="unit-barrier" aria-hidden />}
         <div className="unit-name">{card.name}</div>
       </div>
       {guard && <div className="unit-guard-plate" aria-hidden />}
+      {unit.barrier && (
+        <div className="unit-barrier" aria-hidden>
+          <span className="barrier-glint" />
+        </div>
+      )}
       <div className="unit-badges">
         {badges.map((k) => (
           <Tip key={k} title={KEYWORDS[k].name} body={KEYWORDS[k].definition} className="unit-badge">

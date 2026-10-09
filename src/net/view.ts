@@ -53,9 +53,9 @@ export function redactState(state: GameState, viewer: PlayerId): GameState {
     const hideHand = p.id === other;
     return {
       ...p,
-      hand: hideHand ? p.hand.map((c) => (c.revealed ? c : { ...c, cardId: HIDDEN_CARD, costMod: 0 })) : p.hand,
+      hand: hideHand ? p.hand.map((c) => (c.revealed ? c : { ...c, cardId: HIDDEN_CARD, costMod: 0, variant: undefined })) : p.hand,
       // Deck order is secret for everyone; only the count matters to the UI.
-      deck: p.deck.map((c) => ({ ...c, cardId: HIDDEN_CARD, costMod: 0 })),
+      deck: p.deck.map((c) => ({ ...c, cardId: HIDDEN_CARD, costMod: 0, variant: undefined })),
     };
   }) as GameState['players'];
   return { ...state, players, rng: { seed: 0 }, log: redactEvents(state.log, viewer) };

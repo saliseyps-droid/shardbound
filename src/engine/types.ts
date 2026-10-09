@@ -17,7 +17,12 @@ export interface CardInstance {
   echoCopy?: boolean;
   /** Visible to the opponent (e.g. stolen/returned cards). */
   revealed?: boolean;
+  /** Cosmetic: the owner's Foil or Prismatic copy. */
+  variant?: CardVariant;
 }
+
+/** Cosmetic card variants shown in a match (a normal copy has none). */
+export type CardVariant = 'FOIL' | 'PRISMATIC';
 
 export interface UnitInstance {
   uid: number;
@@ -46,6 +51,8 @@ export interface UnitInstance {
   pendingDestroy: boolean;
   /** Sequence number to order simultaneous deaths. */
   playOrder: number;
+  /** Cosmetic: played from a Foil or Prismatic card. */
+  variant?: CardVariant;
 }
 
 export interface RelicInstance {
@@ -214,6 +221,8 @@ export interface SideSetup {
   faction?: string | null;
   /** Card ids; order is shuffled by the engine unless `keepDeckOrder`. */
   deck: string[];
+  /** Cosmetic: how many copies of a card in `deck` are Prismatic or Foil. */
+  variants?: Record<string, Partial<Record<CardVariant, number>>>;
   /** Cosmetic card back id. */
   cardBack?: string | null;
   /** Cosmetic Warden portrait id. */

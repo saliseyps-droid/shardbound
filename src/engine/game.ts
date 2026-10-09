@@ -86,7 +86,16 @@ export function createGame(setup: MatchSetup): { state: GameState; events: Actio
   setup.players.forEach((side, i) => {
     const p = state.players[i as PlayerId];
     // Unknown card ids are skipped instead of crashing the match.
-    p.deck = side.deck.filter((id) => !!getCard(id)).map((id) => makeCardInstance(ctx, id));
+    const left = new Map(Object.entries(side.variants ?? {}).map(([id, v]) => [id, { ...v }]));
+    p.deck = side.deck
+      .filter((id) => !!getCard(id))
+      .map((id) => {
+        // The first copies of a card take the Prismatic, then the Foil variants.
+        const v = left.get(id);
+        const variant = v && (v.PRISMATIC ?? 0) > 0 ? 'PRISMATIC' : v && (v.FOIL ?? 0) > 0 ? 'FOIL' : undefined;
+        if (variant) v![variant]!--;
+        return makeCardInstance(ctx, id, variant ? { variant } : {});
+      });
     if (!side.keepDeckOrder) shuffleInPlace(state.rng, p.deck);
     for (const id of side.startingBoard ?? []) {
       const u = summonUnit(ctx, p.id, id);
@@ -287,6 +296,7 @@ function doPlayCard(ctx: EngineContext, playerId: PlayerId, cardUid: number, tar
     p.stats.unitsPlayed++;
     const unit = makeUnit(ctx, card.cardId, playerId);
     if (!unit) fail('Invalid unit');
+    if (card.variant) unit.variant = card.variant;
     const placed = summonUnit(ctx, playerId, card.cardId, { fromHand: true, position, unit });
     if (placed) {
       for (const ability of abilities) {

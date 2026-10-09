@@ -670,7 +670,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         deckName = deck.name;
         const opponent = config.online === 'host' ? netSession.remoteSide : opponentSide(config.opponent);
         if (!opponent) throw new Error('Your opponent is no longer connected.');
-        let me = playerSide(save.profile, deck);
+        let me = playerSide(save.profile, deck, save.collection);
         if (config.mode === 'BRAWL') {
           const fight = config.brawlFightId ? findBrawlFight(config.brawlFightId) : undefined;
           if (!fight) throw new Error('This Brawl is over.');

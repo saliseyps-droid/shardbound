@@ -51,7 +51,7 @@ export function MulliganOverlay({ game }: { game: GameState }) {
       <div className="mulligan-cards">
         {hand.map((c) => (
           <div key={c.uid} className={`mulligan-card ${picks.includes(c.uid) ? 'is-replaced' : ''}`} data-card-id={c.cardId}>
-            <CardView card={c.cardId} size="lg" onClick={() => toggle(c.uid)} ariaLabel={picks.includes(c.uid) ? t('{name}, marked for replacement', { name: getCardSafe(c.cardId).name }) : getCardSafe(c.cardId).name} />
+            <CardView card={c.cardId} variant={c.variant} size="lg" onClick={() => toggle(c.uid)} ariaLabel={picks.includes(c.uid) ? t('{name}, marked for replacement', { name: getCardSafe(c.cardId).name }) : getCardSafe(c.cardId).name} />
             {picks.includes(c.uid) && <span className="replace-mark">{t('Replace')}</span>}
           </div>
         ))}

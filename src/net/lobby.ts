@@ -56,9 +56,31 @@ export function sanitizeRemoteSide(side: SideSetup): SideSetup {
     avatar: String(side.avatar),
     faction: factionOfList(side.deck),
     deck: [...side.deck],
+    variants: sanitizeVariants(side),
     talents: Array.isArray(side.talents) ? side.talents.map((t) => ({ abilityId: t.abilityId, level: t.level })) : undefined,
     cardBack: side.cardBack ?? null,
     portrait: side.portrait ?? null,
     keepDeckOrder: false,
   };
+}
+
+/** Cosmetic variants a guest claims, kept to whole numbers within the copies in the deck. */
+function sanitizeVariants(side: SideSetup): SideSetup['variants'] {
+  const raw = side.variants;
+  if (!raw || typeof raw !== 'object') return undefined;
+  const out: NonNullable<SideSetup['variants']> = {};
+  for (const [id, v] of Object.entries(raw)) {
+    if (!v || typeof v !== 'object') continue;
+    let room = side.deck.filter((c) => c === id).length;
+    const entry: Partial<Record<'FOIL' | 'PRISMATIC', number>> = {};
+    for (const k of ['PRISMATIC', 'FOIL'] as const) {
+      const n = Math.min(room, Math.floor(Number(v[k]) || 0));
+      if (n > 0) {
+        entry[k] = n;
+        room -= n;
+      }
+    }
+    if (Object.keys(entry).length) out[id] = entry;
+  }
+  return Object.keys(out).length ? out : undefined;
 }

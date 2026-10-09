@@ -24,6 +24,7 @@ import { VirtualCardGrid } from '@/ui/components/collection/VirtualCardGrid';
 import { CardFilterBar } from '@/ui/components/collection/CardFilterBar';
 import { DEFAULT_FILTERS, filterCards, type CardFilterState } from '@/ui/components/collection/cardFilters';
 import { bestVariant } from '@/ui/components/collection/CardDetailPanel';
+import { deckVariants } from '@/domain/matchSetup';
 import { useCardWidth } from '@/ui/components/collection/useCardWidth';
 import { t, tn } from '@/i18n';
 import '@/ui/styles/collection.css';
@@ -209,6 +210,8 @@ export default function DeckEditorScreen() {
     navigate('/play');
   };
 
+  // Your best copies go into the deck first; the match shows the same ones.
+  const variants = collection ? deckVariants(collection, draft) : {};
   const rows = Object.entries(draft.cards)
     .map(([id, n]) => ({ card: getCard(id), n }))
     .filter((r): r is { card: CardDefinition; n: number } => !!r.card && r.n > 0)
@@ -423,6 +426,16 @@ export default function DeckEditorScreen() {
                 >
                   <span className="row-cost num">{card.manaCost}</span>
                   <span className="row-name">{card.name}</span>
+                  {!!variants[card.id]?.PRISMATIC && (
+                    <span className="row-variant is-prismatic" title={t('{n} Prismatic', { n: variants[card.id].PRISMATIC! })}>
+                      ✦{variants[card.id].PRISMATIC}
+                    </span>
+                  )}
+                  {!!variants[card.id]?.FOIL && (
+                    <span className="row-variant is-foil" title={t('{n} Foil', { n: variants[card.id].FOIL! })}>
+                      ✧{variants[card.id].FOIL}
+                    </span>
+                  )}
                   {n > owned(card.id) && <span className="row-warn" title={t('Not enough copies owned')}>!</span>}
                   <span className="row-count num">×{n}</span>
                 </button>

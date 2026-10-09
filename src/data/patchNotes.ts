@@ -19,6 +19,25 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.33.0',
+    date: '2026-10-09',
+    title: 'Prismatic and Foil cards in matches',
+    summary: 'The Foil and Prismatic cards you own now shine in matches too, and Barrier is easier to see.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Your Prismatic and Foil copies now show in matches: in your hand, in previews and on the board, for both players.',
+          'Each copy keeps its own variant: with one Prismatic and one normal copy in a deck, only one of them shines.',
+          'The deck editor shows how many copies in each deck are Prismatic (✦) or Foil (✧).',
+          'Existing decks work as before: your best copies go into them automatically, nothing to set up.',
+        ],
+      },
+      { kind: 'improved', items: ['Barrier is much easier to see in matches: a glowing golden shield around the whole unit, with a slow gleam.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.32.0',
     date: '2026-10-09',
     title: 'Harder daily puzzles',

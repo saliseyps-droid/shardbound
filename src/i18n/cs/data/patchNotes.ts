@@ -1,6 +1,19 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.33.0': {
+    title: 'Prizmatické a foil karty v zápasech',
+    summary: 'Foil a prizmatické karty, které vlastníš, se teď třpytí i v zápasech a bariéra je lépe vidět.',
+    sections: [
+      [
+        'Tvoje prizmatické a foil kopie se teď ukazují i v zápasech: v ruce, v náhledech i na stole, a vidí je oba hráči.',
+        'Každá kopie má svou vlastní variantu: s jednou prizmatickou a jednou normální kopií v decku se třpytí jen jedna z nich.',
+        'Editor decku ukazuje, kolik kopií v decku je prizmatických (✦) nebo foil (✧).',
+        'Stávající decky fungují dál: tvoje nejlepší kopie se do nich dají automaticky, nic nemusíš nastavovat.',
+      ],
+      ['Bariéra je v zápasech mnohem lépe vidět: zářící zlatý štít kolem celé jednotky s pomalým odleskem.'],
+    ],
+  },
   '0.32.0': {
     title: 'Těžší denní puzzle',
     summary: 'Čtrnáct nových denních puzzle, každé má jen jedno řešení.',

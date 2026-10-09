@@ -62,7 +62,7 @@ export default function RankedScreen() {
       const role = await findRankedMatch({
         name: save.profile.username,
         avatar: save.profile.avatar,
-        side: playerSide(save.profile, deck),
+        side: playerSide(save.profile, deck, save.collection),
         deckName: deck.name,
         rating: r.rating,
         onStatus: setStatus,

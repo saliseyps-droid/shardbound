@@ -198,6 +198,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   };
   const hoverCard = hover?.cardId ?? null;
   const hoverSilenced = hover?.uid !== undefined && !!game.players.some((p) => p.board.some((u) => u.uid === hover.uid && u.silenced));
+  const hoverVariant = hover?.uid !== undefined ? game.players.flatMap((p) => p.board).find((u) => u.uid === hover.uid)?.variant : undefined;
   const [newCards, setNewCards] = useState<Set<number>>(new Set());
   const prevHand = useRef<number[]>([]);
   const boardRef = useRef<HTMLDivElement>(null);
@@ -479,9 +480,10 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
     const unit = entity ? game.players.flatMap((p) => p.board).find((u) => `u:${u.uid}` === entity) : undefined;
     // Anything else showing a card (relics, location, mulligan, cast preview, revealed enemy
     // cards, card names in the log, the sidebar preview) carries data-card-id.
-    const cardId = (handUid ? me.hand.find((c) => c.uid === Number(handUid))?.cardId : unit?.cardId) ?? el.closest('[data-card-id]')?.getAttribute('data-card-id') ?? undefined;
+    const handCard = handUid ? me.hand.find((c) => c.uid === Number(handUid)) : undefined;
+    const cardId = (handUid ? handCard?.cardId : unit?.cardId) ?? el.closest('[data-card-id]')?.getAttribute('data-card-id') ?? undefined;
     if (cardId) {
-      useUi.getState().inspectCard(cardId, undefined, { silenced: unit?.silenced });
+      useUi.getState().inspectCard(cardId, handCard?.variant ?? unit?.variant, { silenced: unit?.silenced });
       return true;
     }
     // A Warden: its name, health and abilities.
@@ -557,7 +559,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         <div className="enemy-hand" aria-label={tn(opp.hand.length, 'Opponent has {n} cards', 'Opponent has {n} cards')}>
           {opp.hand.map((c, i) => (
             <div key={c.uid} className="enemy-hand-card" data-card-id={c.revealed ? c.cardId : undefined} style={{ '--i': i - (opp.hand.length - 1) / 2 } as CSSProperties}>
-              {c.revealed ? <CardView card={c.cardId} width={64} /> : <CardBack width={64} design={opp.hero.cardBack} />}
+              {c.revealed ? <CardView card={c.cardId} variant={c.variant} width={64} /> : <CardBack width={64} design={opp.hero.cardBack} />}
             </div>
           ))}
         </div>
@@ -626,6 +628,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
               >
                 <CardView
                   card={c.cardId}
+                  variant={c.variant}
                   width={cardW}
                   cost={cost}
                   playable={playable}
@@ -683,7 +686,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           </button>
         </div>
         <div className="hover-preview" aria-hidden data-card-id={hoverCard ?? undefined}>
-          {hoverCard ? <CardView card={hoverCard} width={220} silenced={hoverSilenced} /> : <BrandLogo size={200} className="sidebar-logo" />}
+          {hoverCard ? <CardView card={hoverCard} variant={hoverVariant} width={220} silenced={hoverSilenced} /> : <BrandLogo size={200} className="sidebar-logo" />}
         </div>
         <BattleLog game={game} />
         <div className="match-meta faint">
@@ -709,7 +712,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       )}
       {draggingCard && drag && (
         <div className="drag-ghost" style={{ left: drag.x, top: drag.y }}>
-          <CardView card={draggingCard.cardId} width={cardW} cost={effectiveCost(game, HUMAN, draggingCard)} />
+          <CardView card={draggingCard.cardId} variant={draggingCard.variant} width={cardW} cost={effectiveCost(game, HUMAN, draggingCard)} />
         </div>
       )}
 
@@ -717,6 +720,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         <div className="hand-peek" style={{ '--peek-w': `${peekW}px` } as CSSProperties} onPointerDown={() => (peekOpened.current.fresh = true)}>
           <CardView
             card={peekCard.cardId}
+            variant={peekCard.variant}
             width={peekW}
             cost={effectiveCost(game, HUMAN, peekCard)}
             playable={interactive && canPlayCard(game, HUMAN, peekCard).ok}

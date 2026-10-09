@@ -2,7 +2,7 @@ import { aiBuild } from '@/data/wardenTalents';
 import { randomCardBack } from '@/data/cardBacks';
 import { randomPortrait } from '@/data/portraits';
 import { effectivePortrait } from './portraits';
-import type { PlayerProfile } from './save';
+import type { CollectionState, PlayerProfile } from './save';
 import { DIFFICULTY_POOLS, type OpponentDef } from '@/data/opponents';
 import type { MatchSetup, SideSetup } from '@/engine/types';
 import { hashString } from '@/core/rng';
@@ -43,12 +43,31 @@ export function opponentSide(opponent: OpponentDef, random: () => number = Math.
   };
 }
 
-export function playerSide(profile: Pick<PlayerProfile, 'username' | 'avatar' | 'cardBack' | 'portraits' | 'factionPortraits'>, deck: Deck): SideSetup {
+/**
+ * Which copies of a deck show as Prismatic or Foil: the best variants you own go in first.
+ * Decks only count copies, so every deck (old ones too) gets its variants from the collection.
+ */
+export function deckVariants(collection: CollectionState, deck: Pick<Deck, 'cards'>): NonNullable<SideSetup['variants']> {
+  const out: NonNullable<SideSetup['variants']> = {};
+  for (const [id, count] of Object.entries(deck.cards)) {
+    const owned = collection.cards[id];
+    if (!owned || count <= 0) continue;
+    const prismatic = Math.min(count, owned.PRISMATIC);
+    const foil = Math.min(count - prismatic, owned.FOIL);
+    if (prismatic + foil === 0) continue;
+    out[id] = { ...(prismatic ? { PRISMATIC: prismatic } : {}), ...(foil ? { FOIL: foil } : {}) };
+  }
+  return out;
+}
+
+/** `collection` shows your Prismatic and Foil copies in the match (left out for borrowed decks). */
+export function playerSide(profile: Pick<PlayerProfile, 'username' | 'avatar' | 'cardBack' | 'portraits' | 'factionPortraits'>, deck: Deck, collection?: CollectionState): SideSetup {
   return {
     name: profile.username,
     avatar: profile.avatar,
     faction: deck.heroFaction,
     deck: deckToList(deck),
+    ...(collection ? { variants: deckVariants(collection, deck) } : {}),
     talents: deck.talents,
     cardBack: profile.cardBack ?? null,
     portrait: effectivePortrait(deck, profile),
