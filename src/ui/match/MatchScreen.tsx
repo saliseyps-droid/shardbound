@@ -18,6 +18,7 @@ import { AudioToggles } from './AudioToggles';
 import { DrawPile, EmpowerBadge, EnergyBar, HeroAbilities, HeroInspector, HeroPanel, PermanentsRow, UnitView } from './BoardParts';
 import { showTipFor } from '@/ui/components/Tooltip';
 import { LONG_PRESS_CLICK_GUARD_MS, LONG_PRESS_MS, TAP_SLOP_PX, isActingTap, peekClickAllowed } from './touchGuards';
+import { LegendaryEntrance } from './LegendaryEntrance';
 import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
 import { t, tn, useT } from '@/i18n';
 import { BrandLogo } from '@/ui/components/BrandLogo';
@@ -751,6 +752,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       </div>
       )}
       <CastPreview />
+      <LegendaryEntrance />
       <TurnBanner />
       <TutorialOverlay />
       {phase === 'mulligan' && <MulliganOverlay game={game} />}

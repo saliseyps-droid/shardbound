@@ -19,6 +19,7 @@ import { sanitizeRating } from '@/domain/ranked';
 import { validateDeck } from '@/domain/decks';
 import { gameService, useAccount } from './accountStore';
 import { anim, useSettings } from './settingsStore';
+import { legendEntrance } from '@/ui/match/legendEntrance';
 import { toast } from './uiStore';
 import { useMatchLaunch, type MatchConfig } from './matchLaunch';
 import { setLastMatchLog } from '@/ui/match/matchLog';
@@ -80,6 +81,8 @@ interface MatchStore {
   targets: EntityKey[];
   banner: { text: string; id: number } | null;
   cast: { cardId: string; player: PlayerId; id: number } | null;
+  /** A Legendary unit's entrance, shown before it lands (src/ui/match/LegendaryEntrance.tsx). */
+  legend: { cardId: string; player: PlayerId; id: number } | null;
   turnDeadline: number | null;
   rewards: MatchRewards | null;
   startedAt: number;
@@ -276,7 +279,13 @@ export const useMatch = create<MatchStore>((set, get) => {
     try {
       // Show what the opponent played before it resolves.
       const played = res.events.find((e) => e.type === 'CARD_PLAYED');
-      if (played && played.type === 'CARD_PLAYED' && played.player === AI) {
+      const entrance = legendEntrance(res.events);
+      if (entrance) {
+        set({ legend: { ...entrance, id: fxSeq++ } });
+        audio.play('legendaryReveal');
+        await sleep(anim(1700));
+        set({ legend: null });
+      } else if (played && played.type === 'CARD_PLAYED' && played.player === AI) {
         set({ cast: { cardId: played.cardId, player: AI, id: fxSeq++ } });
         await sleep(anim(1100));
       } else if (played && played.type === 'CARD_PLAYED' && getCard(played.cardId)?.cardType === 'SPELL') {
@@ -297,6 +306,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         fx: [...st.fx, ...newFx],
         ghosts: [...st.ghosts, ...ghosts],
         cast: null,
+        legend: null,
         version: st.version + 1,
         selection: null,
         targets: [],
@@ -606,6 +616,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     targets: [],
     banner: null,
     cast: null,
+    legend: null,
     turnDeadline: null,
     rewards: null,
     startedAt: 0,
@@ -711,6 +722,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         targets: [],
         banner: null,
         cast: null,
+        legend: null,
         turnDeadline: null,
         rewards: null,
         startedAt: Date.now(),

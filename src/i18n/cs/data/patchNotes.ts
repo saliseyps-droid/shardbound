@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.33.1': {
+    title: 'Příchody legendárek',
+    summary: 'Legendární jednotky mají teď při zahrání velkolepý příchod.',
+    sections: [
+      [
+        'Když se zahraje legendární jednotka, tvoje i soupeřova, ukáže se krátký příchod: zlaté paprsky, její obrázek ve velkém rámu a jméno, než dopadne na stůl.',
+        'Meowchick má vlastní komiksový příchod: červeno-žlutý výbuch, bublinu „Mňau!“ a zlaté tlapky přes celý stůl.',
+      ],
+    ],
+  },
   '0.33.0': {
     title: 'Prizmatické a foil karty v zápasech',
     summary: 'Foil a prizmatické karty, které vlastníš, se teď třpytí i v zápasech a bariéra je lépe vidět.',

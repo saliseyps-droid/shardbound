@@ -1,0 +1,156 @@
+/* Legendary entrance: a short full-screen moment before a Legendary unit lands (≈1.7s). */
+.legend-entrance {
+  position: fixed; inset: 0 var(--sidebar-w, 0px) 0 0; z-index: 300;
+  display: grid; place-items: center;
+  pointer-events: none;
+  overflow: hidden;
+  animation: legend-out 1.7s ease-in forwards;
+}
+@keyframes legend-out {
+  0%, 80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.legend-backdrop {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(10, 6, 24, 0.35), rgba(5, 3, 14, 0.82) 70%);
+  animation: legend-fade-in 0.25s ease-out both;
+}
+@keyframes legend-fade-in { from { opacity: 0; } }
+
+/* Golden rays turning slowly behind the portrait. */
+.legend-rays {
+  position: absolute; left: 50%; top: 50%;
+  width: 160vmax; height: 160vmax; margin: -80vmax 0 0 -80vmax;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 214, 120, 0.32) 0deg 7deg, transparent 7deg 20deg);
+  -webkit-mask: radial-gradient(circle, #000 0, #000 16vmin, transparent 46vmin);
+  mask: radial-gradient(circle, #000 0, #000 16vmin, transparent 46vmin);
+  animation: legend-rays-in 0.5s ease-out both, legend-spin 9s linear infinite;
+}
+@keyframes legend-rays-in { from { opacity: 0; transform: scale(0.4); } }
+@keyframes legend-spin { to { rotate: 360deg; } }
+
+.legend-stage {
+  position: relative;
+  display: grid; justify-items: center; gap: 14px;
+  animation: legend-land 1.7s cubic-bezier(0.5, 0, 0.75, 0) forwards;
+}
+/* Holds in the middle, then drops toward the player's side of the board. */
+@keyframes legend-land {
+  0%, 74% { transform: none; }
+  100% { transform: translateY(18vh) scale(0.35); }
+}
+.from-enemy .legend-stage { animation-name: legend-land-enemy; }
+@keyframes legend-land-enemy {
+  0%, 74% { transform: none; }
+  100% { transform: translateY(-22vh) scale(0.35); }
+}
+
+.legend-portrait {
+  width: min(38vh, 320px); aspect-ratio: 0.82;
+  clip-path: polygon(50% 0, 100% 14%, 100% 86%, 50% 100%, 0 86%, 0 14%);
+  background: linear-gradient(160deg, #fff6d0, #f0b640 40%, #8a5a10);
+  padding: 7px;
+  filter: drop-shadow(0 0 22px rgba(255, 200, 90, 0.9));
+  animation: legend-pop 0.6s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+.legend-portrait img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  clip-path: polygon(50% 0, 100% 13.5%, 100% 86.5%, 50% 100%, 0 86.5%, 0 13.5%);
+}
+@keyframes legend-pop {
+  from { transform: scale(0.2) translateY(30px); opacity: 0; }
+  60% { opacity: 1; }
+}
+
+.legend-banner {
+  display: grid; justify-items: center; gap: 2px;
+  padding: 8px 34px 10px;
+  background: linear-gradient(90deg, transparent, rgba(30, 18, 6, 0.92) 18%, rgba(30, 18, 6, 0.92) 82%, transparent);
+  border-top: 1px solid rgba(255, 214, 120, 0.7);
+  border-bottom: 1px solid rgba(255, 214, 120, 0.7);
+  animation: legend-banner-in 0.45s 0.25s ease-out both;
+}
+@keyframes legend-banner-in { from { opacity: 0; transform: scaleX(0.3); } }
+.legend-kicker {
+  font: 700 var(--t-xs) var(--font-body); letter-spacing: 0.35em; text-transform: uppercase;
+  color: #ffcf85;
+}
+.legend-banner strong {
+  font: 400 clamp(1.4rem, 2.6vw, 2.2rem) var(--font-display);
+  color: #fff3d0;
+  text-shadow: 0 0 12px rgba(255, 190, 80, 0.9), 0 2px 2px #000;
+}
+
+/* ---- Meowchick: a comic-book burst, a "MEOW!" bubble and golden paw prints ---- */
+.theme-meowchick .legend-rays {
+  background: repeating-conic-gradient(from 0deg, #ffd23a 0deg 5deg, #ff3b2a 5deg 11deg);
+  -webkit-mask: radial-gradient(circle, #000 0, #000 24vmin, transparent 52vmin);
+  mask: radial-gradient(circle, #000 0, #000 24vmin, transparent 52vmin);
+  animation: legend-rays-in 0.3s cubic-bezier(0.2, 1.6, 0.4, 1) both, legend-throb 0.32s ease-in-out 0.3s infinite alternate;
+}
+@keyframes legend-throb { to { scale: 1.06; } }
+/* Halftone dots over the burst, like a printed comic. */
+.theme-meowchick .legend-backdrop {
+  background:
+    radial-gradient(circle, rgba(0, 0, 0, 0.28) 1.6px, transparent 2px) 0 0 / 12px 12px,
+    radial-gradient(ellipse at 50% 50%, rgba(40, 6, 4, 0.1), rgba(20, 4, 2, 0.75) 70%);
+}
+.theme-meowchick .legend-portrait {
+  background: linear-gradient(160deg, #fff, #ffe066 35%, #ff5a2a);
+  filter: drop-shadow(0 0 0 #000) drop-shadow(4px 5px 0 #1a0a04) drop-shadow(0 0 24px rgba(255, 120, 40, 0.8));
+  animation: legend-pop 0.6s cubic-bezier(0.2, 1.6, 0.4, 1) both, meow-wiggle 0.5s 0.55s ease-in-out 2;
+}
+@keyframes meow-wiggle {
+  25% { rotate: -5deg; }
+  75% { rotate: 5deg; }
+}
+.legend-bubble {
+  position: absolute; top: -4%; right: -46%;
+  padding: 10px 20px 12px;
+  font: 900 clamp(1.6rem, 3.2vw, 2.6rem) var(--font-display);
+  color: #1a0a04; letter-spacing: 0.04em;
+  background: #fff;
+  border: 4px solid #1a0a04; border-radius: 50% / 45%;
+  box-shadow: 5px 6px 0 #1a0a04;
+  rotate: 8deg;
+  animation: bubble-pop 0.4s 0.45s cubic-bezier(0.2, 1.8, 0.4, 1) both;
+}
+/* The bubble's tail, pointing at the cat. */
+.legend-bubble::after {
+  content: ''; position: absolute; left: 14%; bottom: -20px;
+  width: 26px; height: 24px; background: #fff;
+  border-left: 4px solid #1a0a04; border-bottom: 4px solid #1a0a04;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  transform: skewX(18deg);
+}
+@keyframes bubble-pop { from { transform: scale(0); opacity: 0; } }
+.from-enemy .legend-bubble { right: auto; left: -46%; rotate: -8deg; }
+.theme-meowchick .legend-banner {
+  background: linear-gradient(90deg, transparent, #ff3b2a 18%, #ff3b2a 82%, transparent);
+  border-color: #1a0a04;
+}
+.theme-meowchick .legend-kicker { color: #ffe066; }
+.theme-meowchick .legend-banner strong { color: #fff; text-shadow: 3px 3px 0 #1a0a04; }
+
+/* Paw prints trot across the board, one after another (+2 Attack for the whole team). */
+.legend-paws {
+  position: absolute; left: 6%; right: 6%; bottom: 13%;
+  display: flex; justify-content: space-between; align-items: end;
+}
+.from-enemy .legend-paws { bottom: auto; top: 13%; }
+.legend-paws span {
+  width: clamp(28px, 3.4vw, 46px);
+  rotate: 80deg;
+  opacity: 0;
+  animation: paw-stamp 0.3s calc(0.5s + var(--i) * 0.09s) cubic-bezier(0.2, 1.8, 0.4, 1) forwards;
+}
+.legend-paws span:nth-child(even) { translate: 0 -26px; rotate: 100deg; }
+.legend-paws svg { width: 100%; display: block; fill: #ffd23a; filter: drop-shadow(2px 3px 0 #1a0a04) drop-shadow(0 0 8px rgba(255, 180, 60, 0.9)); }
+@keyframes paw-stamp {
+  from { opacity: 0; transform: scale(1.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .legend-entrance *, .legend-entrance { animation-duration: 0.01s !important; animation-iteration-count: 1 !important; }
+}

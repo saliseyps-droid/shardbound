@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.33.1',
+    date: '2026-10-09',
+    title: 'Legendary entrances',
+    summary: 'Legendary units now make a grand entrance when they are played.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Playing a Legendary unit, yours or your opponent\'s, shows a short entrance: golden rays, its art in a large frame and its name, before it lands on the board.',
+          'Meowchick has its own comic-book entrance: a red and yellow burst, a "Meow!" bubble and golden paw prints across the board.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.33.0',
     date: '2026-10-09',
     title: 'Prismatic and Foil cards in matches',
