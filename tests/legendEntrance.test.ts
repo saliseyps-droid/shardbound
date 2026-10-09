@@ -29,5 +29,6 @@ describe('legendary entrance', () => {
       'qinny',
       'tallys',
     ]);
+    expect(['ver_elinda', 'tid_skolky', 'irn_bronzehorn_colossus'].map(legendTheme)).toEqual(['elinda', 'skolky', 'r3d3']);
   });
 });

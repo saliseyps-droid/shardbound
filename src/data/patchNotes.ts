@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.33.3',
+    date: '2026-10-09',
+    title: 'Three more entrances',
+    summary: 'Elinda, Skolky and R3-D3 get their own Legendary entrances.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Elinda: vines climb her frame and burst into flowers, fireflies rise and a wave of healing light washes outward.',
+          'Skolky: a purple rune circle is drawn behind him, glowing runes spiral up around him and violet frost spreads over the screen.',
+          'R3-D3: a blueprint, turning gears and a scanning beam, armour plates bolting onto its frame, then "Systems online".',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.33.2',
     date: '2026-10-09',
     title: 'Signature entrances',

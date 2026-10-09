@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.33.3': {
+    title: 'Tři další příchody',
+    summary: 'Elinda, Skolky a R3-D3 mají vlastní příchody legendárek.',
+    sections: [
+      [
+        'Elinda: po jejím rámu se vyšplhá réva a rozkvete, stoupají světlušky a rozběhne se vlna léčivého světla.',
+        'Skolky: za ním se vykreslí fialový runový kruh, kolem něj se do spirály zvednou zářící runy a obrazovku pokryje fialová námraza.',
+        'R3-D3: technický výkres, točící se ozubená kola a skenovací paprsek, na rám se přišroubují pancéřové pláty a pak „Systémy online“.',
+      ],
+    ],
+  },
   '0.33.2': {
     title: 'Vlastní příchody legendárek',
     summary: 'Šest dalších legendárek má vlastní příchod a všechny příchody trvají o něco déle.',

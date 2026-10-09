@@ -1,7 +1,7 @@
 import { getCard } from '@/data/cards';
 import type { GameEvent, PlayerId } from '@/engine/types';
 
-export type LegendTheme = 'gold' | 'meowchick' | 'liu' | 'abandoneer' | 'rendoslav' | 'qvido' | 'qinny' | 'tallys';
+export type LegendTheme = 'gold' | 'meowchick' | 'liu' | 'abandoneer' | 'rendoslav' | 'qvido' | 'qinny' | 'tallys' | 'elinda' | 'skolky' | 'r3d3';
 
 /** Legendaries with their own entrance; every other Legendary gets the golden one. */
 const THEMES: Record<string, LegendTheme> = {
@@ -12,6 +12,9 @@ const THEMES: Record<string, LegendTheme> = {
   emb_qvido: 'qvido',
   ast_bubblemaker_qinny: 'qinny',
   vod_tallys_the_menace: 'tallys',
+  ver_elinda: 'elinda',
+  tid_skolky: 'skolky',
+  irn_bronzehorn_colossus: 'r3d3',
 };
 
 export function legendTheme(cardId: string): LegendTheme {

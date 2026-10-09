@@ -598,6 +598,193 @@
 }
 .from-enemy .tl-slash { top: auto; bottom: 24%; }
 
+/* ---- Elinda: vines climb her frame and bloom, fireflies rise, a healing pulse ---- */
+.theme-elinda .legend-backdrop { background: radial-gradient(ellipse at 50% 45%, rgba(20, 50, 30, 0.6), rgba(3, 12, 6, 0.93) 70%); }
+.theme-elinda .legend-rays { background: repeating-conic-gradient(from 0deg, rgba(180, 255, 170, 0.16) 0deg 5deg, transparent 5deg 17deg); }
+.theme-elinda .legend-portrait { background: linear-gradient(160deg, #e9ffd8, #6fcf6a 45%, #1f5a2a); }
+.theme-elinda .legend-banner { background: linear-gradient(90deg, transparent, rgba(10, 34, 16, 0.92) 18%, rgba(10, 34, 16, 0.92) 82%, transparent); border-color: rgba(160, 240, 140, 0.7); }
+.theme-elinda .legend-kicker { color: #b8f5a0; }
+.el-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 50% 45% at 50% 50%, rgba(120, 230, 120, 0.25), transparent 70%);
+  animation: legend-fade-in 0.6s both;
+}
+.el-vines {
+  position: absolute; left: 50%; top: calc(var(--pw) * -0.12);
+  width: calc(var(--pw) * 1.6); margin-left: calc(var(--pw) * -0.8);
+}
+.el-vines svg { width: 100%; display: block; overflow: visible; }
+.el-vine {
+  fill: none; stroke: #3f9a3a; stroke-width: 3; stroke-linecap: round;
+  filter: drop-shadow(0 0 4px rgba(140, 255, 120, 0.6));
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: tl-crack 0.6s 0.15s ease-out forwards;
+}
+.el-leaf { transform-box: fill-box; transform-origin: center; fill: #7ed957; stroke: #2f7a2c; stroke-width: 0.6; scale: 0; animation: el-pop 0.3s cubic-bezier(0.2, 1.8, 0.4, 1) forwards; }
+.el-flower { transform-box: fill-box; transform-origin: center; scale: 0; animation: el-pop 0.4s cubic-bezier(0.2, 1.8, 0.4, 1) forwards; }
+.el-flower ellipse { fill: #ffd2ec; stroke: #f58cc4; stroke-width: 0.5; }
+.el-heart { fill: #ffe066; }
+@keyframes el-pop { to { scale: 1; } }
+/* A ring of healing light washing outward. */
+.el-pulse {
+  position: absolute; left: 50%; top: calc(var(--pw) * 0.61);
+  width: calc(var(--pw) * 0.8); aspect-ratio: 1; margin: calc(var(--pw) * -0.4) 0 0 calc(var(--pw) * -0.4);
+  z-index: -1; border-radius: 50%;
+  background: radial-gradient(circle, transparent 55%, rgba(160, 255, 140, 0.55) 70%, transparent 74%);
+  opacity: 0;
+  animation: el-pulse 1s 0.55s ease-out 2;
+}
+@keyframes el-pulse { 0% { opacity: 1; transform: scale(0.5); } 100% { opacity: 0; transform: scale(3.2); } }
+.el-flies { position: absolute; inset: 0; }
+.fly {
+  position: absolute; left: calc(10% + var(--x) * 80%); bottom: calc(5% + var(--s) * 30%);
+  width: calc(3px + var(--s) * 4px); aspect-ratio: 1; border-radius: 50%;
+  background: #f4ffb0; box-shadow: 0 0 8px 3px rgba(170, 255, 120, 0.8);
+  opacity: 0;
+  animation: el-fly 1.6s calc(0.2s + var(--d) * 0.8s) ease-in-out forwards;
+}
+@keyframes el-fly {
+  0% { opacity: 0; transform: none; }
+  25% { opacity: 1; }
+  50% { transform: translate(calc(var(--r) * 80px), -18vh); }
+  100% { opacity: 0; transform: translate(calc(var(--r) * -60px), -42vh); }
+}
+
+/* ---- Skolky: purple rune magic: a rune circle, runes rising around him, violet frost ---- */
+.theme-skolky .legend-backdrop { background: radial-gradient(ellipse at 50% 45%, rgba(70, 20, 120, 0.65), rgba(10, 2, 24, 0.95) 70%); }
+.theme-skolky .legend-rays { display: none; }
+.theme-skolky .legend-portrait { background: linear-gradient(160deg, #f5e8ff, #b77cff 40%, #4a1a8a); }
+.theme-skolky .legend-banner { background: linear-gradient(90deg, transparent, rgba(28, 8, 54, 0.92) 18%, rgba(28, 8, 54, 0.92) 82%, transparent); border-color: rgba(200, 150, 255, 0.75); }
+.theme-skolky .legend-kicker { color: #d9b8ff; }
+.sk-circle {
+  position: absolute; left: 50%; top: calc(var(--pw) * 0.61);
+  width: calc(var(--pw) * 2.1); aspect-ratio: 1; margin: calc(var(--pw) * -1.05) 0 0 calc(var(--pw) * -1.05);
+  z-index: -1;
+  filter: drop-shadow(0 0 6px rgba(190, 120, 255, 0.95)) drop-shadow(0 0 18px rgba(160, 80, 255, 0.7));
+}
+.sk-circle svg { width: 100%; display: block; overflow: visible; animation: legend-spin 12s linear infinite; }
+.sk-circle circle, .sk-circle polygon {
+  fill: none; stroke: #c48bff; stroke-width: 1.5;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: tl-crack 0.55s ease-out forwards, sk-chill 0.4s 0.6s ease-out forwards;
+}
+.sk-circle circle:nth-child(2) { animation-delay: 0.08s, 0.6s; }
+.sk-circle circle:nth-child(3) { animation-delay: 0.16s, 0.6s; }
+.sk-circle polygon { animation-delay: 0.25s, 0.6s; }
+@keyframes sk-chill { to { stroke: #ead6ff; } }
+.sk-circle .rune { fill: none; stroke: #f0dcff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; animation: sk-rune 0.25s ease-out forwards; }
+@keyframes sk-rune { to { opacity: 1; } }
+/* Glowing runes circling up around him. */
+.sk-runes { position: absolute; left: 50%; top: calc(var(--pw) * 0.61); width: 0; height: 0; }
+.sk-runes span {
+  position: absolute; left: calc(var(--pw) * -0.07); top: calc(var(--pw) * -0.1);
+  width: calc(var(--pw) * 0.14);
+  rotate: calc(var(--i) * 36deg);
+  opacity: 0;
+  animation: sk-orbit 1.3s calc(0.45s + var(--i) * 0.05s) ease-out forwards;
+}
+.sk-runes svg { width: 100%; display: block; overflow: visible; fill: none; stroke: #f3e2ff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 4px #c27bff) drop-shadow(0 0 10px #8a3cff); }
+@keyframes sk-orbit {
+  0% { opacity: 0; transform: rotate(0deg) translateY(calc(var(--pw) * -0.5)) rotate(0deg) scale(0.4); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(120deg) translateY(calc(var(--pw) * (-1 - var(--s) * 0.3))) rotate(-120deg) scale(1.1); }
+}
+/* Frost blooming outward from him over the whole screen, like ice on glass. */
+.sk-frost {
+  position: absolute; inset: 0;
+  background:
+    repeating-conic-gradient(from 10deg at 50% 45%, rgba(225, 200, 255, 0.08) 0deg 0.6deg, transparent 0.6deg 4deg),
+    radial-gradient(circle at 50% 45%, rgba(210, 170, 255, 0.04), rgba(210, 170, 255, 0.32) 80%);
+  -webkit-mask: radial-gradient(circle at 50% 45%, #000 0 var(--fr), transparent calc(var(--fr) + 6%));
+  mask: radial-gradient(circle at 50% 45%, #000 0 var(--fr), transparent calc(var(--fr) + 6%));
+  --fr: 0%;
+  animation: sk-bloom 0.8s 0.75s ease-out forwards;
+}
+@property --fr { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+@keyframes sk-bloom { to { --fr: 110%; } }
+.sk-snow { position: absolute; inset: 0; overflow: hidden; }
+.flake {
+  position: absolute; top: -6vh; left: calc(var(--x) * 100%);
+  width: calc(10px + var(--s) * 18px);
+  opacity: 0.9;
+  animation: sk-fall calc(1.6s + var(--d) * 0.8s) calc(0.6s + var(--d) * 0.5s) linear both;
+}
+.flake svg { width: 100%; display: block; stroke: #f0e2ff; stroke-width: 1.4; fill: none; stroke-linecap: round; filter: drop-shadow(0 0 3px rgba(190, 230, 255, 0.9)); }
+@keyframes sk-fall { to { transform: translate(calc(var(--r) * 120px), 112vh) rotate(calc(var(--r) * 360deg)); } }
+
+/* ---- R3-D3: a blueprint, turning gears, a scan, armour plates bolting on, systems online ---- */
+.theme-r3d3 .legend-backdrop {
+  background:
+    repeating-linear-gradient(0deg, rgba(120, 190, 255, 0.16) 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(90deg, rgba(120, 190, 255, 0.16) 0 1px, transparent 1px 32px),
+    radial-gradient(ellipse at 50% 45%, rgba(14, 50, 100, 0.85), rgba(4, 14, 34, 0.96) 72%);
+}
+.theme-r3d3 .legend-rays { display: none; }
+.theme-r3d3 .legend-portrait { background: linear-gradient(160deg, #e6edf2, #8a96a4 40%, #3a4450); }
+.theme-r3d3 .legend-banner { background: linear-gradient(90deg, transparent, rgba(8, 20, 40, 0.92) 18%, rgba(8, 20, 40, 0.92) 82%, transparent); border-color: rgba(130, 200, 255, 0.7); }
+.theme-r3d3 .legend-kicker { color: #9fd4ff; }
+.r3-grid {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(150, 210, 255, 0.07) 0 1px, transparent 1px 8px), repeating-linear-gradient(90deg, rgba(150, 210, 255, 0.07) 0 1px, transparent 1px 8px);
+  animation: legend-fade-in 0.4s both;
+}
+.r3-gear { position: absolute; z-index: -1; animation: legend-fade-in 0.3s 0.1s both; }
+.r3-gear svg { width: 100%; display: block; fill: rgba(160, 175, 190, 0.85); stroke: rgba(210, 230, 255, 0.6); stroke-width: 1; filter: drop-shadow(0 0 8px rgba(120, 190, 255, 0.5)); }
+.r3-gear .hole { fill: rgba(6, 18, 40, 0.95); }
+.r3-gear.big { width: calc(var(--pw) * 1.05); left: calc(50% - var(--pw) * 1.05); top: calc(var(--pw) * -0.05); }
+.r3-gear.big svg { animation: legend-spin 3s linear infinite; }
+.r3-gear.small { width: calc(var(--pw) * 0.7); left: calc(50% + var(--pw) * 0.32); top: calc(var(--pw) * 0.62); }
+.r3-gear.small svg { animation: legend-spin 2s linear infinite reverse; }
+/* Armour plates flying in and bolting onto the frame. */
+.r3-plates { position: absolute; left: 50%; top: calc(var(--pw) * 0.61); width: 0; height: 0; }
+.plate {
+  position: absolute; left: calc(var(--pw) * -0.09); top: calc(var(--pw) * -0.06);
+  width: calc(var(--pw) * 0.18); height: calc(var(--pw) * 0.12);
+  background:
+    radial-gradient(circle at 18% 30%, #222 0 6%, transparent 8%), radial-gradient(circle at 82% 30%, #222 0 6%, transparent 8%),
+    radial-gradient(circle at 18% 72%, #222 0 6%, transparent 8%), radial-gradient(circle at 82% 72%, #222 0 6%, transparent 8%),
+    linear-gradient(160deg, #f2f5f8, #9aa6b2 45%, #4a5560);
+  clip-path: polygon(12% 0, 88% 0, 100% 50%, 88% 100%, 12% 100%, 0 50%);
+  rotate: calc(var(--i) * 36deg);
+  opacity: 0;
+  animation: r3-plate 0.35s calc(0.3s + var(--i) * 0.05s) cubic-bezier(0.6, 0, 1, 0.8) forwards;
+}
+@keyframes r3-plate {
+  0% { opacity: 1; transform: translateX(80vmax) rotate(180deg); }
+  100% { opacity: 1; transform: translateX(calc(var(--pw) * 0.62)) rotate(90deg); }
+}
+.plate::after {
+  content: ''; position: absolute; inset: -40%; border-radius: 50%;
+  background: radial-gradient(circle, #fff, rgba(255, 210, 120, 0.9) 30%, transparent 60%);
+  opacity: 0;
+  animation: r3-spark 0.3s calc(0.65s + var(--i) * 0.05s) ease-out;
+}
+@keyframes r3-spark { 0% { opacity: 1; } 100% { opacity: 0; } }
+.r3-scan {
+  position: absolute; left: 50%; top: 0;
+  width: calc(var(--pw) * 1.3); height: 4px; margin-left: calc(var(--pw) * -0.65);
+  background: linear-gradient(90deg, transparent, #7fe0ff 20%, #fff 50%, #7fe0ff 80%, transparent);
+  box-shadow: 0 0 16px 4px rgba(120, 220, 255, 0.8);
+  opacity: 0;
+  animation: r3-scan 0.7s 0.15s ease-in-out forwards;
+}
+@keyframes r3-scan {
+  0% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(calc(var(--pw) * 1.22)); }
+}
+.r3-hud {
+  position: absolute; left: 50%; top: calc(var(--pw) * -0.2); translate: -50% 0;
+  font: 800 calc(var(--pw) * 0.075) / 1 ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  letter-spacing: 0.25em; text-transform: uppercase; white-space: nowrap;
+  color: #8ff0ff; text-shadow: 0 0 8px rgba(120, 230, 255, 0.9);
+  padding: 4px 10px; border: 1px solid rgba(140, 230, 255, 0.7); background: rgba(4, 20, 40, 0.8);
+  clip-path: inset(0 100% 0 0);
+  animation: r3-type 0.4s 0.95s steps(14) forwards, r3-blink 0.25s 1.4s steps(2) 3;
+}
+@keyframes r3-type { to { clip-path: inset(0 0 0 0); } }
+@keyframes r3-blink { 50% { opacity: 0.35; } }
+
 @media (prefers-reduced-motion: reduce) {
   .legend-entrance *, .legend-entrance { animation-duration: 0.01s !important; animation-iteration-count: 1 !important; }
 }

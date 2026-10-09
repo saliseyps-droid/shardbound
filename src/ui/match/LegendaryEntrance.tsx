@@ -125,6 +125,95 @@ const Cracks = () => (
   </svg>
 );
 
+/** Elinda's vines climbing both sides of her frame, with leaves and flowers (x/y in hundredths of the portrait width). */
+const VINE_LEFT = 'M14 145 C4 120 30 110 22 90 S6 60 26 44 S40 14 62 4';
+const VINE_LEAVES: [number, number, number][] = [[20, 128, -40], [16, 104, 30], [25, 82, -50], [13, 64, 20], [30, 44, -30], [44, 20, 40]];
+const VINE_FLOWERS: [number, number][] = [[62, 4], [22, 90], [14, 64]];
+const Flower = ({ x, y, i }: { x: number; y: number; i: number }) => (
+  <g className="el-flower" style={{ animationDelay: `${0.75 + i * 0.1}s` }}>
+    {[0, 72, 144, 216, 288].map((a) => (
+      <ellipse key={a} cx={x} cy={y - 4.5} rx={3} ry={5} transform={`rotate(${a} ${x} ${y})`} />
+    ))}
+    <circle className="el-heart" cx={x} cy={y} r={2.4} />
+  </g>
+);
+const Vines = () => (
+  <svg viewBox="0 0 160 150" aria-hidden>
+    {[false, true].map((mirror) => (
+      <g key={String(mirror)} transform={mirror ? 'translate(160 0) scale(-1 1)' : undefined}>
+        <path className="el-vine" d={VINE_LEFT} pathLength={1} />
+        {VINE_LEAVES.map(([x, y, a], i) => (
+          <g key={i} transform={`rotate(${a} ${x} ${y})`}>
+            <ellipse className="el-leaf" cx={x} cy={y} rx={7} ry={3.2} style={{ animationDelay: `${0.3 + i * 0.07}s` }} />
+          </g>
+        ))}
+        {VINE_FLOWERS.map(([x, y], i) => (
+          <Flower key={`f${i}`} x={x} y={y} i={i} />
+        ))}
+      </g>
+    ))}
+  </svg>
+);
+
+const Snowflake = () => (
+  <svg viewBox="-10 -10 20 20" aria-hidden>
+    {[0, 60, 120].map((a) => (
+      <g key={a} transform={`rotate(${a})`}>
+        <line x1="0" y1="-9" x2="0" y2="9" />
+        <path d="M-3 -6 L0 -3.5 L3 -6 M-3 6 L0 3.5 L3 6" />
+      </g>
+    ))}
+  </svg>
+);
+
+/** Skolky's rune circle: two rings, a hexagram and rune marks, drawn in frost light. */
+/** Rune glyphs (Elder Futhark shapes) drawn as strokes, so they never depend on a font. */
+const RUNES = [
+  'M0 -10 L0 10 M0 -4 L6 -9 M0 2 L6 -3', // fehu
+  'M-4 10 L-4 -10 L5 -4 L5 10', // uruz
+  'M0 -10 L0 10 M0 -6 L6 0 L0 6', // thurisaz
+  'M-5 10 L0 -10 L5 10', // kenaz-like
+  'M0 -10 L0 10 M-6 -4 L0 0 L6 -4', // algiz
+  'M-5 -10 L-5 10 M-5 -10 L5 -3 L-5 4 L5 10', // berkano
+  'M-6 -10 L6 10 M6 -10 L-6 10', // gebo
+  'M0 -10 L0 10 M0 -10 L6 -5 L0 0', // wunjo
+];
+const Rune = ({ i }: { i: number }) => (
+  <svg viewBox="-9 -13 18 26" aria-hidden>
+    <path d={RUNES[i % RUNES.length]} />
+  </svg>
+);
+
+const RuneCircle = () => (
+  <svg viewBox="-100 -100 200 200" aria-hidden>
+    <circle r="96" pathLength={1} />
+    <circle r="82" pathLength={1} />
+    <circle r="50" pathLength={1} />
+    <polygon points="0,-82 71,41 -71,41" pathLength={1} />
+    <polygon points="0,82 71,-41 -71,-41" pathLength={1} />
+    {Array.from({ length: 16 }, (_, i) => (
+      <path key={i} className="rune" d={RUNES[i % RUNES.length]} transform={`rotate(${i * 22.5}) translate(0 -89) scale(0.42)`} style={{ animationDelay: `${0.35 + i * 0.03}s` }} />
+    ))}
+  </svg>
+);
+
+/** A cog with `teeth` teeth, for R3-D3. */
+function Gear({ teeth }: { teeth: number }) {
+  const pts: string[] = [];
+  for (let i = 0; i < teeth * 2; i++) {
+    const a0 = (i / (teeth * 2)) * Math.PI * 2;
+    const r = i % 2 === 0 ? 50 : 41;
+    for (const da of [-0.11, 0.11]) pts.push(`${(Math.cos(a0 + da) * r).toFixed(1)},${(Math.sin(a0 + da) * r).toFixed(1)}`);
+  }
+  return (
+    <svg viewBox="-52 -52 104 104" aria-hidden>
+      <polygon points={pts.join(' ')} />
+      <circle r="24" className="hole" />
+      <circle r="10" />
+    </svg>
+  );
+}
+
 /** Layers behind the portrait (back), on the stage around it (stage) and over everything (front). */
 const EXTRAS: Partial<Record<LegendTheme, { back?: () => ReactNode; stage?: () => ReactNode; front?: () => ReactNode }>> = {
   meowchick: {
@@ -201,6 +290,60 @@ const EXTRAS: Partial<Record<LegendTheme, { back?: () => ReactNode; stage?: () =
       <>
         <div className="qn-bubble" />
         <div className="qn-drops">{particles(14, 'drop')}</div>
+      </>
+    ),
+  },
+  elinda: {
+    back: () => (
+      <>
+        <div className="el-glow" />
+        <div className="el-flies">{particles(26, 'fly')}</div>
+      </>
+    ),
+    stage: () => (
+      <>
+        <div className="el-pulse" />
+        <div className="el-vines">
+          <Vines />
+        </div>
+      </>
+    ),
+  },
+  skolky: {
+    back: () => (
+      <>
+        <div className="sk-frost" />
+        <div className="sk-snow">{particles(22, 'flake', <Snowflake />)}</div>
+      </>
+    ),
+    stage: () => (
+      <>
+        <div className="sk-circle">
+          <RuneCircle />
+        </div>
+        <div className="sk-runes">
+          {Array.from({ length: 10 }, (_, i) => (
+            <span key={i} style={{ '--i': i, '--s': rnd(i, 3), '--r': rnd(i, 4) - 0.5 } as CSSProperties}>
+              <Rune i={i} />
+            </span>
+          ))}
+        </div>
+      </>
+    ),
+  },
+  r3d3: {
+    back: () => <div className="r3-grid" />,
+    stage: () => (
+      <>
+        <div className="r3-gear big">
+          <Gear teeth={14} />
+        </div>
+        <div className="r3-gear small">
+          <Gear teeth={9} />
+        </div>
+        <div className="r3-plates">{particles(10, 'plate')}</div>
+        <div className="r3-scan" />
+        <div className="r3-hud">{t('Systems online')}</div>
       </>
     ),
   },
