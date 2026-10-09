@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.32.0',
+    date: '2026-10-09',
+    title: 'Harder daily puzzles',
+    summary: 'Fourteen new daily puzzles, each with only one way to win.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Daily puzzle: fourteen new, much harder puzzles. The enemy Warden has exactly as much Health as your best possible turn deals, only one combination of cards gets there, and it takes at least three cards and several careful steps.',
+          'Some puzzles hide a trap card that must stay in your hand; the hint tells you whether you need every card or not.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.31.5',
     date: '2026-10-09',
     title: 'Hooded cat portraits',

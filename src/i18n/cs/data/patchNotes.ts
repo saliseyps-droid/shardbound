@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.32.0': {
+    title: 'Těžší denní puzzle',
+    summary: 'Čtrnáct nových denních puzzle, každé má jen jedno řešení.',
+    sections: [
+      [
+        'Denní puzzle: čtrnáct nových, mnohem těžších puzzle. Nepřátelský Strážce má přesně tolik životů, kolik dá tvůj nejlepší možný tah, dostat se tam dá jen jednou kombinací karet a potřebuješ k tomu aspoň tři karty a několik promyšlených kroků.',
+        'Některá puzzle skrývají kartu-past, kterou musíš nechat v ruce; nápověda ti řekne, jestli potřebuješ všechny karty, nebo ne.',
+      ],
+    ],
+  },
   '0.31.5': {
     title: 'Kočky v kápích',
     summary: 'Pět nových portrétů koček v kápích v obchodě.',
