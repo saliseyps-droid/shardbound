@@ -169,6 +169,7 @@ const d: Record<string, string> = {
   '{n} Prismatic': 'Prizmatické: {n}',
   '{n} Foil': 'Foil: {n}',
   'Meow!': 'Mňau!',
+  Wanted: 'Hledá se',
   'Every pack holds at least one Rare or better card.': 'Každý booster obsahuje aspoň jednu vzácnou nebo lepší kartu.',
   'An Epic or better is guaranteed at least once every {n} packs.': 'Epická nebo lepší karta je zaručena aspoň jednou za {n} boosterů.',
   'A Legendary is guaranteed at least once every {n} packs.': 'Legendární karta je zaručena aspoň jednou za {n} boosterů.',

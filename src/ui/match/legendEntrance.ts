@@ -1,12 +1,18 @@
 import { getCard } from '@/data/cards';
 import type { GameEvent, PlayerId } from '@/engine/types';
 
+export type LegendTheme = 'gold' | 'meowchick' | 'liu' | 'abandoneer' | 'rendoslav' | 'qvido' | 'qinny' | 'tallys';
+
 /** Legendaries with their own entrance; every other Legendary gets the golden one. */
 const THEMES: Record<string, LegendTheme> = {
   neu_meowchick: 'meowchick',
+  ast_liu_kano: 'liu',
+  neu_captain_abandoneer: 'abandoneer',
+  neu_rendoslav: 'rendoslav',
+  emb_qvido: 'qvido',
+  ast_bubblemaker_qinny: 'qinny',
+  vod_tallys_the_menace: 'tallys',
 };
-
-export type LegendTheme = 'gold' | 'meowchick';
 
 export function legendTheme(cardId: string): LegendTheme {
   return THEMES[cardId] ?? 'gold';

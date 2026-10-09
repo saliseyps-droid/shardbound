@@ -283,7 +283,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       if (entrance) {
         set({ legend: { ...entrance, id: fxSeq++ } });
         audio.play('legendaryReveal');
-        await sleep(anim(1700));
+        await sleep(anim(2150));
         set({ legend: null });
       } else if (played && played.type === 'CARD_PLAYED' && played.player === AI) {
         set({ cast: { cardId: played.cardId, player: AI, id: fxSeq++ } });

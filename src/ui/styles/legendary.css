@@ -1,10 +1,10 @@
-/* Legendary entrance: a short full-screen moment before a Legendary unit lands (≈1.7s). */
+/* Legendary entrance: a short full-screen moment before a Legendary unit lands (≈2.1s). */
 .legend-entrance {
   position: fixed; inset: 0 var(--sidebar-w, 0px) 0 0; z-index: 300;
   display: grid; place-items: center;
   pointer-events: none;
   overflow: hidden;
-  animation: legend-out 1.7s ease-in forwards;
+  animation: legend-out 2.15s ease-in forwards;
 }
 @keyframes legend-out {
   0%, 80% { opacity: 1; }
@@ -31,8 +31,9 @@
 
 .legend-stage {
   position: relative;
+  --pw: min(38vh, 320px);
   display: grid; justify-items: center; gap: 14px;
-  animation: legend-land 1.7s cubic-bezier(0.5, 0, 0.75, 0) forwards;
+  animation: legend-land 2.15s cubic-bezier(0.5, 0, 0.75, 0) forwards;
 }
 /* Holds in the middle, then drops toward the player's side of the board. */
 @keyframes legend-land {
@@ -46,7 +47,7 @@
 }
 
 .legend-portrait {
-  width: min(38vh, 320px); aspect-ratio: 0.82;
+  width: var(--pw); aspect-ratio: 0.82;
   clip-path: polygon(50% 0, 100% 14%, 100% 86%, 50% 100%, 0 86%, 0 14%);
   background: linear-gradient(160deg, #fff6d0, #f0b640 40%, #8a5a10);
   padding: 7px;
@@ -132,6 +133,8 @@
 .theme-meowchick .legend-kicker { color: #ffe066; }
 .theme-meowchick .legend-banner strong { color: #fff; text-shadow: 3px 3px 0 #1a0a04; }
 
+.legend-front { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+
 /* Paw prints trot across the board, one after another (+2 Attack for the whole team). */
 .legend-paws {
   position: absolute; left: 6%; right: 6%; bottom: 13%;
@@ -150,6 +153,450 @@
   from { opacity: 0; transform: scale(1.8); }
   to { opacity: 1; transform: scale(1); }
 }
+
+/* ---- Liu Kano: a comet of light crashes into his dark silhouette and sets him ablaze ---- */
+.theme-liu .legend-backdrop { background: radial-gradient(ellipse at 50% 45%, rgba(10, 10, 24, 0.85), rgba(0, 0, 4, 0.97) 60%); }
+.theme-liu .legend-rays {
+  background: repeating-conic-gradient(from 0deg, rgba(220, 240, 255, 0.3) 0deg 3deg, transparent 3deg 22deg);
+  animation: lk-rays 2.15s ease-out both, legend-spin 14s linear infinite;
+}
+@keyframes lk-rays { 0%, 38% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.7; } }
+/* Only a white rim shows until the slash: the frame is lit, the art is a black shape. */
+.theme-liu .legend-portrait {
+  background: linear-gradient(160deg, #ffffff, #dfe9ff 45%, #8aa0d0);
+  animation: lk-rise 0.45s ease-out both;
+}
+@keyframes lk-rise { from { transform: translateY(24px); opacity: 0; } }
+.theme-liu .legend-portrait img { animation: lk-reveal 1s both; }
+@keyframes lk-reveal {
+  0%, 40% { filter: brightness(0); }
+  48% { filter: brightness(2.8) saturate(0.3); }
+  100% { filter: none; }
+}
+/* Light blades flung out from Liu once the slash has cut him free. */
+.lk-blades { position: absolute; left: 50%; top: calc(var(--pw) * 0.6); width: 0; height: 0; }
+.blade {
+  position: absolute; left: 0; top: -3px;
+  width: calc(var(--pw) * (0.3 + var(--s) * 0.25)); height: 6px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent, #fff 60%, #cfeaff);
+  box-shadow: 0 0 12px 3px rgba(190, 230, 255, 0.8);
+  transform-origin: 0 50%;
+  rotate: calc(var(--i) * 22.5deg + var(--r) * 14deg);
+  opacity: 0;
+  animation: lk-blade 0.7s 0.45s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+@keyframes lk-blade {
+  0% { opacity: 1; transform: translateX(calc(var(--pw) * 0.25)) scaleX(0.2); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(calc(var(--pw) * 1.6)) scaleX(1); }
+}
+/* The comet: a white-hot head with a long tail, falling from the top left into him. */
+.lk-comet {
+  position: absolute; left: 50%; top: calc(var(--pw) * 0.61 - 120vh);
+  width: calc(var(--pw) * 0.22); height: 120vh; margin-left: calc(var(--pw) * -0.11);
+  transform-origin: 50% 100%;
+  rotate: -32deg;
+  border-radius: 50% 50% 50% 50% / 0 0 6% 6%;
+  background: linear-gradient(180deg, transparent, rgba(160, 210, 255, 0.25) 50%, rgba(220, 240, 255, 0.85) 92%, #fff);
+  filter: drop-shadow(0 0 18px rgba(190, 230, 255, 0.95));
+  animation: lk-comet 0.42s cubic-bezier(0.6, 0, 1, 0.6) both;
+}
+/* Two smaller comets streaking in alongside, a beat earlier. */
+.lk-comet-a, .lk-comet-b { width: calc(var(--pw) * 0.09); margin-left: calc(var(--pw) * -0.045); animation-duration: 0.36s; }
+.lk-comet-a { rotate: -52deg; }
+.lk-comet-b { rotate: -14deg; animation-delay: 0.04s; }
+/* A tractor of stars rolls in behind him after the impact. */
+.lk-tractor {
+  /* Parks right behind him, centred on him. */
+  position: absolute; left: 50%; top: calc(var(--pw) * -0.43);
+  width: calc(var(--pw) * 3.4); margin-left: calc(var(--pw) * -1.88);
+  z-index: -1;
+  filter: drop-shadow(0 0 6px rgba(190, 225, 255, 0.9));
+  animation: lk-drive 0.6s 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.15) both, lk-chug 0.18s 1.15s ease-in-out infinite alternate;
+}
+@keyframes lk-drive { from { transform: translateX(-110vw); opacity: 0.3; } }
+@keyframes lk-chug { to { translate: 0 -2px; } }
+.lk-tractor svg { width: 100%; display: block; overflow: visible; }
+.lk-tractor .tr-body { fill: rgba(120, 170, 255, 0.14); fill-rule: evenodd; stroke: none; }
+.lk-tractor .tr-glass { fill: none; stroke: rgba(220, 238, 255, 0.85); stroke-width: 2; }
+.lk-tractor .tr-glint { fill: none; stroke: rgba(255, 255, 255, 0.7); stroke-width: 2.5; stroke-linecap: round; }
+.lk-tractor .tr-line { fill: none; stroke: rgba(190, 220, 255, 0.6); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+.lk-tractor .tr-star { fill: #fff; transform-box: fill-box; transform-origin: center; animation: lk-twinkle 0.6s ease-in-out infinite alternate; }
+@keyframes lk-twinkle { to { opacity: 0.55; scale: 0.7; } }
+.lk-tractor .tr-lamp { fill: #fffbe0; filter: drop-shadow(0 0 6px #fff); animation: none; }
+.lk-tractor .tr-beam { opacity: 0; animation: legend-fade-in 0.3s 0.95s forwards; animation-name: lk-beam-on; }
+@keyframes lk-beam-on { to { opacity: 1; } }
+.lk-tractor .tr-wheel { animation: lk-wheel 0.5s linear 0.55s 2 both; }
+@keyframes lk-wheel { from { rotate: -360deg; } to { rotate: 0deg; } }
+.lk-tractor .tr-puff { transform-box: fill-box; transform-origin: center; fill: rgba(220, 235, 255, 0.85); opacity: 0; animation: lk-puff 0.7s ease-out infinite; }
+@keyframes lk-puff {
+  0% { opacity: 0.9; transform: translate(0, 0); }
+  100% { opacity: 0; transform: translate(-22px, -30px) scale(2); }
+}
+/* Star dust kicked up behind the wheels while it drives in. */
+.lk-tractor .tr-dust { transform-box: fill-box; transform-origin: center; fill: #dbeaff; opacity: 0; animation: lk-dust 0.5s ease-out 2; }
+@keyframes lk-dust {
+  0% { opacity: 0.9; transform: none; }
+  100% { opacity: 0; transform: translate(-26px, -14px) scale(0.3); }
+}
+
+@keyframes lk-comet {
+  0% { transform: translateY(-110vh); opacity: 1; }
+  90% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(0) scaleY(0.2); opacity: 0; }
+}
+/* Light rings racing out over the ground from the impact. */
+.lk-ripple {
+  position: absolute; left: 50%; top: calc(var(--pw) * 1.08);
+  width: calc(var(--pw) * 0.8); height: calc(var(--pw) * 0.2); margin: calc(var(--pw) * -0.1) 0 0 calc(var(--pw) * -0.4);
+  z-index: -1; border-radius: 50%;
+  border: 3px solid rgba(235, 245, 255, 0.95);
+  box-shadow: 0 0 22px 6px rgba(170, 220, 255, 0.8), inset 0 0 18px rgba(170, 220, 255, 0.7);
+  opacity: 0;
+  animation: lk-ripple 0.8s 0.4s ease-out forwards;
+}
+.lk-ripple.late { animation-delay: 0.52s; }
+.lk-ripple.later { animation-delay: 0.66s; }
+@keyframes lk-ripple {
+  0% { opacity: 1; transform: scale(0.3); }
+  100% { opacity: 0; transform: scale(4.2); }
+}
+/* A fan of light pillars bursting up behind him, a crown of light. */
+.lk-pillars { position: absolute; left: 50%; top: calc(var(--pw) * 0.75); width: 0; height: 0; z-index: -1; }
+.pillar {
+  position: absolute; left: calc(var(--pw) * -0.04); bottom: 0;
+  width: calc(var(--pw) * 0.08); height: calc(var(--pw) * (1 + var(--s) * 0.9));
+  border-radius: 50% 50% 0 0;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.95), rgba(200, 230, 255, 0.6) 55%, transparent);
+  filter: blur(1px) drop-shadow(0 0 10px rgba(180, 220, 255, 0.9));
+  transform-origin: 50% 100%;
+  rotate: calc(var(--i) * 8deg - 48deg);
+  opacity: 0;
+  animation: lk-pillar 0.9s calc(0.42s + var(--d) * 0.12s) cubic-bezier(0.2, 1.3, 0.4, 1) forwards;
+}
+@keyframes lk-pillar {
+  0% { opacity: 0; transform: scaleY(0); }
+  25% { opacity: 1; }
+  100% { opacity: 0.75; transform: scaleY(1); }
+}
+.lk-flash {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 45%, #fff, rgba(220, 240, 255, 0.85) 40%, rgba(160, 210, 255, 0.4));
+  opacity: 0;
+  animation: lk-flash 0.7s 0.38s ease-out forwards;
+}
+@keyframes lk-flash { 0% { opacity: 0; } 8% { opacity: 1; } 30% { opacity: 0.55; } 100% { opacity: 0; } }
+/* An anamorphic flare: a thin line of light across the whole screen at the impact. */
+.lk-flare {
+  position: absolute; left: -5%; right: -5%; top: 50%; height: 6px; margin-top: -3px;
+  background: linear-gradient(90deg, transparent, rgba(150, 210, 255, 0.8) 20%, #fff 50%, rgba(150, 210, 255, 0.8) 80%, transparent);
+  box-shadow: 0 0 24px 8px rgba(160, 215, 255, 0.8);
+  transform: scaleX(0); opacity: 0;
+  animation: lk-flare 0.8s 0.38s ease-out forwards;
+}
+@keyframes lk-flare {
+  0% { transform: scaleX(0); opacity: 1; }
+  25% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1) scaleY(0.3); opacity: 0; }
+}
+/* A light aura pulsing around him after the impact. */
+.lk-aura {
+  position: absolute; left: 50%; top: calc(var(--pw) * 0.61);
+  width: calc(var(--pw) * 1.7); aspect-ratio: 1; margin: calc(var(--pw) * -0.85) 0 0 calc(var(--pw) * -0.85);
+  z-index: -1; border-radius: 50%;
+  background: radial-gradient(circle, rgba(220, 240, 255, 0.75), rgba(140, 200, 255, 0.35) 40%, transparent 68%);
+  opacity: 0;
+  animation: lk-aura 0.45s 0.4s ease-out forwards, lk-aura-pulse 0.5s 0.85s ease-in-out infinite alternate;
+}
+@keyframes lk-aura { from { opacity: 0; transform: scale(0.3); } to { opacity: 1; transform: scale(1); } }
+@keyframes lk-aura-pulse { from { opacity: 1; } to { opacity: 0.6; transform: scale(1.08); } }
+.theme-liu.legend-entrance { animation: legend-out 2.15s ease-in forwards, rd-quake 0.4s 0.4s ease-out; }
+/* The darkness shatters: black glass shards flung outward. */
+.lk-shards { position: absolute; left: 50%; top: calc(var(--pw) * 0.61); width: 0; height: 0; }
+.shard {
+  position: absolute; left: 0; top: 0;
+  width: calc(var(--pw) * (0.12 + var(--s) * 0.16)); aspect-ratio: 1;
+  background: linear-gradient(135deg, #2a3048, #000 60%);
+  box-shadow: inset 0 0 0 1px rgba(200, 225, 255, 0.6);
+  clip-path: polygon(50% 0, 100% 70%, 20% 100%);
+  opacity: 0;
+  rotate: calc(var(--i) * 15deg + var(--r) * 10deg);
+  animation: lk-shard 0.8s 0.4s cubic-bezier(0.1, 0.7, 0.3, 1) forwards;
+}
+@keyframes lk-shard {
+  0% { opacity: 1; transform: translateX(calc(var(--pw) * 0.5)) rotate(0deg); }
+  100% { opacity: 0; transform: translateX(calc(var(--pw) * (1.6 + var(--s)))) rotate(calc(var(--r) * 540deg)); }
+}
+.lk-motes { position: absolute; inset: 0; }
+.mote {
+  position: absolute; left: calc(25% + var(--x) * 50%); top: calc(30% + var(--s) * 40%);
+  width: calc(2px + var(--s) * 4px); aspect-ratio: 1; border-radius: 50%;
+  background: #eaf6ff; box-shadow: 0 0 8px 2px rgba(190, 230, 255, 0.9);
+  opacity: 0;
+  animation: mote-rise 1s calc(0.42s + var(--d) * 0.5s) ease-out forwards;
+}
+@keyframes mote-rise {
+  0% { opacity: 0; transform: none; }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(var(--r) * 160px), -30vh); }
+}
+
+/* ---- Captain Abandoneer: a WANTED poster slapped on the table, a cutlass slash, raining gold ---- */
+.theme-abandoneer .legend-backdrop { background: radial-gradient(ellipse at 50% 45%, rgba(40, 28, 14, 0.5), rgba(8, 10, 14, 0.9) 70%); }
+.theme-abandoneer .legend-rays { background: repeating-conic-gradient(from 0deg, rgba(230, 190, 120, 0.16) 0deg 6deg, transparent 6deg 18deg); }
+.theme-abandoneer .legend-portrait {
+  clip-path: none; border-radius: 3px;
+  padding: calc(var(--pw) * 0.17) 14px 14px;
+  background: linear-gradient(170deg, #f1dfb4, #d9b878 60%, #a87c3e);
+  box-shadow: inset 0 0 30px rgba(90, 50, 10, 0.55), 8px 10px 0 rgba(0, 0, 0, 0.45);
+  filter: none;
+  rotate: -3deg;
+  animation: ab-slap 0.45s cubic-bezier(0.2, 1.5, 0.4, 1) both;
+}
+.theme-abandoneer .legend-portrait img { clip-path: none; filter: sepia(0.35) contrast(1.05); border: 3px solid #3a2410; }
+@keyframes ab-slap { from { transform: scale(1.8) rotate(12deg); opacity: 0; } }
+.ab-wanted {
+  position: absolute; top: calc(var(--pw) * 0.03); left: 50%; translate: -50% 0; rotate: -3deg;
+  font: 900 calc(var(--pw) * 0.12) var(--font-display); letter-spacing: 0.12em; text-transform: uppercase;
+  color: #3a2410; white-space: nowrap;
+  animation: legend-fade-in 0.3s 0.3s both;
+}
+.ab-slash {
+  position: absolute; left: 50%; top: calc(var(--pw) * 0.62);
+  width: calc(var(--pw) * 1.5); height: 6px; margin-left: calc(var(--pw) * -0.75);
+  rotate: -28deg;
+  background: linear-gradient(90deg, transparent, #fff 30%, #fff 70%, transparent);
+  box-shadow: 0 0 18px 4px rgba(255, 255, 255, 0.8);
+  transform: scaleX(0);
+  animation: slash 0.5s 0.75s ease-out forwards;
+}
+@keyframes slash {
+  0% { transform: scaleX(0); opacity: 1; }
+  40% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+.ab-coins { position: absolute; inset: 0; overflow: hidden; }
+.coin {
+  position: absolute; top: -8vh; left: calc(4% + var(--x) * 92%);
+  width: calc(24px + var(--s) * 18px); aspect-ratio: 1;
+  perspective: 300px;
+  animation: coin-fall 1.1s calc(0.15s + var(--d) * 0.55s) cubic-bezier(0.45, 0, 0.9, 0.6) both;
+}
+/* A gold doubloon: raised rim, a skull stamped in the middle, turning over in 3D as it falls. */
+.coin i {
+  position: absolute; inset: 0; border-radius: 50%;
+  display: grid; place-items: center;
+  font: 900 calc(var(--s) * 8px + 13px) / 1 var(--font-body); font-style: normal; color: #9a6a0c;
+  text-shadow: 0 1px 0 #ffe9a0;
+  background: radial-gradient(circle at 35% 30%, #fff4b8 0 12%, #ffd34d 35%, #e0a21c 70%, #a8700a);
+  box-shadow: inset 0 0 0 2px #8a5a08, inset 0 0 0 4px #ffd860, inset 0 0 0 5px rgba(138, 90, 8, 0.6), 0 0 10px rgba(255, 200, 60, 0.6);
+  animation: coin-flip calc(0.35s + var(--s) * 0.3s) linear infinite;
+}
+@keyframes coin-fall {
+  from { translate: 0 0; opacity: 1; }
+  to { translate: calc(var(--r) * 120px) 118vh; opacity: 1; }
+}
+@keyframes coin-flip {
+  from { transform: rotateX(calc(var(--r) * 40deg)) rotateY(0deg); filter: brightness(1); }
+  25% { filter: brightness(0.75); }
+  50% { filter: brightness(1.25); }
+  to { transform: rotateX(calc(var(--r) * 40deg)) rotateY(360deg); filter: brightness(1); }
+}
+
+/* ---- Rendoslav: royal banners unfurl and the crown falls with a quake ---- */
+.theme-rendoslav .legend-backdrop { background: radial-gradient(ellipse at 50% 40%, rgba(12, 40, 46, 0.6), rgba(2, 8, 12, 0.94) 70%); }
+.theme-rendoslav .legend-rays { background: repeating-conic-gradient(from 0deg, rgba(255, 214, 120, 0.2) 0deg 4deg, transparent 4deg 15deg); }
+.theme-rendoslav.legend-entrance { animation: legend-out 2.15s ease-in forwards, rd-quake 0.4s 0.62s ease-out; }
+@keyframes rd-quake {
+  15% { translate: -10px 6px; }
+  30% { translate: 9px -6px; }
+  45% { translate: -6px 4px; }
+  60% { translate: 4px -3px; }
+  80% { translate: -2px 1px; }
+}
+.theme-rendoslav .legend-portrait { background: linear-gradient(160deg, #f6e1a0, #b08a32 45%, #4a3612); }
+/* Swallowtail banners hanging from above, behind the portrait. */
+.rd-banner {
+  position: absolute; top: calc(var(--pw) * -0.35); z-index: -1;
+  width: calc(var(--pw) * 0.46); height: calc(var(--pw) * 1.5);
+  display: grid; justify-items: center; align-content: start; padding-top: calc(var(--pw) * 0.42);
+  background: linear-gradient(180deg, #13474a, #0b2c2f 70%, #082224);
+  box-shadow: inset 0 0 0 4px #d8b04a, inset 0 0 0 7px #0b2c2f, inset 0 0 0 9px rgba(216, 176, 74, 0.6);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%);
+  transform-origin: 50% 0;
+  animation: rd-unfurl 0.45s 0.1s cubic-bezier(0.3, 1.3, 0.5, 1) both, rd-sway 1.2s 0.55s ease-in-out infinite alternate;
+}
+.rd-banner.left { right: calc(50% + var(--pw) * 0.42); rotate: 3deg; }
+.rd-banner.right { left: calc(50% + var(--pw) * 0.42); rotate: -3deg; }
+.rd-banner svg { width: 62%; fill: #e8c45a; filter: drop-shadow(0 2px 0 #3a2a08); }
+@keyframes rd-unfurl { from { transform: scaleY(0); } }
+@keyframes rd-sway { to { transform: skewX(2deg); } }
+.rd-crown {
+  position: absolute; top: calc(var(--pw) * -0.3); left: 50%;
+  width: calc(var(--pw) * 0.5); margin-left: calc(var(--pw) * -0.25);
+  filter: drop-shadow(0 0 14px rgba(255, 210, 100, 0.9)) drop-shadow(0 4px 0 #3a2a08);
+  animation: rd-crown 0.35s 0.3s cubic-bezier(0.5, 0, 0.9, 0.5) both;
+}
+.rd-crown svg { width: 100%; display: block; fill: #f3c74f; }
+.rd-crown .gem, .rd-banner .gem { fill: #d0263a; }
+@keyframes rd-crown { from { transform: translateY(-60vh) rotate(-10deg); } }
+.rd-shock {
+  position: absolute; left: 50%; top: calc(var(--pw) * -0.1);
+  width: calc(var(--pw) * 0.6); aspect-ratio: 1; margin-left: calc(var(--pw) * -0.3);
+  border-radius: 50%; border: 4px solid rgba(255, 220, 130, 0.9);
+  box-shadow: 0 0 20px rgba(255, 210, 100, 0.8), inset 0 0 20px rgba(255, 210, 100, 0.6);
+  opacity: 0;
+  animation: rd-shock 0.6s 0.64s ease-out forwards;
+}
+@keyframes rd-shock {
+  0% { opacity: 1; transform: scale(0.3); }
+  100% { opacity: 0; transform: scale(5); }
+}
+/* ---- Qvido: lava glows below and embers rise ---- */
+.theme-qvido .legend-backdrop { background: radial-gradient(ellipse at 50% 45%, rgba(60, 14, 4, 0.45), rgba(14, 3, 2, 0.92) 70%); }
+.theme-qvido .legend-rays { background: repeating-conic-gradient(from 0deg, rgba(255, 140, 40, 0.22) 0deg 6deg, transparent 6deg 16deg); }
+.theme-qvido .legend-portrait { background: linear-gradient(160deg, #ffe28a, #ff7a1a 40%, #7a1a04); }
+.qv-lava {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 45%;
+  background: linear-gradient(0deg, rgba(255, 120, 20, 0.75), rgba(255, 60, 10, 0.35) 40%, transparent);
+  animation: legend-fade-in 0.4s both, qv-flicker 0.25s 0.4s ease-in-out infinite alternate;
+}
+.from-enemy .qv-lava { bottom: auto; top: 0; rotate: 180deg; }
+@keyframes qv-flicker { to { opacity: 0.7; } }
+.qv-embers { position: absolute; inset: 0; overflow: hidden; }
+.ember {
+  position: absolute; bottom: -2vh; left: calc(var(--x) * 100%);
+  width: calc(3px + var(--s) * 6px); aspect-ratio: 1; border-radius: 50%;
+  background: #ffd36a; box-shadow: 0 0 6px 2px rgba(255, 120, 20, 0.9);
+  opacity: 0;
+  animation: ember-rise 1.4s calc(var(--d) * 0.8s) ease-out forwards;
+}
+@keyframes ember-rise {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(var(--r) * 160px), -80vh); }
+}
+/* ---- Bubblemaker Qinny: twinkling stars, a bubble around Qinny that wobbles and pops, rainbow bubbles ---- */
+.theme-qinny .legend-backdrop { background: radial-gradient(ellipse at 50% 45%, rgba(16, 30, 80, 0.7), rgba(3, 6, 22, 0.95) 70%); }
+.theme-qinny .legend-rays { display: none; }
+.theme-qinny .legend-portrait { background: linear-gradient(160deg, #e8f6ff, #7fb6ff 45%, #2a3f8a); }
+.theme-qinny .legend-banner { background: linear-gradient(90deg, transparent, rgba(8, 18, 48, 0.92) 18%, rgba(8, 18, 48, 0.92) 82%, transparent); border-color: rgba(150, 210, 255, 0.7); }
+.theme-qinny .legend-kicker { color: #a8d8ff; }
+.qn-nebula {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 40% 30% at 30% 35%, rgba(150, 90, 255, 0.28), transparent 70%),
+    radial-gradient(ellipse 45% 35% at 70% 60%, rgba(60, 170, 255, 0.25), transparent 70%),
+    radial-gradient(ellipse 30% 25% at 55% 25%, rgba(255, 120, 220, 0.16), transparent 70%);
+  animation: legend-fade-in 0.5s both;
+}
+.qn-stars { position: absolute; inset: 0; }
+.star {
+  position: absolute; left: calc(var(--x) * 100%); top: calc(var(--s) * 100%);
+  width: calc(2px + var(--d) * 3px); aspect-ratio: 1; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 6px 1px rgba(200, 225, 255, 0.9);
+  animation: qn-twinkle calc(0.5s + var(--d) * 0.6s) calc(var(--r) * 0.6s + 0.3s) ease-in-out infinite alternate both;
+}
+@keyframes qn-twinkle { from { opacity: 0.1; transform: scale(0.6); } to { opacity: 1; transform: scale(1.2); } }
+.qn-bubble {
+  position: absolute; left: 50%; top: calc(var(--pw) * -0.19);
+  width: calc(var(--pw) * 1.6); aspect-ratio: 1; margin-left: calc(var(--pw) * -0.8);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.9) 0 3%, rgba(255, 255, 255, 0.4) 4%, transparent 7%),
+    radial-gradient(circle at 70% 78%, rgba(255, 255, 255, 0.35) 0 2%, transparent 4%),
+    radial-gradient(circle, transparent 64%, rgba(255, 255, 255, 0.08) 68%, transparent 71%);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.4),
+    inset 18px -18px 50px rgba(255, 120, 230, 0.4),
+    inset -18px 18px 50px rgba(110, 255, 210, 0.35),
+    inset 0 -24px 40px rgba(120, 170, 255, 0.4),
+    0 0 40px rgba(150, 210, 255, 0.35);
+  animation: qn-inflate 0.6s 0.1s cubic-bezier(0.2, 1.5, 0.4, 1) both, qn-wobble 0.5s 0.7s ease-in-out 1, qn-pop 0.2s 1.2s ease-out forwards;
+}
+@keyframes qn-inflate { from { transform: scale(0.3); opacity: 0; } }
+@keyframes qn-wobble {
+  25% { transform: scale(1.04, 0.96); }
+  50% { transform: scale(0.97, 1.03); }
+  75% { transform: scale(1.02, 0.98); }
+}
+@keyframes qn-pop { to { transform: scale(1.3); opacity: 0; } }
+/* Droplets sprayed out when the big bubble pops. */
+.qn-drops { position: absolute; left: 50%; top: calc(var(--pw) * 0.61); width: 0; height: 0; }
+.drop {
+  position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff, #9fdcff 50%, rgba(160, 120, 255, 0.6));
+  box-shadow: 0 0 8px rgba(160, 220, 255, 0.9);
+  opacity: 0;
+  rotate: calc(var(--i) * 25.7deg);
+  animation: qn-drop 0.5s 1.2s ease-out forwards;
+}
+@keyframes qn-drop {
+  0% { opacity: 1; transform: translateX(calc(var(--pw) * 0.75)) scale(1); }
+  100% { opacity: 0; transform: translateX(calc(var(--pw) * (1.05 + var(--s) * 0.3))) scale(0.4); }
+}
+.qn-bubbles { position: absolute; inset: 0; overflow: hidden; }
+.bub {
+  position: absolute; bottom: -10vh; left: calc(var(--x) * 100%);
+  width: calc(14px + var(--s) * 48px); aspect-ratio: 1; border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.9) 0 7%, transparent 10%),
+    conic-gradient(from calc(var(--r) * 360deg), rgba(255, 120, 220, 0.35), rgba(120, 200, 255, 0.35), rgba(120, 255, 200, 0.35), rgba(255, 230, 120, 0.3), rgba(255, 120, 220, 0.35));
+  -webkit-mask: radial-gradient(circle, rgba(0, 0, 0, 0.25) 55%, #000 70%);
+  mask: radial-gradient(circle, rgba(0, 0, 0, 0.25) 55%, #000 70%);
+  box-shadow: 0 0 10px rgba(160, 210, 255, 0.5);
+  opacity: 0;
+  animation: bub-rise 1.5s calc(var(--d) * 0.6s) ease-out forwards;
+}
+@keyframes bub-rise {
+  0% { opacity: 0; }
+  15%, 85% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(var(--r) * 140px), -105vh); }
+}
+
+/* ---- Tallys the Menace: a heartbeat of red, the table cracks, one killing slash ---- */
+.theme-tallys .legend-backdrop { background: radial-gradient(ellipse at 50% 45%, rgba(20, 0, 0, 0.7), rgba(4, 0, 0, 0.96) 60%); }
+.theme-tallys .legend-backdrop::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(170, 0, 14, 0.55) 100%);
+  opacity: 0.35;
+  animation: tl-beat 0.7s 0.1s ease-in-out 2;
+}
+@keyframes tl-beat {
+  0%, 100% { opacity: 0.35; }
+  15% { opacity: 1; }
+  30% { opacity: 0.5; }
+  45% { opacity: 0.9; }
+}
+.theme-tallys .legend-rays { display: none; }
+.theme-tallys .legend-portrait {
+  background: linear-gradient(160deg, #6a6a6a, #1a1a1a 45%, #000);
+  animation: tl-slam 0.45s cubic-bezier(0.6, 0, 0.9, 0.4) both;
+}
+@keyframes tl-slam {
+  from { transform: scale(2.4); opacity: 0; }
+  80% { transform: scale(0.97); opacity: 1; }
+}
+.theme-tallys .legend-banner { background: linear-gradient(90deg, transparent, rgba(30, 0, 0, 0.92) 18%, rgba(30, 0, 0, 0.92) 82%, transparent); border-color: rgba(255, 40, 40, 0.7); }
+.theme-tallys .legend-kicker { color: #ff6a6a; }
+.tl-cracks { position: absolute; inset: 0; }
+.tl-cracks svg { width: 100%; height: 100%; filter: drop-shadow(0 0 3px #ff0000) drop-shadow(0 0 8px rgba(255, 0, 0, 0.6)); }
+.tl-cracks polyline {
+  fill: none; stroke: #ff4a30; stroke-width: 0.7; stroke-linejoin: miter;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: tl-crack 0.35s 0.4s ease-out forwards;
+}
+@keyframes tl-crack { to { stroke-dashoffset: 0; } }
+.tl-slash {
+  position: absolute; left: 10%; right: 10%; top: 22%; height: 16px; rotate: -12deg;
+  background: linear-gradient(90deg, transparent, #ff2030 15%, #fff 50%, #ff2030 85%, transparent);
+  box-shadow: 0 0 30px 10px rgba(255, 0, 30, 0.9);
+  clip-path: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
+  transform: scaleX(0); transform-origin: left;
+  animation: slash 0.45s 1s ease-out forwards;
+}
+.from-enemy .tl-slash { top: auto; bottom: 24%; }
 
 @media (prefers-reduced-motion: reduce) {
   .legend-entrance *, .legend-entrance { animation-duration: 0.01s !important; animation-iteration-count: 1 !important; }

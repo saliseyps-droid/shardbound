@@ -1,6 +1,21 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.33.2': {
+    title: 'Vlastní příchody legendárek',
+    summary: 'Šest dalších legendárek má vlastní příchod a všechny příchody trvají o něco déle.',
+    sections: [
+      [
+        'Liu Kano: do jeho temné siluety narazí komety světla, tma se roztříští, za ním vyrazí koruna ze světla a přijede traktor z hvězd.',
+        'Captain Abandoneer: na stůl dopadne plakát „HLEDÁ SE“, sek šavlí a déšť zlatých dublonů.',
+        'Rendoslav: rozvinou se královské prapory a na hlavu mu dopadne koruna, až se stůl otřese.',
+        'Qvido: pod ním žhne láva a kolem stoupají jiskry.',
+        'Bubblemaker Qinny: hvězdné nebe, duhové bubliny a velká bublina kolem Qinnyho, která se zavlní a praskne.',
+        'Tallys the Menace: rudé tepání, stůl popraská a jeden smrtící sek.',
+      ],
+      ['Příchody legendárek trvají zhruba o čtvrtinu déle, aby sis je stihl prohlédnout.'],
+    ],
+  },
   '0.33.1': {
     title: 'Příchody legendárek',
     summary: 'Legendární jednotky mají teď při zahrání velkolepý příchod.',

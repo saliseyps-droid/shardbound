@@ -19,4 +19,15 @@ describe('legendary entrance', () => {
     expect(legendTheme('neu_meowchick')).toBe('meowchick');
     expect(legendTheme('vod_nhal')).toBe('gold');
   });
+
+  it('gives the six signature Legendaries their own themes', () => {
+    expect(['ast_liu_kano', 'neu_captain_abandoneer', 'neu_rendoslav', 'emb_qvido', 'ast_bubblemaker_qinny', 'vod_tallys_the_menace'].map(legendTheme)).toEqual([
+      'liu',
+      'abandoneer',
+      'rendoslav',
+      'qvido',
+      'qinny',
+      'tallys',
+    ]);
+  });
 });

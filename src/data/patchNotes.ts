@@ -19,6 +19,27 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.33.2',
+    date: '2026-10-09',
+    title: 'Signature entrances',
+    summary: 'Six more Legendaries get their own entrance, and every entrance lasts a little longer.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Liu Kano: comets of light crash into his dark silhouette, the darkness shatters, a crown of light bursts up behind him, and a tractor made of stars rolls in.',
+          'Captain Abandoneer: a WANTED poster slapped onto the table, a cutlass slash and a rain of gold doubloons.',
+          'Rendoslav: royal banners unfurl and a crown falls onto his head hard enough to shake the table.',
+          'Qvido: glowing lava below and embers rising around him.',
+          'Bubblemaker Qinny: a starlit sky, rainbow bubbles, and a big bubble around Qinny that wobbles and pops.',
+          'Tallys the Menace: a heartbeat of red, the table cracking open, and one killing slash.',
+        ],
+      },
+      { kind: 'improved', items: ['Legendary entrances last about a quarter longer, so there is time to take them in.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.33.1',
     date: '2026-10-09',
     title: 'Legendary entrances',
