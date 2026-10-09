@@ -1,9 +1,12 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { useEffect, type CSSProperties, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import { useMatch, AI } from '@/state/matchStore';
 import { cardArtUri } from '@/ui/components/cardArt';
 import { legendTheme, type LegendTheme } from './legendEntrance';
+import { audio } from '@/audio/audioService';
+import { anim } from '@/state/settingsStore';
 import { t } from '@/i18n';
 import '@/ui/styles/legendary.css';
 
@@ -111,7 +114,7 @@ const StarTractor = () => (
 );
 
 /** Radiating cracks for Tallys, drawn from the centre outward. */
-const Cracks = () => (
+export const Cracks = () => (
   <svg viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid slice" aria-hidden>
     {[0, 52, 118, 170, 228, 291, 330].map((a, i) => {
       const pts = [0, 1, 2, 3, 4, 5, 6, 7].map((k) => {
@@ -184,7 +187,7 @@ const Rune = ({ i }: { i: number }) => (
   </svg>
 );
 
-const RuneCircle = () => (
+export const RuneCircle = () => (
   <svg viewBox="-100 -100 200 200" aria-hidden>
     <circle r="96" pathLength={1} />
     <circle r="82" pathLength={1} />
@@ -357,24 +360,49 @@ const EXTRAS: Partial<Record<LegendTheme, { back?: () => ReactNode; stage?: () =
   },
 };
 
+/** How long an entrance plays (ms, before reduced-motion scaling). */
+export const LEGEND_MS = 2150;
+
 /** A short full-screen entrance when a Legendary unit is played, before it lands on the board. */
 export function LegendaryEntrance() {
   const legend = useMatch((s) => s.legend);
   if (!legend) return null;
-  const card = getCardSafe(legend.cardId);
-  const theme = legendTheme(legend.cardId);
+  return <LegendaryEntranceView key={legend.id} cardId={legend.cardId} enemy={legend.player === AI} />;
+}
+
+/**
+ * The same entrance outside a match (a Legendary pulled from a pack, or replayed from the collection):
+ * plays its sound and calls `onDone` when it has finished.
+ */
+export function LegendShowcase({ cardId, onDone }: { cardId: string; onDone: () => void }) {
+  useEffect(() => {
+    audio.play('legendaryReveal');
+    const id = setTimeout(onDone, anim(LEGEND_MS));
+    return () => clearTimeout(id);
+  }, [cardId, onDone]);
+  // Portalled to the body: a panel with a transform would otherwise trap the fixed overlay inside it.
+  return createPortal(
+    <div className="legend-showcase" onClick={onDone}>
+      <LegendaryEntranceView cardId={cardId} enemy={false} />
+    </div>,
+    document.body,
+  );
+}
+
+export function LegendaryEntranceView({ cardId, enemy }: { cardId: string; enemy: boolean }) {
+  const card = getCardSafe(cardId);
+  const theme = legendTheme(cardId);
   const extras = EXTRAS[theme] ?? {};
   const faction = FACTIONS[card.faction] ?? FACTIONS.NEUTRAL;
   return (
     <div
-      key={legend.id}
-      className={`legend-entrance theme-${theme} ${legend.player === AI ? 'from-enemy' : 'from-self'}`}
+      className={`legend-entrance theme-${theme} ${enemy ? 'from-enemy' : 'from-self'}`}
       style={{ '--f1': faction.colors.primary, '--fglow': faction.colors.glow } as CSSProperties}
       role="status"
-      aria-label={t('{who} played {card}', { who: legend.player === AI ? t('Opponent') : t('You'), card: card.name })}
+      aria-label={t('{who} played {card}', { who: enemy ? t('Opponent') : t('You'), card: card.name })}
     >
       <div className="legend-backdrop" />
-      <div className="legend-rays" />
+      <div className="legend-sunrays" />
       {extras.back?.()}
       <div className="legend-stage">
         <div className="legend-portrait">

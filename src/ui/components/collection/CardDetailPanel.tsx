@@ -13,6 +13,8 @@ import { CardView } from '@/ui/components/CardView';
 import { confirmDialog, Essence } from '@/ui/components/common';
 import { EssenceIcon } from '@/ui/components/Icons';
 import { t, tn } from '@/i18n';
+import { useCallback, useState } from 'react';
+import { LegendShowcase } from '@/ui/match/LegendaryEntrance';
 
 export const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic' };
 
@@ -38,6 +40,8 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
   const counts = useAccount((s) => s.save?.collection.cards[cardId]) ?? emptyVariants();
   const essence = useAccount((s) => s.save?.profile.essence ?? 0);
   const decks = useAccount((s) => s.save?.decks ?? []);
+  const [showcase, setShowcase] = useState(false);
+  const endShowcase = useCallback(() => setShowcase(false), []);
   if (!card) return null;
   const owned = counts.NORMAL + counts.FOIL + counts.PRISMATIC;
   const max = maxCopiesFor(card);
@@ -167,7 +171,13 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
         <button className="btn btn-ghost btn-sm" onClick={() => useUi.getState().inspectCard(cardId, bestVariant(counts))}>
           {t('Inspect')}
         </button>
+        {card.rarity === 'LEGENDARY' && (
+          <button className="btn btn-sm" onClick={() => setShowcase(true)}>
+            {t('Play entrance')}
+          </button>
+        )}
       </div>
+      {showcase && <LegendShowcase cardId={cardId} onDone={endShowcase} />}
       <p className="faint small">{t('Variants are cosmetic only; they play identically.')}</p>
     </aside>
   );

@@ -1,6 +1,20 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.34.0': {
+    title: 'Velké okamžiky',
+    summary: 'Efekty velkých kouzel, závěrečný úder, nová obrazovka výsledku a příchody legendárek v packech i v kolekci.',
+    sections: [
+      [
+        'Epická a legendární kouzla se sesílají nad otáčejícím se runovým kruhem v barvě frakce, legendární navíc skončí výbuchem světla.',
+        'Závěrečný úder: když padne Strážce, obraz se k němu přiblíží, Strážce zbělá a rozbije se na kousky, které se rozletí, a teprve pak se ukáže výsledek.',
+        'Nová obrazovka výsledku: nápis padá písmeno po písmenu mezi zlatými křídly, která se kreslí pero po peru, a výsledky najedou po něm.',
+        'Když z balíčku vytáhneš legendárku, přehraje se její příchod.',
+        'Kolekce: legendární karty mají v detailu tlačítko Přehrát příchod.',
+      ],
+      ['Zmrazené jednotky mají navíc ledový obrys a při rozmrznutí se led rozprskne na střepy. S bariérou zároveň led přiléhá k jednotce a zlatý štít bariéry je kolem něj.'],
+    ],
+  },
   '0.33.3': {
     title: 'Tři další příchody',
     summary: 'Elinda, Skolky a R3-D3 mají vlastní příchody legendárek.',

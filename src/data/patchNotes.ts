@@ -19,6 +19,26 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.34.0',
+    date: '2026-10-09',
+    title: 'Big moments',
+    summary: 'Flourishes for big spells, a final blow, a new results screen, and Legendary entrances in packs and the collection.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Epic and Legendary spells are cast over a turning rune circle in their faction\'s colour; Legendary spells end in a burst of light.',
+          'The final blow: when a Warden falls, the view leans in, the Warden flares white and shatters into pieces that fly apart, and only then do the results appear.',
+          'A new results screen: the title drops in letter by letter between golden wings drawn feather by feather, and the results slide in after it.',
+          'Pulling a Legendary from a pack plays its entrance.',
+          'Collection: Legendary cards have a Play entrance button in their details.',
+        ],
+      },
+      { kind: 'improved', items: ['Frozen units now also have an ice outline around them, and the ice bursts into shards when they thaw. With Barrier as well, the ice hugs the unit and the golden Barrier sits outside it.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.33.3',
     date: '2026-10-09',
     title: 'Three more entrances',

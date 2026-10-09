@@ -21,6 +21,16 @@ export function legendTheme(cardId: string): LegendTheme {
   return THEMES[cardId] ?? 'gold';
 }
 
+/** An Epic or Legendary spell played in this transition: it gets a flourish while it is cast. */
+export function bigSpell(events: GameEvent[]): { cardId: string; player: PlayerId; rarity: 'EPIC' | 'LEGENDARY' } | null {
+  for (const e of events) {
+    if (e.type !== 'CARD_PLAYED') continue;
+    const card = getCard(e.cardId);
+    if (card?.cardType === 'SPELL' && (card.rarity === 'EPIC' || card.rarity === 'LEGENDARY')) return { cardId: e.cardId, player: e.player, rarity: card.rarity };
+  }
+  return null;
+}
+
 /** The Legendary unit played in this transition, if any: it gets a short entrance before it lands. */
 export function legendEntrance(events: GameEvent[]): { cardId: string; player: PlayerId } | null {
   for (const e of events) {

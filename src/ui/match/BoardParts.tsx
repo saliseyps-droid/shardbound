@@ -1,4 +1,4 @@
-import { memo, useEffect, useState, type CSSProperties, type PointerEvent as RPointerEvent } from 'react';
+import { memo, useEffect, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from 'react';
 import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import { RANK_LABEL, getTalent } from '@/data/wardenTalents';
@@ -42,6 +42,20 @@ export function FxLayer({ fx }: { fx: Fx[] }) {
 
 const useFxFor = (key: string) => useMatch((s) => s.fx).filter((f) => f.target === key);
 
+/** 'in' just after a unit freezes, 'out' just after it thaws (for ~0.8s), so the ice can grow or shatter. */
+function useFreezeChange(frozen: boolean): 'in' | 'out' | null {
+  const prev = useRef(frozen);
+  const [change, setChange] = useState<'in' | 'out' | null>(null);
+  useEffect(() => {
+    if (prev.current === frozen) return;
+    prev.current = frozen;
+    setChange(frozen ? 'in' : 'out');
+    const id = setTimeout(() => setChange(null), 800);
+    return () => clearTimeout(id);
+  }, [frozen]);
+  return change;
+}
+
 // ---------------------------------------------------------------------------
 // Units
 // ---------------------------------------------------------------------------
@@ -69,6 +83,7 @@ export const UnitView = memo(function UnitView({
   const faction = FACTIONS[card.faction];
   const key = `u:${unit.uid}`;
   const fx = useFxFor(key);
+  const freeze = useFreezeChange(unit.frozen);
   const atk = unitAttack(game, unit);
   const hp = currentHealth(unit);
   const maxHp = maxHealth(unit);
@@ -126,6 +141,16 @@ export const UnitView = memo(function UnitView({
         <div className="unit-name">{card.name}</div>
       </div>
       {guard && <div className="unit-guard-plate" aria-hidden />}
+      {unit.frozen && (
+        <div className={`unit-frost ${freeze === 'in' ? 'is-new' : ''}`} aria-hidden />
+      )}
+      {freeze === 'out' && (
+        <div className="unit-thaw" aria-hidden>
+          {Array.from({ length: 10 }, (_, i) => (
+            <span key={i} style={{ '--i': i } as CSSProperties} />
+          ))}
+        </div>
+      )}
       {unit.barrier && (
         <div className="unit-barrier" aria-hidden>
           <span className="barrier-glint" />

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { legendEntrance, legendTheme } from '@/ui/match/legendEntrance';
+import { bigSpell, legendEntrance, legendTheme } from '@/ui/match/legendEntrance';
 import type { GameEvent } from '@/engine/types';
 
 const played = (cardId: string, player: 0 | 1 = 0) => ({ type: 'CARD_PLAYED', player, cardId, cardUid: 1 }) as GameEvent;
@@ -30,5 +30,11 @@ describe('legendary entrance', () => {
       'tallys',
     ]);
     expect(['ver_elinda', 'tid_skolky', 'irn_bronzehorn_colossus'].map(legendTheme)).toEqual(['elinda', 'skolky', 'r3d3']);
+  });
+
+  it('flags Epic and Legendary spells for a flourish, but not units or common spells', () => {
+    expect(bigSpell([played('ast_collapse_of_heaven', 1)])).toEqual({ cardId: 'ast_collapse_of_heaven', player: 1, rarity: 'EPIC' });
+    expect(bigSpell([played('neu_meowchick')])).toBeNull();
+    expect(bigSpell([played('emb_flame_jolt')])).toBeNull();
   });
 });

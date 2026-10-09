@@ -19,7 +19,7 @@ import { sanitizeRating } from '@/domain/ranked';
 import { validateDeck } from '@/domain/decks';
 import { gameService, useAccount } from './accountStore';
 import { anim, useSettings } from './settingsStore';
-import { legendEntrance } from '@/ui/match/legendEntrance';
+import { bigSpell, legendEntrance } from '@/ui/match/legendEntrance';
 import { toast } from './uiStore';
 import { useMatchLaunch, type MatchConfig } from './matchLaunch';
 import { setLastMatchLog } from '@/ui/match/matchLog';
@@ -83,6 +83,10 @@ interface MatchStore {
   cast: { cardId: string; player: PlayerId; id: number } | null;
   /** A Legendary unit's entrance, shown before it lands (src/ui/match/LegendaryEntrance.tsx). */
   legend: { cardId: string; player: PlayerId; id: number } | null;
+  /** An Epic or Legendary spell being cast (src/ui/match/SpellFlourish.tsx). */
+  spellFx: { cardId: string; player: PlayerId; rarity: 'EPIC' | 'LEGENDARY'; id: number } | null;
+  /** The killing blow on a Warden, shown before the results (src/ui/match/FinalBlow.tsx). */
+  finale: { loser: PlayerId; id: number } | null;
   turnDeadline: number | null;
   rewards: MatchRewards | null;
   startedAt: number;
@@ -280,11 +284,16 @@ export const useMatch = create<MatchStore>((set, get) => {
       // Show what the opponent played before it resolves.
       const played = res.events.find((e) => e.type === 'CARD_PLAYED');
       const entrance = legendEntrance(res.events);
+      const spell = bigSpell(res.events);
       if (entrance) {
         set({ legend: { ...entrance, id: fxSeq++ } });
         audio.play('legendaryReveal');
         await sleep(anim(2150));
         set({ legend: null });
+      } else if (spell) {
+        set({ spellFx: { ...spell, id: fxSeq++ } });
+        await sleep(anim(spell.rarity === 'LEGENDARY' ? 1500 : 1050));
+        set({ spellFx: null });
       } else if (played && played.type === 'CARD_PLAYED' && played.player === AI) {
         set({ cast: { cardId: played.cardId, player: AI, id: fxSeq++ } });
         await sleep(anim(1100));
@@ -307,6 +316,8 @@ export const useMatch = create<MatchStore>((set, get) => {
         ghosts: [...st.ghosts, ...ghosts],
         cast: null,
         legend: null,
+        spellFx: null,
+        finale: null,
         version: st.version + 1,
         selection: null,
         targets: [],
@@ -540,6 +551,13 @@ export const useMatch = create<MatchStore>((set, get) => {
     recordedGen = matchGen;
     const s = get();
     const cfg = s.config;
+    // A Warden destroyed: the killing blow plays out before the results.
+    if (state.endReason === 'HERO_DEFEATED' && (state.winner === 0 || state.winner === 1)) {
+      set({ finale: { loser: state.winner === HUMAN ? AI : HUMAN, id: fxSeq++ }, turnDeadline: null, selection: null, targets: [] });
+      await sleep(anim(1700));
+      if (recordedGen !== matchGen) return;
+      set({ finale: null });
+    }
     set({ phase: 'ended', turnDeadline: null, selection: null, targets: [] });
     aiLoopToken++;
     const result = state.winner === HUMAN ? 'WIN' : state.winner === 'DRAW' ? 'DRAW' : 'LOSS';
@@ -617,6 +635,8 @@ export const useMatch = create<MatchStore>((set, get) => {
     banner: null,
     cast: null,
     legend: null,
+    spellFx: null,
+    finale: null,
     turnDeadline: null,
     rewards: null,
     startedAt: 0,
@@ -723,6 +743,8 @@ export const useMatch = create<MatchStore>((set, get) => {
         banner: null,
         cast: null,
         legend: null,
+        spellFx: null,
+        finale: null,
         turnDeadline: null,
         rewards: null,
         startedAt: Date.now(),

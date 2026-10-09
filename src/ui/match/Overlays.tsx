@@ -357,6 +357,57 @@ export function TutorialOverlay() {
   );
 }
 
+/**
+ * A heraldic wing in outline: a fan of slim feathers from the shoulder, long flight feathers under a row of
+ * shorter coverts. Its root is on the right; the right wing is mirrored.
+ */
+function feather(rootX: number, rootY: number, angleDeg: number, length: number, width: number): string {
+  const a = (angleDeg * Math.PI) / 180;
+  const ux = Math.cos(a);
+  const uy = Math.sin(a);
+  const tx = rootX + ux * length;
+  const ty = rootY + uy * length;
+  const mx = rootX + ux * length * 0.55;
+  const my = rootY + uy * length * 0.55;
+  const f = (n: number) => n.toFixed(1);
+  // Slim leaf: widest a little past the middle, pointed tip.
+  return `M${f(rootX)} ${f(rootY)} Q${f(mx - uy * width)} ${f(my + ux * width)} ${f(tx)} ${f(ty)} Q${f(mx + uy * width)} ${f(my - ux * width)} ${f(rootX)} ${f(rootY)}`;
+}
+const WING_FEATHERS = [
+  // Flight feathers: from up-and-out to down-and-out, shorter towards the bottom.
+  ...Array.from({ length: 7 }, (_, i) => ({ d: feather(196, 46, 196 - i * 9, 182 - i * 15, 8), kind: 'primary', i })),
+  // Coverts over their roots.
+  ...Array.from({ length: 5 }, (_, i) => ({ d: feather(198, 44, 190 - i * 11, 92 - i * 8, 9), kind: 'covert', i: i + 7 })),
+];
+
+function ResultsWing({ side }: { side: 'left' | 'right' }) {
+  return (
+    <svg className={`results-wing ${side}`} viewBox="0 -20 204 150" aria-hidden>
+      {WING_FEATHERS.map((w) => (
+        <path key={w.i} className={w.kind} d={w.d} pathLength={1} style={{ '--i': w.i } as CSSProperties} />
+      ))}
+      <path className="shoulder" d="M198 44 C170 18 120 6 70 14" pathLength={1} />
+    </svg>
+  );
+}
+
+/** The result title, its letters dropping in one by one, between two outline wings. */
+function ResultsTitle({ text, outcome }: { text: string; outcome: 'win' | 'loss' | 'draw' }) {
+  return (
+    <div className={`results-heading is-${outcome}`}>
+      <ResultsWing side="left" />
+      <h1 className="results-title" aria-label={text}>
+        {[...text].map((ch, i) => (
+          <span key={i} aria-hidden style={{ '--i': i } as CSSProperties}>
+            {ch === ' ' ? '\u00a0' : ch}
+          </span>
+        ))}
+      </h1>
+      <ResultsWing side="right" />
+    </div>
+  );
+}
+
 export function ResultsOverlay({ game }: { game: GameState }) {
   const rewards = useMatch((s) => s.rewards);
   const config = useMatch((s) => s.config);
@@ -379,7 +430,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
   const exit = (path: string) => navigate(path);
   return (
     <div className={`match-overlay results ${win ? 'is-win' : draw ? 'is-draw' : 'is-loss'}`} role="dialog" aria-label={win ? t('Victory') : draw ? t('Draw') : t('Defeat')}>
-      <h1 className="results-title">{config?.mode === 'PUZZLE' ? (win ? t('Puzzle solved!') : t('Not solved')) : win ? t('Victory') : draw ? t('Draw') : t('Defeat')}</h1>
+      <ResultsTitle text={config?.mode === 'PUZZLE' ? (win ? t('Puzzle solved!') : t('Not solved')) : win ? t('Victory') : draw ? t('Draw') : t('Defeat')} outcome={win ? 'win' : draw ? 'draw' : 'loss'} />
       <p className="muted">
         {config?.mode === 'PUZZLE' ? t('Daily puzzle: {name}', { name: t(findPuzzle(config.puzzle?.id ?? '')?.name ?? '') }) : config?.mode === 'ARENA' ? t('Arena match against {name}', { name: config.opponent.name }) : config?.mode === 'DUNGEON' ? t('Dungeon match against {name}', { name: config.opponent.name }) : config?.mode === 'TOURNAMENT' ? t('Tournament match against {name}', { name: config.opponent.name }) : config?.mode === 'RANKED' ? t('Ranked match against {name}', { name: config.opponent.name }) : config?.mode === 'AI_RANKED' ? t('Ranked match against the AI {name}', { name: config.opponent.name }) : config?.online ? t('Online match against {name}', { name: config.opponent.name }) : t(`Against {name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`, { name: String(config?.opponent.name) })}
         {config?.mode === 'PUZZLE' ? '' : game.endReason === 'CONCEDE' ? t(', by concession') : game.endReason === 'DISCONNECT' ? t(', connection lost') : ''}

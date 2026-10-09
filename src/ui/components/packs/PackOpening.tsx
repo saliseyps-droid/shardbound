@@ -15,6 +15,7 @@ import { Essence } from '@/ui/components/common';
 import { BoosterPack, PACK_THEME } from './BoosterPack';
 import { packCardWidth, packHeroWidth } from './packLayout';
 import { t, tn } from '@/i18n';
+import { LegendShowcase } from '@/ui/match/LegendaryEntrance';
 
 type Phase = 'intro' | 'opening' | 'reveal' | 'summary';
 
@@ -44,6 +45,8 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: PackId; 
   const [cards, setCards] = useState<PackCard[]>([]);
   const [revealed, setRevealed] = useState<boolean[]>([]);
   const [legendFx, setLegendFx] = useState(false);
+  const [showcase, setShowcase] = useState<string | null>(null);
+  const endShowcase = useCallback(() => setShowcase(null), []);
   const [freshReveal, setFreshReveal] = useState<number | null>(null);
   const reducedMotion = useSettings((s) => s.reducedMotion);
   const collection = useAccount((s) => s.save?.collection);
@@ -97,6 +100,8 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: PackId; 
       if (card.rarity === 'LEGENDARY' && !reducedMotion) {
         setLegendFx(true);
         later(() => setLegendFx(false), anim(1700));
+        // Then its own entrance, as when it is played in a match.
+        later(() => setShowcase(card.cardId), anim(900));
       }
       setFreshReveal(i);
       later(() => setFreshReveal((f) => (f === i ? null : f)), anim(1400));
@@ -273,6 +278,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: PackId; 
         </>
       )}
 
+      {showcase && <LegendShowcase cardId={showcase} onDone={endShowcase} />}
       {legendFx && (
         <div className="legend-fx" aria-hidden>
           <span className="legend-flash" />
