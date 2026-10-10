@@ -858,7 +858,6 @@
 .dg-wing .edge { fill: none; stroke: color-mix(in srgb, var(--dg1) 90%, transparent); stroke-width: 0.9; stroke-linejoin: round; }
 .dg-wing .veins { fill: none; stroke: color-mix(in srgb, var(--dg1) 34%, transparent); stroke-width: 0.4; stroke-linecap: round; }
 .dg-wing .hem { fill: none; stroke: color-mix(in srgb, var(--dg1) 45%, transparent); stroke-width: 0.45; stroke-dasharray: 2 1.4; }
-.dg-wing .joint { fill: color-mix(in srgb, var(--dg1) 60%, white); stroke: var(--dg2); stroke-width: 0.5; }
 .dg-wing .shine { fill: none; stroke: rgba(255, 255, 255, 0.7); stroke-width: 0.35; stroke-linecap: round; }
 .dg-wing .bone { fill: color-mix(in srgb, var(--dg1) 88%, white); stroke: none; }
 

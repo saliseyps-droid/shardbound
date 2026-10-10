@@ -306,9 +306,6 @@ function buildWing() {
   };
   let highlights = curve(SHOULDER, ELBOW_C, WRIST, 0.08, 0.92);
   TIPS.forEach((tip, i) => (highlights += curve(WRIST, fingerCtl[i], tip, 0.06, 0.8)));
-  // Knuckles: the wrist, the elbow and a joint a third of the way along every finger.
-  const joints: Pt[] = [WRIST, quad(SHOULDER, ELBOW_C, WRIST, 0.5), ...TIPS.map((tip, i) => quad(WRIST, fingerCtl[i], tip, 0.36))];
-  const knuckles = joints.map((p, i) => `M${f1(p[0] + (i < 2 ? 2.2 : 1.4))} ${f1(p[1])} a${i < 2 ? 2.2 : 1.4} ${i < 2 ? 2.2 : 1.4} 0 1 0 0.01 0 Z `).join('');
   // Little hooked claws at the fingertips, curling back along the membrane edge.
   const tipClaws = TIPS.map((tip, i) => {
     const dir = lerp(fingerCtl[i], tip, 1);
@@ -356,7 +353,7 @@ function buildWing() {
   const spines = spinesAlong(SHOULDER, ELBOW_C, WRIST, [0.18, 0.34, 0.5, 0.66, 0.82], 6) + spinesAlong(WRIST, fingerCtl[0], TIPS[0], [0.15, 0.3, 0.45, 0.6], 3.2);
   // A hooked claw at the wrist.
   const claw = `M${f1(WRIST[0] + 1.5)} ${f1(WRIST[1] - 1)} C${f1(WRIST[0] + 3)} ${f1(WRIST[1] - 10)} ${f1(WRIST[0] - 2)} ${f1(WRIST[1] - 16)} ${f1(WRIST[0] - 8)} ${f1(WRIST[1] - 15)} C${f1(WRIST[0] - 3)} ${f1(WRIST[1] - 12)} ${f1(WRIST[0] - 2)} ${f1(WRIST[1] - 6)} ${f1(WRIST[0] - 2)} ${f1(WRIST[1] - 1)} Z`;
-  return { arm, fingers, edge, hem, veins, spines, claw, highlights, knuckles, tipClaws };
+  return { arm, fingers, edge, hem, veins, spines, claw, highlights, tipClaws };
 }
 const WING = buildWing();
 
@@ -374,7 +371,6 @@ const DragonWing = ({ side }: { side: 'left' | 'right' }) => (
       ))}
       <path className="bone" d={WING.tipClaws} />
       <path className="bone" d={WING.claw} />
-      <path className="joint" d={WING.knuckles} />
       <path className="shine" d={WING.highlights} />
     </g>
   </svg>

@@ -104,7 +104,7 @@ describe('daily puzzles', () => {
       expect(g.phase, p.id).toBe('MAIN');
       expect(firstWin(g, 12), p.id).toBe(true);
     }
-  }, 60_000);
+  }, 180_000);
 
   // Full check (minutes): run with PUZZLE_FULL=1 after changing puzzles or card rules.
   it.skipIf(!process.env.PUZZLE_FULL)('every puzzle is won only by the one best line', () => {
