@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.36.0',
+    date: '2026-10-10',
+    title: 'Face-off',
+    summary: 'Every match opens with the two Wardens facing each other.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Match intro: before the first card, both Wardens meet on a banner across the board, in gold frames with the glow of their factions, with VS between them.',
+          'Above them is the kind of match, and below it the tournament round, the Brawl rules or the AI difficulty. Spectators see which match they are watching.',
+          'Click anywhere to skip it. The tutorial and the daily puzzle start without it.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.35.1',
     date: '2026-10-10',
     title: 'Dragons take flight',

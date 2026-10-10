@@ -91,7 +91,9 @@ interface MatchStore {
   /** This match's watch room, published to friends so they can spectate (null: not watchable). */
   watchCode: string | null;
   /** Spectating: who is playing. */
-  watching: { a: string; b: string } | null;
+  watching: { a: string; b: string; mode: string } | null;
+  /** The match intro (src/ui/match/MatchIntro.tsx) while it shows: a new id per match, null when gone. */
+  intro: number | null;
   turnDeadline: number | null;
   rewards: MatchRewards | null;
   startedAt: number;
@@ -657,6 +659,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     finale: null,
     watchCode: null,
     watching: null,
+    intro: null,
     turnDeadline: null,
     rewards: null,
     startedAt: 0,
@@ -699,7 +702,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         if (gen !== matchGen) return link.close();
         watchLink = link;
         initialState = link.initial;
-        set({ watching: { a: link.info.players[0].name, b: link.info.players[1].name } });
+        set({ watching: { a: link.info.players[0].name, b: link.info.players[1].name, mode: link.info.mode } });
       } else if (config.online === 'guest') {
         const deck = save.decks.find((d) => d.id === config.deckId);
         deckName = deck?.name ?? 'Deck';
@@ -787,6 +790,8 @@ export const useMatch = create<MatchStore>((set, get) => {
         });
       }
       set({
+        // The intro: every match but the tutorial and the daily puzzle.
+        intro: config.mode === 'TUTORIAL' || config.mode === 'PUZZLE' ? null : fxSeq++,
         watchCode,
         ...(config.mode === 'SPECTATE' ? {} : { watching: null }),
         config,

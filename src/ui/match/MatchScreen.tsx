@@ -7,7 +7,7 @@ import { getCardSafe } from '@/data/cards';
 import { effectiveCost, canPlayCard } from '@/engine/queries';
 import type { GameState, PlayerId } from '@/engine/types';
 import { useMatch, HUMAN, AI, parseEntity } from '@/state/matchStore';
-import { useMatchLaunch, type MatchConfig } from '@/state/matchLaunch';
+import { useMatchLaunch } from '@/state/matchLaunch';
 import { useSettings } from '@/state/settingsStore';
 import { toast, useUi } from '@/state/uiStore';
 import { CardBack, CardView } from '@/ui/components/CardView';
@@ -19,6 +19,8 @@ import { DrawPile, EmpowerBadge, EnergyBar, HeroAbilities, HeroInspector, HeroPa
 import { showTipFor } from '@/ui/components/Tooltip';
 import { LONG_PRESS_CLICK_GUARD_MS, LONG_PRESS_MS, TAP_SLOP_PX, isActingTap, peekClickAllowed } from './touchGuards';
 import { LegendaryEntrance } from './LegendaryEntrance';
+import { modeLabel } from './matchLabels';
+import { MatchIntro } from './MatchIntro';
 import { SpellFlourish } from './SpellFlourish';
 import { FinalBlow } from './FinalBlow';
 import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, SpectatorResults, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
@@ -48,35 +50,6 @@ let mountedBoards = 0;
 const cardWidthFor = (h: number) => (h <= 520 ? Math.round(Math.max(54, h * 0.17)) : Math.round(Math.min(150, Math.max(104, h * 0.14))));
 
 /** Footer label for the match's mode ("Ranked vs Skolky"). */
-function modeLabel(config: MatchConfig | null | undefined): string {
-  switch (config?.mode) {
-    case 'ARENA':
-      return t('Arena');
-    case 'PVE':
-      return t('Campaign');
-    case 'TUTORIAL':
-      return t('Tutorial');
-    case 'AI_RANKED':
-      return t('AI Ranked');
-    case 'BRAWL':
-      return t('Brawl');
-    case 'DUNGEON':
-      return t('Dungeon');
-    case 'PUZZLE':
-      return t('Daily puzzle');
-    case 'RANKED':
-      return t('Ranked');
-    case 'TOURNAMENT':
-      return t('Tournament');
-    case 'ONLINE':
-      return t('Online match');
-    case 'SPECTATE':
-      return t('Spectating');
-    default:
-      return config?.online ? t('Online match') : t('Practice');
-  }
-}
-
 /** The puzzle's goal and hint, under the battle log. */
 function PuzzleGoal({ id }: { id?: string }) {
   const puzzle = id ? findPuzzle(id) : undefined;
@@ -774,6 +747,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       )}
       <CastPreview />
       <LegendaryEntrance />
+      <MatchIntro />
       <SpellFlourish />
       <FinalBlow />
       <TurnBanner />

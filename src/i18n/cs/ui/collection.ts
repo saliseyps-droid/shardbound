@@ -183,6 +183,8 @@ const d: Record<string, string> = {
   'The match you were watching has ended.': 'Zápas, který jsi sledoval(a), skončil.',
   Watch: 'Sledovat',
   Spectating: 'Sledování',
+  Watching: 'Sleduješ',
+  'Click to skip': 'Kliknutím přeskočíš',
   'Watch {name}’s match': 'Sledovat zápas hráče {name}',
   'Every pack holds at least one Rare or better card.': 'Každý booster obsahuje aspoň jednu vzácnou nebo lepší kartu.',
   'An Epic or better is guaranteed at least once every {n} packs.': 'Epická nebo lepší karta je zaručena aspoň jednou za {n} boosterů.',

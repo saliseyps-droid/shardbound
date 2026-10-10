@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.36.0': {
+    title: 'Tváří v tvář',
+    summary: 'Každý zápas začíná tím, že se oba Strážci postaví proti sobě.',
+    sections: [
+      [
+        'Úvod zápasu: před první kartou se oba Strážci setkají na pásu přes celý stůl, ve zlatých rámech se září svých frakcí a s VS mezi sebou.',
+        'Nad nimi je typ zápasu a pod nimi kolo turnaje, pravidla Brawlu nebo obtížnost AI. Divák vidí, jaký zápas sleduje.',
+        'Kliknutím ho přeskočíš. Tutoriál a denní puzzle začínají bez něj.',
+      ],
+    ],
+  },
   '0.35.1': {
     title: 'Draci vzlétají',
     summary: 'Legendární draci mají vlastní přílet.',
