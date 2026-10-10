@@ -80,3 +80,18 @@ export function guestView(state: GameState): GameState {
 export function guestEvents(events: GameEvent[]): GameEvent[] {
   return mirrorEvents(redactEvents(events, 1));
 }
+
+/** What a spectator may see: neither player's hand (unless revealed), no deck order, no draws. */
+export function spectatorView(state: GameState): GameState {
+  const hide = <C extends { cardId: string; revealed?: boolean }>(c: C): C => (c.revealed ? c : { ...c, cardId: HIDDEN_CARD, costMod: 0, variant: undefined });
+  const players = state.players.map((p) => ({
+    ...p,
+    hand: p.hand.map(hide),
+    deck: p.deck.map((c) => ({ ...c, cardId: HIDDEN_CARD, costMod: 0, variant: undefined })),
+  })) as GameState['players'];
+  return { ...state, players, rng: { seed: 0 }, log: spectatorEvents(state.log) };
+}
+
+export function spectatorEvents(events: GameEvent[]): GameEvent[] {
+  return redactEvents(redactEvents(events, 0), 1);
+}

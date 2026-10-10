@@ -42,6 +42,8 @@ export interface Presence {
   /** Server time of the last heartbeat (ms). */
   lastSeen: number;
   inMatch: boolean;
+  /** The watch room of the match being played, when friends can spectate it (src/net/spectate.ts). */
+  watch?: string | null;
 }
 
 export type PresenceStatus = 'online' | 'inMatch' | 'offline';

@@ -27,6 +27,7 @@ import { t } from '@/i18n';
 import { netSession, type NetMessage } from '@/net/session';
 import { GuestSync, HostSync } from '@/net/stateSync';
 import { guestEvents, guestView, mirrorAction } from '@/net/view';
+import { matchWatchCode, newWatchCode, watchHub, watchMatch, type Watching } from '@/net/spectate';
 import { TUTORIAL_STEPS, tutorialAllows, tutorialOpponentAction, tutorialSetup, type TutorialIntent } from '@/ui/match/tutorial';
 
 /** How long to keep asking the signalling server about a vanished opponent (it drops dead peers after ~60 s). */
@@ -87,6 +88,10 @@ interface MatchStore {
   spellFx: { cardId: string; player: PlayerId; rarity: 'EPIC' | 'LEGENDARY'; id: number } | null;
   /** The killing blow on a Warden, shown before the results (src/ui/match/FinalBlow.tsx). */
   finale: { loser: PlayerId; id: number } | null;
+  /** This match's watch room, published to friends so they can spectate (null: not watchable). */
+  watchCode: string | null;
+  /** Spectating: who is playing. */
+  watching: { a: string; b: string } | null;
   turnDeadline: number | null;
   rewards: MatchRewards | null;
   startedAt: number;
@@ -244,10 +249,16 @@ function targetsFor(game: GameState, sel: Selection): EntityKey[] {
   return power?.target ? validTargets(game, HUMAN, power.target, { spellLike: true }).map(entityKey) : [];
 }
 
+/** The state and events of the last animated transition, sent on to spectators with it. */
+let spectatorEvents: { state: GameState; events: GameEvent[] } | null = null;
+/** Spectating: the link to the watched match. */
+let watchLink: Watching | null = null;
+
 export const useMatch = create<MatchStore>((set, get) => {
   /** Applies an action with animation, sound and effects. Returns false if illegal. */
   async function dispatch(action: GameAction): Promise<boolean> {
     const s = get();
+    if (s.config?.online === 'spectator') return false;
     const game = s.game;
     const gen = matchGen;
     if (!game || game.phase === 'ENDED' || s.phase === 'ended') return false;
@@ -310,6 +321,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       for (const snd of soundsFor(res.events)) audio.play(snd);
       const newFx = useSettings.getState().showDamageNumbers ? fxFrom(res.events) : fxFrom(res.events).filter((f) => f.kind !== 'damage' && f.kind !== 'heal');
       const ghosts = ghostsFrom(game, res.events);
+      spectatorEvents = { state: res.state, events: res.events };
       set((st) => ({
         game: res.state,
         fx: [...st.fx, ...newFx],
@@ -485,6 +497,10 @@ export const useMatch = create<MatchStore>((set, get) => {
 
   function onTurnStarted(player: PlayerId) {
     const cfg = get().config;
+    if (cfg?.online === 'spectator') {
+      set({ banner: { text: t('match.theirTurn', { name: get().game?.players[player].hero.name ?? '' }), id: bannerSeq++ }, turnDeadline: null });
+      return;
+    }
     set({ banner: { text: player === HUMAN ? t('match.yourTurn') : t('match.theirTurn', { name: get().game?.players[AI].hero.name ?? '' }), id: bannerSeq++ } });
     if (player === HUMAN) {
       // No chime here: the draw at the start of the turn already makes a sound.
@@ -559,10 +575,12 @@ export const useMatch = create<MatchStore>((set, get) => {
       set({ finale: null });
     }
     set({ phase: 'ended', turnDeadline: null, selection: null, targets: [] });
+    // A spectator has nothing to record.
+    if (cfg?.online === 'spectator') return;
     aiLoopToken++;
     const result = state.winner === HUMAN ? 'WIN' : state.winner === 'DRAW' ? 'DRAW' : 'LOSS';
     audio.play(result === 'WIN' ? 'victory' : 'defeat');
-    if (!cfg) return;
+    if (!cfg || cfg.mode === 'SPECTATE') return;
     const save = useAccount.getState().save;
     const deck = cfg.mode === 'ARENA' && save?.arena.run ? arenaDeck(save.arena.run) : cfg.mode === 'DUNGEON' && save?.dungeon?.run ? dungeonDeck(save.dungeon.run) : save?.decks.find((d) => d.id === cfg.deckId);
     try {
@@ -619,7 +637,7 @@ export const useMatch = create<MatchStore>((set, get) => {
 
   function selectionAllowed(): boolean {
     const s = get();
-    return !!s.game && s.phase === 'playing' && !s.busy && !s.linkCheck && s.game.activePlayer === HUMAN && s.game.phase === 'MAIN';
+    return !!s.game && s.config?.online !== 'spectator' && s.phase === 'playing' && !s.busy && !s.linkCheck && s.game.activePlayer === HUMAN && s.game.phase === 'MAIN';
   }
 
   return {
@@ -637,6 +655,8 @@ export const useMatch = create<MatchStore>((set, get) => {
     legend: null,
     spellFx: null,
     finale: null,
+    watchCode: null,
+    watching: null,
     turnDeadline: null,
     rewards: null,
     startedAt: 0,
@@ -656,7 +676,31 @@ export const useMatch = create<MatchStore>((set, get) => {
       let setup;
       let deckName = 'Tutorial deck';
       let initialState: GameState | null = null;
-      if (config.online === 'guest') {
+      if (config.mode === 'SPECTATE') {
+        deckName = '';
+        if (!config.watchCode) throw new Error('This match is no longer running.');
+        // Later changes arrive one by one and animate like a player's board.
+        let chain: Promise<unknown> = Promise.resolve();
+        const link = await watchMatch(
+          config.watchCode,
+          (state, events) => {
+            chain = chain.then(async () => {
+              const game = get().game;
+              if (gen !== matchGen || !game) return;
+              await present(game, { state, events }, gen);
+            });
+          },
+          (reason) => {
+            if (gen !== matchGen || reason === 'left') return;
+            const s = get();
+            if (s.phase !== 'ended' && s.game?.phase !== 'ENDED') toast(t('The match you were watching has ended.'), 'info');
+          },
+        );
+        if (gen !== matchGen) return link.close();
+        watchLink = link;
+        initialState = link.initial;
+        set({ watching: { a: link.info.players[0].name, b: link.info.players[1].name } });
+      } else if (config.online === 'guest') {
         const deck = save.decks.find((d) => d.id === config.deckId);
         deckName = deck?.name ?? 'Deck';
         const t0 = Date.now();
@@ -730,7 +774,21 @@ export const useMatch = create<MatchStore>((set, get) => {
         });
       }
       if (config.online === 'host') netSession.send(hostSync.full(guestView(state), [], true));
+      // The watch room: opened by whoever runs the engine; the online guest only names the host's.
+      const watchCode =
+        config.mode === 'SPECTATE' || config.mode === 'TUTORIAL' ? null : (config.watchCode ?? (config.online && netSession.code ? matchWatchCode(netSession.code) : newWatchCode()));
+      if (watchCode && config.online !== 'guest') {
+        void watchHub.open(watchCode, {
+          players: [
+            { name: state.players[0].hero.name, avatar: state.players[0].hero.avatar },
+            { name: state.players[1].hero.name, avatar: state.players[1].hero.avatar },
+          ],
+          mode: config.mode,
+        });
+      }
       set({
+        watchCode,
+        ...(config.mode === 'SPECTATE' ? {} : { watching: null }),
         config,
         game: state,
         phase: state.phase === 'MULLIGAN' ? 'mulligan' : 'playing',
@@ -924,7 +982,7 @@ export const useMatch = create<MatchStore>((set, get) => {
 
     endTurn: () => {
       const s = get();
-      if (!s.game || s.game.activePlayer !== HUMAN || s.game.phase !== 'MAIN' || s.busy || s.linkCheck) return;
+      if (!s.game || s.config?.online === 'spectator' || s.game.activePlayer !== HUMAN || s.game.phase !== 'MAIN' || s.busy || s.linkCheck) return;
       if (tutorialBlocks({ type: 'END_TURN' })) return;
       audio.play('endTurn');
       set({ selection: null, targets: [], turnDeadline: null });
@@ -933,7 +991,7 @@ export const useMatch = create<MatchStore>((set, get) => {
 
     concede: () => {
       const s = get();
-      if (!s.game || s.game.phase === 'ENDED') return;
+      if (!s.game || s.game.phase === 'ENDED' || s.config?.online === 'spectator') return;
       aiLoopToken++;
       matchGen++;
       leaving = true;
@@ -954,9 +1012,19 @@ export const useMatch = create<MatchStore>((set, get) => {
       aiLoopToken++;
       matchGen++;
       leaving = true;
-      if (get().config?.online) netSession.close();
+      if (get().config?.online && get().config?.online !== 'spectator') netSession.close();
+      watchLink?.close();
+      watchLink = null;
+      watchHub.close();
       useMatchLaunch.getState().setConfig(null);
-      set({ config: null, game: null, phase: 'idle', rewards: null, fx: [], ghosts: [], selection: null, targets: [], turnDeadline: null, linkCheck: false });
+      set({ config: null, game: null, phase: 'idle', rewards: null, fx: [], ghosts: [], selection: null, targets: [], turnDeadline: null, linkCheck: false, watchCode: null, watching: null });
     },
   };
+});
+
+// Every change of the board goes to the match's spectators (with the events that animated it).
+useMatch.subscribe((s, prev) => {
+  if (!s.game || s.game === prev.game || !watchHub.code) return;
+  if (s.config?.online === 'guest' || s.config?.online === 'spectator') return;
+  watchHub.push(s.game, spectatorEvents?.state === s.game ? spectatorEvents.events : []);
 });

@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.35.0': {
+    title: 'Sledování zápasů',
+    summary: 'Sleduj naživo zápasy kamarádů i turnajové zápasy.',
+    sections: [
+      [
+        'Přátelé: když kamarád hraje, objeví se u jeho jména tlačítko Sledovat. Funguje pro online zápasy, ranked, turnaje i zápasy proti AI.',
+        'Turnaje: každý probíhající zápas s hráčem jde sledovat přímo z pavouka, i když už jsi vypadl(a).',
+        'Divák vidí stůl, životy, energii, log a všechny animace, ale ruku ani jednoho z hráčů, takže nikdo nemůže radit ze strany.',
+        'Jeden zápas mohou sledovat až čtyři diváci. Sledování nijak neovlivní tvou kolekci, statistiky ani questy.',
+      ],
+    ],
+  },
   '0.34.0': {
     title: 'Velké okamžiky',
     summary: 'Efekty velkých kouzel, závěrečný úder, nová obrazovka výsledku a příchody legendárek v packech i v kolekci.',

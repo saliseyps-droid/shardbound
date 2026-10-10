@@ -738,3 +738,21 @@
 .hero-inspector-body .info-grid { flex: 1; }
 .hero-inspector-sub { margin: 0 0 var(--space-2); color: var(--cyan); }
 .hero-inspector .keyword-list { margin-bottom: 0; }
+
+/* Spectating ------------------------------------------------------------ */
+.spectate-bar {
+  position: absolute; top: 10px; left: 50%; translate: -50% 0; z-index: 60;
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 999px;
+  background: rgba(10, 8, 24, 0.85); border: 1px solid rgba(232, 184, 78, 0.5);
+  color: var(--gold-bright); font: 700 var(--t-sm) var(--font-body);
+  pointer-events: none;
+}
+.spectate-eye { font-size: 1.1em; }
+.spectate-controls { display: grid; justify-items: center; gap: 6px; }
+.spectate-turn { color: var(--parchment); font-weight: 700; text-align: center; max-width: 160px; }
+.spectate-wait {
+  position: absolute; inset: 0; z-index: 150; display: grid; place-items: center;
+  background: rgba(10, 8, 24, 0.55); color: var(--parchment); font: 700 var(--t-lg) var(--font-body);
+}
+.t-watch { margin-top: 6px; width: 100%; }

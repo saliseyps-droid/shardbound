@@ -117,8 +117,9 @@ export function TurnTimer() {
 /** Marks a card inside a log line; BattleLog turns marked ids into highlighted, hoverable names. */
 const CARD_MARK = '\u0001';
 
-function describeEvent(e: GameEvent, game: GameState): string | null {
-  const who = (p: number) => (p === HUMAN ? t('You') : game.players[AI].hero.name);
+function describeEvent(e: GameEvent, game: GameState, spectating = false): string | null {
+  // A spectator is neither player: both are named.
+  const who = (p: number) => (p === HUMAN && !spectating ? t('You') : game.players[p as 0 | 1].hero.name);
   const name = (id: string) => `${CARD_MARK}${id}${CARD_MARK}`;
   switch (e.type) {
     case 'CARD_PLAYED':
@@ -130,7 +131,7 @@ function describeEvent(e: GameEvent, game: GameState): string | null {
     case 'HERO_ABILITY_TRIGGERED':
       return t('{ability} triggered', { ability: getTalent(e.abilityId)?.name ?? t('A Warden ability') });
     case 'TURN_STARTED':
-      return e.player === HUMAN ? t('— Your turn —') : t("— {name}'s turn —", { name: game.players[AI].hero.name });
+      return e.player === HUMAN && !spectating ? t('— Your turn —') : t("— {name}'s turn —", { name: game.players[e.player as 0 | 1].hero.name });
     case 'FATIGUE':
       return t('{who} took {n} fatigue damage', { who: who(e.player), n: e.damage });
     case 'CARD_BURNED':
@@ -195,6 +196,7 @@ function LogText({ text, onHover }: { text: string; onHover: (h: { id: string; r
  */
 export function BattleLog({ game }: { game: GameState }) {
   const startedAt = useMatch((s) => s.startedAt);
+  const spectating = useMatch((s) => s.config?.online === 'spectator');
   const store = useRef<{ match: unknown; lastSeq: number; lines: LogLine[] }>({ match: null, lastSeq: -1, lines: [] });
   const box = useRef<HTMLDivElement>(null);
   const stick = useRef(true);
@@ -204,7 +206,7 @@ export function BattleLog({ game }: { game: GameState }) {
   for (const e of game.log) {
     if (e.seq <= memo.lastSeq) continue;
     memo.lastSeq = e.seq;
-    const text = describeEvent(e, game);
+    const text = describeEvent(e, game, spectating);
     if (text) memo.lines.push({ seq: e.seq, text });
   }
   const lines = memo.lines;
@@ -404,6 +406,23 @@ function ResultsTitle({ text, outcome }: { text: string; outcome: 'win' | 'loss'
         ))}
       </h1>
       <ResultsWing side="right" />
+    </div>
+  );
+}
+
+/** The end of a watched match: who won, and the way back. */
+export function SpectatorResults({ game, onLeave }: { game: GameState; onLeave: () => void }) {
+  const winner = game.winner === 0 || game.winner === 1 ? game.players[game.winner].hero.name : null;
+  const text = winner ? t('{name} wins', { name: winner }) : t('Draw');
+  return (
+    <div className="match-overlay results is-draw" role="dialog" aria-label={text}>
+      <ResultsTitle text={text} outcome="draw" />
+      <p className="muted">{game.endReason === 'CONCEDE' ? t('By concession.') : game.endReason === 'DISCONNECT' ? t('A player lost the connection.') : t('Thanks for watching.')}</p>
+      <div className="results-actions">
+        <button className="btn btn-primary" onClick={onLeave} autoFocus>
+          {t('Stop watching')}
+        </button>
+      </div>
     </div>
   );
 }

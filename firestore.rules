@@ -10,7 +10,7 @@ rules_version = '2';
 //   friendCodes/{CODE}                { uid }
 //   friendRequests/{from}_{to}        { from, to, fromName, fromAvatar, createdAt }
 //   users/{uid}/friends/{friendUid}   { since }
-//   presence/{uid}                    { lastSeen, inMatch }
+//   presence/{uid}                    { lastSeen, inMatch, watch? }
 //   invites/{to}/items/{id}           { from, fromName, code, createdAt, status, kind?, size? }
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -151,9 +151,11 @@ service cloud.firestore {
       allow read: if signedIn();
       allow delete: if isOwner(uid);
       allow create, update: if isOwner(uid)
-        && request.resource.data.keys().hasOnly(['lastSeen', 'inMatch'])
+        && request.resource.data.keys().hasOnly(['lastSeen', 'inMatch', 'watch'])
         && request.resource.data.lastSeen == request.time
-        && request.resource.data.inMatch is bool;
+        && request.resource.data.inMatch is bool
+        // The watch room of the match being played (friends can spectate it).
+        && (!('watch' in request.resource.data) || (request.resource.data.watch is string && request.resource.data.watch.matches('^W[A-Z0-9-]{3,23}$')));
     }
 
     // Match and tournament invites: only a player on the recipient's friends list can send one;

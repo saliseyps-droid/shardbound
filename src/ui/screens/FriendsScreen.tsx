@@ -4,6 +4,7 @@ import { useAccount } from '@/state/accountStore';
 import { useCloud } from '@/state/cloudStore';
 import { useSocial, type FriendView } from '@/state/socialStore';
 import { launchMatch } from '@/state/matchLaunch';
+import { spectate } from '@/state/spectateLaunch';
 import { toast } from '@/state/uiStore';
 import { netSession } from '@/net/session';
 import { onlineOpponent, validateRemoteSide } from '@/net/lobby';
@@ -293,6 +294,11 @@ export default function FriendsScreen() {
                     <WardenPortrait faction={asFaction(f.avatar)} portrait={f.portrait || null} size={40} fallbackGlyph="person" />
                     <FriendInfo friend={f} now={now} />
                     <span className="friend-actions">
+                      {st === 'inMatch' && f.presence?.watch && (
+                        <button className="btn btn-sm btn-cyan" onClick={() => spectate(f.presence!.watch!, navigate)} title={t('Watch {name}’s match', { name: f.name })}>
+                          {t('Watch')}
+                        </button>
+                      )}
                       <button className="btn btn-sm btn-primary" disabled={st !== 'online' || !!invite || validDecks.length === 0} onClick={() => void sendInvite(f)} title={st === 'online' ? undefined : t('You can invite friends who are online and not in a match.')}>
                         {t('Invite')}
                       </button>

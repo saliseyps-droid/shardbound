@@ -1,4 +1,5 @@
 import { peerOptions } from '@/net/iceServers';
+import { tournamentWatchCode } from '@/net/watchCode';
 import { create } from 'zustand';
 import type { DataConnection, Peer } from 'peerjs';
 import type { Difficulty } from '@/config/progression';
@@ -488,7 +489,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
 
       if (opp.bot) {
         const difficulty = opp.difficulty ?? 'NORMAL';
-        launchMatch({ mode: 'TOURNAMENT', tournamentMatchId: m.id, deckId: deck.id, opponent: { ...PRACTICE_OPPONENTS[opp.faction], name: opp.name, difficulty, rarities: DIFFICULTY_POOLS[difficulty] } }, navigate);
+        launchMatch({ mode: 'TOURNAMENT', tournamentMatchId: m.id, watchCode: tournamentWatchCode(t.code, m.id), deckId: deck.id, opponent: { ...PRACTICE_OPPONENTS[opp.faction], name: opp.name, difficulty, rarities: DIFFICULTY_POOLS[difficulty] } }, navigate);
         return;
       }
       // Human vs human: a dedicated 1v1 connection, hosted by the match's host player.
@@ -518,7 +519,7 @@ export const useTournament = create<TournamentStore>((set, get) => {
           }
           role1v1 = 'guest';
         }
-        launchMatch({ mode: 'TOURNAMENT', online: role1v1, tournamentMatchId: m.id, deckId: deck.id, opponent: onlineOpponent(opp.name, opp.avatar, opp.faction) }, navigate);
+        launchMatch({ mode: 'TOURNAMENT', online: role1v1, tournamentMatchId: m.id, watchCode: tournamentWatchCode(t.code, m.id), deckId: deck.id, opponent: onlineOpponent(opp.name, opp.avatar, opp.faction) }, navigate);
       } catch (e) {
         netSession.close();
         toast((e as Error).message, 'error');

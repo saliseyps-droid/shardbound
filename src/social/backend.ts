@@ -109,7 +109,8 @@ export interface SocialBackend {
   removeFriend(uid: string, other: string): Promise<void>;
 
   // Presence.
-  setPresence(uid: string, inMatch: boolean): Promise<void>;
+  /** `watch`: the watch room of the match being played (left out when there is none). */
+  setPresence(uid: string, inMatch: boolean, watch?: string | null): Promise<void>;
   watchPresence(uid: string, cb: (p: Presence | null) => void): Unsubscribe;
 
   // Match invites (invites/{to}/items/{id}).

@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.35.0',
+    date: '2026-10-10',
+    title: 'Spectating',
+    summary: 'Watch your friends\' matches and tournament matches live.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Friends: when a friend is in a match, a Watch button appears next to their name. It works for online matches, Ranked, tournaments and matches against the AI.',
+          'Tournaments: every match in progress that has a player in it can be watched from the bracket, also after you are knocked out.',
+          'Spectators see the board, health, energy, the battle log and every animation, but neither player\'s hand, so nobody can be helped from the side.',
+          'Up to four spectators per match. Watching never affects your collection, stats or quests.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.34.0',
     date: '2026-10-09',
     title: 'Big moments',

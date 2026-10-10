@@ -1,4 +1,5 @@
 import type { DocumentData, DocumentSnapshot, Firestore, QueryDocumentSnapshot } from 'firebase/firestore';
+import { isWatchCode } from '@/net/watchCode';
 import type { Board, FriendRequest, LeaderboardEntry, MatchInvite, SocialBackend } from '@/social/backend';
 import { inviteKind } from '@/social/friends';
 
@@ -10,7 +11,7 @@ import { inviteKind } from '@/social/friends';
  *   friendCodes/{CODE}                 { uid }
  *   friendRequests/{from}_{to}         { from, to, fromName, fromAvatar, createdAt }
  *   users/{uid}/friends/{friendUid}    { since }
- *   presence/{uid}                     { lastSeen, inMatch }
+ *   presence/{uid}                     { lastSeen, inMatch, watch? }
  *   invites/{to}/items/{id}            { from, fromName, code, createdAt, status, kind?, size? }   kind 'match' | 'tournament' (missing = match)
  * Times are server timestamps (the rules require request.time), read back as milliseconds.
  */
@@ -164,8 +165,9 @@ export async function createSocialBackend(db: Firestore): Promise<SocialBackend>
       await batch.commit();
     },
 
-    async setPresence(uid, inMatch) {
-      await setDoc(doc(db, 'presence', uid), { lastSeen: serverTimestamp(), inMatch });
+    async setPresence(uid, inMatch, watch) {
+      // The watch room is only written while there is one, so the document stays as before otherwise.
+      await setDoc(doc(db, 'presence', uid), { lastSeen: serverTimestamp(), inMatch, ...(watch && isWatchCode(watch) ? { watch } : {}) });
     },
     watchPresence(uid, cb) {
       return onSnapshot(
@@ -173,7 +175,7 @@ export async function createSocialBackend(db: Firestore): Promise<SocialBackend>
         (s) => {
           if (!s.exists()) return cb(null);
           const d = data(s);
-          cb({ lastSeen: millis(d.lastSeen), inMatch: d.inMatch === true });
+          cb({ lastSeen: millis(d.lastSeen), inMatch: d.inMatch === true, watch: isWatchCode(d.watch) ? d.watch : null });
         },
         warn('presence'),
       );

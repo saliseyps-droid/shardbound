@@ -45,7 +45,8 @@ interface SocialStore {
   service: SocialService | null;
   start: (uid: string, backend: SocialBackend, mode: 'real' | 'mock') => void;
   stop: () => void;
-  setInMatch: (inMatch: boolean) => void;
+  /** `watch`: the watch room of the match being played, so friends can spectate it. */
+  setInMatch: (inMatch: boolean, watch?: string | null) => void;
   /** Re-reads every friend's public profile (level, title, cards change over time). */
   refreshFriendProfiles: () => void;
 }
@@ -54,6 +55,7 @@ let unsubs: Unsubscribe[] = [];
 let friendUnsubs = new Map<string, Unsubscribe>();
 let heartbeat: ReturnType<typeof setInterval> | null = null;
 let inMatchNow = false;
+let watchNow: string | null = null;
 let mockBackend: SocialBackend | null = null;
 
 export function profileInfo(save: GameSave): ProfileInfo {
@@ -137,7 +139,7 @@ export const useSocial = create<SocialStore>((set, get) => ({
     );
 
     const beat = () => {
-      void service.heartbeat(inMatchNow).catch((e) => console.warn('[social] presence failed', e));
+      void service.heartbeat(inMatchNow, watchNow).catch((e) => console.warn('[social] presence failed', e));
       get().refreshFriendProfiles();
     };
     beat();
@@ -167,10 +169,12 @@ export const useSocial = create<SocialStore>((set, get) => ({
     set({ mode: 'off', uid: null, me: null, friends: [], incoming: [], outgoing: [], invites: [], names: {}, service: null });
   },
 
-  setInMatch: (inMatch) => {
-    if (inMatch === inMatchNow) return;
+  setInMatch: (inMatch, watch = null) => {
+    const w = inMatch ? watch : null;
+    if (inMatch === inMatchNow && w === watchNow) return;
     inMatchNow = inMatch;
-    void get().service?.heartbeat(inMatch).catch(() => undefined);
+    watchNow = w;
+    void get().service?.heartbeat(inMatch, w).catch(() => undefined);
   },
 }));
 

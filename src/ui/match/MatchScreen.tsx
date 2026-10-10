@@ -21,7 +21,7 @@ import { LONG_PRESS_CLICK_GUARD_MS, LONG_PRESS_MS, TAP_SLOP_PX, isActingTap, pee
 import { LegendaryEntrance } from './LegendaryEntrance';
 import { SpellFlourish } from './SpellFlourish';
 import { FinalBlow } from './FinalBlow';
-import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
+import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, SpectatorResults, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
 import { t, tn, useT } from '@/i18n';
 import { BrandLogo } from '@/ui/components/BrandLogo';
 import { Glyph } from '@/ui/components/Icons';
@@ -70,6 +70,8 @@ function modeLabel(config: MatchConfig | null | undefined): string {
       return t('Tournament');
     case 'ONLINE':
       return t('Online match');
+    case 'SPECTATE':
+      return t('Spectating');
     default:
       return config?.online ? t('Online match') : t('Practice');
   }
@@ -225,7 +227,11 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
 
   const me = game.players[HUMAN];
   const opp = game.players[AI];
-  const myTurn = game.activePlayer === HUMAN && game.phase === 'MAIN';
+  /** Watching someone else's match: nothing can be played, neither hand is shown. */
+  const spectating = config?.online === 'spectator';
+  const watching = useMatch((s) => s.watching);
+  const navigate = useNavigate();
+  const myTurn = !spectating && game.activePlayer === HUMAN && game.phase === 'MAIN';
   const interactive = myTurn && !busy && phase === 'playing';
 
   // Newly drawn cards fly in from the draw pile: offset from the pile to their place in the hand.
@@ -627,8 +633,11 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
                 style={{ '--o': offset } as CSSProperties}
                 // On the wrapper, not the card: the card itself flies in from the deck (is-new) while
                 // the wrapper already sits in its slot, so a just-drawn card can be grabbed right away.
-                onPointerDown={(e) => startCardDrag(e, c.uid)}
+                onPointerDown={(e) => !spectating && startCardDrag(e, c.uid)}
               >
+                {spectating && !c.revealed ? (
+                  <CardBack width={cardW} design={me.hero.cardBack} />
+                ) : (
                 <CardView
                   card={c.cardId}
                   variant={c.variant}
@@ -640,6 +649,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
                   onClick={(e) => e.detail === 0 && store.getState().clickHandCard(c.uid)}
                   ariaLabel={`${t(playable ? '{name}, costs {cost}, playable.' : '{name}, costs {cost}.', { name: getCardSafe(c.cardId).name, cost })} ${getCardSafe(c.cardId).description ?? ''}`}
                 />
+                )}
                 {c.fleeting && <span className="fleeting-tag">{t('Fleeting')}</span>}
                 {/* Touch: cancel choosing a target without tapping somewhere else. */}
                 {selected && (
@@ -661,6 +671,14 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
             );
           })}
         </div>
+        {spectating ? (
+          <div className="turn-controls spectate-controls">
+            <span className="spectate-turn">{t('{name} is playing', { name: game.players[game.activePlayer].hero.name })}</span>
+            <button className="btn btn-ghost btn-sm" onClick={() => navigate(-1)}>
+              {t('Stop watching')}
+            </button>
+          </div>
+        ) : (
         <div className="turn-controls">
           <TurnTimer />
           <button
@@ -678,6 +696,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
             </button>
           </div>
         </div>
+        )}
       </section>
 
       {logOpen && <div className="log-sheet-backdrop" onClick={() => setLogOpen(false)} aria-hidden />}
@@ -693,7 +712,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         </div>
         <BattleLog game={game} />
         <div className="match-meta faint">
-          {t('{mode} vs {name}', { mode: modeLabel(config), name: game.players[AI].hero.name })}
+          {spectating ? t('Watching {a} vs {b}', { a: game.players[0].hero.name, b: game.players[1].hero.name }) : t('{mode} vs {name}', { mode: modeLabel(config), name: game.players[AI].hero.name })}
         </div>
         {config?.mode === 'BRAWL' && <BrawlRules fightId={config.brawlFightId} />}
         {config?.mode === 'PUZZLE' && <PuzzleGoal id={config.puzzle?.id} />}
@@ -759,8 +778,15 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       <FinalBlow />
       <TurnBanner />
       <TutorialOverlay />
-      {phase === 'mulligan' && <MulliganOverlay game={game} />}
-      {phase === 'ended' && <ResultsOverlay game={game} />}
+      {spectating && watching && (
+        <div className="spectate-bar" role="status">
+          <span className="spectate-eye" aria-hidden>👁</span>
+          {t('Watching {a} vs {b}', { a: watching.a, b: watching.b })}
+        </div>
+      )}
+      {phase === 'mulligan' && !spectating && <MulliganOverlay game={game} />}
+      {phase === 'mulligan' && spectating && <div className="spectate-wait">{t('The players are choosing their opening hands…')}</div>}
+      {phase === 'ended' && (spectating ? <SpectatorResults game={game} onLeave={() => navigate(-1)} /> : <ResultsOverlay game={game} />)}
       <AudioToggles />
       {/* Phones: the sidebar is hidden, so the battle log opens as a sheet from this button. */}
       <button
@@ -785,7 +811,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       </button>
       {heroInspect !== null && <HeroInspector game={game} player={heroInspect} onClose={() => setHeroInspect(null)} />}
       {phase !== 'ended' && config?.mode !== 'TUTORIAL' && (
-        <button className="leave-btn icon-btn" aria-label={t('Leave match (concede)')} onClick={() => void concede()}>
+        <button className="leave-btn icon-btn" aria-label={spectating ? t('Stop watching') : t('Leave match (concede)')} onClick={() => (spectating ? navigate(-1) : void concede())}>
           ✕
         </button>
       )}

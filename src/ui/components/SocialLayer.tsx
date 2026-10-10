@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { loadCloud } from '@/cloud/firebase';
 import { useSocial } from '@/state/socialStore';
+import { useMatch } from '@/state/matchStore';
 import { inviteIsLive, inviteTtl } from '@/social/friends';
 import { audio } from '@/audio/audioService';
 import { t, tn } from '@/i18n';
@@ -19,6 +20,8 @@ export default function SocialLayer({ uid, dev }: { uid: string | null; dev: boo
   const service = useSocial((s) => s.service);
   const [now, setNow] = useState(() => Date.now());
   const inMatch = location.pathname.startsWith('/match');
+  /** The match's watch room: friends see it and can spectate. */
+  const watchCode = useMatch((s) => (s.phase === 'ended' ? null : s.watchCode));
 
   useEffect(() => {
     let cancelled = false;
@@ -40,7 +43,7 @@ export default function SocialLayer({ uid, dev }: { uid: string | null; dev: boo
     };
   }, [uid, dev]);
 
-  useEffect(() => useSocial.getState().setInMatch(inMatch), [inMatch]);
+  useEffect(() => useSocial.getState().setInMatch(inMatch, watchCode), [inMatch, watchCode]);
 
   // Invites lapse (two minutes for matches, ten for tournaments): re-check once in a while.
   const pending = invites.filter((i) => i.status === 'pending');

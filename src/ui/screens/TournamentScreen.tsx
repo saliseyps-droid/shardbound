@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { tournamentWatchCode } from '@/net/watchCode';
+import { spectate } from '@/state/spectateLaunch';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { useTournament, myMatch } from '@/state/tournamentStore';
@@ -258,6 +260,10 @@ function PlayerLine({ tour, id, winner }: { tour: Tournament; id: string | null;
 }
 
 function MatchCard({ tour, m }: { tour: Tournament; m: TournamentMatch }) {
+  const me = useTournament((s) => s.myId);
+  const navigate = useNavigate();
+  // Every match with a player in it can be watched (bot against bot is only simulated).
+  const watchable = m.status === 'playing' && m.a !== me && m.b !== me && [m.a, m.b].some((id) => playerById(tour, id) && !playerById(tour, id)!.bot);
   return (
     <div className={`t-match panel-tight ${m.status}`}>
       <div className="t-match-head">
@@ -266,6 +272,11 @@ function MatchCard({ tour, m }: { tour: Tournament; m: TournamentMatch }) {
       </div>
       <PlayerLine tour={tour} id={m.a} winner={m.winner} />
       <PlayerLine tour={tour} id={m.b} winner={m.winner} />
+      {watchable && (
+        <button className="btn btn-sm btn-cyan t-watch" onClick={() => spectate(tournamentWatchCode(tour.code, m.id), navigate)}>
+          {tr('Watch')}
+        </button>
+      )}
     </div>
   );
 }

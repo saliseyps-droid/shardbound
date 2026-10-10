@@ -3,7 +3,7 @@ import type { AiTuning } from '@/ai/config';
 import type { OpponentDef } from '@/data/opponents';
 
 export interface MatchConfig {
-  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE' | 'RANKED' | 'TOURNAMENT' | 'ARENA' | 'AI_RANKED' | 'BRAWL' | 'DUNGEON' | 'PUZZLE';
+  mode: 'PRACTICE' | 'PVE' | 'TUTORIAL' | 'ONLINE' | 'RANKED' | 'TOURNAMENT' | 'ARENA' | 'AI_RANKED' | 'BRAWL' | 'DUNGEON' | 'PUZZLE' | 'SPECTATE';
   /** Daily puzzle: which puzzle and its UTC day. */
   puzzle?: { id: string; day: number };
   /** Brawl: the fight being played (src/domain/brawl.ts). */
@@ -12,8 +12,13 @@ export interface MatchConfig {
   opponentRating?: number;
   /** Tournament: which bracket match this is. */
   tournamentMatchId?: string;
-  /** Online role: the host runs the authoritative engine. */
-  online?: 'host' | 'guest';
+  /** Online role: the host runs the authoritative engine; a spectator only watches (mode SPECTATE). */
+  online?: 'host' | 'guest' | 'spectator';
+  /**
+   * The match's watch room (src/net/spectate.ts). Set for tournament matches and when spectating;
+   * otherwise derived from the online room, or new for a match against the AI.
+   */
+  watchCode?: string;
   deckId: string | null;
   opponent: OpponentDef;
   encounterId?: string;
