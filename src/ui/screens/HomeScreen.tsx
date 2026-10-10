@@ -72,7 +72,6 @@ export default function HomeScreen() {
             <polygon className="play-hex-inner" points="50,8.5 92.5,33 92.5,82.5 50,107 7.5,82.5 7.5,33" />
           </svg>
           <span className="play-shard-label">{t('Play')}</span>
-          <span className="play-shard-sub">{t('Practice against a bot')}</span>
         </button>
 
         <div className="home-deck">

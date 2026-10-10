@@ -1,6 +1,14 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.40.4': {
+    title: 'Menší hexagon',
+    summary: 'Hexagon Hrát je menší a jednodušší a Sali zase sedí na trůnu.',
+    sections: [
+      ['Hexagon Hrát na Home je o desetinu menší a je v něm jen nápis Hrát.'],
+      ['Obrázek Sali, Stvořitele je zase oříznutý jako dřív, takže je vidět její trůn.'],
+    ],
+  },
   '0.40.3': {
     title: 'Hexagon Hrát',
     summary: 'Tlačítko Hrát na Home je teď zlatý hexagon.',

@@ -373,7 +373,6 @@ export const CARD_ART_FOCUS: Record<string, number> = {
   neu_reckoning_herald: 10,
   neu_second_dawn: 25,
   irn_steelmaker_gorn: 5,
-  neu_sali_the_creator: 15,
   tid_nereth_heart_of_the_maelstrom: 20,
   irn_horned_overseer: 20,
   tid_deepmaw_horror: 20,

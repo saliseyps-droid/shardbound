@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.40.4',
+    date: '2026-10-11',
+    title: 'A smaller hexagon',
+    summary: 'The Play hexagon is smaller and simpler, and Sali sits on her throne again.',
+    sections: [
+      {
+        kind: 'improved',
+        items: ['The Play hexagon on Home is a tenth smaller and shows only Play.'],
+      },
+      {
+        kind: 'fixed',
+        items: ["Sali, the Creator's art is framed as it was before, so her throne is visible again."],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.40.3',
     date: '2026-10-11',
     title: 'The Play hexagon',

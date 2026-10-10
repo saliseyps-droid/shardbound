@@ -256,7 +256,6 @@ const d: Record<string, string> = {
   Play: 'Hrát',
   Home: 'Domů',
   Packs: 'Boostery',
-  'Practice against a bot': 'Trénink proti botovi',
   'Your deck': 'Tvůj balíček',
   'Change deck': 'Změnit balíček',
   'Edit deck': 'Upravit balíček',
