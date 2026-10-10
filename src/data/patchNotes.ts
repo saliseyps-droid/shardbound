@@ -19,6 +19,21 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.40.3',
+    date: '2026-10-11',
+    title: 'The Play hexagon',
+    summary: 'The Play button on Home is now a gold hexagon.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'The Play button on Home is now an open gold hexagon with a double outline instead of the gold crystal. The whole hexagon is clickable, and it lifts and glows when you point at it.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.40.2',
     date: '2026-10-11',
     title: 'Faces in frame',

@@ -67,7 +67,10 @@ export default function HomeScreen() {
         </div>
 
         <button className="play-shard" onClick={() => (audio.play('click'), navigate('/play'))} aria-label={t('Play a match')}>
-          <span className="play-shard-facet" aria-hidden />
+          <svg className="play-shard-hex" viewBox="0 0 100 115.5" aria-hidden>
+            <polygon className="play-hex-hit" points="50,2 98,29.5 98,86 50,113.5 2,86 2,29.5" />
+            <polygon className="play-hex-inner" points="50,8.5 92.5,33 92.5,82.5 50,107 7.5,82.5 7.5,33" />
+          </svg>
           <span className="play-shard-label">{t('Play')}</span>
           <span className="play-shard-sub">{t('Practice against a bot')}</span>
         </button>

@@ -1,6 +1,13 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.40.3': {
+    title: 'Hexagon Hrát',
+    summary: 'Tlačítko Hrát na Home je teď zlatý hexagon.',
+    sections: [
+      ['Tlačítko Hrát na Home je teď místo zlatého krystalu otevřený zlatý hexagon s dvojitou linkou. Klikatelný je celý hexagon a při najetí myší se zvedne a rozzáří.'],
+    ],
+  },
   '0.40.2': {
     title: 'Tváře v rámu',
     summary: 'Obrázky z Void Reckoning ukazují hlavy a tváře a horní menu už nejde scrollovat.',

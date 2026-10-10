@@ -38,39 +38,34 @@ blockquote { margin: var(--space-3) 0; padding-left: var(--space-3); border-left
 .screen a.btn { text-decoration: none; }
 .warden-sigil.large { width: 104px; height: 118px; }
 
-/* The Play shard: the one hero moment. */
+/* The Play hexagon: the one hero moment. Only the gold outline is drawn; the whole hexagon is the click target. */
 .play-shard {
   position: relative;
-  width: clamp(200px, 17vw, 280px);
-  aspect-ratio: 0.78;
+  width: clamp(200px, 17vw, 270px);
+  aspect-ratio: 100 / 115.5;
   border: 0;
+  padding: 0;
   cursor: pointer;
   display: grid;
   place-content: center;
   justify-items: center;
   gap: 4px;
-  color: #1b1206;
+  color: var(--gold-bright);
   background: none;
-  filter: drop-shadow(0 0 22px rgba(232, 176, 75, 0.45)) drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6));
+  pointer-events: none;
+  filter: drop-shadow(0 0 14px rgba(232, 176, 75, 0.45));
   transition: transform 0.25s var(--ease-spring), filter 0.25s;
 }
-.play-shard-facet {
-  position: absolute; inset: 0; z-index: -1;
-  clip-path: polygon(50% 0, 96% 30%, 70% 100%, 30% 100%, 4% 30%);
-  background:
-    linear-gradient(115deg, transparent 45%, rgba(255, 255, 255, 0.35) 50%, transparent 56%),
-    linear-gradient(160deg, #fff1c4, var(--gold-bright) 25%, var(--gold) 55%, #7b4f12 100%);
-}
-.play-shard-facet::after {
-  content: ''; position: absolute; inset: 0;
-  clip-path: polygon(50% 0, 50% 100%, 30% 100%, 4% 30%);
-  background: rgba(0, 0, 0, 0.12);
-}
-.play-shard-label { font: 700 clamp(2.4rem, 3.6vw, 3.4rem) var(--font-display); letter-spacing: 0.02em; margin-top: 18%; }
-.play-shard-sub { font: 600 var(--t-sm) var(--font-body); opacity: 0.8; }
-.play-shard:hover { transform: translateY(-6px) scale(1.03); filter: drop-shadow(0 0 34px rgba(255, 210, 122, 0.7)) drop-shadow(0 26px 34px rgba(0, 0, 0, 0.6)); }
+.play-shard-hex { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.play-hex-hit { fill: transparent; stroke: var(--gold); stroke-width: 2.6; stroke-linejoin: round; pointer-events: all; }
+.play-hex-inner { fill: none; stroke: var(--gold); stroke-width: 0.8; opacity: 0.55; pointer-events: none; }
+.play-shard-label, .play-shard-sub { position: relative; pointer-events: none; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7); }
+.play-shard-label { font: 700 clamp(2.4rem, 3.6vw, 3.4rem) var(--font-display); letter-spacing: 0.02em; }
+.play-shard-sub { font: 600 var(--t-sm) var(--font-body); color: var(--parchment); opacity: 0.85; }
+.play-shard:hover { transform: translateY(-4px) scale(1.03); filter: drop-shadow(0 0 22px rgba(255, 210, 122, 0.8)); }
+.play-shard:hover .play-hex-hit { stroke: var(--gold-bright); }
 .play-shard:active { transform: translateY(0) scale(0.99); }
-.play-shard:focus-visible { outline: none; filter: drop-shadow(0 0 0 var(--cyan)) drop-shadow(0 0 10px var(--cyan)) drop-shadow(0 0 30px var(--cyan)); }
+.play-shard:focus-visible { outline: none; filter: drop-shadow(0 0 0 var(--cyan)) drop-shadow(0 0 10px var(--cyan)) drop-shadow(0 0 24px var(--cyan)); }
 
 .home-deck { display: grid; gap: var(--space-2); justify-self: end; width: min(340px, 100%); }
 .home-deck-links { display: flex; gap: var(--space-4); font-size: var(--t-sm); }
