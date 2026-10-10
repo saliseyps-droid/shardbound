@@ -20,6 +20,7 @@ import { brawlFights, brawlProgress, brawlRotation, brawlRotationEnds } from '@/
 import { trustedNow } from '@/domain/clock';
 import { brawlFightTitle, brawlTimeLeft } from '@/ui/components/meta/brawlUi';
 import '@/ui/styles/meta.css';
+import { NewsBanner } from '@/ui/components/meta/NewsBanner';
 import { t, tn } from '@/i18n';
 
 export default function HomeScreen() {
@@ -80,6 +81,8 @@ export default function HomeScreen() {
           </div>
         </div>
       </section>
+
+      {p.tutorialCompleted && <NewsBanner />}
 
       {!p.tutorialCompleted && (
         <section className="tutorial-banner panel">

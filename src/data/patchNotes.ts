@@ -19,6 +19,21 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.40.1',
+    date: '2026-10-11',
+    title: 'News from the Void',
+    summary: 'Home now shows what is new: the newest set, its pack and its Legendaries.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'News on Home: the newest set with its pack, three of its Legendaries and buttons to buy packs, browse its cards in the Collection or read what is new.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.40.0',
     date: '2026-10-10',
     title: 'Void Reckoning',

@@ -1,6 +1,13 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.40.1': {
+    title: 'Zprávy z Prázdnoty',
+    summary: 'Home teď ukazuje novinky: nejnovější set, jeho balíček a legendárky.',
+    sections: [
+      ['Novinky na Home: nejnovější set s balíčkem, třemi jeho legendárkami a tlačítky pro nákup balíčků, prohlédnutí karet v kolekci a přehled novinek.'],
+    ],
+  },
   '0.40.0': {
     title: 'Void Reckoning',
     summary: 'Nový set 91 karet: vychází černé slunce a Prázdnota si přichází vyrovnat všechny účty.',

@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { SET_INFO } from '@/config/economy';
+import type { SetId } from '@/game/types';
 import { collectibleCards } from '@/data/cards';
 import { ALL_FACTIONS, type CardDefinition } from '@/game/types';
 import { maxCopiesFor } from '@/domain/decks';
@@ -23,7 +26,12 @@ const BADGE_H = 34;
 export default function CollectionScreen() {
   const save = useAccount((s) => s.save);
   const collection = save?.collection;
-  const [filters, setFilters] = useState<CardFilterState>(DEFAULT_FILTERS);
+  const [params] = useSearchParams();
+  // ?set=ID opens the collection filtered to one set (from the news on Home).
+  const [filters, setFilters] = useState<CardFilterState>(() => {
+    const set = params.get('set');
+    return set && set in SET_INFO ? { ...DEFAULT_FILTERS, set: set as SetId } : DEFAULT_FILTERS;
+  });
   const [selected, setSelected] = useState<string | null>(null);
   const cardWidth = useCardWidth();
   const cardHeight = Math.round(cardWidth * 1.4) + BADGE_H;
