@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.40.2',
+    date: '2026-10-11',
+    title: 'Faces in frame',
+    summary: 'Void Reckoning art shows heads and faces, and the top menu no longer scrolls.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          'Void Reckoning cards whose art was cut too low now show the head, face or black sun at the top of the painting, Steelmaker Gorn and Sunbreaker Titan among them.',
+          'The top menu on PC could be scrolled down to a gold underline under the current page. It no longer scrolls, and the underline is gone.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.40.1',
     date: '2026-10-11',
     title: 'News from the Void',

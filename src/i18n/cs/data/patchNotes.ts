@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.40.2': {
+    title: 'Tváře v rámu',
+    summary: 'Obrázky z Void Reckoning ukazují hlavy a tváře a horní menu už nejde scrollovat.',
+    sections: [
+      [
+        'Karty z Void Reckoning, které měly výřez obrázku moc dole, teď ukazují hlavu, tvář nebo černé slunce z horní části malby, mimo jiné Ocelář Gorn a Titán lámač slunce.',
+        'Horní menu na PC šlo posunout dolů ke zlatému podtržítku pod aktuální stránkou. Už nescrolluje a podtržítko zmizelo.',
+      ],
+    ],
+  },
   '0.40.1': {
     title: 'Zprávy z Prázdnoty',
     summary: 'Home teď ukazuje novinky: nejnovější set, jeho balíček a legendárky.',

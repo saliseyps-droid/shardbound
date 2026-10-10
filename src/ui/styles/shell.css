@@ -36,7 +36,7 @@
 @keyframes logo-breathe { 50% { filter: drop-shadow(0 0 34px rgba(255, 110, 200, 0.65)); transform: scale(1.03); } }
 @media (prefers-reduced-motion: reduce) { .brand-logo.large { animation: none; } }
 
-.main-nav { display: flex; gap: 2px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.main-nav { display: flex; gap: 2px; flex: 1; min-width: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
 .nav-link {
   position: relative; display: flex; align-items: center; gap: 6px;
   padding: 8px 12px; color: var(--parchment-dim); text-decoration: none;
@@ -44,10 +44,6 @@
 }
 .nav-link:hover { color: var(--parchment); background: rgba(239, 228, 200, 0.06); }
 .nav-link.active { color: var(--gold-bright); }
-.nav-link.active::after {
-  content: ''; position: absolute; left: 12px; right: 12px; bottom: -11px; height: 3px;
-  background: var(--gold); clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 100%, 0 100%);
-}
 .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
 .nav-count { font: 700 var(--t-xs) var(--font-num); background: var(--cyan); color: var(--ink-0); padding: 0 6px; border-radius: 999px; }
 /* Icons only when the labelled links don't fit (measured in AppHeader). */
@@ -79,7 +75,7 @@
   .main-nav.is-open { transform: none; }
   .main-nav .nav-link { padding: 12px 14px; font-size: var(--t-md, 1rem); }
   .main-nav .nav-link span:not(.nav-count):not(.nav-dot) { display: inline; }
-  .main-nav .nav-link.active::after { left: 0; right: auto; top: 8px; bottom: 8px; width: 3px; height: auto; clip-path: none; }
+  .main-nav .nav-link.active::after { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; background: var(--gold); }
   .nav-backdrop { display: block; position: fixed; z-index: 55; inset: var(--header-h) 0 0 0; background: rgba(5, 3, 14, 0.55); }
   .header-resources { margin-left: auto; }
 }
