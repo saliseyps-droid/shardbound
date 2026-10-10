@@ -19,6 +19,31 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.40.0',
+    date: '2026-10-10',
+    title: 'Void Reckoning',
+    summary: 'A new set of 91 cards: a black sun rises and the Void comes to settle every debt.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Void Reckoning, the fifth set: 91 cards for every faction, with 15 new Legendaries and dragons of the Void, sold in its own packs in the Shop.',
+          "Among the Legendaries: Artemis, Qinny's Bane; Scar, Liu Kano's Mauler; Archmage Elinka; Simba, the Ultimate Predator; Steelmaker Gorn; Nereth, Heart of the Maelstrom; and Sali, the Creator, who wipes the board and, when she dies, takes your Warden's place.",
+          "Every one of those seven has its own entrance, and Sali taking the Warden's place has its own scene.",
+          'New keyword Consume: On Deploy, destroy another friendly unit and gain its Attack and Health. It counts as a friendly unit dying.',
+          'New status Corrupt: a Corrupted unit loses its text and buffs and gets -1/-1 at the start of each of its controller\'s turns until it dies. Cleanse removes it.',
+          'The Hollow Choir welcomes the Void and Consumes, Cinder Legion burns out Corrupted enemies, Thornweald rots its foes, Brass Dominion builds engines that eat, Lumen Conclave Cleanses and shields, and the Rimetide Court drowns the light.',
+          'New achievement Settled Accounts: own every card in Void Reckoning.',
+        ],
+      },
+      {
+        kind: 'improved',
+        items: ['Tournament prizes, the Dungeon and Brawl rewards now give Void Reckoning packs, and Arena drafts include its cards.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.36.0',
     date: '2026-10-10',
     title: 'Face-off',

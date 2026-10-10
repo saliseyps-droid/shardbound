@@ -53,6 +53,9 @@ export const SHOP_OFFERS: ShopOffer[] = [
   { id: 'dragon_1', setId: 'DRAGON', packs: 1, price: 100, label: '1 Pack' },
   { id: 'dragon_5', setId: 'DRAGON', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
   { id: 'dragon_10', setId: 'DRAGON', packs: 10, price: 1000, label: '10 Packs', badge: '+2 Bonus Packs' },
+  { id: 'reckoning_1', setId: 'RECKONING', packs: 1, price: 100, label: '1 Pack' },
+  { id: 'reckoning_5', setId: 'RECKONING', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
+  { id: 'reckoning_10', setId: 'RECKONING', packs: 10, price: 1000, label: '10 Packs', badge: '+2 Bonus Packs' },
   { id: 'prismatic_1', setId: 'PRISMATIC', packs: 1, price: PRISMATIC_PACK.price, label: '1 Pack' },
   { id: 'prismatic_legend_1', setId: 'PRISMATIC_LEGEND', packs: 1, price: PRISMATIC_LEGEND_PACK.price, label: '1 Legendary' },
 ];
@@ -75,7 +78,7 @@ export const BUNDLES: Bundle[] = [
 ];
 
 /** Offers with a bonus badge grant this many extra packs (10 + 2 for 1000 Gold ≈ 83 Gold/pack, the best deal). */
-export const SHOP_BONUS_PACKS: Record<string, number> = { core_10: 2, deep_10: 2, abyss_10: 2, dragon_10: 2 };
+export const SHOP_BONUS_PACKS: Record<string, number> = { core_10: 2, deep_10: 2, abyss_10: 2, dragon_10: 2, reckoning_10: 2 };
 
 export const PACK_CONFIG = {
   cardsPerPack: 5,
@@ -104,4 +107,5 @@ export const SET_INFO: Record<SetId, { name: string; tagline: string; releaseOrd
   DEEP: { name: 'Fantasy Realms', tagline: 'Dragons wake in the realms beyond the map.', releaseOrder: 2 },
   ABYSS: { name: 'Legions of Shadow', tagline: 'Knights of every banner, marching for the shadow.', releaseOrder: 3 },
   DRAGON: { name: 'Dragon Realm', tagline: 'Dragons take the sky, and their knights and the Fae ride with them.', releaseOrder: 4 },
+  RECKONING: { name: 'Void Reckoning', tagline: 'A black sun rises. The Void comes to settle every debt.', releaseOrder: 5 },
 };

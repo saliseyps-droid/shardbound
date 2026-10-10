@@ -4,7 +4,7 @@ import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import { useMatch, AI } from '@/state/matchStore';
 import { cardArtUri } from '@/ui/components/cardArt';
-import { dragonElement, legendTheme, type LegendTheme } from './legendEntrance';
+import { dragonElement, legendDuration, legendTheme, type LegendTheme } from './legendEntrance';
 import { audio } from '@/audio/audioService';
 import { anim } from '@/state/settingsStore';
 import { t } from '@/i18n';
@@ -534,6 +534,121 @@ const EXTRAS: Partial<Record<LegendTheme, { back?: () => ReactNode; stage?: () =
       </>
     ),
   },
+  artemis: {
+    back: () => <div className="ar-bubbles">{particles(20, 'ar-bub')}</div>,
+    stage: () => (
+      <>
+        <div className="ar-ring" />
+        <div className="ar-ring late" />
+      </>
+    ),
+    front: () => <div className="ar-sparks">{particles(26, 'ar-spark')}</div>,
+  },
+  scar: {
+    back: () => <div className="sc-leaves">{particles(22, 'sc-leaf')}</div>,
+    front: () => (
+      <div className="sc-claws">
+        {[0, 1].map((k) => (
+          <div key={k} className={`sc-rake r${k}`}>
+            <span />
+            <span />
+            <span />
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  elinka: {
+    back: () => (
+      <>
+        <div className="ek2-fall">{particles(14, 'ek2-comet')}</div>
+        <div className="ek2-sky">{particles(50, 'ek2-star')}</div>
+        <svg className="ek2-cat" viewBox="0 0 100 90" aria-hidden>
+          <polyline className="line" points="25,8 36,32 50,27 64,32 75,8 83,52 50,80 17,52 25,8" pathLength={1} />
+          <polyline className="line whisker" points="30,60 6,56" pathLength={1} />
+          <polyline className="line whisker" points="70,60 94,56" pathLength={1} />
+          <polyline className="line whisker" points="70,64 92,68" pathLength={1} />
+          <polyline className="line whisker" points="30,64 8,68" pathLength={1} />
+          {[[25, 8], [36, 32], [50, 27], [64, 32], [75, 8], [83, 52], [50, 80], [17, 52], [50, 62]].map(([x, y], i) => (
+            <circle key={i} className="node" cx={x} cy={y} r={1.3} style={{ animationDelay: `${0.35 + i * 0.06}s` }} />
+          ))}
+        </svg>
+      </>
+    ),
+    stage: () => <div className="ek2-hush" />,
+    front: () => <div className="ek2-burst">{particles(24, 'ek2-spark')}</div>,
+  },
+  simba: {
+    back: () => (
+      <div className="sm-eyes">
+        <span />
+        <span />
+      </div>
+    ),
+    stage: () => <div className="sm-vortex" />,
+    front: () => (
+      <>
+        <div className="sm-rake">
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+        <div className="sm-flash" />
+      </>
+    ),
+  },
+  gorn: {
+    back: () => <div className="gn-glow" />,
+    stage: () => (
+      <>
+        <div className="gn-hammer">
+          <span />
+        </div>
+        <div className="gn-plates">{particles(8, 'gn-plate')}</div>
+      </>
+    ),
+    front: () => <div className="gn-sparks">{particles(30, 'gn-spark')}</div>,
+  },
+  nereth: {
+    back: () => (
+      <>
+        <div className="nr-vortex" />
+        <div className="nr-vortex v2" />
+      </>
+    ),
+    stage: () => <div className="nr-ice">{particles(16, 'nr-shard')}</div>,
+    front: () => <div className="nr-frost" />,
+  },
+  sali: {
+    back: () => (
+      <>
+        <div className="sl2-lids top" />
+        <div className="sl2-lids bottom" />
+        <div className="sl2-rift" />
+        <div className="sl2-stars">{particles(60, 'sl2-star')}</div>
+        <svg className="sl2-constellation" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden>
+          <polyline points="8,40 20,22 34,30 46,12 58,26 70,10 84,24 94,16" pathLength={1} />
+          <polyline points="14,52 30,46 44,54 60,44 76,50 90,42" pathLength={1} />
+        </svg>
+      </>
+    ),
+    stage: () => (
+      <div className="sl2-glyphs">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="sl2-ring" style={{ '--i': i } as CSSProperties}>
+            <RuneCircle />
+          </div>
+        ))}
+      </div>
+    ),
+    front: () => (
+      <>
+        <div className="sl2-implode">{particles(40, 'sl2-in')}</div>
+        <div className="sl2-flash" />
+      </>
+    ),
+  },
   tallys: {
     back: () => (
       <div className="tl-cracks">
@@ -561,7 +676,7 @@ export function LegendaryEntrance() {
 export function LegendShowcase({ cardId, onDone }: { cardId: string; onDone: () => void }) {
   useEffect(() => {
     audio.play('legendaryReveal');
-    const id = setTimeout(onDone, anim(LEGEND_MS));
+    const id = setTimeout(onDone, anim(legendDuration(cardId)));
     return () => clearTimeout(id);
   }, [cardId, onDone]);
   // Portalled to the body: a panel with a transform would otherwise trap the fixed overlay inside it.
@@ -588,6 +703,7 @@ export function LegendaryEntranceView({ cardId, enemy }: { cardId: string; enemy
       <div className="legend-backdrop" />
       <div className="legend-sunrays" />
       {extras.back?.()}
+      {theme === 'sali' && <img className="sl2-colossus" src={cardArtUri(card)} alt="" draggable={false} />}
       <div className="legend-stage">
         <div className="legend-portrait">
           <img src={cardArtUri(card)} alt="" draggable={false} />

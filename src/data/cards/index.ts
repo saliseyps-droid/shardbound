@@ -11,6 +11,7 @@ import { TIDE_CARDS } from './tide';
 import { NEUTRAL_CARDS } from './neutral';
 import { ABYSS_CARDS } from './abyss';
 import { DRAGON_CARDS } from './dragon';
+import { RECKONING_CARDS } from './reckoning';
 
 const RAW: CardDefinition[] = [
   ...TOKEN_CARDS,
@@ -23,6 +24,7 @@ const RAW: CardDefinition[] = [
   ...NEUTRAL_CARDS,
   ...ABYSS_CARDS,
   ...DRAGON_CARDS,
+  ...RECKONING_CARDS,
 ];
 
 export const CARD_LOAD_ERRORS: string[] = [];

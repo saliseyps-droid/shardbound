@@ -28,6 +28,8 @@ export const KEYWORDS: Record<KeywordId, KeywordInfo> = {
   ON_DEPLOY: { id: 'ON_DEPLOY', name: 'On Deploy', category: 'trigger', icon: '▶', definition: 'Resolves when you play this card from your hand.' },
   LAST_BREATH: { id: 'LAST_BREATH', name: 'Last Breath', category: 'trigger', icon: '✝', definition: 'Resolves when this unit dies.' },
   OVERCHARGE: { id: 'OVERCHARGE', name: 'Overcharge', category: 'trigger', icon: 'ϟ', definition: 'If you still have at least X unspent energy after playing this, spend X to unlock the bonus effect.' },
+  CORRUPT: { id: 'CORRUPT', name: 'Corrupt', category: 'status', icon: '◉', definition: 'A Corrupted unit loses its text and buffs, and gets -1/-1 at the start of each of its controller\'s turns. Cleanse or Silence removes it.' },
+  CONSUME: { id: 'CONSUME', name: 'Consume', category: 'trigger', icon: '⊛', definition: 'Destroy another friendly unit and gain its Attack and Health.' },
   BURN: { id: 'BURN', name: 'Burn', category: 'status', icon: '🔥', definition: 'At the start of its controller\'s turn, a Burning unit takes damage equal to its Burn, then Burn fades by 1.' },
   FREEZE: { id: 'FREEZE', name: 'Freeze', category: 'status', icon: '❄', definition: 'A Frozen unit cannot attack during its controller\'s next turn.' },
 };
@@ -35,7 +37,7 @@ export const KEYWORDS: Record<KeywordId, KeywordInfo> = {
 export const KEYWORD_LIST = Object.values(KEYWORDS);
 
 /** English word forms that get the keyword tooltip too. */
-const EN_ALIASES: Partial<Record<KeywordId, string[]>> = { FREEZE: ['Frozen', 'Freezes'], BURN: ['Burning'] };
+const EN_ALIASES: Partial<Record<KeywordId, string[]>> = { FREEZE: ['Frozen', 'Freezes'], BURN: ['Burning'], CORRUPT: ['Corrupted', 'Corrupts'], CONSUME: ['Consumes'] };
 
 const words = (k: KeywordInfo) => [k.name, ...(k.aliases ?? []), ...(EN_ALIASES[k.id] ?? [])];
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

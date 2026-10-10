@@ -306,6 +306,7 @@ export function silenceUnit(ctx: EngineContext, unit: UnitInstance) {
   unit.burn = 0;
   unit.barrier = false;
   unit.ambush = false;
+  unit.corrupt = false;
   emit(ctx, { type: 'UNIT_SILENCED', uid: unit.uid });
 }
 

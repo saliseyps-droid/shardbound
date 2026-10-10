@@ -5,7 +5,6 @@ import { cardsBy, getCard } from '@/data/cards';
 import { BUNDLES, SET_INFO, SHOP_BONUS_PACKS, SHOP_OFFERS } from '@/config/economy';
 import { ARENA } from '@/config/arena';
 import { LEVELS } from '@/config/progression';
-import { TOURNAMENT_PACK_SET } from '@/domain/tournament';
 import { generatePack } from '@/domain/packs';
 import { createRng } from '@/core/rng';
 import { CARD_ART_FOCUS } from '@/ui/components/cardArtFocus';
@@ -51,9 +50,8 @@ describe('Dragon Realm set', () => {
     }
   });
 
-  it('is sold in the shop as the newest set, with a bundle, and opens packs of its own cards', () => {
+  it('is sold in the shop, with a bundle, and opens packs of its own cards', () => {
     expect(SET_INFO.DRAGON.name).toBe('Dragon Realm');
-    expect(Math.max(...Object.values(SET_INFO).map((s) => s.releaseOrder))).toBe(SET_INFO.DRAGON.releaseOrder);
     expect(SHOP_OFFERS.filter((o) => o.setId === 'DRAGON').map((o) => o.packs)).toEqual([1, 5, 10]);
     expect(SHOP_BONUS_PACKS.dragon_10).toBe(2);
     const bundle = BUNDLES.find((b) => b.setId === 'DRAGON');
@@ -63,14 +61,13 @@ describe('Dragon Realm set', () => {
     expect(pack.cards.every((c) => getCard(c.cardId)?.set === 'DRAGON')).toBe(true);
   });
 
-  it('has its pack art wired and shows up in Arena, level rewards and tournament prizes', () => {
+  it('has its pack art wired and shows up in Arena and level rewards', () => {
     expect(existsSync(resolve(root, 'src/assets/packs/dragon_realm.webp'))).toBe(true);
     const booster = readFileSync(resolve(root, 'src/ui/components/packs/BoosterPack.tsx'), 'utf8');
     expect(booster).toContain("@/assets/packs/dragon_realm.webp");
     expect(booster).toMatch(/DRAGON: dragonRealm/);
     expect(ARENA.packSets).toContain('DRAGON');
     expect(LEVELS.flatMap((l) => l.rewards).some((r) => r.kind === 'PACK' && r.setId === 'DRAGON')).toBe(true);
-    expect(TOURNAMENT_PACK_SET).toBe('DRAGON');
   });
 });
 

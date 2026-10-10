@@ -17,7 +17,7 @@ describe('Prismatic pack', () => {
         sets.add(getCard(c.cardId)!.set);
       }
     }
-    expect([...sets].sort()).toEqual(['ABYSS', 'CORE', 'DEEP', 'DRAGON']);
+    expect([...sets].sort()).toEqual(['ABYSS', 'CORE', 'DEEP', 'DRAGON', 'RECKONING']);
   });
 
   it('guarantees a Legendary within ten packs', () => {

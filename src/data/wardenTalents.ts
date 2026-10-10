@@ -242,6 +242,9 @@ export const BOSS_TALENTS: TalentAbility[] = [
   active('BOSS', 'black_tide', 'Black Tide', [{ cost: 2, effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'RANDOM_ENEMY_UNIT' }, { type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }], description: 'Freeze a random enemy unit and gain 2 Armor.' }]),
   active('BOSS', 'soul_pyre', 'Soul Pyre', [{ cost: 2, effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ENEMY_HERO' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }], description: 'Deal 2 damage to the enemy Warden and restore 2 Health to yours.' }]),
   // Chapters VI-IX
+  // Sali, the Creator (Void Reckoning): the Warden's abilities once Sali takes the Warden's place.
+  active('BOSS', 'sali_sovereign', 'Raise the Sovereign', [{ cost: 1, cooldown: 1, effects: [{ type: 'SUMMON', cardId: 'token_hollow_sovereign' }], description: 'Summon a 3/4 Hollow Sovereign. Usable every other turn.' }]),
+  active('BOSS', 'sali_warden', 'Call the Eclipse', [{ cost: 1, cooldown: 1, effects: [{ type: 'SUMMON', cardId: 'token_eclipse_warden' }], description: 'Summon a 4/3 Eclipse Warden. Usable every other turn.' }]),
   active('BOSS', 'drake_brood', 'Drake Brood', [{ cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_drakeling' }], description: 'Summon a 2/2 Cinder Drakeling with Swift.' }]),
   active('BOSS', 'siege_protocol', 'Siege Protocol', [{ cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_sentry' }, { type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }], description: 'Summon a 2/3 Brass Sentry with Guard and gain 2 Armor.' }]),
   active('BOSS', 'frozen_hymn', 'Frozen Hymn', [{ cost: 4, effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'ALL_ENEMY_UNITS' }], description: 'Freeze all enemy units.' }]),

@@ -19,7 +19,7 @@ export const DUNGEON = {
     ['c3_b1', 'c3_b2', 'c4_boss', 'c5_b1', 'c5_b2', 'c6_boss'],
     ['c7_boss', 'c8_boss', 'c9_b1', 'c9_b2', 'c9_b3', 'c5_final', 'c3_final'],
   ],
-  packSet: 'DRAGON' as SetId,
+  packSet: 'RECKONING' as SetId,
   /** Rewards by wins (index = wins, 0–9). */
   rewards: [
     { gold: 25, packs: 0, essence: 0 },

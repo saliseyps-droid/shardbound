@@ -138,6 +138,7 @@ function matchesFilter(state: GameState, unit: UnitInstance, filter: TargetFilte
   const def = getCardSafe(unit.cardId);
   if (filter.damaged && unit.damage <= 0) return false;
   if (filter.frozen && !unit.frozen) return false;
+  if (filter.corrupted && !unit.corrupt) return false;
   if (filter.maxAttack !== undefined && unitAttack(state, unit) > filter.maxAttack) return false;
   if (filter.minAttack !== undefined && unitAttack(state, unit) < filter.minAttack) return false;
   if (filter.maxCost !== undefined && def.manaCost > filter.maxCost) return false;

@@ -69,6 +69,7 @@ function targetText(sel: TargetSelector | undefined, card: CardDefinition): stri
       const f = req.filter;
       if (f?.damaged) base = base.replace(/(a|an) /, 'a damaged ');
       if (f?.frozen) base = base.replace(/(a|an) /, 'a Frozen ');
+      if (f?.corrupted) base = base.replace(/(a|an) /, 'a Corrupted ');
       if (f?.tag) base = base.replace('unit', f.tag);
       if (f?.maxAttack !== undefined) base += ` with ${f.maxAttack} or less Attack`;
       if (f?.minAttack !== undefined) base += ` with ${f.minAttack} or more Attack`;
@@ -76,6 +77,7 @@ function targetText(sel: TargetSelector | undefined, card: CardDefinition): stri
       return base;
     }
     case 'TRIGGER_UNIT':
+    case 'PREVIOUS_TARGET':
       return 'it';
     case 'ALLY_HERO':
       return 'your Warden';
@@ -91,6 +93,8 @@ function targetText(sel: TargetSelector | undefined, card: CardDefinition): stri
       return 'all enemy units';
     case 'FROZEN_ENEMY_UNITS':
       return 'all Frozen enemy units';
+    case 'CORRUPTED_ENEMY_UNITS':
+      return 'all Corrupted enemy units';
     case 'ALL_UNITS':
       return 'all units';
     case 'ALL_OTHER_UNITS':
@@ -203,6 +207,7 @@ export function describeEffect(effect: Effect, card: CardDefinition, lookup?: (i
       if (effect.status === 'FROZEN') text = `Freeze ${t}.`;
       else if (effect.status === 'BURN') text = `apply Burn ${effect.amount ?? 1} to ${t}.`;
       else if (effect.status === 'BARRIER') text = `give ${t} Barrier.`;
+      else if (effect.status === 'CORRUPT') text = `Corrupt ${t}.`;
       else text = `give ${t} Ambush.`;
       break;
     case 'GRANT_KEYWORD':
@@ -210,6 +215,15 @@ export function describeEffect(effect: Effect, card: CardDefinition, lookup?: (i
       break;
     case 'SILENCE':
       text = `Silence ${t} (remove its text and buffs).`;
+      break;
+    case 'CONSUME':
+      text = `Consume ${t}.`;
+      break;
+    case 'CLEANSE':
+      text = `Cleanse ${t}.`;
+      break;
+    case 'BECOME_WARDEN':
+      text = `this unit becomes your Warden with ${effect.health} Health${effect.armor ? ` and ${effect.armor} Armor` : ''}.`;
       break;
     case 'CREATE_CARD': {
       const count = effect.count ?? 1;
@@ -241,7 +255,7 @@ export function describeEffect(effect: Effect, card: CardDefinition, lookup?: (i
           : `steal ${effect.amount === 1 ? 'a random card' : `${effect.amount} random cards`} from your opponent's hand.`;
       break;
     case 'TAKE_CONTROL':
-      text = `take control of ${t}.`;
+      text = effect.untilEndOfTurn ? `take control of ${t} until the end of this turn.` : `take control of ${t}.`;
       break;
     case 'GAIN_ARMOR':
       text = `gain ${value(effect.amount)} Armor.${valueNote(effect.amount)}`;
@@ -293,6 +307,8 @@ export function conditionText(c: Condition, card?: CardDefinition): string {
       return 'if it is damaged';
     case 'TARGET_FROZEN':
       return 'if it is Frozen';
+    case 'TARGET_CORRUPTED':
+      return 'if it is Corrupted';
     case 'TARGET_IS_UNIT':
       return 'if it is a unit';
     case 'MAX_ENERGY_GTE':

@@ -183,6 +183,7 @@ const d: Record<string, string> = {
   'The match you were watching has ended.': 'Zápas, který jsi sledoval(a), skončil.',
   Watch: 'Sledovat',
   Spectating: 'Sledování',
+  'New Warden': 'Nový Strážce',
   Watching: 'Sleduješ',
   'Click to skip': 'Kliknutím přeskočíš',
   'Watch {name}’s match': 'Sledovat zápas hráče {name}',

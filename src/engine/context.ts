@@ -35,6 +35,8 @@ export interface EngineContext {
   resolutions: number;
   depth: number;
   aborted: boolean;
+  /** What the last resolved effect landed on (selector PREVIOUS_TARGET). */
+  lastTargets?: TargetRef[];
 }
 
 export const LOG_LIMIT = 400;

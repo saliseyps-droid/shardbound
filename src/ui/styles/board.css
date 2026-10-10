@@ -401,6 +401,7 @@
 .fx-buff { color: var(--buff); }
 .fx-shield { color: var(--gold-bright); font-size: 2.4rem; }
 .fx-freeze { color: #bff8ff; font-size: 2.2rem; }
+.fx-corrupt { color: #c690ff; font-size: 2.2rem; text-shadow: 0 0 10px #7a2cff, 0 2px 0 #000; }
 .fx-summon { display: none; }
 @keyframes fx-float {
   0% { transform: translateY(8px) scale(0.6); opacity: 0; }
@@ -756,3 +757,23 @@
   background: rgba(10, 8, 24, 0.55); color: var(--parchment); font: 700 var(--t-lg) var(--font-body);
 }
 .t-watch { margin-top: 6px; width: 100%; }
+
+/* Corrupt (Void Reckoning): violet rot creeping over the art, pulsing slowly. */
+.unit-corrupt {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  /* Tints the art violet, darkest where the rot rises from below. */
+  background: linear-gradient(180deg, rgba(150, 70, 255, 0.35), rgba(110, 20, 210, 0.85));
+  mix-blend-mode: color;
+  animation: corrupt-pulse 2.4s ease-in-out infinite alternate;
+}
+.unit-corrupt::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 85% 55% at 50% 105%, rgba(190, 110, 255, 0.75), rgba(120, 40, 220, 0.3) 50%, transparent 78%);
+  mix-blend-mode: screen;
+}
+/* Corrupt also silences: keep the violet instead of the grey of a plain Silence. */
+.unit.is-corrupt .unit-body { filter: none; }
+.is-corrupt .unit-art { filter: brightness(0.8) contrast(1.1); }
+.unit.is-corrupt { filter: drop-shadow(0 0 7px rgba(160, 80, 255, 0.9)); }
+@keyframes corrupt-pulse { from { opacity: 0.75; } to { opacity: 1; } }
+.badge-corrupt { color: #d8b4ff; border-color: #7a2cff; }

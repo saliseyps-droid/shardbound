@@ -18,6 +18,8 @@ const keywords: KeywordsOverlay = {
   LAST_BREATH: { name: 'Poslední dech', definition: 'Spustí se, když tato jednotka zemře.' },
   OVERCHARGE: { name: 'Přebití', definition: 'Pokud ti po zahrání zbyde aspoň X nevyužité energie, utrať X a odemkni bonusový efekt.' },
   BURN: { name: 'Hoření', definition: 'Na začátku tahu svého ovladatele utrpí hořící jednotka poškození rovné svému Hoření, pak Hoření klesne o 1.', aliases: ['Hořící'] },
+  CORRUPT: { name: 'Rozklad', definition: 'Rozložená jednotka ztratí text i posílení a na začátku každého tahu svého ovladatele dostane -1/-1. Odstraní ho Očištění nebo Umlčení.', aliases: ['Rozložená', 'Rozložené', 'Rozlož', 'Rozložit', 'Rozloží'] },
+  CONSUME: { name: 'Pohlcení', definition: 'Znič jinou svou jednotku a získej její útok a životy.', aliases: ['Pohltí', 'Pohlť'] },
   FREEZE: {
     name: 'Zmrazení',
     definition: 'Zmrazená jednotka nemůže útočit během příštího tahu svého ovladatele.',

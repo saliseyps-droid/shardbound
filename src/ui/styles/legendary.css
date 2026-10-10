@@ -902,6 +902,256 @@
 }
 @keyframes dg-moonrise { from { opacity: 0; transform: translateY(40px) scale(0.85); } to { opacity: 0.85; } }
 
+
+/* ==================== Void Reckoning legendaries ==================== */
+
+/* ---- Artemis: a witch's hat spins in, pink magic, and the bubbles pop twice ---- */
+.theme-artemis .legend-backdrop { background: radial-gradient(ellipse at 50% 45%, rgba(110, 20, 70, 0.6), rgba(20, 3, 14, 0.94) 70%); }
+.theme-artemis .legend-sunrays { background: repeating-conic-gradient(from 0deg, rgba(255, 120, 200, 0.22) 0deg 5deg, transparent 5deg 15deg); }
+.theme-artemis .legend-portrait { background: linear-gradient(160deg, #ffe1f2, #e05aa8 45%, #5a1240); }
+.theme-artemis .legend-kicker { color: #ffb0dc; }
+.ar-ring {
+  position: absolute; left: 50%; top: calc(var(--pw) * 0.61);
+  width: var(--pw); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+  border: 4px solid #ff8fd0; box-shadow: 0 0 26px 6px rgba(255, 110, 200, 0.7);
+  opacity: 0; animation: rd-shock 0.7s 0.7s ease-out forwards;
+}
+.ar-ring.late { animation-delay: 1.05s; border-color: #ffd36a; }
+/* Bubbles drifting up, then all popping at once, twice. */
+.ar-bubbles { position: absolute; inset: 0; overflow: hidden; }
+.ar-bub {
+  position: absolute; left: calc(var(--x) * 100%); top: calc(15% + var(--s) * 65%);
+  width: calc(26px + var(--d) * 40px); aspect-ratio: 1; border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.85) 0 8%, transparent 11%), radial-gradient(circle, transparent 55%, rgba(170, 220, 255, 0.3));
+  opacity: 0;
+  animation: ar-bub 1.05s calc(var(--r) * 0.2s + 0.25s) ease-out forwards;
+}
+.ar-bub:nth-child(even) { animation-delay: calc(0.6s + var(--r) * 0.2s); }
+@keyframes ar-bub {
+  0% { opacity: 0; transform: scale(0.3); }
+  40% { opacity: 1; transform: scale(1) translateY(-20px); }
+  55% { opacity: 1; transform: scale(1.4) translateY(-26px); border-color: #ff8fd0; }
+  62%, 100% { opacity: 0; transform: scale(1.7) translateY(-26px); }
+}
+.ar-sparks { position: absolute; left: 50%; top: 46%; width: 0; height: 0; }
+.ar-spark {
+  position: absolute; width: 6px; height: 6px; border-radius: 50%; background: #fff;
+  box-shadow: 0 0 10px 3px #ff6fc8; rotate: calc(var(--i) * 13.8deg); opacity: 0;
+  animation: ar-spark 0.8s calc(0.7s + var(--d) * 0.35s) ease-out forwards;
+}
+@keyframes ar-spark { 0% { opacity: 1; transform: translateX(40px); } 100% { opacity: 0; transform: translateX(calc(20vmin + var(--s) * 30vmin)); } }
+
+/* ---- Scar: two rakes of green claws tear across the screen, leaves torn loose ---- */
+.theme-scar .legend-backdrop { background: radial-gradient(ellipse at 50% 45%, rgba(20, 70, 30, 0.6), rgba(2, 12, 4, 0.95) 70%); }
+.theme-scar .legend-sunrays { background: repeating-conic-gradient(from 0deg, rgba(120, 255, 140, 0.18) 0deg 4deg, transparent 4deg 14deg); }
+.theme-scar .legend-portrait { background: linear-gradient(160deg, #e2ffd8, #46c25a 45%, #0f3a18); animation: legend-pop 0.6s cubic-bezier(0.2, 1.6, 0.4, 1) both, rd-shake 0.35s 0.75s ease-out, rd-shake 0.35s 1.15s ease-out; }
+.theme-scar .legend-kicker { color: #9cf0a8; }
+.sc-claws { position: absolute; inset: 0; }
+.sc-rake { position: absolute; left: 10%; right: 10%; top: 30%; height: 34%; rotate: -24deg; }
+.sc-rake.r1 { rotate: 22deg; top: 34%; }
+.sc-rake span {
+  position: absolute; left: 0; right: 0; height: 9px; border-radius: 50%;
+  background: linear-gradient(90deg, transparent, #c8ffcf 20%, #fff 50%, #c8ffcf 80%, transparent);
+  box-shadow: 0 0 22px 6px rgba(80, 255, 120, 0.8);
+  transform: scaleX(0); transform-origin: left;
+  animation: slash 0.42s 0.7s ease-out forwards;
+}
+.sc-rake.r1 span { animation-delay: 1.1s; transform-origin: right; }
+.sc-rake span:nth-child(1) { top: 10%; }
+.sc-rake span:nth-child(2) { top: 45%; }
+.sc-rake span:nth-child(3) { top: 80%; }
+.sc-leaves { position: absolute; inset: 0; overflow: hidden; }
+.sc-leaf {
+  position: absolute; left: calc(var(--x) * 100%); top: calc(var(--s) * 100%);
+  width: calc(10px + var(--d) * 12px); aspect-ratio: 0.5; border-radius: 50% 0;
+  background: linear-gradient(135deg, #8de08a, #2e7a2c); opacity: 0;
+  animation: sc-leaf 1.2s calc(0.7s + var(--d) * 0.5s) ease-out forwards;
+}
+@keyframes sc-leaf { 0% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translate(calc(var(--r) * 60vw), 30vh) rotate(calc(var(--r) * 900deg)); } }
+
+/* ---- Archmage Elinka: shooting stars fall, the night sky draws a giant cat constellation behind her,
+   its eyes open, and a hush of starlight sweeps out (Silence) ---- */
+.theme-elinka .legend-backdrop { background: radial-gradient(ellipse at 50% 40%, #0e1a46, #02030c 75%); }
+.theme-elinka .legend-sunrays { display: none; }
+.theme-elinka .legend-portrait { background: linear-gradient(160deg, #fff8e0, #8ec8ff 40%, #1a2a6a); filter: drop-shadow(0 0 24px rgba(140, 200, 255, 0.9)); animation: legend-pop 0.6s 0.9s cubic-bezier(0.2, 1.6, 0.4, 1) both, ek2-glow 0.7s 1.25s ease-out; }
+@keyframes ek2-glow { 30% { filter: drop-shadow(0 0 50px #fff) drop-shadow(0 0 90px #8ec8ff) brightness(1.4); } }
+.theme-elinka .legend-banner { animation-delay: 1.15s; }
+.theme-elinka .legend-kicker { color: #bfe0ff; }
+.ek2-sky { position: absolute; inset: 0; }
+.ek2-star { position: absolute; left: calc(var(--x) * 100%); top: calc(var(--s) * 100%); width: calc(1.5px + var(--d) * 2.5px); aspect-ratio: 1; border-radius: 50%; background: #fff; box-shadow: 0 0 6px 1px #bfe0ff; opacity: 0; animation: qn-twinkle 0.7s calc(var(--d) * 0.6s) ease-in-out infinite alternate both; }
+/* Shooting stars streaking diagonally down. */
+.ek2-fall { position: absolute; inset: 0; overflow: hidden; }
+.ek2-comet { position: absolute; left: calc(20% + var(--x) * 90%); top: -10%; width: calc(80px + var(--s) * 120px); height: 2px; background: linear-gradient(90deg, transparent, rgba(190, 225, 255, 0.8), #fff); border-radius: 2px; rotate: 145deg; transform-origin: 100% 50%; opacity: 0; animation: ek2-comet 0.7s calc(var(--d) * 1.4s) ease-in forwards; }
+@keyframes ek2-comet { 0% { opacity: 0; transform: translateX(0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateX(-90vmin); } }
+/* The cat constellation, drawn line by line behind her. */
+.ek2-cat { position: absolute; left: 50%; top: 46%; width: min(105vmin, 900px); translate: -50% -50%; overflow: visible; filter: drop-shadow(0 0 6px #8ec8ff); }
+.ek2-cat .line { fill: none; stroke: rgba(190, 225, 255, 0.8); stroke-width: 0.35; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: tl-crack 0.9s 0.3s ease-out forwards; }
+.ek2-cat .whisker { stroke-width: 0.22; animation-delay: 0.8s; animation-duration: 0.5s; }
+.ek2-cat .node { fill: #fff; transform-box: fill-box; transform-origin: center; opacity: 0; animation: ek2-node 0.4s ease-out forwards; }
+@keyframes ek2-node { from { opacity: 0; transform: scale(4); } to { opacity: 1; transform: scale(1); } }
+.ek2-cat .eye { fill: #fff; transform-box: fill-box; transform-origin: center; opacity: 0; filter: drop-shadow(0 0 3px #6ec8ff); animation: ek2-eye 0.6s 1.15s ease-out forwards; }
+@keyframes ek2-eye { 0% { opacity: 0; transform: scale(0.2); } 40% { opacity: 1; transform: scale(2.2); fill: #bfe8ff; } 100% { opacity: 1; transform: scale(1); fill: #6ec8ff; } }
+/* The hush: a ring of starlight that sweeps out and greys what it passes (Silence). */
+.ek2-hush { position: absolute; left: 50%; top: calc(var(--pw) * 0.61); width: var(--pw); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; border: 3px solid rgba(230, 245, 255, 0.95); box-shadow: 0 0 30px 10px rgba(140, 200, 255, 0.6), inset 0 0 30px rgba(140, 200, 255, 0.5); backdrop-filter: grayscale(1); opacity: 0; animation: ek2-hush 1s 1.3s ease-out forwards; }
+@keyframes ek2-hush { 0% { opacity: 1; transform: scale(0.4); } 100% { opacity: 0; transform: scale(6); } }
+.ek2-burst { position: absolute; left: 50%; top: 45%; width: 0; height: 0; }
+.ek2-spark { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #fff; box-shadow: 0 0 8px 2px #8ec8ff; rotate: calc(var(--i) * 15deg); opacity: 0; animation: ar-spark 0.8s calc(1.3s + var(--d) * 0.2s) ease-out forwards; }
+
+/* ---- Simba: darkness, two amber eyes open, a lunge, claws, and the Void swallowing ---- */
+.theme-simba .legend-backdrop { background: #020104; animation: legend-fade-in 0.15s both; }
+.theme-simba .legend-sunrays { display: none; }
+.theme-simba .legend-portrait { background: linear-gradient(160deg, #ffe2a8, #c7801e 45%, #2a1404); animation: sm-lunge 0.45s 0.75s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+@keyframes sm-lunge { from { transform: scale(0.15); opacity: 0; filter: brightness(3); } }
+.theme-simba .legend-banner { animation-delay: 1.1s; }
+.theme-simba .legend-kicker { color: #ffcf7a; }
+/* The eyes, alone in the dark before it strikes. */
+.sm-eyes { position: absolute; left: 50%; top: 42%; width: 22vmin; margin-left: -11vmin; display: flex; justify-content: space-between; animation: sm-eyes 0.95s ease-in both; }
+.sm-eyes span { width: 6vmin; height: 2.6vmin; border-radius: 50%; background: radial-gradient(ellipse, #fff6c8, #ffb020 45%, #8a4a00 70%, transparent 72%); box-shadow: 0 0 22px 8px rgba(255, 170, 30, 0.7); }
+.sm-eyes span::after { content: ''; display: block; margin: 0 auto; width: 18%; height: 100%; background: #120600; border-radius: 50%; }
+@keyframes sm-eyes { 0% { opacity: 0; transform: scaleY(0.05); } 25% { opacity: 1; transform: scaleY(1); } 70% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(2.5); } }
+.sm-vortex {
+  position: absolute; left: 50%; top: calc(var(--pw) * 0.61); z-index: -1;
+  width: calc(var(--pw) * 2.4); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent, rgba(255, 150, 40, 0.6), transparent 30%, rgba(255, 150, 40, 0.6) 50%, transparent 65%, rgba(255, 130, 30, 0.55) 85%, transparent);
+  -webkit-mask: radial-gradient(circle, transparent 18%, #000 30%, transparent 70%); mask: radial-gradient(circle, transparent 18%, #000 30%, transparent 70%);
+  opacity: 0;
+}
+@keyframes sm-vortex { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: scale(1); } }
+.sm-vortex { animation: sm-vortex 0.5s 1s ease-out forwards, legend-spin 1.4s linear infinite; }
+.sm-rake { position: absolute; left: 20%; right: 20%; top: 28%; height: 44%; rotate: -35deg; }
+.sm-rake span { position: absolute; left: 0; right: 0; height: 8px; border-radius: 50%; background: linear-gradient(90deg, transparent, #ffe2a8 25%, #fff 50%, #ffe2a8 75%, transparent); box-shadow: 0 0 20px 6px rgba(255, 170, 40, 0.75); transform: scaleX(0); transform-origin: right; animation: slash 0.4s 1.15s ease-out forwards; }
+.sm-rake span:nth-child(1) { top: 5%; } .sm-rake span:nth-child(2) { top: 35%; } .sm-rake span:nth-child(3) { top: 65%; } .sm-rake span:nth-child(4) { top: 95%; }
+.sm-flash { position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, #fff, rgba(255, 190, 80, 0.6) 25%, transparent 60%); opacity: 0; animation: lk-flash 0.5s 0.75s ease-out forwards; }
+
+/* ---- Steelmaker Gorn: three hammer blows on the anvil, sparks, armour plates locking on ---- */
+.theme-gorn .legend-backdrop { background: radial-gradient(ellipse at 50% 55%, rgba(110, 60, 10, 0.55), rgba(10, 6, 2, 0.95) 70%); }
+.theme-gorn .legend-sunrays { background: repeating-conic-gradient(from 0deg, rgba(255, 190, 90, 0.2) 0deg 4deg, transparent 4deg 13deg); }
+.theme-gorn .legend-portrait { background: linear-gradient(160deg, #fff4d4, #d8a24a 40%, #5a3a10); animation: legend-pop 0.6s cubic-bezier(0.2, 1.6, 0.4, 1) both, rd-shake 0.25s 0.7s ease-out, rd-shake 0.25s 1s ease-out, rd-shake 0.3s 1.3s ease-out; }
+.theme-gorn .legend-kicker { color: #ffd88a; }
+.gn-glow { position: absolute; left: 50%; bottom: 0; width: 70vmin; height: 40vh; translate: -50% 0; background: radial-gradient(ellipse at 50% 100%, rgba(255, 140, 30, 0.6), transparent 70%); animation: legend-fade-in 0.5s both, qv-flicker 0.2s 0.5s ease-in-out infinite alternate; }
+/* A hammer swinging down three times onto the frame. */
+.gn-hammer { position: absolute; left: calc(50% + var(--pw) * 0.35); top: calc(var(--pw) * -0.15); width: calc(var(--pw) * 0.5); height: calc(var(--pw) * 0.7); transform-origin: 100% 100%; animation: gn-swing 0.3s 0.45s ease-in 3 both; }
+.gn-hammer span { position: absolute; left: 0; top: 0; width: 65%; height: 30%; background: linear-gradient(180deg, #e8ecf0, #6a7480); border-radius: 4px; box-shadow: 0 0 10px rgba(255, 200, 120, 0.6); }
+.gn-hammer::after { content: ''; position: absolute; left: 28%; top: 25%; width: 9%; height: 75%; background: linear-gradient(90deg, #6a3a14, #3a1e08); }
+@keyframes gn-swing { 0% { rotate: -55deg; } 85% { rotate: 25deg; } 100% { rotate: 20deg; } }
+.gn-plates { position: absolute; left: 50%; top: calc(var(--pw) * 0.61); width: 0; height: 0; }
+.gn-plate { position: absolute; left: calc(var(--pw) * -0.09); top: calc(var(--pw) * -0.06); width: calc(var(--pw) * 0.18); height: calc(var(--pw) * 0.12); background: linear-gradient(160deg, #fff6dc, #c8962e 45%, #5a3a10); clip-path: polygon(12% 0, 88% 0, 100% 50%, 88% 100%, 12% 100%, 0 50%); rotate: calc(var(--i) * 45deg); opacity: 0; animation: gn-plate 0.4s calc(1.4s + var(--i) * 0.04s) cubic-bezier(0.6, 0, 1, 0.8) forwards; }
+@keyframes gn-plate { 0% { opacity: 1; transform: translateX(70vmax) rotate(200deg); } 100% { opacity: 1; transform: translateX(calc(var(--pw) * 0.62)) rotate(90deg); } }
+.gn-sparks { position: absolute; left: 50%; top: 40%; width: 0; height: 0; }
+.gn-spark { position: absolute; width: 4px; height: 12px; border-radius: 2px; background: linear-gradient(#fff, #ffb030); box-shadow: 0 0 8px #ff9a20; rotate: calc(var(--i) * 12deg); opacity: 0; animation: gn-spark 0.5s 0.72s ease-out forwards; }
+.gn-spark:nth-child(3n + 1) { animation-delay: 0.72s; } .gn-spark:nth-child(3n + 2) { animation-delay: 1.02s; } .gn-spark:nth-child(3n) { animation-delay: 1.32s; }
+@keyframes gn-spark { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(calc(-10vmin - var(--s) * 25vmin)) translateX(calc(var(--r) * 30vmin)); } }
+
+/* ---- Nereth: the maelstrom opens, spinning, ice shards circling, frost creeping in ---- */
+.theme-nereth .legend-backdrop { background: radial-gradient(ellipse at 50% 45%, rgba(10, 50, 80, 0.7), rgba(1, 6, 14, 0.96) 70%); }
+.theme-nereth .legend-sunrays { display: none; }
+.theme-nereth .legend-portrait { background: linear-gradient(160deg, #eafcff, #6ac8f0 45%, #0a2a48); animation: nr-rise 0.7s 0.25s cubic-bezier(0.2, 1.2, 0.4, 1) both; }
+@keyframes nr-rise { from { transform: translateY(40vh) scale(0.4) rotate(-30deg); opacity: 0; } }
+.theme-nereth .legend-kicker { color: #a8e8ff; }
+.nr-vortex {
+  position: absolute; left: 50%; top: 46%; width: 140vmax; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(120, 210, 255, 0.35) 0deg 3deg, transparent 3deg 11deg);
+  -webkit-mask: radial-gradient(circle, transparent 5vmin, #000 14vmin, transparent 55vmin); mask: radial-gradient(circle, transparent 5vmin, #000 14vmin, transparent 55vmin);
+  animation: legend-fade-in 0.4s both, legend-spin 2.4s linear infinite;
+}
+.nr-vortex.v2 { animation: legend-fade-in 0.4s 0.2s both, legend-spin 1.6s linear infinite reverse; opacity: 0.6; }
+.nr-ice { position: absolute; left: 50%; top: calc(var(--pw) * 0.61); width: 0; height: 0; animation: legend-spin 3s linear infinite; }
+.nr-shard { position: absolute; left: -6px; top: -14px; width: 12px; height: 28px; background: linear-gradient(90deg, #fff, #9ce0ff 50%, #3a8ac8); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); filter: drop-shadow(0 0 6px #9ce0ff); rotate: calc(var(--i) * 22.5deg); opacity: 0; animation: nr-shard 0.6s calc(0.5s + var(--i) * 0.03s) ease-out forwards; }
+@keyframes nr-shard { from { opacity: 0; transform: translateY(0); } to { opacity: 1; transform: translateY(calc(var(--pw) * -0.85)); } }
+.nr-frost { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 55%, rgba(200, 240, 255, 0.55) 90%); opacity: 0; animation: nr-frost 0.7s 0.9s ease-out forwards; }
+@keyframes nr-frost { to { opacity: 1; } }
+
+/* ---- Sali, the Creator (3.4s): the world's eyelids close, a rift of creation opens, a colossus behind it,
+   stars and constellations are made, rings of creation, then everything is drawn into Sali ---- */
+.theme-sali.legend-entrance { animation: legend-out 3.4s ease-in forwards, sl-quake 0.6s 1.9s ease-out; }
+.theme-sali .legend-stage { animation-duration: 3.4s; }
+@keyframes sl-quake { 10% { translate: -14px 8px; } 25% { translate: 12px -9px; } 40% { translate: -8px 5px; } 60% { translate: 5px -3px; } 80% { translate: -2px 1px; } }
+.theme-sali .legend-backdrop { background: #010004; animation: none; }
+.theme-sali .legend-sunrays { display: none; }
+/* Two black eyelids closing over the board. */
+.sl2-lids { position: absolute; left: 0; right: 0; height: 52%; background: #000; z-index: 0; }
+.sl2-lids.top { top: 0; animation: sl2-lid-t 0.5s ease-in both; }
+.sl2-lids.bottom { bottom: 0; animation: sl2-lid-b 0.5s ease-in both; }
+@keyframes sl2-lid-t { from { transform: translateY(-100%); } }
+@keyframes sl2-lid-b { from { transform: translateY(100%); } }
+/* A vertical slit of violet light that tears open into a rift. */
+.sl2-rift {
+  position: absolute; left: 50%; top: 4%; bottom: 4%; width: 46vmin; margin-left: -23vmin; z-index: 1;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, #fff 0 6%, #d8b0ff 14%, #7a2cff 32%, rgba(60, 10, 140, 0.6) 55%, transparent 72%);
+  filter: blur(2px);
+  animation: sl2-rift 3.4s cubic-bezier(0.3, 0, 0.2, 1) forwards;
+}
+@keyframes sl2-rift {
+  0%, 12% { transform: scaleX(0.01) scaleY(0); opacity: 0; }
+  20% { transform: scaleX(0.02) scaleY(1); opacity: 1; }
+  32% { transform: scaleX(1) scaleY(1); opacity: 1; }
+  70% { transform: scaleX(1.6) scaleY(1.15); opacity: 0.85; }
+  100% { transform: scaleX(2.2) scaleY(1.2); opacity: 0.5; }
+}
+/* A colossal, dark Sali looming behind the rift. */
+.sl2-colossus {
+  position: absolute; left: 50%; top: 50%; width: min(130vmin, 1100px); aspect-ratio: 0.8; translate: -50% -50%; z-index: 1;
+  object-fit: cover;
+  filter: brightness(0.45) saturate(1.3) contrast(1.2) drop-shadow(0 0 40px rgba(150, 60, 255, 0.8));
+  -webkit-mask: radial-gradient(ellipse 50% 55% at 50% 45%, #000 40%, transparent 72%); mask: radial-gradient(ellipse 50% 55% at 50% 45%, #000 40%, transparent 72%);
+  mix-blend-mode: screen;
+  opacity: 0; animation: sl2-colossus 2.6s 0.6s ease-out forwards;
+}
+@keyframes sl2-colossus { from { opacity: 0; transform: scale(1.25); } 35% { opacity: 0.9; } to { opacity: 0.7; transform: scale(1); } }
+.theme-sali .legend-stage { z-index: 3; }
+/* Stars being made, and the lines of new constellations. */
+.sl2-stars { position: absolute; inset: 0; z-index: 2; }
+.sl2-star { position: absolute; left: calc(var(--x) * 100%); top: calc(var(--s) * 100%); width: calc(2px + var(--d) * 3px); aspect-ratio: 1; border-radius: 50%; background: #fff; box-shadow: 0 0 8px 2px #b48cff; opacity: 0; animation: sl2-star 0.4s calc(0.9s + var(--r) * 1s + 0.5s) ease-out forwards; }
+@keyframes sl2-star { from { opacity: 0; transform: scale(4); } to { opacity: 1; transform: scale(1); } }
+.sl2-constellation { position: absolute; left: 4%; top: 6%; width: 92%; height: 70%; z-index: 2; overflow: visible; }
+.sl2-constellation polyline { fill: none; stroke: rgba(220, 190, 255, 0.45); stroke-width: 0.15; stroke-dasharray: 1; stroke-dashoffset: 1; animation: tl-crack 0.9s 1.3s ease-out forwards; }
+/* Three rings of creation glyphs turning around the portrait at different speeds. */
+.sl2-glyphs { position: absolute; left: 50%; top: calc(var(--pw) * 0.61); width: 0; height: 0; z-index: -1; }
+.sl2-ring { position: absolute; width: calc(var(--pw) * (1.4 + var(--i) * 0.55)); aspect-ratio: 1; left: 50%; top: 50%; translate: -50% -50%; filter: drop-shadow(0 0 6px #b070ff); opacity: 0; animation: sl2-ring 0.6s calc(1.1s + var(--i) * 0.15s) ease-out forwards; }
+.sl2-ring svg { width: 100%; display: block; overflow: visible; animation: legend-spin calc(6s + var(--i) * 4s) linear infinite; }
+.sl2-ring:nth-child(2) svg { animation-direction: reverse; }
+.sl2-ring circle, .sl2-ring polygon { fill: none; stroke: #e0c8ff; stroke-width: 1; }
+.sl2-ring .rune { fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; }
+@keyframes sl2-ring { from { opacity: 0; transform: scale(0.3) rotate(-90deg); } to { opacity: 1; transform: none; } }
+.theme-sali .legend-portrait { background: linear-gradient(160deg, #f0e4ff, #8a4cff 40%, #14002a); filter: drop-shadow(0 0 30px rgba(170, 80, 255, 1)); animation: sl2-portrait 0.8s 1.0s cubic-bezier(0.2, 1, 0.3, 1) both; }
+@keyframes sl2-portrait { from { transform: scale(0.05); opacity: 0; filter: brightness(5); } 60% { opacity: 1; } }
+.theme-sali .legend-banner { animation-delay: 2.1s; background: linear-gradient(90deg, transparent, rgba(16, 0, 30, 0.95) 18%, rgba(16, 0, 30, 0.95) 82%, transparent); border-color: rgba(200, 140, 255, 0.85); }
+.theme-sali .legend-kicker { color: #d8b0ff; }
+.theme-sali .legend-banner strong { font-size: clamp(1.8rem, 3.4vw, 2.8rem); color: #fff; text-shadow: 0 0 18px #a050ff, 0 2px 2px #000; }
+/* Everything drawn into Sali, then a white flash. */
+.sl2-implode { position: absolute; left: 50%; top: 45%; width: 0; height: 0; }
+.sl2-in { position: absolute; width: calc(3px + var(--s) * 5px); height: calc(18px + var(--s) * 30px); border-radius: 4px; background: linear-gradient(#fff, #b070ff); rotate: calc(var(--i) * 9deg); opacity: 0; animation: sl2-in 0.5s calc(1.45s + var(--d) * 0.3s) ease-in forwards; }
+@keyframes sl2-in { 0% { opacity: 0; transform: translateY(-70vmin); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-4vmin); } }
+.sl2-flash { position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, #fff, rgba(220, 180, 255, 0.85) 30%, rgba(120, 40, 255, 0.3) 60%, transparent); opacity: 0; animation: lk-flash 0.7s 1.9s ease-out forwards; }
+
+/* ---- Sali takes the Warden's place (2.6s): darkness, the colossal Sali descends onto the Warden, rings of creation close in on the Warden, everything implodes, a flash, the name ---- */
+.ascension { position: fixed; inset: 0; z-index: 285; pointer-events: none; overflow: hidden; animation: legend-out 2.6s ease-in forwards; }
+.as2-dark { position: absolute; inset: 0; background: radial-gradient(circle at var(--cx) var(--cy), transparent 0 calc(var(--hs) * 0.75), rgba(0, 0, 0, 0.92) calc(var(--hs) * 2.2)); animation: legend-fade-in 0.3s both; }
+.as2-colossus { position: absolute; left: var(--cx); top: calc(var(--cy) - var(--hs) * 4); width: calc(var(--hs) * 4.2); aspect-ratio: 0.8; translate: -50% 0; object-fit: cover;
+  filter: brightness(0.55) saturate(1.3) drop-shadow(0 0 30px rgba(150, 60, 255, 0.9)); mix-blend-mode: screen;
+  -webkit-mask: radial-gradient(ellipse 50% 55% at 50% 45%, #000 40%, transparent 72%); mask: radial-gradient(ellipse 50% 55% at 50% 45%, #000 40%, transparent 72%);
+  opacity: 0; animation: as2-colossus 1.6s 0.35s cubic-bezier(0.5, 0, 0.7, 0.4) forwards; }
+@keyframes as2-colossus { 0% { opacity: 0; transform: translateY(-20vh) scale(1.3); } 30% { opacity: 0.95; } 100% { opacity: 0; transform: translateY(calc(var(--hs) * 3.3)) scale(0.22); } }
+.as2-rings { position: absolute; left: var(--cx); top: var(--cy); width: 0; height: 0; }
+.as2-ring { position: absolute; left: 0; top: 0; width: calc(var(--hs) * (4 + var(--i) * 2)); aspect-ratio: 1; translate: -50% -50%; filter: drop-shadow(0 0 6px #b070ff); opacity: 0; animation: as2-ring 1.1s calc(0.6s + var(--i) * 0.12s) cubic-bezier(0.6, 0, 0.9, 0.6) forwards; }
+.as2-ring svg { width: 100%; display: block; overflow: visible; animation: legend-spin 3s linear infinite; }
+.as2-ring:nth-child(2) svg { animation-direction: reverse; }
+.as2-ring circle, .as2-ring polygon { fill: none; stroke: #e0c8ff; stroke-width: 1.2; }
+.as2-ring .rune { fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; }
+@keyframes as2-ring { 0% { opacity: 0; transform: scale(1); } 20% { opacity: 1; } 100% { opacity: 0.2; transform: scale(0.22); } }
+.as2-in { position: absolute; left: var(--cx); top: var(--cy); width: 0; height: 0; }
+.as2-in span { position: absolute; width: calc(3px + var(--s) * 4px); height: calc(14px + var(--s) * 24px); border-radius: 4px; background: linear-gradient(#fff, #b070ff); rotate: calc(var(--i) * 12deg); opacity: 0; animation: sl2-in 0.5s calc(1.2s + var(--d) * 0.3s) ease-in forwards; }
+.as2-flash { position: absolute; left: var(--cx); top: var(--cy); width: calc(var(--hs) * 6); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, #fff, rgba(220, 180, 255, 0.8) 25%, transparent 60%); opacity: 0; animation: lk-flash 0.8s 1.65s ease-out forwards; }
+.as2-shock { position: absolute; left: var(--cx); top: var(--cy); width: var(--hs); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; border: 4px solid #f0e0ff; box-shadow: 0 0 26px 8px rgba(170, 80, 255, 0.85); opacity: 0; animation: rd-shock 0.9s 1.7s ease-out forwards; }
+.as2-name { position: absolute; left: var(--cx); top: calc(var(--cy) - var(--hs) * 1.1); translate: -50% -100%; white-space: nowrap; display: grid; justify-items: center; gap: 2px; opacity: 0; animation: as-name 1s 1.75s ease-out forwards; }
+.as2-name small { font: 700 var(--t-xs) var(--font-body); letter-spacing: 0.3em; text-transform: uppercase; color: #d8b0ff; }
+.as2-name strong { font: 400 clamp(1.4rem, 2.6vw, 2.2rem) var(--font-display); color: #fff; text-shadow: 0 0 16px #a050ff, 0 2px 2px #000; }
+@keyframes as-name { 0% { opacity: 0; transform: translateY(10px); } 25%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+.match .hero.is-ascending { animation: as2-hero 2.6s ease-out both; }
+@keyframes as2-hero { 0%, 55% { filter: brightness(0.4) saturate(0.4); } 65% { filter: brightness(4) saturate(0); transform: scale(1.18); } 100% { filter: none; transform: none; } }
+.match.is-ascension { animation: sl-quake 0.5s 1.65s ease-out; }
+
 /* ---- Outside a match (pack opening, collection): the entrance over everything, click to skip ---- */
 .legend-showcase { position: fixed; inset: 0; z-index: 1200; cursor: pointer; }
 .legend-showcase .legend-entrance { position: absolute; inset: 0; }

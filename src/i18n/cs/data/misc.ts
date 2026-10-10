@@ -50,6 +50,7 @@ const v: MiscOverlay = {
     DEEP: { tagline: 'V říších za okrajem mapy se probouzejí draci.' },
     ABYSS: { tagline: 'Rytíři pod všemi prapory táhnou ve službách stínu.' },
     DRAGON: { tagline: 'Draci se zmocňují nebe a jejich rytíři i víly letí s nimi.' },
+    RECKONING: { tagline: 'Vychází černé slunce. Prázdnota si přichází vyrovnat všechny účty.' },
   },
   titles: ['Hledač Střepů', 'Lamač korun', 'Strážce Éteru', 'Vladař Střepů'],
   tutorial: {

@@ -292,6 +292,8 @@ const talents: TalentsOverlay = {
   wt_boss_oath_of_cinders: { name: 'Přísaha popela', levels: ['Způsob 2 poškození náhodnému nepříteli.'] },
   wt_boss_black_tide: { name: 'Černý příliv', levels: ['Zmraz náhodnou nepřátelskou jednotku a získej 2 brnění.'] },
   wt_boss_soul_pyre: { name: 'Hranice duší', levels: ['Způsob 2 poškození nepřátelskému Strážci a vyleč svému 2 životy.'] },
+  wt_boss_sali_sovereign: { name: 'Povstání vládce', levels: ['Vyvolej Prázdného vládce 3/4. Lze použít jednou za dva tahy.'] },
+  wt_boss_sali_warden: { name: 'Volání zatmění', levels: ['Vyvolej Strážce zatmění 4/3. Lze použít jednou za dva tahy.'] },
   wt_boss_drake_brood: { name: 'Dračí plod', levels: ['Vyvolej Popelavého dráčka 2/2 se Spěchem.'] },
   wt_boss_siege_protocol: { name: 'Obléhací protokol', levels: ['Vyvolej Mosaznou hlídku 2/3 se Stráží a získej 2 brnění.'] },
   wt_boss_frozen_hymn: { name: 'Zamrzlá hymna', levels: ['Zmraz všechny nepřátelské jednotky.'] },

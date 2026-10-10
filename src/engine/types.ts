@@ -46,6 +46,10 @@ export interface UnitInstance {
   ambush: boolean;
   silenced: boolean;
   summonedThisTurn: boolean;
+  /** Corrupted (Void Reckoning): -1/-1 at the start of each of its controller's turns. */
+  corrupt?: boolean;
+  /** Borrowed until the end of this turn: goes back to this player then (TAKE_CONTROL untilEndOfTurn). */
+  borrowedFrom?: PlayerId;
   attacksThisTurn: number;
   /** Marked for destruction by Venom/Destroy; removed at the next death check. */
   pendingDestroy: boolean;
@@ -196,6 +200,7 @@ export type GameEvent =
   | { seq: number; type: 'UNIT_RETURNED'; player: PlayerId; uid: number; cardId: string }
   | { seq: number; type: 'UNIT_TRANSFORMED'; uid: number; cardId: string }
   | { seq: number; type: 'CONTROL_CHANGED'; uid: number; newOwner: PlayerId }
+  | { seq: number; type: 'HERO_REPLACED'; player: PlayerId; cardId: string }
   | { seq: number; type: 'CARD_CREATED'; player: PlayerId; cardId: string; destination: 'HAND' | 'DECK' }
   | { seq: number; type: 'CARD_DISCARDED'; player: PlayerId; cardId: string }
   | { seq: number; type: 'CARD_STOLEN'; player: PlayerId; cardId: string }

@@ -33,6 +33,8 @@ export function unitValue(state: GameState, u: UnitInstance, w: EvalWeights): nu
   }
   if (u.frozen) v -= atk * 0.5;
   if (u.burn > 0) v -= Math.min(hp, u.burn) * 0.9;
+  // Corrupted: shrinks by 1/1 every turn, so it is worth much less than its stats today.
+  if (u.corrupt) v -= Math.min(hp, 3) * 0.7 + atk * 0.4;
   return Math.max(0.1, v);
 }
 

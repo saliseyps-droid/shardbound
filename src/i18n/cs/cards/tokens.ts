@@ -32,6 +32,8 @@ const cards: CardsOverlay = {
   token_frog: { name: 'Bažinná ropucha' },
   token_deckhand: { name: 'Plavčík' },
   token_recruit: { name: 'Rekrut z karavany' },
+  token_hollow_sovereign: { name: 'Prázdný vládce', description: 'Stráž. Vysátí. Na začátku tvého tahu: Rozlož náhodnou nepřátelskou jednotku.' },
+  token_eclipse_warden: { name: 'Strážce zatmění', description: 'Spěch. Kdykoli tato jednotka zničí jednotku, způsob 3 poškození nepřátelskému Strážci a může zaútočit znovu.' },
   token_drakeling: { name: 'Popelavý dráček', description: 'Spěch.' },
   token_golem: { name: 'Obléhací golem', description: 'Stráž.' },
   token_kraken_tentacle: { name: 'Svírající chapadlo', description: 'Stráž.' },

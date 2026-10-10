@@ -1,7 +1,7 @@
 import { getCard } from '@/data/cards';
 import type { GameEvent, PlayerId } from '@/engine/types';
 
-export type LegendTheme = 'gold' | 'meowchick' | 'liu' | 'abandoneer' | 'rendoslav' | 'qvido' | 'qinny' | 'tallys' | 'elinda' | 'skolky' | 'r3d3' | 'dragon';
+export type LegendTheme = 'gold' | 'meowchick' | 'liu' | 'abandoneer' | 'rendoslav' | 'qvido' | 'qinny' | 'tallys' | 'elinda' | 'skolky' | 'r3d3' | 'dragon' | 'artemis' | 'scar' | 'elinka' | 'simba' | 'gorn' | 'nereth' | 'sali';
 
 /** Legendaries with their own entrance; every other Legendary gets the golden one. */
 const THEMES: Record<string, LegendTheme> = {
@@ -15,7 +15,25 @@ const THEMES: Record<string, LegendTheme> = {
   ver_elinda: 'elinda',
   tid_skolky: 'skolky',
   irn_bronzehorn_colossus: 'r3d3',
+  emb_artemis_qinnys_bane: 'artemis',
+  ver_scar_liu_kanos_mauler: 'scar',
+  ast_archmage_elinka: 'elinka',
+  vod_simba_ultimate_predator: 'simba',
+  irn_steelmaker_gorn: 'gorn',
+  tid_nereth_heart_of_the_maelstrom: 'nereth',
+  neu_sali_the_creator: 'sali',
 };
+
+/** How long an entrance plays (ms, before reduced-motion scaling): Sali's is the longest. */
+export function legendDuration(cardId: string): number {
+  return legendTheme(cardId) === 'sali' ? 3400 : 2150;
+}
+
+/** Sali (or another card) took the Warden's place in this transition: its ascension plays. */
+export function heroReplaced(events: GameEvent[]): { player: PlayerId; cardId: string } | null {
+  for (const e of events) if (e.type === 'HERO_REPLACED') return { player: e.player, cardId: e.cardId };
+  return null;
+}
 
 export function legendTheme(cardId: string): LegendTheme {
   if (THEMES[cardId]) return THEMES[cardId];

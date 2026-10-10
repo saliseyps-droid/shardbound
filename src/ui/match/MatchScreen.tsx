@@ -23,6 +23,7 @@ import { modeLabel } from './matchLabels';
 import { MatchIntro } from './MatchIntro';
 import { SpellFlourish } from './SpellFlourish';
 import { FinalBlow } from './FinalBlow';
+import { Ascension } from './Ascension';
 import { BattleLog, CastPreview, MulliganOverlay, ResultsOverlay, SpectatorResults, TurnBanner, TurnTimer, TutorialOverlay } from './Overlays';
 import { t, tn, useT } from '@/i18n';
 import { BrandLogo } from '@/ui/components/BrandLogo';
@@ -750,6 +751,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       <MatchIntro />
       <SpellFlourish />
       <FinalBlow />
+      <Ascension />
       <TurnBanner />
       <TutorialOverlay />
       {spectating && watching && (

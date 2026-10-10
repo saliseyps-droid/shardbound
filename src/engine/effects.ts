@@ -111,6 +111,8 @@ export function checkConditions(ctx: EngineContext, c: Condition, source: Abilit
       return !!targetUnit && targetUnit.damage > 0;
     case 'TARGET_FROZEN':
       return !!targetUnit && targetUnit.frozen;
+    case 'TARGET_CORRUPTED':
+      return !!targetUnit && !!targetUnit.corrupt;
     case 'TARGET_IS_UNIT':
       return !!targetUnit;
     case 'MAX_ENERGY_GTE':
@@ -152,6 +154,19 @@ export function resolveTargets(
   chosen: TargetRef | undefined,
   triggerUnitUid: number | undefined,
 ): TargetRef[] {
+  if (selector === 'PREVIOUS_TARGET') return (ctx.lastTargets ?? []).filter((t) => targetExists(ctx.state, t));
+  const picked = resolveTargetsNow(ctx, selector, source, chosen, triggerUnitUid);
+  ctx.lastTargets = picked;
+  return picked;
+}
+
+function resolveTargetsNow(
+  ctx: EngineContext,
+  selector: TargetSelector,
+  source: AbilitySource,
+  chosen: TargetRef | undefined,
+  triggerUnitUid: number | undefined,
+): TargetRef[] {
   const me = source.controller;
   const them = other(me);
   const selfUid = source.kind === 'unit' ? source.uid ?? undefined : undefined;
@@ -164,6 +179,8 @@ export function resolveTargets(
       return [heroRef(me)];
     case 'TARGET':
       return chosen && targetExists(ctx.state, chosen) ? [chosen] : [];
+    case 'PREVIOUS_TARGET':
+      return ctx.lastTargets ?? [];
     case 'TRIGGER_UNIT': {
       if (triggerUnitUid === undefined) return [];
       const u = findUnit(ctx.state, triggerUnitUid);
@@ -183,6 +200,8 @@ export function resolveTargets(
       return liveUnits(ctx, them).map(unitRef);
     case 'FROZEN_ENEMY_UNITS':
       return liveUnits(ctx, them).filter((u) => u.frozen).map(unitRef);
+    case 'CORRUPTED_ENEMY_UNITS':
+      return liveUnits(ctx, them).filter((u) => u.corrupt).map(unitRef);
     case 'ALL_UNITS':
       return [...liveUnits(ctx, me), ...liveUnits(ctx, them)].map(unitRef);
     case 'ALL_OTHER_UNITS':
@@ -419,6 +438,11 @@ export function executeEffect(
         } else if (effect.status === 'BURN') u.burn += effect.amount ?? 1;
         else if (effect.status === 'BARRIER') u.barrier = true;
         else if (effect.status === 'AMBUSH') u.ambush = true;
+        else if (effect.status === 'CORRUPT') {
+          // Corrupt silences the unit, then it decays (see startTurn).
+          silenceUnit(ctx, u);
+          u.corrupt = true;
+        }
         emit(ctx, { type: 'STATUS_APPLIED', uid: u.uid, status: effect.status, amount: effect.amount });
       }
       return units.length > 0;
@@ -436,6 +460,43 @@ export function executeEffect(
     case 'SILENCE': {
       const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
       for (const u of units) silenceUnit(ctx, u);
+      return units.length > 0;
+    }
+    case 'CONSUME': {
+      const eater = source.kind === 'unit' && source.uid !== null ? findUnit(state, source.uid) : undefined;
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid)).filter((u) => u.uid !== eater?.uid && isAlive(u) && !u.pendingDestroy);
+      for (const u of units) {
+        // Its Attack and Health as they are now (temporary Attack and auras not included).
+        const atk = Math.max(0, u.baseAttack + u.attackBuff);
+        const hp = Math.max(0, currentHealth(u));
+        u.pendingDestroy = true;
+        if (eater && isAlive(eater)) {
+          eater.attackBuff += atk;
+          eater.healthBuff += hp;
+          emit(ctx, { type: 'UNIT_BUFFED', uid: eater.uid, attack: atk, health: hp });
+        }
+      }
+      return units.length > 0;
+    }
+    case 'BECOME_WARDEN': {
+      const hero = state.players[me].hero;
+      hero.name = getCard(source.cardId)?.name ?? hero.name;
+      hero.portrait = effect.portrait;
+      hero.maxHealth = Math.max(hero.maxHealth, effect.health);
+      hero.health = effect.health;
+      if (effect.armor) gainArmor(ctx, me, effect.armor);
+      if (effect.abilities) hero.abilities = effect.abilities.map((id) => ({ id, level: 0 as const, uses: 0 }));
+      emit(ctx, { type: 'HERO_REPLACED', player: me, cardId: source.cardId });
+      return true;
+    }
+    case 'CLEANSE': {
+      const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
+      for (const u of units) {
+        u.corrupt = false;
+        u.frozen = false;
+        u.thawPending = false;
+        u.burn = 0;
+      }
       return units.length > 0;
     }
     case 'CREATE_CARD': {
@@ -480,6 +541,7 @@ export function executeEffect(
           continue;
         }
         removeUnitFromBoard(ctx, u);
+        if (effect.untilEndOfTurn) u.borrowedFrom = u.owner;
         u.owner = me;
         u.summonedThisTurn = true;
         u.attacksThisTurn = 0;

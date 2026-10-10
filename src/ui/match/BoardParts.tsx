@@ -32,6 +32,7 @@ export function FxLayer({ fx }: { fx: Fx[] }) {
           {f.kind === 'buff' && '▲'}
           {f.kind === 'shield' && '◈'}
           {f.kind === 'freeze' && '❄'}
+          {f.kind === 'corrupt' && '◉'}
           {f.kind === 'burn' && '🔥'}
           {f.kind === 'silence' && '∅'}
         </span>
@@ -98,6 +99,7 @@ export const UnitView = memo(function UnitView({
     unit.barrier ? 'has-barrier' : '',
     unit.ambush ? 'has-ambush' : '',
     unit.frozen ? 'is-frozen' : '',
+    unit.corrupt ? 'is-corrupt' : '',
     unit.silenced ? 'is-silenced' : '',
     ready ? 'is-ready' : '',
     targetable ? 'is-targetable' : '',
@@ -113,6 +115,7 @@ export const UnitView = memo(function UnitView({
     unit.barrier && KEYWORDS.BARRIER.name,
     unit.ambush && KEYWORDS.AMBUSH.name,
     unit.frozen && t('Frozen'),
+    unit.corrupt && KEYWORDS.CORRUPT.name,
     unit.silenced && t('Silenced'),
     unit.burn > 0 && `${KEYWORDS.BURN.name} ${unit.burn}`,
     ready && t('ready to attack'),
@@ -138,6 +141,7 @@ export const UnitView = memo(function UnitView({
         <img className="unit-art" src={cardArtUri(card)} alt="" draggable={false} />
         {unit.variant && <div className="unit-shine" aria-hidden />}
         {unit.frozen && <div className="unit-ice" aria-hidden />}
+        {unit.corrupt && <div className="unit-corrupt" aria-hidden />}
         <div className="unit-name">{card.name}</div>
       </div>
       {guard && <div className="unit-guard-plate" aria-hidden />}
@@ -170,6 +174,11 @@ export const UnitView = memo(function UnitView({
         {hasTrigger && (
           <Tip title={t('Triggered ability')} body={card.description ?? ''} className="unit-badge">
             ϟ
+          </Tip>
+        )}
+        {unit.corrupt && (
+          <Tip title={KEYWORDS.CORRUPT.name} body={KEYWORDS.CORRUPT.definition} className="unit-badge badge-corrupt">
+            ◉
           </Tip>
         )}
         {unit.burn > 0 && (

@@ -63,7 +63,7 @@ describe('Brawl rotation', () => {
   });
 
   it('pays packs of the newest set', () => {
-    expect(brawlPackSet()).toBe('DRAGON');
+    expect(brawlPackSet()).toBe('RECKONING');
   });
 });
 
@@ -87,28 +87,28 @@ describe('recording Brawl matches', () => {
 
   it('the first win in each fight of a rotation pays one pack, later wins do not', () => {
     const save = createNewSave('A', 'flame', 1, 'p');
-    const packs0 = save.economy.packs.DRAGON ?? 0;
+    const packs0 = save.economy.packs.RECKONING ?? 0;
     const { save: s1, rewards } = applyMatchResult(save, summary('WIN', '0-0'), NOW);
-    expect(s1.economy.packs.DRAGON).toBe(packs0 + 1);
-    expect(rewards.lines.some((l) => l.label === 'Brawl: first win' && l.packs?.setId === 'DRAGON')).toBe(true);
+    expect(s1.economy.packs.RECKONING).toBe(packs0 + 1);
+    expect(rewards.lines.some((l) => l.label === 'Brawl: first win' && l.packs?.setId === 'RECKONING')).toBe(true);
     expect(s1.profile.brawl).toEqual({ rotation: 0, won: ['0-0'] });
     const { save: s2 } = applyMatchResult(s1, summary('WIN', '0-0'), NOW);
-    expect(s2.economy.packs.DRAGON).toBe(packs0 + 1);
+    expect(s2.economy.packs.RECKONING).toBe(packs0 + 1);
     const { save: s3 } = applyMatchResult(s2, summary('WIN', '0-1'), NOW);
-    expect(s3.economy.packs.DRAGON).toBe(packs0 + 2);
+    expect(s3.economy.packs.RECKONING).toBe(packs0 + 2);
     // The next rotation pays again.
     const { save: s4 } = applyMatchResult(s3, summary('WIN', '1-0'), NOW + 3 * DAY);
-    expect(s4.economy.packs.DRAGON).toBe(packs0 + 3);
+    expect(s4.economy.packs.RECKONING).toBe(packs0 + 3);
     expect(s4.profile.brawl).toEqual({ rotation: 1, won: ['1-0'] });
     // A win in an older rotation's fight (finished after the rotation changed) pays nothing.
     const { save: s5 } = applyMatchResult(s4, summary('WIN', '0-1'), NOW + 3 * DAY);
-    expect(s5.economy.packs.DRAGON).toBe(packs0 + 3);
+    expect(s5.economy.packs.RECKONING).toBe(packs0 + 3);
   });
 
   it('a loss pays no pack', () => {
     const save = createNewSave('A', 'flame', 1, 'p');
     const { save: s1 } = applyMatchResult(save, summary('LOSS', '0-0'), NOW);
-    expect(s1.economy.packs.DRAGON ?? 0).toBe(save.economy.packs.DRAGON ?? 0);
+    expect(s1.economy.packs.RECKONING ?? 0).toBe(save.economy.packs.RECKONING ?? 0);
     expect(s1.profile.brawl?.won ?? []).toEqual([]);
   });
 });

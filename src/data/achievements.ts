@@ -203,6 +203,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'set_deep', name: 'Realms Explored', description: 'Own at least one copy of every card in Fantasy Realms.', category: 'COLLECTION', tier: 'GOLD', icon: 'deck', rewards: [cardBack, gold(300)], progress: (s) => setProgress(s, 'DEEP') },
   { id: 'set_abyss', name: 'Shadow Archivist', description: 'Own at least one copy of every card in Legions of Shadow.', category: 'COLLECTION', tier: 'GOLD', icon: 'deck', rewards: [cardBack, gold(300)], progress: (s) => setProgress(s, 'ABYSS') },
   { id: 'set_dragon', name: 'Dragon Hoard', description: 'Own at least one copy of every card in Dragon Realm.', category: 'COLLECTION', tier: 'GOLD', icon: 'wing', rewards: [title('Dragonlord'), cardBack], progress: (s) => setProgress(s, 'DRAGON') },
+  { id: 'set_reckoning', name: 'Settled Accounts', description: 'Own at least one copy of every card in Void Reckoning.', category: 'COLLECTION', tier: 'GOLD', icon: 'deck', rewards: [title('Herald of the Black Sun'), cardBack], progress: (s) => setProgress(s, 'RECKONING') },
   {
     id: 'dragons_20', name: 'Dragon Tamer', description: 'Own 20 different Dragon cards.', category: 'COLLECTION', tier: 'SILVER', icon: 'wing', rewards: [pack('DRAGON', 2)],
     progress: (s) => count(ownedOf(s, dragonPool()), Math.min(20, dragonPool().length)),

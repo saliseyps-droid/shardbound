@@ -85,6 +85,7 @@ class WatchHub {
   /** Opens the watch room; failures (offline, code taken) only mean nobody can watch. */
   async open(code: string, info: WatchInfo) {
     this.close();
+    if (typeof RTCPeerConnection === 'undefined') return;
     const gen = ++this.gen;
     this.code = code;
     this.info = info;

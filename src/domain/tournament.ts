@@ -55,7 +55,7 @@ export const TOURNAMENT_CONFIG = {
 };
 
 /** Tournament prize packs come from the newest set. */
-export const TOURNAMENT_PACK_SET: SetId = 'DRAGON';
+export const TOURNAMENT_PACK_SET: SetId = 'RECKONING';
 
 export interface PlacePrize {
   gold: number;

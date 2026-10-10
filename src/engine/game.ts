@@ -31,6 +31,7 @@ import {
   endGame,
   makeCardInstance,
   makeUnit,
+  removeUnitFromBoard,
   summonUnit,
 } from './ops';
 
@@ -174,6 +175,14 @@ function startTurn(ctx: EngineContext, playerId: PlayerId) {
 
   drawCards(ctx, playerId, GAME_RULES.cardsDrawnPerTurn);
 
+  // Corrupt decays: -1/-1 on each of its controller's turns.
+  for (const u of p.board) {
+    if (u.corrupt && isAlive(u)) {
+      u.attackBuff -= 1;
+      u.healthBuff -= 1;
+      emit(ctx, { type: 'UNIT_BUFFED', uid: u.uid, attack: -1, health: -1 });
+    }
+  }
   // Burn ticks.
   for (const u of [...p.board]) {
     if (u.burn > 0 && isAlive(u)) {
@@ -214,6 +223,20 @@ function endTurn(ctx: EngineContext, playerId: PlayerId) {
     }
   }
   for (const pl of state.players) for (const u of pl.board) u.tempAttack = 0;
+  // Units borrowed for this turn go back to their owner (or die when there is no room).
+  for (const u of [...p.board]) {
+    if (u.borrowedFrom === undefined || !isAlive(u)) continue;
+    const owner = u.borrowedFrom;
+    u.borrowedFrom = undefined;
+    if (state.players[owner].board.length >= GAME_RULES.maxBoardSize) {
+      u.pendingDestroy = true;
+      continue;
+    }
+    removeUnitFromBoard(ctx, u);
+    u.owner = owner;
+    state.players[owner].board.push(u);
+    emit(ctx, { type: 'CONTROL_CHANGED', uid: u.uid, newOwner: owner });
+  }
   const fleeting = p.hand.filter((c) => c.fleeting);
   if (fleeting.length > 0) {
     p.hand = p.hand.filter((c) => !c.fleeting);

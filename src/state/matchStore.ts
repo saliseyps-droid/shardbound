@@ -19,7 +19,7 @@ import { sanitizeRating } from '@/domain/ranked';
 import { validateDeck } from '@/domain/decks';
 import { gameService, useAccount } from './accountStore';
 import { anim, useSettings } from './settingsStore';
-import { bigSpell, legendEntrance } from '@/ui/match/legendEntrance';
+import { bigSpell, heroReplaced, legendDuration, legendEntrance } from '@/ui/match/legendEntrance';
 import { toast } from './uiStore';
 import { useMatchLaunch, type MatchConfig } from './matchLaunch';
 import { setLastMatchLog } from '@/ui/match/matchLog';
@@ -54,7 +54,7 @@ export function parseEntity(key: EntityKey): TargetRef {
 export interface Fx {
   id: number;
   target: EntityKey;
-  kind: 'damage' | 'heal' | 'buff' | 'armor' | 'shield' | 'freeze' | 'burn' | 'summon' | 'silence';
+  kind: 'damage' | 'heal' | 'buff' | 'armor' | 'shield' | 'freeze' | 'burn' | 'summon' | 'silence' | 'corrupt';
   amount?: number;
 }
 
@@ -88,6 +88,8 @@ interface MatchStore {
   spellFx: { cardId: string; player: PlayerId; rarity: 'EPIC' | 'LEGENDARY'; id: number } | null;
   /** The killing blow on a Warden, shown before the results (src/ui/match/FinalBlow.tsx). */
   finale: { loser: PlayerId; id: number } | null;
+  /** A card taking the Warden's place (Sali), shown after the board updates (src/ui/match/Ascension.tsx). */
+  ascension: { player: PlayerId; cardId: string; id: number } | null;
   /** This match's watch room, published to friends so they can spectate (null: not watchable). */
   watchCode: string | null;
   /** Spectating: who is playing. */
@@ -215,6 +217,7 @@ function fxFrom(events: GameEvent[]): Fx[] {
     else if (e.type === 'ARMOR_GAINED') fx.push({ id: fxSeq++, target: `h:${e.player}`, kind: 'armor', amount: e.amount });
     else if (e.type === 'BARRIER_BROKEN') fx.push({ id: fxSeq++, target: `u:${e.uid}`, kind: 'shield' });
     else if (e.type === 'STATUS_APPLIED' && e.status === 'FROZEN') fx.push({ id: fxSeq++, target: `u:${e.uid}`, kind: 'freeze' });
+    else if (e.type === 'STATUS_APPLIED' && e.status === 'CORRUPT') fx.push({ id: fxSeq++, target: `u:${e.uid}`, kind: 'corrupt' });
     else if (e.type === 'STATUS_APPLIED' && e.status === 'BURN') fx.push({ id: fxSeq++, target: `u:${e.uid}`, kind: 'burn', amount: e.amount });
     else if (e.type === 'UNIT_SUMMONED') fx.push({ id: fxSeq++, target: `u:${e.uid}`, kind: 'summon' });
     else if (e.type === 'UNIT_SILENCED') fx.push({ id: fxSeq++, target: `u:${e.uid}`, kind: 'silence' });
@@ -301,7 +304,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       if (entrance) {
         set({ legend: { ...entrance, id: fxSeq++ } });
         audio.play('legendaryReveal');
-        await sleep(anim(2150));
+        await sleep(anim(legendDuration(entrance.cardId)));
         set({ legend: null });
       } else if (spell) {
         set({ spellFx: { ...spell, id: fxSeq++ } });
@@ -350,6 +353,12 @@ export const useMatch = create<MatchStore>((set, get) => {
       advanceTutorial(res.events, res.state);
       const turnStarted = res.events.find((e) => e.type === 'TURN_STARTED');
       if (turnStarted && turnStarted.type === 'TURN_STARTED') onTurnStarted(turnStarted.player);
+      const ascended = heroReplaced(res.events);
+      if (ascended && gen === matchGen) {
+        set({ ascension: { ...ascended, id: fxSeq++ } });
+        await sleep(anim(2600));
+        set({ ascension: null });
+      }
       if (res.state.phase === 'ENDED') await finishMatch(res.state);
       await sleep(anim(ghosts.length ? 380 : 160));
     } finally {
@@ -657,6 +666,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     legend: null,
     spellFx: null,
     finale: null,
+    ascension: null,
     watchCode: null,
     watching: null,
     intro: null,
@@ -808,6 +818,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         legend: null,
         spellFx: null,
         finale: null,
+        ascension: null,
         turnDeadline: null,
         rewards: null,
         startedAt: Date.now(),

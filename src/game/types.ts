@@ -17,7 +17,7 @@ export const RARITIES: readonly Rarity[] = ['COMMON', 'RARE', 'EPIC', 'LEGENDARY
 export type Variant = 'NORMAL' | 'FOIL' | 'PRISMATIC';
 export const VARIANTS: readonly Variant[] = ['NORMAL', 'FOIL', 'PRISMATIC'];
 
-export type SetId = 'CORE' | 'DEEP' | 'ABYSS' | 'DRAGON';
+export type SetId = 'CORE' | 'DEEP' | 'ABYSS' | 'DRAGON' | 'RECKONING';
 
 /** Static keywords live on units/cards. Trigger keywords are derived from abilities. */
 export type KeywordId =
@@ -39,7 +39,9 @@ export type KeywordId =
   | 'LAST_BREATH'
   | 'OVERCHARGE'
   | 'BURN'
-  | 'FREEZE';
+  | 'FREEZE'
+  | 'CORRUPT'
+  | 'CONSUME';
 
 export type StaticKeyword =
   | 'GUARD'
@@ -56,7 +58,8 @@ export type StaticKeyword =
   | 'ECHO'
   | 'FLEETING';
 
-export type StatusId = 'FROZEN' | 'BURN' | 'BARRIER' | 'AMBUSH';
+/** CORRUPT (Void Reckoning): silenced, and -1/-1 at the start of each of its controller's turns. */
+export type StatusId = 'FROZEN' | 'BURN' | 'BARRIER' | 'AMBUSH' | 'CORRUPT';
 
 // ---------------------------------------------------------------------------
 // Targeting
@@ -79,6 +82,7 @@ export interface TargetFilter {
   maxCost?: number;
   tag?: string;
   frozen?: boolean;
+  corrupted?: boolean;
 }
 
 export interface TargetRequirement {
@@ -100,6 +104,7 @@ export type TargetSelector =
   | 'OTHER_ALLY_UNITS'
   | 'ALL_ENEMY_UNITS'
   | 'FROZEN_ENEMY_UNITS' // enemy units that are Frozen when the effect resolves
+  | 'CORRUPTED_ENEMY_UNITS' // enemy units that are Corrupted when the effect resolves
   | 'ALL_UNITS'
   | 'ALL_OTHER_UNITS'
   | 'ALL_ENEMIES' // enemy units + enemy hero
@@ -110,7 +115,8 @@ export type TargetSelector =
   | 'RANDOM_ALLY_UNIT'
   | 'RANDOM_OTHER_ALLY_UNIT'
   | 'ADJACENT' // units next to SELF (or next to TARGET when source is a spell)
-  | 'TARGET_AND_ADJACENT';
+  | 'TARGET_AND_ADJACENT'
+  | 'PREVIOUS_TARGET'; // whatever the previous effect of the same ability landed on (e.g. its random pick)
 
 // ---------------------------------------------------------------------------
 // Values & conditions
@@ -149,6 +155,7 @@ export type Condition =
   | { kind: 'ALLY_DEATHS_GTE'; n: number }
   | { kind: 'TARGET_DAMAGED' }
   | { kind: 'TARGET_FROZEN' }
+  | { kind: 'TARGET_CORRUPTED' }
   | { kind: 'TARGET_IS_UNIT' }
   | { kind: 'MAX_ENERGY_GTE'; n: number }
   | { kind: 'CARDS_PLAYED_THIS_TURN_GTE'; n: number };
@@ -183,7 +190,10 @@ export type EffectType =
   | 'TRANSFORM'
   | 'RESURRECT'
   | 'READY_UNIT'
-  | 'MILL';
+  | 'MILL'
+  | 'CONSUME'
+  | 'CLEANSE'
+  | 'BECOME_WARDEN';
 
 interface EffectBase {
   target?: TargetSelector;
@@ -276,6 +286,24 @@ export interface GrantKeywordEffect extends EffectBase {
 export interface SilenceEffect extends EffectBase {
   type: 'SILENCE';
 }
+/** Consume (Void Reckoning): the target friendly units die and the source unit gains their Attack and Health. */
+export interface ConsumeEffect extends EffectBase {
+  type: 'CONSUME';
+}
+/** Removes Corrupt, Frozen and Burn. */
+export interface CleanseEffect extends EffectBase {
+  type: 'CLEANSE';
+}
+/** The source card becomes your Warden: its name and portrait, with this much Health (and Armor). */
+export interface BecomeWardenEffect extends EffectBase {
+  type: 'BECOME_WARDEN';
+  health: number;
+  armor?: number;
+  /** Warden portrait id (art in src/assets/portraits/<id>.webp). */
+  portrait: string;
+  /** The new Warden's abilities (talent ids, rank I), replacing the old ones. */
+  abilities?: string[];
+}
 export interface CreateCardEffect extends EffectBase {
   type: 'CREATE_CARD';
   /** Specific card, or a random collectible card from the pool. */
@@ -299,6 +327,8 @@ export interface StealCardEffect extends EffectBase {
 }
 export interface TakeControlEffect extends EffectBase {
   type: 'TAKE_CONTROL';
+  /** Only until the end of this turn, then the unit goes back to its owner. */
+  untilEndOfTurn?: boolean;
 }
 /** Your Warden loses all Armor. */
 export interface RemoveArmorEffect extends EffectBase {
@@ -353,7 +383,10 @@ export type Effect =
   | TransformEffect
   | ResurrectEffect
   | ReadyUnitEffect
-  | MillEffect;
+  | MillEffect
+  | ConsumeEffect
+  | CleanseEffect
+  | BecomeWardenEffect;
 
 // ---------------------------------------------------------------------------
 // Abilities (trigger + effects)

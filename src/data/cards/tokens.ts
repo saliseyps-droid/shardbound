@@ -45,6 +45,17 @@ export const TOKEN_CARDS: CardDefinition[] = [
   { id: 'token_drakeling', name: 'Cinder Drakeling', cardType: 'UNIT', faction: 'EMBER', rarity: 'COMMON', manaCost: 2, attack: 2, health: 2, keywords: ['SWIFT'], set: 'CORE', collectible: false, tags: ['Dragon'] },
   { id: 'token_golem', name: 'Siege Golem', cardType: 'UNIT', faction: 'IRON', rarity: 'COMMON', manaCost: 6, attack: 6, health: 6, keywords: ['GUARD'], set: 'CORE', collectible: false, tags: ['Construct'] },
   { id: 'token_kraken_tentacle', name: 'Grasping Tentacle', cardType: 'UNIT', faction: 'TIDE', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, keywords: ['GUARD'], set: 'DEEP', collectible: false, tags: ['Leviathan'] },
+  // Summoned by Sali, the Creator (Void Reckoning).
+  {
+    id: 'token_hollow_sovereign', name: 'Hollow Sovereign', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'EPIC', manaCost: 4, attack: 3, health: 4, keywords: ['GUARD', 'DRAIN'], set: 'RECKONING', collectible: false, tags: ['Horror'],
+    abilities: [{ trigger: 'TURN_START', effects: [{ type: 'APPLY_STATUS', status: 'CORRUPT', target: 'RANDOM_ENEMY_UNIT' }] }],
+    description: 'Guard. Drain. At the start of your turn, Corrupt a random enemy unit.',
+  },
+  {
+    id: 'token_eclipse_warden', name: 'Eclipse Warden', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'EPIC', manaCost: 4, attack: 4, health: 3, keywords: ['SWIFT'], set: 'RECKONING', collectible: false, tags: ['Horror'],
+    abilities: [{ trigger: 'ON_KILL', effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'ENEMY_HERO' }, { type: 'READY_UNIT', target: 'SELF' }] }],
+    description: 'Swift. Whenever this unit destroys a unit, deal 3 damage to the enemy Warden and it may attack again.',
+  },
   // Placeholder the AI substitutes for hidden cards (never appears in real games).
   { id: 'token_unknown', name: 'Unknown Card', cardType: 'UNIT', faction: 'NEUTRAL', rarity: 'COMMON', manaCost: 3, attack: 3, health: 3, set: 'CORE', collectible: false },
   // Tutorial-only units

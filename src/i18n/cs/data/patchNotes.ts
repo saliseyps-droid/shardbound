@@ -1,6 +1,22 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.40.0': {
+    title: 'Void Reckoning',
+    summary: 'Nový set 91 karet: vychází černé slunce a Prázdnota si přichází vyrovnat všechny účty.',
+    sections: [
+      [
+        'Void Reckoning, pátý set: 91 karet pro všechny frakce, z toho 15 nových legendárek a draci Prázdnoty, ve vlastních balíčcích v obchodě.',
+        'Mezi legendárkami: Artemis, zkáza Qinnyho; Scar, trhač Liu Kana; Arcimágyně Elinka; Simba, dokonalý predátor; Ocelář Gorn; Nereth, srdce víru; a Sali, Stvořitel, která vyčistí stůl a po smrti nahradí tvého Strážce.',
+        'Každá z těchto sedmi má vlastní příchod a nástup Sali na místo Strážce má vlastní scénu.',
+        'Nové klíčové slovo Pohlcení: při nasazení znič jinou svou jednotku a získej její útok a životy. Počítá se jako smrt spřátelené jednotky.',
+        'Nový stav Rozklad: rozložená jednotka ztratí text i posílení a na začátku každého tahu svého ovladatele dostane -1/-1, dokud nezemře. Odstraní ho Očištění.',
+        'Prázdný chór Prázdnotu vítá a pohlcuje, Popelavá legie vypaluje rozložené nepřátele, Kruh Trnoboru nechává nepřátele hnít, Mosazné dominium staví stroje, které žerou, Konkláve Lumenu očišťuje a chrání a Dvůr Jinovatky topí světlo.',
+        'Nový achievement Vyrovnané účty: vlastni všechny karty ze setu Void Reckoning.',
+      ],
+      ['Odměny z turnajů, Dungeonu a Brawlu teď dávají balíčky Void Reckoning a v Aréně se objevují i jeho karty.'],
+    ],
+  },
   '0.36.0': {
     title: 'Tváří v tvář',
     summary: 'Každý zápas začíná tím, že se oba Strážci postaví proti sobě.',
