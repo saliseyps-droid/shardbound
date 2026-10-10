@@ -4,7 +4,7 @@ import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import { useMatch, AI } from '@/state/matchStore';
 import { cardArtUri } from '@/ui/components/cardArt';
-import { legendTheme, type LegendTheme } from './legendEntrance';
+import { dragonElement, legendTheme, type LegendTheme } from './legendEntrance';
 import { audio } from '@/audio/audioService';
 import { anim } from '@/state/settingsStore';
 import { t } from '@/i18n';
@@ -217,6 +217,169 @@ function Gear({ teeth }: { teeth: number }) {
   );
 }
 
+/** A dragon in flight, seen from below: its shadow sweeps over the table. */
+const DragonSilhouette = () => (
+  <svg viewBox="0 0 200 100" aria-hidden>
+    <path d="M14 54 L30 47 L44 49 L62 45 L52 18 L72 33 L78 4 L92 31 L104 0 L110 34 L130 12 L124 46 L150 50 L176 55 L198 47 L184 60 L150 61 L122 63 L102 72 L82 63 L58 59 L40 61 L24 59 Z" />
+  </svg>
+);
+
+/**
+ * A dragon's bat wing in fine line work (root on the right, at the shoulder): tapering bones for the
+ * arm and five curved fingers, a scalloped membrane edge, faint veins fanning through the membrane,
+ * small spines along the arm and a hooked claw at the wrist.
+ */
+type Pt = [number, number];
+const f1 = (n: number) => n.toFixed(1);
+const lerp = (a: Pt, b: Pt, t: number): Pt => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+/** Point `t` along the quadratic curve a → (control c) → b. */
+const quad = (a: Pt, c: Pt, b: Pt, t: number): Pt => lerp(lerp(a, c, t), lerp(c, b, t), t);
+/** The control point that bows the segment a → b sideways by `bend`. */
+function bow(a: Pt, b: Pt, bend: number): Pt {
+  const dx = b[0] - a[0];
+  const dy = b[1] - a[1];
+  const len = Math.hypot(dx, dy) || 1;
+  return [(a[0] + b[0]) / 2 - (dy / len) * bend, (a[1] + b[1]) / 2 + (dx / len) * bend];
+}
+/** A bone along a quadratic curve as a closed outline, `w0` wide at the start tapering to `w1`. */
+function taperedBone(a: Pt, c: Pt, b: Pt, w0: number, w1: number): string {
+  const left: Pt[] = [];
+  const right: Pt[] = [];
+  const N = 14;
+  for (let i = 0; i <= N; i++) {
+    const t = i / N;
+    const p = quad(a, c, b, t);
+    const q = quad(a, c, b, Math.min(1, t + 0.01));
+    const p0 = quad(a, c, b, Math.max(0, t - 0.01));
+    const dx = q[0] - p0[0];
+    const dy = q[1] - p0[1];
+    const len = Math.hypot(dx, dy) || 1;
+    // A slight swelling at the knuckle (a third of the way) before the taper.
+    const w = (w0 + (w1 - w0) * t) * (1 + 0.35 * Math.exp(-((t - 0.36) ** 2) / 0.004)) / 2;
+    left.push([p[0] - (dy / len) * w, p[1] + (dx / len) * w]);
+    right.push([p[0] + (dy / len) * w, p[1] - (dx / len) * w]);
+  }
+  const pts = [...left, ...right.reverse()];
+  return `M${pts.map((p) => `${f1(p[0])} ${f1(p[1])}`).join(' L')} Z`;
+}
+
+const SHOULDER: Pt = [198, 100];
+const ELBOW_C: Pt = [180, 30];
+const WRIST: Pt = [130, 20];
+// Swept up and out: the leading finger reaches highest.
+const TIPS: Pt[] = [
+  [14, -6],
+  [0, 34],
+  [8, 76],
+  [40, 112],
+  [90, 136],
+];
+const BODY: Pt = [178, 128];
+/** How far each finger bows (alternating slightly for a natural fan). */
+const FINGER_BOW = [7, 5, 3, 2, 1];
+
+/** Short spines standing off one side of the curve a → c → b, at the given points along it. */
+function spinesAlong(a: Pt, c: Pt, b: Pt, at: number[], height: number, side = 1): string {
+  let d = '';
+  for (const t of at) {
+    const p = quad(a, c, b, t);
+    const q = quad(a, c, b, t + 0.03);
+    const dx = q[0] - p[0];
+    const dy = q[1] - p[1];
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = (dy / len) * side;
+    const ny = (-dx / len) * side;
+    const h = height * (1 - t * 0.5);
+    d += `M${f1(p[0] - dx * 0.7)} ${f1(p[1] - dy * 0.7)} Q${f1(p[0] + nx * h * 0.4)} ${f1(p[1] + ny * h * 0.4)} ${f1(p[0] + nx * h + dx * 1.2)} ${f1(p[1] + ny * h + dy * 1.2)} L${f1(p[0] + dx)} ${f1(p[1] + dy)} Z `;
+  }
+  return d;
+}
+
+function buildWing() {
+  const arm = taperedBone(SHOULDER, ELBOW_C, WRIST, 5.2, 2.6);
+  const fingerCtl = TIPS.map((tip, i) => bow(WRIST, tip, FINGER_BOW[i]));
+  const fingers = TIPS.map((tip, i) => taperedBone(WRIST, fingerCtl[i], tip, 2.4, 0.35));
+  // A bright line down the middle of every bone, so they read as rounded.
+  const curve = (a: Pt, c: Pt, b: Pt, t0 = 0, t1 = 1) => {
+    const pts = Array.from({ length: 9 }, (_, i) => quad(a, c, b, t0 + ((t1 - t0) * i) / 8));
+    return `M${pts.map((p) => `${f1(p[0])} ${f1(p[1])}`).join(' L')} `;
+  };
+  let highlights = curve(SHOULDER, ELBOW_C, WRIST, 0.08, 0.92);
+  TIPS.forEach((tip, i) => (highlights += curve(WRIST, fingerCtl[i], tip, 0.06, 0.8)));
+  // Knuckles: the wrist, the elbow and a joint a third of the way along every finger.
+  const joints: Pt[] = [WRIST, quad(SHOULDER, ELBOW_C, WRIST, 0.5), ...TIPS.map((tip, i) => quad(WRIST, fingerCtl[i], tip, 0.36))];
+  const knuckles = joints.map((p, i) => `M${f1(p[0] + (i < 2 ? 2.2 : 1.4))} ${f1(p[1])} a${i < 2 ? 2.2 : 1.4} ${i < 2 ? 2.2 : 1.4} 0 1 0 0.01 0 Z `).join('');
+  // Little hooked claws at the fingertips, curling back along the membrane edge.
+  const tipClaws = TIPS.map((tip, i) => {
+    const dir = lerp(fingerCtl[i], tip, 1);
+    const dx = tip[0] - fingerCtl[i][0];
+    const dy = tip[1] - fingerCtl[i][1];
+    const len = Math.hypot(dx, dy) || 1;
+    const ux = dx / len;
+    const uy = dy / len;
+    const end: Pt = [dir[0] + ux * 4 - uy * 2.5, dir[1] + uy * 4 + ux * 2.5];
+    return `M${f1(tip[0] - uy * 0.6)} ${f1(tip[1] + ux * 0.6)} Q${f1(tip[0] + ux * 3.5)} ${f1(tip[1] + uy * 3.5)} ${f1(end[0])} ${f1(end[1])} Q${f1(tip[0] + ux * 1.6)} ${f1(tip[1] + uy * 1.6)} ${f1(tip[0] + uy * 0.6)} ${f1(tip[1] - ux * 0.6)} Z `;
+  }).join('');
+  // Membrane edge: leading edge to the first tip, then scallops sagging towards the wrist, then the body.
+  const trail = [...TIPS, BODY];
+  const edgeFrom = (pull: number) => {
+    const pt = (p: Pt): Pt => lerp(p, WRIST, pull);
+    let d = `M${f1(pt(WRIST)[0])} ${f1(pt(WRIST)[1])} Q${f1(pt(bow(WRIST, TIPS[0], 6))[0])} ${f1(pt(bow(WRIST, TIPS[0], 6))[1])} ${f1(pt(TIPS[0])[0])} ${f1(pt(TIPS[0])[1])}`;
+    for (let i = 1; i < trail.length; i++) {
+      const c = pt(bow(trail[i - 1], trail[i], -16 - i * 2));
+      d += ` Q${f1(c[0])} ${f1(c[1])} ${f1(pt(trail[i])[0])} ${f1(pt(trail[i])[1])}`;
+    }
+    return d;
+  };
+  const bodyC = bow(BODY, SHOULDER, -6);
+  const edge = `${edgeFrom(0)} Q${f1(bodyC[0])} ${f1(bodyC[1])} ${f1(SHOULDER[0])} ${f1(SHOULDER[1])}`;
+  // A fine hem just inside the edge.
+  const hem = edgeFrom(0.045);
+  // Veins: in each panel, cross-veins spanning from finger to finger, sagging towards the edge
+  // like a web, and one fine vein running down the middle of the panel.
+  let veins = '';
+  for (let i = 0; i < TIPS.length; i++) {
+    const nextTip = trail[i + 1];
+    const nextCtl = i + 1 < TIPS.length ? fingerCtl[i + 1] : bow(WRIST, BODY, 0);
+    for (const t of [0.32, 0.5, 0.68, 0.84]) {
+      const a1 = quad(WRIST, fingerCtl[i], TIPS[i], t);
+      const b1 = quad(WRIST, nextCtl, nextTip, t);
+      const sag = bow(a1, b1, -(4 + t * 7));
+      veins += `M${f1(a1[0])} ${f1(a1[1])} Q${f1(sag[0])} ${f1(sag[1])} ${f1(b1[0])} ${f1(b1[1])} `;
+    }
+    const midStart = lerp(quad(WRIST, fingerCtl[i], TIPS[i], 0.22), quad(WRIST, nextCtl, nextTip, 0.22), 0.5);
+    const midEnd = lerp(lerp(TIPS[i], nextTip, 0.5), midStart, 0.12);
+    const midC = bow(midStart, midEnd, 3);
+    veins += `M${f1(midStart[0])} ${f1(midStart[1])} Q${f1(midC[0])} ${f1(midC[1])} ${f1(midEnd[0])} ${f1(midEnd[1])} `;
+  }
+  // Spines along the top of the arm and the first finger.
+  const spines = spinesAlong(SHOULDER, ELBOW_C, WRIST, [0.18, 0.34, 0.5, 0.66, 0.82], 6) + spinesAlong(WRIST, fingerCtl[0], TIPS[0], [0.15, 0.3, 0.45, 0.6], 3.2);
+  // A hooked claw at the wrist.
+  const claw = `M${f1(WRIST[0] + 1.5)} ${f1(WRIST[1] - 1)} C${f1(WRIST[0] + 3)} ${f1(WRIST[1] - 10)} ${f1(WRIST[0] - 2)} ${f1(WRIST[1] - 16)} ${f1(WRIST[0] - 8)} ${f1(WRIST[1] - 15)} C${f1(WRIST[0] - 3)} ${f1(WRIST[1] - 12)} ${f1(WRIST[0] - 2)} ${f1(WRIST[1] - 6)} ${f1(WRIST[0] - 2)} ${f1(WRIST[1] - 1)} Z`;
+  return { arm, fingers, edge, hem, veins, spines, claw, highlights, knuckles, tipClaws };
+}
+const WING = buildWing();
+
+const DragonWing = ({ side }: { side: 'left' | 'right' }) => (
+  <svg className={`dg-wing ${side}`} viewBox="-6 -14 210 160" aria-hidden>
+    {/* The right wing is the left one mirrored inside its own box, so its root faces the portrait. */}
+    <g transform={side === 'right' ? 'translate(198 0) scale(-1 1)' : undefined}>
+      <path className="veins" d={WING.veins} />
+      <path className="hem" d={WING.hem} />
+      <path className="edge" d={WING.edge} />
+      <path className="bone" d={WING.spines} />
+      <path className="bone" d={WING.arm} />
+      {WING.fingers.map((d, i) => (
+        <path key={i} className="bone" d={d} />
+      ))}
+      <path className="bone" d={WING.tipClaws} />
+      <path className="bone" d={WING.claw} />
+      <path className="joint" d={WING.knuckles} />
+      <path className="shine" d={WING.highlights} />
+    </g>
+  </svg>
+);
+
 /** Layers behind the portrait (back), on the stage around it (stage) and over everything (front). */
 const EXTRAS: Partial<Record<LegendTheme, { back?: () => ReactNode; stage?: () => ReactNode; front?: () => ReactNode }>> = {
   meowchick: {
@@ -293,6 +456,31 @@ const EXTRAS: Partial<Record<LegendTheme, { back?: () => ReactNode; stage?: () =
       <>
         <div className="qn-bubble" />
         <div className="qn-drops">{particles(14, 'drop')}</div>
+      </>
+    ),
+  },
+  dragon: {
+    back: () => (
+      <>
+        <div className="dg-moon" />
+        <div className="dg-particles">{particles(28, 'dg-p')}</div>
+      </>
+    ),
+    stage: () => (
+      <>
+        <DragonWing side="left" />
+        <DragonWing side="right" />
+        <div className="dg-ring" />
+        <div className="dg-ring late" />
+      </>
+    ),
+    front: () => (
+      <>
+        <div className="dg-shadow">
+          <DragonSilhouette />
+        </div>
+        <div className="dg-wind">{particles(10, 'gust')}</div>
+        <div className="dg-roar" />
       </>
     ),
   },
@@ -396,7 +584,7 @@ export function LegendaryEntranceView({ cardId, enemy }: { cardId: string; enemy
   const faction = FACTIONS[card.faction] ?? FACTIONS.NEUTRAL;
   return (
     <div
-      className={`legend-entrance theme-${theme} ${enemy ? 'from-enemy' : 'from-self'}`}
+      className={`legend-entrance theme-${theme} ${theme === 'dragon' ? `el-${dragonElement(cardId)}` : ''} ${enemy ? 'from-enemy' : 'from-self'}`}
       style={{ '--f1': faction.colors.primary, '--fglow': faction.colors.glow } as CSSProperties}
       role="status"
       aria-label={t('{who} played {card}', { who: enemy ? t('Opponent') : t('You'), card: card.name })}

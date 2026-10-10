@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.35.1': {
+    title: 'Draci vzlétají',
+    summary: 'Legendární draci mají vlastní přílet.',
+    sections: [
+      [
+        'Legendární draci mají vlastní příchod: přes stůl přeletí dračí stín, drak dopadne s řevem a rázovými vlnami a za ním se rozevřou velká křídla kreslená jemnými zářícími liniemi.',
+        'Každý drak má barvu svého živlu: jiskry u Pyraxise a Vulkary, led u Glacivara, stín u Nyxaratha, úplněk u Selunith a déšť zlata u Aurumvexe.',
+      ],
+    ],
+  },
   '0.35.0': {
     title: 'Sledování zápasů',
     summary: 'Sleduj naživo zápasy kamarádů i turnajové zápasy.',

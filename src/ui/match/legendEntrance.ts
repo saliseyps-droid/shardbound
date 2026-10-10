@@ -1,7 +1,7 @@
 import { getCard } from '@/data/cards';
 import type { GameEvent, PlayerId } from '@/engine/types';
 
-export type LegendTheme = 'gold' | 'meowchick' | 'liu' | 'abandoneer' | 'rendoslav' | 'qvido' | 'qinny' | 'tallys' | 'elinda' | 'skolky' | 'r3d3';
+export type LegendTheme = 'gold' | 'meowchick' | 'liu' | 'abandoneer' | 'rendoslav' | 'qvido' | 'qinny' | 'tallys' | 'elinda' | 'skolky' | 'r3d3' | 'dragon';
 
 /** Legendaries with their own entrance; every other Legendary gets the golden one. */
 const THEMES: Record<string, LegendTheme> = {
@@ -18,7 +18,27 @@ const THEMES: Record<string, LegendTheme> = {
 };
 
 export function legendTheme(cardId: string): LegendTheme {
-  return THEMES[cardId] ?? 'gold';
+  if (THEMES[cardId]) return THEMES[cardId];
+  // Every other Legendary Dragon flies in (coloured by its element, see dragonElement).
+  return getCard(cardId)?.tags?.includes('Dragon') ? 'dragon' : 'gold';
+}
+
+export type DragonElement = 'fire' | 'ice' | 'void' | 'moon' | 'gold';
+
+/** A dragon's element, from its faction: the colour of its wings, roar and particles. */
+export function dragonElement(cardId: string): DragonElement {
+  switch (getCard(cardId)?.faction) {
+    case 'TIDE':
+      return 'ice';
+    case 'VOID':
+      return 'void';
+    case 'ASTRAL':
+      return 'moon';
+    case 'EMBER':
+      return 'fire';
+    default:
+      return 'gold';
+  }
 }
 
 /** An Epic or Legendary spell played in this transition: it gets a flourish while it is cast. */

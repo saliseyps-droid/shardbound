@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bigSpell, legendEntrance, legendTheme } from '@/ui/match/legendEntrance';
+import { bigSpell, dragonElement, legendEntrance, legendTheme } from '@/ui/match/legendEntrance';
 import type { GameEvent } from '@/engine/types';
 
 const played = (cardId: string, player: 0 | 1 = 0) => ({ type: 'CARD_PLAYED', player, cardId, cardUid: 1 }) as GameEvent;
@@ -36,5 +36,11 @@ describe('legendary entrance', () => {
     expect(bigSpell([played('ast_collapse_of_heaven', 1)])).toEqual({ cardId: 'ast_collapse_of_heaven', player: 1, rarity: 'EPIC' });
     expect(bigSpell([played('neu_meowchick')])).toBeNull();
     expect(bigSpell([played('emb_flame_jolt')])).toBeNull();
+  });
+
+  it('flies every other Legendary Dragon in, coloured by its element', () => {
+    expect(['emb_pyraxis_ashen_sovereign', 'tid_glacivar_rime_sovereign', 'vod_nyxarath_hollow_wyrm', 'ast_selunith_the_moonwyrm', 'neu_aurumvex_the_hoardwyrm', 'emb_vulkara'].map(legendTheme)).toEqual(Array(6).fill('dragon'));
+    expect(['emb_pyraxis_ashen_sovereign', 'tid_glacivar_rime_sovereign', 'vod_nyxarath_hollow_wyrm', 'ast_selunith_the_moonwyrm', 'neu_aurumvex_the_hoardwyrm'].map(dragonElement)).toEqual(['fire', 'ice', 'void', 'moon', 'gold']);
+    expect(legendTheme('emb_ignivar')).toBe('gold');
   });
 });

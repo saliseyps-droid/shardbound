@@ -785,6 +785,124 @@
 @keyframes r3-type { to { clip-path: inset(0 0 0 0); } }
 @keyframes r3-blink { 50% { opacity: 0.35; } }
 
+/* ---- Dragons: a shadow sweeps over the table, the dragon lands with a roar, its wings unfold ---- */
+.theme-dragon { --dg1: #ff9a3c; --dg2: #ff4a1a; --dg3: #3a0e04; --dgp: #ffd06a; }
+.theme-dragon.el-ice { --dg1: #bff4ff; --dg2: #4ab8f0; --dg3: #0a2238; --dgp: #e8fbff; }
+.theme-dragon.el-void { --dg1: #c690ff; --dg2: #7a2cff; --dg3: #14062a; --dgp: #d8b4ff; }
+.theme-dragon.el-moon { --dg1: #eef3ff; --dg2: #8fa8d8; --dg3: #0e1630; --dgp: #ffffff; }
+.theme-dragon.el-gold { --dg1: #ffe28a; --dg2: #e0a020; --dg3: #2a1a04; --dgp: #ffd34d; }
+.theme-dragon .legend-backdrop { background: radial-gradient(ellipse at 50% 45%, color-mix(in srgb, var(--dg3) 70%, transparent), rgba(3, 2, 8, 0.95) 70%); }
+.theme-dragon .legend-sunrays { background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--dg1) 22%, transparent) 0deg 5deg, transparent 5deg 16deg); animation: lk-rays 2.15s ease-out both, legend-spin 16s linear infinite; }
+.theme-dragon .legend-portrait {
+  background: linear-gradient(160deg, var(--dg1), var(--dg2) 45%, var(--dg3));
+  animation: dg-land 0.5s 0.45s cubic-bezier(0.6, 0, 0.9, 0.5) both, dg-roar-shake 0.45s 0.95s ease-out;
+}
+@keyframes dg-land { from { transform: translateY(-70vh) scale(1.4); opacity: 0; } 60% { opacity: 1; } }
+@keyframes dg-roar-shake {
+  15% { transform: translate(-7px, 4px); }
+  30% { transform: translate(6px, -4px); }
+  45% { transform: translate(-5px, 3px); }
+  60% { transform: translate(4px, -2px); }
+  80% { transform: translate(-2px, 1px); }
+}
+.theme-dragon.legend-entrance { animation: legend-out 2.15s ease-in forwards, rd-quake 0.45s 0.95s ease-out; }
+.theme-dragon .legend-banner { background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--dg3) 92%, transparent) 18%, color-mix(in srgb, var(--dg3) 92%, transparent) 82%, transparent); border-color: color-mix(in srgb, var(--dg1) 70%, transparent); animation-delay: 0.85s; }
+.theme-dragon .legend-kicker { color: var(--dg1); }
+/* The shadow of the dragon flying over the table, before it lands. */
+.dg-shadow {
+  position: absolute; top: 18%; left: 100%; width: 150vw;
+  filter: blur(5px); opacity: 0.75;
+  animation: dg-fly 0.85s cubic-bezier(0.3, 0, 0.7, 1) both;
+}
+.dg-shadow svg { width: 100%; display: block; fill: #000; }
+@keyframes dg-fly {
+  from { transform: translateX(0) scale(0.8) rotate(-6deg); }
+  to { transform: translateX(-260vw) scale(1.1) rotate(4deg); }
+}
+.from-enemy .dg-shadow { top: 4%; }
+/* Gusts of wind in its wake. */
+.dg-wind { position: absolute; inset: 0; }
+.gust {
+  position: absolute; left: 100%; top: calc(10% + var(--x) * 70%);
+  width: calc(20vw + var(--s) * 25vw); height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  opacity: 0;
+  animation: dg-gust 0.6s calc(0.15s + var(--d) * 0.35s) ease-out forwards;
+}
+@keyframes dg-gust { 0% { opacity: 0.9; transform: translateX(0); } 100% { opacity: 0; transform: translateX(-150vw); } }
+/* The roar: a flash and two rings of force in the dragon's colour. */
+.dg-roar {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--dg1) 80%, white), color-mix(in srgb, var(--dg2) 45%, transparent) 30%, transparent 62%);
+  opacity: 0;
+  animation: lk-flash 0.7s 0.92s ease-out forwards;
+}
+.dg-ring {
+  position: absolute; left: 50%; top: calc(var(--pw) * 0.61);
+  width: var(--pw); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+  border: 4px solid var(--dg1);
+  box-shadow: 0 0 26px 6px color-mix(in srgb, var(--dg2) 70%, transparent);
+  opacity: 0;
+  animation: rd-shock 0.9s 0.95s ease-out forwards;
+}
+.dg-ring.late { animation-delay: 1.12s; border-width: 2px; }
+/* Membrane wings unfolding behind the portrait, then beating slowly. */
+.dg-wing {
+  position: absolute; top: calc(var(--pw) * -0.12); z-index: -1;
+  width: calc(var(--pw) * 1.55); overflow: visible;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--dg1) 70%, transparent)) drop-shadow(0 0 12px color-mix(in srgb, var(--dg2) 45%, transparent));
+  animation: dg-wing-open 0.55s 0.9s cubic-bezier(0.2, 1.3, 0.4, 1) both, dg-wing-beat 0.9s 1.45s ease-in-out infinite alternate;
+}
+.dg-wing.left { right: calc(50% + var(--pw) * 0.1); transform-origin: 97% 70%; }
+.dg-wing.right { left: calc(50% + var(--pw) * 0.1); transform-origin: 3% 70%; }
+.dg-wing .edge { fill: none; stroke: color-mix(in srgb, var(--dg1) 90%, transparent); stroke-width: 0.9; stroke-linejoin: round; }
+.dg-wing .veins { fill: none; stroke: color-mix(in srgb, var(--dg1) 34%, transparent); stroke-width: 0.4; stroke-linecap: round; }
+.dg-wing .hem { fill: none; stroke: color-mix(in srgb, var(--dg1) 45%, transparent); stroke-width: 0.45; stroke-dasharray: 2 1.4; }
+.dg-wing .joint { fill: color-mix(in srgb, var(--dg1) 60%, white); stroke: var(--dg2); stroke-width: 0.5; }
+.dg-wing .shine { fill: none; stroke: rgba(255, 255, 255, 0.7); stroke-width: 0.35; stroke-linecap: round; }
+.dg-wing .bone { fill: color-mix(in srgb, var(--dg1) 88%, white); stroke: none; }
+
+@keyframes dg-wing-open { from { transform: scaleX(0.05) rotate(25deg); opacity: 0; } }
+@keyframes dg-wing-beat { to { transform: rotate(-7deg) scaleY(0.94); } }
+.dg-wing.right { animation-name: dg-wing-open-r, dg-wing-beat-r; }
+@keyframes dg-wing-open-r { from { transform: scaleX(0.05) rotate(-25deg); opacity: 0; } }
+@keyframes dg-wing-beat-r { to { transform: rotate(7deg) scaleY(0.94); } }
+/* The element: embers, ice, shadow, moonlight or gold. */
+.dg-particles { position: absolute; inset: 0; overflow: hidden; }
+.dg-p {
+  position: absolute; bottom: -3vh; left: calc(var(--x) * 100%);
+  width: calc(4px + var(--s) * 6px); aspect-ratio: 1; border-radius: 50%;
+  background: var(--dgp); box-shadow: 0 0 10px 3px color-mix(in srgb, var(--dg2) 80%, transparent);
+  opacity: 0;
+  animation: dg-rise 1.4s calc(0.9s + var(--d) * 0.7s) ease-out forwards;
+}
+@keyframes dg-rise {
+  0% { opacity: 0; transform: none; }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(var(--r) * 180px), -85vh); }
+}
+/* Ice falls as shards, gold as coins; shadow drifts as larger blurred wisps. */
+.el-ice .dg-p, .el-gold .dg-p { bottom: auto; top: -4vh; animation-name: dg-fall; }
+.el-ice .dg-p { border-radius: 0; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); width: calc(6px + var(--s) * 10px); }
+.el-gold .dg-p { width: calc(14px + var(--s) * 10px); border: 2px solid #8a5a08; background: radial-gradient(circle at 35% 30%, #fff4b8, #ffd34d 40%, #b07810); }
+@keyframes dg-fall {
+  0% { opacity: 0; transform: none; }
+  15% { opacity: 1; }
+  100% { opacity: 0.8; transform: translate(calc(var(--r) * 140px), 105vh) rotate(calc(var(--r) * 540deg)); }
+}
+.el-void .dg-p { width: calc(14px + var(--s) * 24px); filter: blur(4px); background: color-mix(in srgb, var(--dgp) 70%, transparent); }
+/* Selunith's full moon behind it. */
+.dg-moon { display: none; }
+.el-moon .dg-moon {
+  display: block; position: absolute; left: 50%; top: 40%;
+  width: min(62vh, 520px); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+  background: radial-gradient(circle at 42% 38%, #ffffff, #e2e8f8 45%, #a8b6d8 70%, #7a88b0);
+  box-shadow: 0 0 80px 20px rgba(220, 230, 255, 0.45);
+  opacity: 0;
+  animation: dg-moonrise 0.9s 0.6s ease-out forwards;
+}
+@keyframes dg-moonrise { from { opacity: 0; transform: translateY(40px) scale(0.85); } to { opacity: 0.85; } }
+
 /* ---- Outside a match (pack opening, collection): the entrance over everything, click to skip ---- */
 .legend-showcase { position: fixed; inset: 0; z-index: 1200; cursor: pointer; }
 .legend-showcase .legend-entrance { position: absolute; inset: 0; }

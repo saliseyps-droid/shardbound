@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.35.1',
+    date: '2026-10-10',
+    title: 'Dragons take flight',
+    summary: 'Legendary Dragons fly in with their own entrance.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Legendary Dragons have their own entrance: a dragon\'s shadow sweeps over the table, the dragon lands with a roar and rings of force, and great wings drawn in fine glowing lines unfold behind it.',
+          'Each dragon is coloured by its element: embers for Pyraxis and Vulkara, ice for Glacivar, shadow for Nyxarath, a full moon for Selunith and a rain of gold for Aurumvex.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.35.0',
     date: '2026-10-10',
     title: 'Spectating',
