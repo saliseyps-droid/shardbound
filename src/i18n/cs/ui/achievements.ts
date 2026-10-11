@@ -119,8 +119,8 @@ const d: Record<string, string> = {
   'Clear every encounter of Chapter VI.': 'Poraz všechny soupeře Kapitoly VI.',
   'The Last Shard': 'Poslední Střep',
   'Defeat The Sundered Crown at the end of Chapter IX.': 'Poraz Roztříštěnou korunu na konci Kapitoly IX.',
-  Dethroned: 'Sesazená',
-  'Defeat Sali at the end of The Black Sun.': 'Poraz Sali na konci kampaně Černé slunce.',
+  Dethroned: 'Sesazený',
+  'Defeat Sali at the end of The Black Sun.': 'Poraz Saliho na konci kampaně Černé slunce.',
   'Cartographer of Shards': 'Kartograf Střepů',
   'Clear every encounter of the campaign.': 'Poraz všechny soupeře kampaně.',
   // Ranked vs AI

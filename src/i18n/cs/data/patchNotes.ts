@@ -1,16 +1,26 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.41.1': {
+    title: 'Klidnější obrazovka Kampaň',
+    summary: 'Přepnutí kampaně už neposune obrazovku a o Salim se mluví tak, jak má.',
+    sections: [
+      [
+        'Přepnutí mezi dvěma kampaněmi už neposune obrazovku Kampaň.',
+        'Sali je muž: jeho texty v Černém slunci, patch notes i úspěch Sesazený o něm teď mluví v mužském rodě.',
+      ],
+    ],
+  },
   '0.41.0': {
     title: 'Černé slunce',
     summary: 'Nová kampaň k Void Reckoning: tři kapitoly, patnáct soupeřů a na konci Sali na svém trůnu.',
     sections: [
       [
         'Černé slunce: druhá kampaň k Void Reckoning. Vybereš ji nahoře na obrazovce Kampaň. Má vlastní postup a je otevřená hned od začátku, první kampaň dohrát nemusíš.',
-        'Tři kapitoly a patnáct soupeřů: kultisté černého slunce, Matka hniloby, Simba, Stroj hladu, Nereth, Zúčtovatel a na konci samotná Sali, Stvořitelka.',
+        'Tři kapitoly a patnáct soupeřů: kultisté černého slunce, Matka hniloby, Simba, Stroj hladu, Nereth, Zúčtovatel a na konci samotný Sali, Stvořitel.',
         'Pět nových schopností bossů: Černé slunce, Květ hniloby, Vrcholný lov, Přiložit pod kotel a Konečné vyúčtování.',
-        'První výhry platí hlavně balíčky Void Reckoning; za porážku Sali dostaneš 1 000 zlatých, 500 esence a 5 balíčků.',
-        'Nový úspěch Sesazená za porážku Sali, s titulem Lamač slunce.',
+        'První výhry platí hlavně balíčky Void Reckoning; za porážku Saliho dostaneš 1 000 zlatých, 500 esence a 5 balíčků.',
+        'Nový úspěch Sesazený za porážku Saliho, s titulem Lamač slunce.',
       ],
     ],
   },
@@ -67,7 +77,7 @@ const notes: PatchNotesOverlay = {
     sections: [
       [
         'Void Reckoning, pátý set: 91 karet pro všechny frakce, z toho 15 nových legendárek a draci Prázdnoty, ve vlastních balíčcích v obchodě.',
-        'Mezi legendárkami: Artemis, zkáza Qinnyho; Scar, trhač Liu Kana; Arcimágyně Elinka; Simba, dokonalý predátor; Ocelář Gorn; Nereth, srdce víru; a Sali, Stvořitel, která vyčistí stůl a po smrti nahradí tvého Strážce.',
+        'Mezi legendárkami: Artemis, zkáza Qinnyho; Scar, trhač Liu Kana; Arcimágyně Elinka; Simba, dokonalý predátor; Ocelář Gorn; Nereth, srdce víru; a Sali, Stvořitel, který vyčistí stůl a po smrti nahradí tvého Strážce.',
         'Každá z těchto sedmi má vlastní příchod a nástup Sali na místo Strážce má vlastní scénu.',
         'Nové klíčové slovo Pohlcení: při nasazení znič jinou svou jednotku a získej její útok a životy. Počítá se jako smrt spřátelené jednotky.',
         'Nový stav Rozklad: rozložená jednotka ztratí text i posílení a na začátku každého tahu svého ovladatele dostane -1/-1, dokud nezemře. Odstraní ho Očištění.',

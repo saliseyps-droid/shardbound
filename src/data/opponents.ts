@@ -521,7 +521,7 @@ export const VOID_CAMPAIGN: Chapter[] = [
       },
       {
         id: 'v3_b2', name: 'Nereth', title: 'Heart of the Maelstrom', avatar: 'wave', faction: 'TIDE', archetype: 'Deep Freeze', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
-        intro: 'At the bottom of every whirlpool there is a throne. I have kept it cold for her.',
+        intro: 'At the bottom of every whirlpool there is a throne. I have kept it cold for him.',
         special: {
           heroHealth: 40,
           talents: [{ abilityId: 'wt_boss_frozen_hymn', level: 0 }, { abilityId: 'wt_tide_cold_snap', level: 2 }],
@@ -549,7 +549,7 @@ export const VOID_CAMPAIGN: Chapter[] = [
           bonusStartingEnergy: 1,
           talents: [{ abilityId: 'wt_boss_sali_sovereign', level: 0 }, { abilityId: 'wt_boss_sali_warden', level: 0 }],
           extraCards: ['neu_sali_the_creator', 'neu_the_unmaker', 'vod_nihil_dragon', 'vod_eye_of_the_abyss'],
-          description: ['Starts with 45 Health and 1 extra Energy.', 'Warden abilities: Raise the Sovereign, Call the Eclipse.', 'Her deck holds Sali herself and The Unmaker.'],
+          description: ['Starts with 45 Health and 1 extra Energy.', 'Warden abilities: Raise the Sovereign, Call the Eclipse.', 'His deck holds Sali himself and The Unmaker.'],
         },
         firstWinReward: { gold: 1000, xp: 1000, essence: 500, packs: { setId: 'RECKONING', amount: 5 } },
       },
@@ -560,14 +560,13 @@ export const VOID_CAMPAIGN: Chapter[] = [
 export interface CampaignDef {
   id: 'main' | 'void';
   name: string;
-  subtitle: string;
   chapters: Chapter[];
 }
 
 /** Every campaign, each with its own chapters and progress; the main one comes first. */
 export const CAMPAIGNS: CampaignDef[] = [
-  { id: 'main', name: 'The Shattering of Aethra', subtitle: 'Follow the falling Shards across Aethra. Each victory unlocks the next rival; first clears pay extra.', chapters: CAMPAIGN },
-  { id: 'void', name: 'The Black Sun', subtitle: 'Void Reckoning: follow the black sun to the throne in the dark. A path of its own, open from the start.', chapters: VOID_CAMPAIGN },
+  { id: 'main', name: 'The Shattering of Aethra', chapters: CAMPAIGN },
+  { id: 'void', name: 'The Black Sun', chapters: VOID_CAMPAIGN },
 ];
 
 /**
@@ -584,7 +583,7 @@ const CAMPAIGN_PORTRAITS: Record<string, string | null> = {
   c7_e1: 'iron_goblin_tinker', c7_e2: 'astral_white_seer', c7_e3: null, c7_e4: 'astral_eagle_herald', c7_boss: 'iron_lion_lord',
   c8_e1: 'tide_frost_lich', c8_e2: 'void_night_elf', c8_e3: null, c8_e4: 'void_horned_warlock', c8_boss: 'tide_sapphire_dragon',
   c9_b1: 'astral_eagle_herald', c9_b2: 'verdant_dryad', c9_b3: 'ember_flameborn', c9_final: null,
-  // The Black Sun (Sali has her own portrait, the one she takes when she becomes a Warden).
+  // The Black Sun (Sali has his own portrait, the one he takes when he becomes a Warden).
   v1_e1: 'void_night_elf', v1_e2: 'verdant_forest_elf', v1_e3: 'iron_goblin_tinker', v1_e4: 'tide_frost_lich', v1_boss: 'void_horned_warlock',
   v2_e1: 'ember_flameborn', v2_e2: 'astral_white_seer', v2_e3: 'void_spectral_king', v2_b1: 'verdant_ancient_treant', v2_boss: 'void_moon_cat',
   v3_e1: 'ember_exiled_warlord', v3_b1: 'iron_lion_lord', v3_b2: 'tide_sapphire_dragon', v3_b3: 'void_shadow_tyrant', v3_final: 'sali_the_creator',

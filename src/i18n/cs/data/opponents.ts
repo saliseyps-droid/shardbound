@@ -428,7 +428,7 @@ const v: OpponentsOverlay = {
     v3_b2: {
       name: 'Nereth',
       title: 'Srdce víru',
-      intro: 'Na dně každého víru stojí trůn. Držela jsem ho pro ni v chladu.',
+      intro: 'Na dně každého víru stojí trůn. Držela jsem ho pro něj v chladu.',
       special: [
         'Začíná se 40 životy.',
         'Schopnosti Strážce: Zamrzlá hymna, Náhlý mráz III.',
@@ -447,12 +447,12 @@ const v: OpponentsOverlay = {
     },
     v3_final: {
       name: 'Sali',
-      title: 'Stvořitelka',
-      intro: 'Před první hvězdou, před prvním slovem, jsem tu už seděla. Myslel sis, že se mi postavíš?',
+      title: 'Stvořitel',
+      intro: 'Před první hvězdou, před prvním slovem, jsem tu už seděl. Myslel sis, že se mi postavíš?',
       special: [
         'Začíná se 45 životy a 1 energií navíc.',
         'Schopnosti Strážce: Povstání vládce, Volání zatmění.',
-        'Její balíček obsahuje samotnou Sali a Neutvořitele.',
+        'Jeho balíček obsahuje samotného Saliho a Neutvořitele.',
       ],
     },
   },

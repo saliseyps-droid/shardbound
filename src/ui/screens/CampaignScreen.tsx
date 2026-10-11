@@ -83,7 +83,7 @@ export default function CampaignScreen() {
     <div className="screen campaign-screen">
       <ScreenHeader
         title={t('Campaign')}
-        subtitle={t(camp.subtitle)}
+        subtitle={t('Follow the falling Shards across Aethra. Each victory unlocks the next rival; first clears pay extra.')}
         actions={
           <div className="camp-progress">
             <span className="num">

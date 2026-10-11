@@ -19,6 +19,54 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.41.1',
+    date: '2026-10-11',
+    title: 'A steadier Campaign screen',
+    summary: 'Switching campaigns no longer moves the screen, and Sali is spoken of as he should be.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          'Switching between the two campaigns no longer shifts the Campaign screen.',
+          'Sali is a he: his texts in The Black Sun, the patch notes and the Dethroned achievement now say so.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
+    version: '0.41.0',
+    date: '2026-10-11',
+    title: 'The Black Sun',
+    summary: 'A new Void Reckoning campaign: three chapters, fifteen rivals and Sali waiting on his throne at the end.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'The Black Sun: a second campaign for Void Reckoning. Pick it at the top of the Campaign screen. It has its own progress and is open from the start, with no need to finish the first campaign.',
+          'Three chapters and fifteen rivals: cultists of the black sun, the Mother of Rot, Simba, the Engine of Hunger, Nereth, The Reckoner and, at the end, Sali, the Creator himself.',
+          'Five new boss abilities: Black Sun, Rot Bloom, Apex Hunt, Stoke the Furnace and Final Account.',
+          'First clears pay mostly Void Reckoning packs; defeating Sali pays 1,000 Gold, 500 Essence and 5 packs.',
+          'New achievement Dethroned for defeating Sali, with the title Sunbreaker.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
+    version: '0.40.6',
+    date: '2026-10-11',
+    title: 'Both hands counted when watching',
+    summary: "When watching a match, the bottom player's hand shows its card count too.",
+    sections: [
+      {
+        kind: 'improved',
+        items: ["When watching a match, hover over the bottom player's hand (tap it on a phone) to see how many cards they hold, just like the top player's."],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.40.5',
     date: '2026-10-11',
     title: 'Hand count and a quieter spectator label',
@@ -39,7 +87,7 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.40.4',
     date: '2026-10-11',
     title: 'A smaller hexagon',
-    summary: 'The Play hexagon is smaller and simpler, and Sali sits on her throne again.',
+    summary: 'The Play hexagon is smaller and simpler, and Sali sits on his throne again.',
     sections: [
       {
         kind: 'improved',
@@ -47,7 +95,7 @@ export const PATCH_NOTES: PatchNote[] = [
       },
       {
         kind: 'fixed',
-        items: ["Sali, the Creator's art is framed as it was before, so her throne is visible again."],
+        items: ["Sali, the Creator's art is framed as it was before, so his throne is visible again."],
       },
     ],
     commits: [],
@@ -108,7 +156,7 @@ export const PATCH_NOTES: PatchNote[] = [
         kind: 'new',
         items: [
           'Void Reckoning, the fifth set: 91 cards for every faction, with 15 new Legendaries and dragons of the Void, sold in its own packs in the Shop.',
-          "Among the Legendaries: Artemis, Qinny's Bane; Scar, Liu Kano's Mauler; Archmage Elinka; Simba, the Ultimate Predator; Steelmaker Gorn; Nereth, Heart of the Maelstrom; and Sali, the Creator, who wipes the board and, when she dies, takes your Warden's place.",
+          "Among the Legendaries: Artemis, Qinny's Bane; Scar, Liu Kano's Mauler; Archmage Elinka; Simba, the Ultimate Predator; Steelmaker Gorn; Nereth, Heart of the Maelstrom; and Sali, the Creator, who wipes the board and, when he dies, takes your Warden's place.",
           "Every one of those seven has its own entrance, and Sali taking the Warden's place has its own scene.",
           'New keyword Consume: On Deploy, destroy another friendly unit and gain its Attack and Health. It counts as a friendly unit dying.',
           'New status Corrupt: a Corrupted unit loses its text and buffs and gets -1/-1 at the start of each of its controller\'s turns until it dies. Cleanse removes it.',
