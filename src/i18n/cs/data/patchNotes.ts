@@ -1,6 +1,19 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.41.0': {
+    title: 'Černé slunce',
+    summary: 'Nová kampaň k Void Reckoning: tři kapitoly, patnáct soupeřů a na konci Sali na svém trůnu.',
+    sections: [
+      [
+        'Černé slunce: druhá kampaň k Void Reckoning. Vybereš ji nahoře na obrazovce Kampaň. Má vlastní postup a je otevřená hned od začátku, první kampaň dohrát nemusíš.',
+        'Tři kapitoly a patnáct soupeřů: kultisté černého slunce, Matka hniloby, Simba, Stroj hladu, Nereth, Zúčtovatel a na konci samotná Sali, Stvořitelka.',
+        'Pět nových schopností bossů: Černé slunce, Květ hniloby, Vrcholný lov, Přiložit pod kotel a Konečné vyúčtování.',
+        'První výhry platí hlavně balíčky Void Reckoning; za porážku Sali dostaneš 1 000 zlatých, 500 esence a 5 balíčků.',
+        'Nový úspěch Sesazená za porážku Sali, s titulem Lamač slunce.',
+      ],
+    ],
+  },
   '0.40.6': {
     title: 'Při sledování obě ruce',
     summary: 'Při sledování zápasu ukazuje počet karet i ruka spodního hráče.',

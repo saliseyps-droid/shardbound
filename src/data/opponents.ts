@@ -399,6 +399,178 @@ export const CAMPAIGN: Chapter[] = [
 ];
 
 /**
+ * The Black Sun — a second, separate campaign for Void Reckoning (playable from the start, its own
+ * progress). The black sun rises, the Hollow Choir feeds the Void, and at the end of it sits Sali.
+ */
+export const VOID_CAMPAIGN: Chapter[] = [
+  {
+    id: 'vr1',
+    name: 'Chapter I — The Black Sun Rises',
+    description: 'A black sun climbs over Aethra at noon. Under it, cultists sing and the land begins to rot.',
+    encounters: [
+      {
+        id: 'v1_e1', name: 'Brother Ossian', title: 'Choir of the Rift', avatar: 'eye', faction: 'VOID', archetype: 'Offering', difficulty: 'NORMAL', personality: 'BALANCED', rarities: NORMAL_POOL,
+        intro: 'Look up. It is beautiful, is it not? Soon you will not need your eyes.',
+        special: { extraCards: ['vod_rift_cultist', 'vod_black_sun_chanter'], description: ['His deck holds extra cultists of the black sun.'] },
+        firstWinReward: { gold: 150, xp: 150, packs: { setId: 'RECKONING', amount: 1 } },
+      },
+      {
+        id: 'v1_e2', name: 'Hesk Ashbark', title: 'Keeper of the Withered Wood', avatar: 'leaf', faction: 'VERDANT', archetype: 'Overgrowth', difficulty: 'NORMAL', personality: 'BALANCED', rarities: EASY_POOL,
+        intro: 'My grove did not die. It changed. Come and see how much it has grown.',
+        special: { extraCards: ['ver_blighted_druid', 'ver_hollow_husk'], description: ['Her deck holds the rot of the Withered Wood.'] },
+        firstWinReward: { gold: 150, xp: 150, packs: { setId: 'RECKONING', amount: 1 } },
+      },
+      {
+        id: 'v1_e3', name: 'Foreman Grisk', title: 'Stoker of the Void Furnace', avatar: 'gear', faction: 'IRON', archetype: 'Assembly Line', difficulty: 'NORMAL', personality: 'SWARM', rarities: NORMAL_POOL,
+        intro: 'The new furnace burns anything. Anything! Workers, scrap, you — it is not picky.',
+        special: { extraCards: ['irn_void_furnace', 'irn_hungry_crucible'], description: ['His deck holds the Void Furnace and a Hungry Crucible.'] },
+        firstWinReward: { gold: 180, xp: 180, packs: { setId: 'RECKONING', amount: 1 } },
+      },
+      {
+        id: 'v1_e4', name: 'Maresh', title: 'Tidecaller of Nul', avatar: 'wave', faction: 'TIDE', archetype: 'Undertow', difficulty: 'HARD', personality: 'CONTROL', rarities: NORMAL_POOL,
+        intro: 'The sea under the black sun is very calm. Everything that drowns in it stays quiet.',
+        special: { extraCards: ['tid_tidecaller_of_nul', 'tid_nul_reaver'], description: ['Their deck holds the drowned servants of Nul.'] },
+        firstWinReward: { gold: 200, xp: 200, packs: { setId: 'RECKONING', amount: 1 } },
+      },
+      {
+        id: 'v1_boss', name: 'The Black Sun Herald', title: 'First to Kneel', avatar: 'eye', faction: 'VOID', archetype: 'Offering', difficulty: 'HARD', personality: 'BALANCED', rarities: HARD_POOL, boss: true,
+        intro: 'I saw it rise before anyone else. I knelt first. Now kneel beside me.',
+        special: {
+          talents: [{ abilityId: 'wt_boss_black_sun', level: 0 }, { abilityId: 'wt_void_soul_harvest', level: 1 }],
+          extraCards: ['vod_black_sun_herald', 'neu_black_sun_idol', 'vod_sunless_hymn'],
+          description: ['Warden abilities: Black Sun, Soul Harvest II.', 'His deck holds the Herald himself and the Black Sun Idol.'],
+        },
+        firstWinReward: { gold: 350, xp: 300, packs: { setId: 'RECKONING', amount: 2 } },
+      },
+    ],
+  },
+  {
+    id: 'vr2',
+    name: 'Chapter II — The Hunger Spreads',
+    description: 'What the Void touches, it eats. Those who fight it start to rot, and those who feed it only grow hungrier.',
+    encounters: [
+      {
+        id: 'v2_e1', name: 'Inquisitor Varra', title: 'Flamebound Purger', avatar: 'flame', faction: 'EMBER', archetype: 'Blitz', difficulty: 'HARD', personality: 'AGGRESSIVE', rarities: HARD_POOL,
+        intro: 'Everything the black sun has touched must burn. You have been standing in its light.',
+        special: { extraCards: ['emb_flamebound_inquisitor', 'emb_purging_bolt', 'emb_scorched_dawn'], description: ['Her deck holds purging fire against the Corrupted.'] },
+        firstWinReward: { gold: 220, xp: 220, packs: { setId: 'RECKONING', amount: 1 } },
+      },
+      {
+        id: 'v2_e2', name: 'Ilun', title: 'Shard Sage of the Fading Stars', avatar: 'star', faction: 'ASTRAL', archetype: 'Starlit Control', difficulty: 'HARD', personality: 'CONTROL', rarities: HARD_POOL,
+        intro: 'The stars are going out one by one. I will not let you put out the ones I have left.',
+        special: { extraCards: ['ast_shard_sage', 'ast_starfall_vow', 'ast_purify'], description: ['Their deck holds the last light of the Lumen Conclave.'] },
+        firstWinReward: { gold: 220, xp: 220, essence: 100 },
+      },
+      {
+        id: 'v2_e3', name: 'The Hungering Shade', title: 'Mouth Without a Face', avatar: 'eye', faction: 'VOID', archetype: 'Offering', difficulty: 'HARD', personality: 'BALANCED', rarities: HARD_POOL,
+        intro: 'More. More. Always more.',
+        special: { extraCards: ['vod_hungering_shade', 'vod_feed_the_void', 'vod_gaping_maw'], description: ['Its deck holds extra Consume cards.'] },
+        firstWinReward: { gold: 250, xp: 250, packs: { setId: 'RECKONING', amount: 1 } },
+      },
+      {
+        id: 'v2_b1', name: 'Mother of Rot', title: 'Heart of the Withered Wood', avatar: 'leaf', faction: 'VERDANT', archetype: 'Wellspring', difficulty: 'HARD', personality: 'BALANCED', rarities: ALL, boss: true,
+        intro: 'Shh. Lie down, little one. My children are hungry, and you are so very warm.',
+        special: {
+          heroHealth: 35,
+          talents: [{ abilityId: 'wt_boss_rot_bloom', level: 0 }, { abilityId: 'wt_verdant_wellspring', level: 1 }],
+          extraCards: ['ver_mother_of_rot', 'ver_heart_of_the_withered_wood', 'ver_creeping_decay'],
+          description: ['Starts with 35 Health.', 'Warden abilities: Rot Bloom, Wellspring II.', 'Her deck holds the Mother of Rot herself.'],
+        },
+        firstWinReward: { gold: 400, xp: 350, packs: { setId: 'RECKONING', amount: 2 } },
+      },
+      {
+        id: 'v2_boss', name: 'Simba', title: 'The Ultimate Predator', avatar: 'eye', faction: 'VOID', archetype: 'Offering', difficulty: 'EXPERT', personality: 'AGGRESSIVE', rarities: ALL, boss: true,
+        intro: 'Every hunt ends the same way. The only question is how many.',
+        special: {
+          heroHealth: 35,
+          talents: [{ abilityId: 'wt_boss_apex_hunt', level: 0 }, { abilityId: 'wt_void_blood_price', level: 1 }],
+          extraCards: ['vod_simba_ultimate_predator', 'vod_devourer_of_names', 'vod_umbral_drake'],
+          description: ['Starts with 35 Health.', 'Warden abilities: Apex Hunt, Blood Price II.', 'His deck holds Simba himself.'],
+        },
+        firstWinReward: { gold: 450, xp: 400, essence: 200, packs: { setId: 'RECKONING', amount: 2 } },
+      },
+    ],
+  },
+  {
+    id: 'vr3',
+    name: 'Chapter III — The Throne in the Dark',
+    description: 'Under the black sun stands a throne older than the first star. Every power of the Reckoning bars the way to it.',
+    encounters: [
+      {
+        id: 'v3_e1', name: 'Ashen Warden Kael', title: 'Keeper of the Last Gate', avatar: 'flame', faction: 'EMBER', archetype: 'Blitz', difficulty: 'EXPERT', personality: 'AGGRESSIVE', rarities: ALL,
+        intro: 'I swore that nothing would pass this gate until the sun came back. It has not come back.',
+        special: {
+          heroHealth: 40,
+          talents: [{ abilityId: 'wt_boss_oath_of_cinders', level: 0 }, { abilityId: 'wt_ember_warcry', level: 2 }],
+          extraCards: ['emb_ashen_warden_kael', 'emb_sunbreaker_titan', 'emb_lantern_bearer'],
+          description: ['Starts with 40 Health.', 'Warden abilities: Oath of Cinders, Warcry III.', 'His deck holds Kael himself.'],
+        },
+        firstWinReward: { gold: 400, xp: 400, packs: { setId: 'RECKONING', amount: 1 } },
+      },
+      {
+        id: 'v3_b1', name: 'Engine of Hunger', title: 'It Was Never Told to Stop', avatar: 'gear', faction: 'IRON', archetype: 'Assembly Line', difficulty: 'EXPERT', personality: 'SWARM', rarities: ALL, boss: true,
+        intro: 'FUEL. LEVEL. LOW. INPUT. REQUIRED.',
+        special: {
+          heroHealth: 40,
+          startingArmor: 5,
+          talents: [{ abilityId: 'wt_boss_stoke_furnace', level: 0 }, { abilityId: 'wt_iron_rivet_plating', level: 1 }],
+          extraCards: ['irn_engine_of_hunger', 'irn_iron_maw', 'irn_null_engine'],
+          description: ['Starts with 40 Health and 5 Armor.', 'Warden abilities: Stoke the Furnace, Rivet Plating II.', 'Its deck holds the Engine of Hunger itself.'],
+        },
+        firstWinReward: { gold: 500, xp: 450, essence: 250 },
+      },
+      {
+        id: 'v3_b2', name: 'Nereth', title: 'Heart of the Maelstrom', avatar: 'wave', faction: 'TIDE', archetype: 'Deep Freeze', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
+        intro: 'At the bottom of every whirlpool there is a throne. I have kept it cold for her.',
+        special: {
+          heroHealth: 40,
+          talents: [{ abilityId: 'wt_boss_frozen_hymn', level: 0 }, { abilityId: 'wt_tide_cold_snap', level: 2 }],
+          extraCards: ['tid_nereth_heart_of_the_maelstrom', 'tid_the_drowned_choir', 'tid_maelstrom_of_nothing'],
+          description: ['Starts with 40 Health.', 'Warden abilities: Frozen Hymn, Cold Snap III.', 'Her deck holds Nereth and The Drowned Choir.'],
+        },
+        firstWinReward: { gold: 500, xp: 450, packs: { setId: 'RECKONING', amount: 2 } },
+      },
+      {
+        id: 'v3_b3', name: 'The Reckoner', title: 'Every Debt, Settled', avatar: 'eye', faction: 'VOID', archetype: 'Requiem', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
+        intro: 'You owe for every unit you spent to reach me. I have kept the account. It is long.',
+        special: {
+          heroHealth: 40,
+          talents: [{ abilityId: 'wt_boss_final_account', level: 0 }, { abilityId: 'wt_void_unending', level: 1 }],
+          extraCards: ['vod_the_reckoner', 'vod_reckoning_bell', 'vod_eclipse_rite'],
+          description: ['Starts with 40 Health.', 'Warden abilities: Final Account, Unending II.', 'Its deck holds The Reckoner itself.'],
+        },
+        firstWinReward: { gold: 550, xp: 500, essence: 300 },
+      },
+      {
+        id: 'v3_final', name: 'Sali', title: 'The Creator', avatar: 'crown', faction: 'VOID', secondFaction: 'NEUTRAL', archetype: 'Requiem', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
+        intro: 'Before the first star, before the first word, I was already sitting here. Did you think you could stand up to me?',
+        special: {
+          heroHealth: 45,
+          bonusStartingEnergy: 1,
+          talents: [{ abilityId: 'wt_boss_sali_sovereign', level: 0 }, { abilityId: 'wt_boss_sali_warden', level: 0 }],
+          extraCards: ['neu_sali_the_creator', 'neu_the_unmaker', 'vod_nihil_dragon', 'vod_eye_of_the_abyss'],
+          description: ['Starts with 45 Health and 1 extra Energy.', 'Warden abilities: Raise the Sovereign, Call the Eclipse.', 'Her deck holds Sali herself and The Unmaker.'],
+        },
+        firstWinReward: { gold: 1000, xp: 1000, essence: 500, packs: { setId: 'RECKONING', amount: 5 } },
+      },
+    ],
+  },
+];
+
+export interface CampaignDef {
+  id: 'main' | 'void';
+  name: string;
+  subtitle: string;
+  chapters: Chapter[];
+}
+
+/** Every campaign, each with its own chapters and progress; the main one comes first. */
+export const CAMPAIGNS: CampaignDef[] = [
+  { id: 'main', name: 'The Shattering of Aethra', subtitle: 'Follow the falling Shards across Aethra. Each victory unlocks the next rival; first clears pay extra.', chapters: CAMPAIGN },
+  { id: 'void', name: 'The Black Sun', subtitle: 'Void Reckoning: follow the black sun to the throne in the dark. A path of its own, open from the start.', chapters: VOID_CAMPAIGN },
+];
+
+/**
  * Every campaign Warden has a fixed portrait from the shop set, picked to fit the character
  * (null = the faction's default portrait). Neighbouring rivals never share one.
  */
@@ -412,17 +584,27 @@ const CAMPAIGN_PORTRAITS: Record<string, string | null> = {
   c7_e1: 'iron_goblin_tinker', c7_e2: 'astral_white_seer', c7_e3: null, c7_e4: 'astral_eagle_herald', c7_boss: 'iron_lion_lord',
   c8_e1: 'tide_frost_lich', c8_e2: 'void_night_elf', c8_e3: null, c8_e4: 'void_horned_warlock', c8_boss: 'tide_sapphire_dragon',
   c9_b1: 'astral_eagle_herald', c9_b2: 'verdant_dryad', c9_b3: 'ember_flameborn', c9_final: null,
+  // The Black Sun (Sali has her own portrait, the one she takes when she becomes a Warden).
+  v1_e1: 'void_night_elf', v1_e2: 'verdant_forest_elf', v1_e3: 'iron_goblin_tinker', v1_e4: 'tide_frost_lich', v1_boss: 'void_horned_warlock',
+  v2_e1: 'ember_flameborn', v2_e2: 'astral_white_seer', v2_e3: 'void_spectral_king', v2_b1: 'verdant_ancient_treant', v2_boss: 'void_moon_cat',
+  v3_e1: 'ember_exiled_warlord', v3_b1: 'iron_lion_lord', v3_b2: 'tide_sapphire_dragon', v3_b3: 'void_shadow_tyrant', v3_final: 'sali_the_creator',
 };
-for (const ch of CAMPAIGN) for (const e of ch.encounters) if (e.id in CAMPAIGN_PORTRAITS) e.portrait = CAMPAIGN_PORTRAITS[e.id];
+for (const ch of [...CAMPAIGN, ...VOID_CAMPAIGN]) for (const e of ch.encounters) if (e.id in CAMPAIGN_PORTRAITS) e.portrait = CAMPAIGN_PORTRAITS[e.id];
 
 export function findEncounter(id: string): { chapter: Chapter; encounter: OpponentDef; index: number } | undefined {
-  for (const chapter of CAMPAIGN) {
+  for (const chapter of [...CAMPAIGN, ...VOID_CAMPAIGN]) {
     const index = chapter.encounters.findIndex((e) => e.id === id);
     if (index >= 0) return { chapter, encounter: chapter.encounters[index], index };
   }
   return undefined;
 }
 
+/** Every encounter of every campaign. */
 export function allEncounters(): OpponentDef[] {
-  return CAMPAIGN.flatMap((c) => c.encounters);
+  return CAMPAIGNS.flatMap((c) => c.chapters.flatMap((ch) => ch.encounters));
+}
+
+/** The campaign an encounter belongs to (the main one when unknown). */
+export function campaignOf(encounterId: string | null | undefined): CampaignDef {
+  return CAMPAIGNS.find((c) => c.chapters.some((ch) => ch.encounters.some((e) => e.id === encounterId))) ?? CAMPAIGNS[0];
 }

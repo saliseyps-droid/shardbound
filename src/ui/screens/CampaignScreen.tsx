@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
-import { CAMPAIGN, findEncounter, type OpponentReward } from '@/data/opponents';
+import { CAMPAIGNS, findEncounter, type CampaignDef, type Chapter, type OpponentReward } from '@/data/opponents';
 import { FACTIONS } from '@/data/factions';
 import { SET_INFO } from '@/config/economy';
 import { getCardSafe } from '@/data/cards';
@@ -18,15 +18,18 @@ import { t } from '@/i18n';
 /** At most this many chapters are shown at once; later ones go on further tabs. */
 const CHAPTERS_PER_TAB = 3;
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-const TABS = Array.from({ length: Math.ceil(CAMPAIGN.length / CHAPTERS_PER_TAB) }, (_, i) => {
-  const first = i * CHAPTERS_PER_TAB;
-  const last = Math.min(CAMPAIGN.length, first + CHAPTERS_PER_TAB) - 1;
-  return { first, last, chapters: CAMPAIGN.slice(first, last + 1) };
-});
-const tabOf = (encounterId: string | null) => {
-  const ci = CAMPAIGN.findIndex((c) => c.encounters.some((e) => e.id === encounterId));
+const tabsOf = (chapters: Chapter[]) =>
+  Array.from({ length: Math.ceil(chapters.length / CHAPTERS_PER_TAB) }, (_, i) => {
+    const first = i * CHAPTERS_PER_TAB;
+    const last = Math.min(chapters.length, first + CHAPTERS_PER_TAB) - 1;
+    return { first, last, chapters: chapters.slice(first, last + 1) };
+  });
+const tabOf = (chapters: Chapter[], encounterId: string | null) => {
+  const ci = chapters.findIndex((c) => c.encounters.some((e) => e.id === encounterId));
   return ci < 0 ? 0 : Math.floor(ci / CHAPTERS_PER_TAB);
 };
+/** The campaign shown last, so coming back from a fight opens the same one. */
+let lastCampaign: CampaignDef['id'] = 'main';
 
 function RewardList({ r }: { r: OpponentReward }) {
   return (
@@ -47,11 +50,24 @@ function RewardList({ r }: { r: OpponentReward }) {
 export default function CampaignScreen() {
   const save = useAccount((s) => s.save);
   const navigate = useNavigate();
-  const [selectedId, setSelectedId] = useState<string | null>(() => (save ? nextEncounter(save)?.encounter.id ?? CAMPAIGN[0].encounters[0].id : null));
+  const [campId, setCampId] = useState(lastCampaign);
+  const camp = CAMPAIGNS.find((c) => c.id === campId) ?? CAMPAIGNS[0];
+  const TABS = tabsOf(camp.chapters);
+  const firstOpen = (c: CampaignDef) => (save ? nextEncounter(save, c.chapters)?.encounter.id : undefined) ?? c.chapters[0].encounters[0].id;
+  const [selectedId, setSelectedId] = useState<string | null>(() => (save ? firstOpen(camp) : null));
   const [deckId, setDeckId] = useState<string | null>(() => (save ? firstValidDeck(save, save.profile.selectedDeckId) : null));
-  const [tab, setTab] = useState(() => tabOf(selectedId));
+  const [tab, setTab] = useState(() => tabOf(camp.chapters, selectedId));
   if (!save) return null;
-  const prog = campaignProgress(save);
+  const prog = campaignProgress(save, camp.chapters);
+  const pickCampaign = (c: CampaignDef) => {
+    if (c.id === campId) return;
+    audio.play('click');
+    lastCampaign = c.id;
+    setCampId(c.id);
+    const id = firstOpen(c);
+    setSelectedId(id);
+    setTab(tabOf(c.chapters, id));
+  };
   const sel = selectedId ? findEncounter(selectedId) : undefined;
   const enc = sel?.encounter;
   const unlocked = enc ? isUnlocked(save, enc.id) : false;
@@ -67,7 +83,7 @@ export default function CampaignScreen() {
     <div className="screen campaign-screen">
       <ScreenHeader
         title={t('Campaign')}
-        subtitle={t('Follow the falling Shards across Aethra. Each victory unlocks the next rival; first clears pay extra.')}
+        subtitle={t(camp.subtitle)}
         actions={
           <div className="camp-progress">
             <span className="num">
@@ -77,6 +93,19 @@ export default function CampaignScreen() {
           </div>
         }
       />
+      <div className="camp-switch" role="tablist" aria-label={t('Campaign')}>
+        {CAMPAIGNS.map((c) => {
+          const p = campaignProgress(save, c.chapters);
+          return (
+            <button key={c.id} type="button" role="tab" aria-selected={c.id === campId} className={`camp-pick camp-pick-${c.id} ${c.id === campId ? 'is-active' : ''}`} onClick={() => pickCampaign(c)}>
+              <strong>{t(c.name)}</strong>
+              <span className="num faint">
+                {p.cleared} / {p.total}
+              </span>
+            </button>
+          );
+        })}
+      </div>
       <div className="campaign-layout">
         <div className="chapters panel">
           {TABS.length > 1 && (

@@ -4,7 +4,7 @@ import { gameService, useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
 import { toast } from '@/state/uiStore';
 import { collectibleCards, getCardSafe } from '@/data/cards';
-import { CAMPAIGN, DIFFICULTY_POOLS, PRACTICE_OPPONENTS, findEncounter } from '@/data/opponents';
+import { CAMPAIGN, DIFFICULTY_POOLS, PRACTICE_OPPONENTS, allEncounters, findEncounter } from '@/data/opponents';
 import { FACTIONS } from '@/data/factions';
 import { PACK_CONFIG } from '@/config/economy';
 import { DIFFICULTIES, type Difficulty } from '@/config/progression';
@@ -271,7 +271,7 @@ export default function DebugScreen() {
           </div>
           <div className="btn-row">
             <select className="select" value={encId} onChange={(e) => setEncId(e.target.value)} aria-label="Encounter">
-              {CAMPAIGN.flatMap((c) => c.encounters).map((e) => (
+              {allEncounters().map((e) => (
                 <option key={e.id} value={e.id}>
                   {e.name} ({e.difficulty})
                 </option>

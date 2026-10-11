@@ -317,6 +317,9 @@ const d: Record<string, string> = {
   Start: 'Začít',
 
   // Campaign
+  'The Shattering of Aethra': 'Roztříštění Aethry',
+  'The Black Sun': 'Černé slunce',
+  'Void Reckoning: follow the black sun to the throne in the dark. A path of its own, open from the start.': 'Void Reckoning: následuj černé slunce až k trůnu ve tmě. Vlastní cesta, otevřená hned od začátku.',
   'Follow the falling Shards across Aethra. Each victory unlocks the next rival; first clears pay extra.': 'Následuj padající Střepy napříč Aethrou. Každé vítězství odemkne dalšího soupeře; první výhra nad každým se platí navíc.',
   Locked: 'Zamčeno',
   ', boss': ', boss',

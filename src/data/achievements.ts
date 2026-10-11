@@ -148,6 +148,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'camp_ch3', name: 'Crown Denied', description: 'Clear every encounter of Chapter III.', category: 'CAMPAIGN', tier: 'SILVER', icon: 'crown', rewards: [pack('DEEP'), essence(100)], check: (s) => chapterCleared(s, 'ch3') },
   { id: 'camp_ch6', name: 'Through the Burning Bloom', description: 'Clear every encounter of Chapter VI.', category: 'CAMPAIGN', tier: 'SILVER', icon: 'flame', rewards: [pack('ABYSS'), gold(150)], check: (s) => chapterCleared(s, 'ch6') },
   { id: 'camp_crown', name: 'The Last Shard', description: 'Defeat The Sundered Crown at the end of Chapter IX.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'crown', rewards: [title('Crown Sunderer'), pack('ABYSS', 2)], check: (s) => cleared(s, 'c9_final') },
+  { id: 'camp_sali', name: 'Dethroned', description: 'Defeat Sali at the end of The Black Sun.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'crown', rewards: [title('Sunbreaker'), pack('RECKONING', 2)], check: (s) => cleared(s, 'v3_final') },
   {
     id: 'camp_all', name: 'Cartographer of Shards', description: 'Clear every encounter of the campaign.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'compass', rewards: [cardBack, essence(300)],
     progress: (s) => {

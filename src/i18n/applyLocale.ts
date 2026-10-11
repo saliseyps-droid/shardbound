@@ -6,7 +6,7 @@ import { allCards } from '@/data/cards';
 import { KEYWORDS, rebuildKeywordPattern } from '@/data/keywords';
 import { BOSS_TALENTS, FACTION_TALENTS } from '@/data/wardenTalents';
 import { FACTIONS, WORLD_LORE } from '@/data/factions';
-import { CAMPAIGN, PRACTICE_OPPONENTS } from '@/data/opponents';
+import { CAMPAIGNS, PRACTICE_OPPONENTS } from '@/data/opponents';
 import { CARD_BACKS } from '@/data/cardBacks';
 import { SET_INFO } from '@/config/economy';
 import { PATCH_NOTES } from '@/data/patchNotes';
@@ -91,7 +91,7 @@ export function applyLocale(locale: Locale) {
       if (text.special?.length && o.special) o.special.description = text.special;
     };
     Object.values(PRACTICE_OPPONENTS).forEach(apply);
-    for (const ch of CAMPAIGN) {
+    for (const ch of CAMPAIGNS.flatMap((c) => c.chapters)) {
       const text = opp.chapters[ch.id];
       if (text) {
         set(ch, 'name', text.name);

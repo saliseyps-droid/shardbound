@@ -333,6 +333,128 @@ const v: OpponentsOverlay = {
         'Schopnosti Strážce: Poslední Střep, Úlomek Koruny.',
       ],
     },
+    // Černé slunce (Void Reckoning)
+    v1_e1: {
+      name: 'Bratr Ossian',
+      title: 'Chór Trhliny',
+      intro: 'Podívej se nahoru. Není to krásné? Brzy už oči potřebovat nebudeš.',
+      special: ['Jeho balíček obsahuje další kultisty černého slunce.'],
+    },
+    v1_e2: {
+      name: 'Hesk Popelokorá',
+      title: 'Strážkyně zvadlého lesa',
+      intro: 'Můj háj neumřel. Změnil se. Pojď se podívat, jak vyrostl.',
+      special: ['Její balíček obsahuje hnilobu zvadlého lesa.'],
+    },
+    v1_e3: {
+      name: 'Předák Grisk',
+      title: 'Topič Pece Prázdnoty',
+      intro: 'Nová pec spálí cokoli. Cokoli! Dělníky, šrot, tebe – není vybíravá.',
+      special: ['Jeho balíček obsahuje Pec Prázdnoty a Hladový tyglík.'],
+    },
+    v1_e4: {
+      name: 'Maresh',
+      title: 'Vyvolavač přílivu z Nulu',
+      intro: 'Moře pod černým sluncem je velmi klidné. Všechno, co se v něm utopí, zůstane potichu.',
+      special: ['Jeho balíček obsahuje utonulé služebníky Nulu.'],
+    },
+    v1_boss: {
+      name: 'Hlasatel černého slunce',
+      title: 'První, kdo poklekl',
+      intro: 'Viděl jsem ho vyjít dřív než kdokoli jiný. Poklekl jsem první. Teď poklekni vedle mě.',
+      special: [
+        'Schopnosti Strážce: Černé slunce, Žeň duší II.',
+        'Jeho balíček obsahuje samotného Hlasatele a Modlu černého slunce.',
+      ],
+    },
+    v2_e1: {
+      name: 'Inkvizitorka Varra',
+      title: 'Očistitelka plamenem',
+      intro: 'Všechno, čeho se černé slunce dotklo, musí shořet. A ty jsi stál v jeho světle.',
+      special: ['Její balíček obsahuje očistný oheň proti rozloženým.'],
+    },
+    v2_e2: {
+      name: 'Ilun',
+      title: 'Mudrc Střepů hasnoucích hvězd',
+      intro: 'Hvězdy zhasínají jedna po druhé. Ty, které mi zbyly, ti zhasnout nedovolím.',
+      special: ['Jeho balíček obsahuje poslední světlo Konkláve Lumenu.'],
+    },
+    v2_e3: {
+      name: 'Hladový stín',
+      title: 'Ústa bez tváře',
+      intro: 'Víc. Víc. Pořád víc.',
+      special: ['Jeho balíček obsahuje karty s Pohlcením navíc.'],
+    },
+    v2_b1: {
+      name: 'Matka hniloby',
+      title: 'Srdce zvadlého lesa',
+      intro: 'Pšt. Lehni si, maličký. Moje děti mají hlad a ty jsi tak krásně teplý.',
+      special: [
+        'Začíná s 35 životy.',
+        'Schopnosti Strážce: Květ hniloby, Pramen II.',
+        'Její balíček obsahuje samotnou Matku hniloby.',
+      ],
+    },
+    v2_boss: {
+      name: 'Simba',
+      title: 'Dokonalý predátor',
+      intro: 'Každý lov končí stejně. Jediná otázka je, kolik jich bude.',
+      special: [
+        'Začíná s 35 životy.',
+        'Schopnosti Strážce: Vrcholný lov, Krvavá daň II.',
+        'Jeho balíček obsahuje samotného Simbu.',
+      ],
+    },
+    v3_e1: {
+      name: 'Popelavý strážce Kael',
+      title: 'Strážce poslední brány',
+      intro: 'Přísahal jsem, že touhle branou nic neprojde, dokud se slunce nevrátí. Nevrátilo se.',
+      special: [
+        'Začíná se 40 životy.',
+        'Schopnosti Strážce: Přísaha popela, Válečný pokřik III.',
+        'Jeho balíček obsahuje samotného Kaela.',
+      ],
+    },
+    v3_b1: {
+      name: 'Stroj hladu',
+      title: 'Nikdo mu neřekl, ať přestane',
+      intro: 'PALIVO. NÍZKÁ. HLADINA. VYŽADOVÁN. VSTUP.',
+      special: [
+        'Začíná se 40 životy a 5 brněním.',
+        'Schopnosti Strážce: Přiložit pod kotel, Nýtované plátování II.',
+        'Jeho balíček obsahuje samotný Stroj hladu.',
+      ],
+    },
+    v3_b2: {
+      name: 'Nereth',
+      title: 'Srdce víru',
+      intro: 'Na dně každého víru stojí trůn. Držela jsem ho pro ni v chladu.',
+      special: [
+        'Začíná se 40 životy.',
+        'Schopnosti Strážce: Zamrzlá hymna, Náhlý mráz III.',
+        'Její balíček obsahuje Nereth a Utonulý sbor.',
+      ],
+    },
+    v3_b3: {
+      name: 'Zúčtovatel',
+      title: 'Každý dluh vyrovnán',
+      intro: 'Dlužíš za každou jednotku, kterou jsi cestou ke mně obětoval. Vedl jsem si účet. Je dlouhý.',
+      special: [
+        'Začíná se 40 životy.',
+        'Schopnosti Strážce: Konečné vyúčtování, Nekonečný II.',
+        'Jeho balíček obsahuje samotného Zúčtovatele.',
+      ],
+    },
+    v3_final: {
+      name: 'Sali',
+      title: 'Stvořitelka',
+      intro: 'Před první hvězdou, před prvním slovem, jsem tu už seděla. Myslel sis, že se mi postavíš?',
+      special: [
+        'Začíná se 45 životy a 1 energií navíc.',
+        'Schopnosti Strážce: Povstání vládce, Volání zatmění.',
+        'Její balíček obsahuje samotnou Sali a Neutvořitele.',
+      ],
+    },
   },
   chapters: {
     ch1: {
@@ -370,6 +492,18 @@ const v: OpponentsOverlay = {
     ch9: {
       name: 'Kapitola IX – Poslední Střep',
       description: 'Všechny Střepy jsou konečně pohromadě. Mezi tebou a celou Korunou stojí jen mocnosti, které je rozprášily.',
+    },
+    vr1: {
+      name: 'Kapitola I – Vychází černé slunce',
+      description: 'V poledne vystoupá nad Aethru černé slunce. Kultisté pod ním zpívají a země začíná hnít.',
+    },
+    vr2: {
+      name: 'Kapitola II – Hlad se šíří',
+      description: 'Čeho se Prázdnota dotkne, to sežere. Kdo s ní bojuje, začne hnít, a kdo ji krmí, má jen větší hlad.',
+    },
+    vr3: {
+      name: 'Kapitola III – Trůn ve tmě',
+      description: 'Pod černým sluncem stojí trůn starší než první hvězda. Cestu k němu ti zastoupí všechny mocnosti Zúčtování.',
     },
   },
 };

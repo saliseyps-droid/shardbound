@@ -245,6 +245,12 @@ export const BOSS_TALENTS: TalentAbility[] = [
   // Sali, the Creator (Void Reckoning): the Warden's abilities once Sali takes the Warden's place.
   active('BOSS', 'sali_sovereign', 'Raise the Sovereign', [{ cost: 1, cooldown: 1, effects: [{ type: 'SUMMON', cardId: 'token_hollow_sovereign' }], description: 'Summon a 3/4 Hollow Sovereign. Usable every other turn.' }]),
   active('BOSS', 'sali_warden', 'Call the Eclipse', [{ cost: 1, cooldown: 1, effects: [{ type: 'SUMMON', cardId: 'token_eclipse_warden' }], description: 'Summon a 4/3 Eclipse Warden. Usable every other turn.' }]),
+  // The Black Sun (Void Reckoning campaign)
+  active('BOSS', 'black_sun', 'Black Sun', [{ cost: 2, effects: [{ type: 'APPLY_STATUS', status: 'CORRUPT', target: 'RANDOM_ENEMY_UNIT' }], description: 'Corrupt a random enemy unit.' }]),
+  active('BOSS', 'rot_bloom', 'Rot Bloom', [{ cost: 2, effects: [{ type: 'APPLY_STATUS', status: 'CORRUPT', target: 'RANDOM_ENEMY_UNIT' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }], description: 'Corrupt a random enemy unit and restore 2 Health to your Warden.' }]),
+  active('BOSS', 'apex_hunt', 'Apex Hunt', [{ cost: 2, effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'RANDOM_ENEMY_UNIT' }], description: 'Deal 2 damage to a random enemy unit.' }]),
+  active('BOSS', 'stoke_furnace', 'Stoke the Furnace', [{ cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_scrapbot', count: 2 }], description: 'Summon two 1/1 Scrapbots.' }]),
+  active('BOSS', 'final_account', 'Final Account', [{ cost: 3, effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'ALL_ENEMIES' }, { type: 'APPLY_STATUS', status: 'CORRUPT', target: 'RANDOM_ENEMY_UNIT' }], description: 'Deal 1 damage to all enemies, then Corrupt a random enemy unit.' }]),
   active('BOSS', 'drake_brood', 'Drake Brood', [{ cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_drakeling' }], description: 'Summon a 2/2 Cinder Drakeling with Swift.' }]),
   active('BOSS', 'siege_protocol', 'Siege Protocol', [{ cost: 3, effects: [{ type: 'SUMMON', cardId: 'token_sentry' }, { type: 'GAIN_ARMOR', amount: 2, target: 'ALLY_HERO' }], description: 'Summon a 2/3 Brass Sentry with Guard and gain 2 Armor.' }]),
   active('BOSS', 'frozen_hymn', 'Frozen Hymn', [{ cost: 4, effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'ALL_ENEMY_UNITS' }], description: 'Freeze all enemy units.' }]),
