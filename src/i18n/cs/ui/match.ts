@@ -22,6 +22,7 @@ const d: Record<string, string> = {
   'Enemy battlefield': 'Nepřátelské bojiště',
   Opponent: 'Soupeř',
   'Opponent has {n} cards': 'Soupeř má v ruce {n} kartu|Soupeř má v ruce {n} karty|Soupeř má v ruce {n} karet',
+  '{n} cards in hand': '{n} karta v ruce|{n} karty v ruce|{n} karet v ruce',
   Battlefield: 'Bojiště',
   You: 'Ty',
   'Your hand': 'Tvoje ruka',

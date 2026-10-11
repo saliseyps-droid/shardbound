@@ -277,6 +277,17 @@ body .audio-toggles { left: calc(10px + var(--safe-left)); bottom: calc(10px + v
   body .audio-toggle { width: 36px; height: 36px; }
 }
 
+/* The opponent's hand is shrunk on phones: keep its card count readable. */
+@media (max-height: 520px) {
+  body .enemy-hand-count { scale: 1.8; transform-origin: 50% 0; }
+}
+body .spectate-bar { right: calc(var(--sidebar-w) + 10px + var(--safe-right)); bottom: calc(10px + var(--safe-bottom)); }
+@media (max-height: 520px) {
+  /* Sideways the turn controls sit in the bottom-right corner: the spectate label goes under them. */
+  body .spectate-bar { right: calc(8px + var(--safe-right)); bottom: calc(4px + var(--safe-bottom)); padding: 3px 10px; font-size: var(--t-xs); }
+  body .spectate-controls { bottom: calc(34px + var(--safe-bottom)); }
+}
+
 /* Touch screens: the deck box text links become real touch targets. */
 @media (hover: none), (max-width: 760px) {
   body .deck-links { gap: 4px var(--space-2); }

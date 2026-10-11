@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.40.5',
+    date: '2026-10-11',
+    title: 'Hand count and a quieter spectator label',
+    summary: "See how many cards your opponent holds, and the spectator label no longer covers the top of the board.",
+    sections: [
+      {
+        kind: 'new',
+        items: ["Hover over your opponent's hand (tap it on a phone) to see how many cards they hold, both in your games and when watching."],
+      },
+      {
+        kind: 'improved',
+        items: ['When watching a match, the "Watching A vs B" label sits in the bottom-right corner instead of over the top of the board.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.40.4',
     date: '2026-10-11',
     title: 'A smaller hexagon',

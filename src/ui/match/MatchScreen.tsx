@@ -185,6 +185,10 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const longPress = useRef<{ timer?: number; fired: boolean; suppressUntil: number }>({ fired: false, suppressUntil: 0 });
   /** Phones: the battle log opened as a sheet over the board. */
   const [logOpen, setLogOpen] = useState(false);
+  // Touch has no hover: a tap on the opponent's hand shows how many cards are in it for a moment.
+  const [oppHandTapped, setOppHandTapped] = useState(false);
+  const oppHandTimer = useRef(0);
+  useEffect(() => () => clearTimeout(oppHandTimer.current), []);
   /** A Warden shown in the hero inspector (right-click / long press). */
   const [heroInspect, setHeroInspect] = useState<PlayerId | null>(null);
   useEffect(() => startMatchFullscreen(), []);
@@ -539,12 +543,26 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       <div className="board-mat" aria-hidden />
       {/* ---- Enemy side ---- */}
       <section className="side enemy-side" aria-label={t('Opponent')}>
-        <div className="enemy-hand" aria-label={tn(opp.hand.length, 'Opponent has {n} cards', 'Opponent has {n} cards')}>
+        <div
+          className={`enemy-hand ${oppHandTapped ? 'show-count' : ''}`}
+          aria-label={tn(opp.hand.length, 'Opponent has {n} card', 'Opponent has {n} cards')}
+          onClick={() => {
+            if (!usingTouch()) return;
+            clearTimeout(oppHandTimer.current);
+            setOppHandTapped(true);
+            oppHandTimer.current = window.setTimeout(() => setOppHandTapped(false), 2500);
+          }}
+        >
           {opp.hand.map((c, i) => (
             <div key={c.uid} className="enemy-hand-card" data-card-id={c.revealed ? c.cardId : undefined} style={{ '--i': i - (opp.hand.length - 1) / 2 } as CSSProperties}>
               {c.revealed ? <CardView card={c.cardId} variant={c.variant} width={64} /> : <CardBack width={64} design={opp.hero.cardBack} />}
             </div>
           ))}
+          {opp.hand.length > 0 && (
+            <span className="enemy-hand-count" aria-hidden>
+              {tn(opp.hand.length, '{n} card in hand', '{n} cards in hand')}
+            </span>
+          )}
         </div>
         <div className="hero-area hero-enemy-area">
           <div className="hero-col-left">
@@ -757,7 +775,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       {spectating && watching && (
         <div className="spectate-bar" role="status">
           <span className="spectate-eye" aria-hidden>👁</span>
-          {t('Watching {a} vs {b}', { a: watching.a, b: watching.b })}
+          <span className="spectate-names">{t('Watching {a} vs {b}', { a: watching.a, b: watching.b })}</span>
         </div>
       )}
       {phase === 'mulligan' && !spectating && <MulliganOverlay game={game} />}

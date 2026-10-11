@@ -1,6 +1,14 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.40.5': {
+    title: 'Počet karet v ruce a nenápadnější sledování',
+    summary: 'Uvidíš, kolik karet má soupeř v ruce, a nápis při sledování už nezakrývá horní část bojiště.',
+    sections: [
+      ['Najeď myší na soupeřovu ruku (na mobilu na ni ťukni) a uvidíš, kolik karet v ní má – ve vlastních hrách i při sledování.'],
+      ['Při sledování zápasu je nápis „Sleduješ: A vs B“ vpravo dole místo nahoře přes bojiště.'],
+    ],
+  },
   '0.40.4': {
     title: 'Menší hexagon',
     summary: 'Hexagon Hrát je menší a jednodušší a Sali zase sedí na trůnu.',

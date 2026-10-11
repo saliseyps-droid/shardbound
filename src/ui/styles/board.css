@@ -192,6 +192,16 @@
   transform: translateX(calc(var(--i) * 36px - 32px)) rotate(calc(var(--i) * -4deg)) translateY(calc(var(--i) * var(--i) * 1.2px));
   transform-origin: 50% -200%;
 }
+/* Hover (mouse) or tap (touch) on the opponent's hand: how many cards they hold. */
+.enemy-hand-count {
+  position: absolute; left: 0; top: 100%; translate: -50% 4px; z-index: 20;
+  padding: 3px 12px; border-radius: 999px; white-space: nowrap;
+  background: rgba(10, 8, 24, 0.9); border: 1px solid rgba(232, 184, 78, 0.6);
+  color: var(--gold-bright); font: 700 var(--t-sm) var(--font-body);
+  opacity: 0; pointer-events: none; transition: opacity 0.15s;
+}
+html:not([data-input='touch']) .enemy-hand:hover, .enemy-hand.show-count { z-index: 6; }
+html:not([data-input='touch']) .enemy-hand:hover .enemy-hand-count, .enemy-hand.show-count .enemy-hand-count { opacity: 1; }
 
 /* Battlefield rows --------------------------------------------------- */
 .board-row {
@@ -742,7 +752,9 @@
 
 /* Spectating ------------------------------------------------------------ */
 .spectate-bar {
-  position: absolute; top: 10px; left: 50%; translate: -50% 0; z-index: 60;
+  /* Bottom-right corner of the board (left of the battle log), out of the way of the opponent's side. */
+  position: absolute; right: calc(var(--sidebar-w) + 10px); bottom: 10px; z-index: 60;
+  max-width: 40%;
   display: flex; align-items: center; gap: 8px;
   padding: 6px 16px; border-radius: 999px;
   background: rgba(10, 8, 24, 0.85); border: 1px solid rgba(232, 184, 78, 0.5);
@@ -750,6 +762,7 @@
   pointer-events: none;
 }
 .spectate-eye { font-size: 1.1em; }
+.spectate-names { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .spectate-controls { display: grid; justify-items: center; gap: 6px; }
 .spectate-turn { color: var(--parchment); font-weight: 700; text-align: center; max-width: 160px; }
 .spectate-wait {
