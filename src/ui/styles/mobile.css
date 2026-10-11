@@ -279,7 +279,7 @@ body .audio-toggles { left: calc(10px + var(--safe-left)); bottom: calc(10px + v
 
 /* The opponent's hand is shrunk on phones: keep its card count readable. */
 @media (max-height: 520px) {
-  body .enemy-hand-count { scale: 1.8; transform-origin: 50% 0; }
+  body .enemy-hand .hand-count { scale: 1.8; transform-origin: 50% 0; }
 }
 body .spectate-bar { right: calc(var(--sidebar-w) + 10px + var(--safe-right)); bottom: calc(10px + var(--safe-bottom)); }
 @media (max-height: 520px) {

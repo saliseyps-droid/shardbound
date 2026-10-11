@@ -192,16 +192,19 @@
   transform: translateX(calc(var(--i) * 36px - 32px)) rotate(calc(var(--i) * -4deg)) translateY(calc(var(--i) * var(--i) * 1.2px));
   transform-origin: 50% -200%;
 }
-/* Hover (mouse) or tap (touch) on the opponent's hand: how many cards they hold. */
-.enemy-hand-count {
-  position: absolute; left: 0; top: 100%; translate: -50% 4px; z-index: 20;
+/* Hover (mouse) or tap (touch) on a hand of card backs (the opponent's; both when spectating): how many cards it holds. */
+.hand-count {
+  position: absolute; left: 0; top: 100%; translate: -50% 4px; z-index: 40;
   padding: 3px 12px; border-radius: 999px; white-space: nowrap;
   background: rgba(10, 8, 24, 0.9); border: 1px solid rgba(232, 184, 78, 0.6);
   color: var(--gold-bright); font: 700 var(--t-sm) var(--font-body);
   opacity: 0; pointer-events: none; transition: opacity 0.15s;
 }
+/* The bottom hand (spectating): above the cards. */
+.hand > .hand-count { left: 50%; top: auto; bottom: calc(var(--card-w) * 1.1); translate: -50% 0; }
 html:not([data-input='touch']) .enemy-hand:hover, .enemy-hand.show-count { z-index: 6; }
-html:not([data-input='touch']) .enemy-hand:hover .enemy-hand-count, .enemy-hand.show-count .enemy-hand-count { opacity: 1; }
+html:not([data-input='touch']) .enemy-hand:hover .hand-count, .enemy-hand.show-count .hand-count,
+html:not([data-input='touch']) .hand.is-hidden-hand:has(.hand-card:hover) .hand-count, .hand.show-count .hand-count { opacity: 1; }
 
 /* Battlefield rows --------------------------------------------------- */
 .board-row {

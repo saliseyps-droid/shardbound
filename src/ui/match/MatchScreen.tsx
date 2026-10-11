@@ -185,10 +185,17 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const longPress = useRef<{ timer?: number; fired: boolean; suppressUntil: number }>({ fired: false, suppressUntil: 0 });
   /** Phones: the battle log opened as a sheet over the board. */
   const [logOpen, setLogOpen] = useState(false);
-  // Touch has no hover: a tap on the opponent's hand shows how many cards are in it for a moment.
-  const [oppHandTapped, setOppHandTapped] = useState(false);
-  const oppHandTimer = useRef(0);
-  useEffect(() => () => clearTimeout(oppHandTimer.current), []);
+  // Touch has no hover: a tap on a hidden hand (the opponent's, or either when spectating) shows how
+  // many cards are in it for a moment.
+  const [handTapped, setHandTapped] = useState<PlayerId | null>(null);
+  const handTapTimer = useRef(0);
+  useEffect(() => () => clearTimeout(handTapTimer.current), []);
+  const showHandCount = (player: PlayerId) => {
+    if (!usingTouch()) return;
+    clearTimeout(handTapTimer.current);
+    setHandTapped(player);
+    handTapTimer.current = window.setTimeout(() => setHandTapped(null), 2500);
+  };
   /** A Warden shown in the hero inspector (right-click / long press). */
   const [heroInspect, setHeroInspect] = useState<PlayerId | null>(null);
   useEffect(() => startMatchFullscreen(), []);
@@ -544,14 +551,9 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       {/* ---- Enemy side ---- */}
       <section className="side enemy-side" aria-label={t('Opponent')}>
         <div
-          className={`enemy-hand ${oppHandTapped ? 'show-count' : ''}`}
+          className={`enemy-hand ${handTapped === AI ? 'show-count' : ''}`}
           aria-label={tn(opp.hand.length, 'Opponent has {n} card', 'Opponent has {n} cards')}
-          onClick={() => {
-            if (!usingTouch()) return;
-            clearTimeout(oppHandTimer.current);
-            setOppHandTapped(true);
-            oppHandTimer.current = window.setTimeout(() => setOppHandTapped(false), 2500);
-          }}
+          onClick={() => showHandCount(AI)}
         >
           {opp.hand.map((c, i) => (
             <div key={c.uid} className="enemy-hand-card" data-card-id={c.revealed ? c.cardId : undefined} style={{ '--i': i - (opp.hand.length - 1) / 2 } as CSSProperties}>
@@ -559,7 +561,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
             </div>
           ))}
           {opp.hand.length > 0 && (
-            <span className="enemy-hand-count" aria-hidden>
+            <span className="hand-count" aria-hidden>
               {tn(opp.hand.length, '{n} card in hand', '{n} cards in hand')}
             </span>
           )}
@@ -610,7 +612,13 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         <div className="draw-pile-anchor">
           <DrawPile count={me.deck.length} label="your deck" player={HUMAN} width={Math.round(cardW * 1.24)} design={me.hero.cardBack} />
         </div>
-        <div className="hand" data-tutorial="hand" style={{ '--card-w': `${cardW}px`, '--n': handCount } as CSSProperties} aria-label={t('Your hand')}>
+        <div
+          className={`hand ${spectating ? 'is-hidden-hand' : ''} ${handTapped === HUMAN ? 'show-count' : ''}`}
+          data-tutorial="hand"
+          style={{ '--card-w': `${cardW}px`, '--n': handCount } as CSSProperties}
+          aria-label={t('Your hand')}
+          onClick={() => spectating && showHandCount(HUMAN)}
+        >
           {me.hand.map((c, i) => {
             const playable = interactive && canPlayCard(game, HUMAN, c).ok;
             const cost = effectiveCost(game, HUMAN, c);
@@ -662,6 +670,11 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
               </div>
             );
           })}
+          {spectating && handCount > 0 && (
+            <span className="hand-count" aria-hidden>
+              {tn(handCount, '{n} card in hand', '{n} cards in hand')}
+            </span>
+          )}
         </div>
         {spectating ? (
           <div className="turn-controls spectate-controls">

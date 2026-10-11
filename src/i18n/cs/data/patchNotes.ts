@@ -1,6 +1,13 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.40.6': {
+    title: 'Při sledování obě ruce',
+    summary: 'Při sledování zápasu ukazuje počet karet i ruka spodního hráče.',
+    sections: [
+      ['Při sledování zápasu najeď myší na ruku spodního hráče (na mobilu na ni ťukni) a uvidíš, kolik karet v ní má – stejně jako u horního hráče.'],
+    ],
+  },
   '0.40.5': {
     title: 'Počet karet v ruce a nenápadnější sledování',
     summary: 'Uvidíš, kolik karet má soupeř v ruce, a nápis při sledování už nezakrývá horní část bojiště.',
