@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.42.0',
+    date: '2026-10-12',
+    title: 'Faces of the black sun',
+    summary: 'Six new Warden portraits, one for every faction, and a Void Reckoning Bundle in the Shop.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'New Warden portraits in the Shop (250 Gold each): Rift Herald (Hollow Choir), Maelstrom Wraith (Rimetide Court), Eclipse Priest (Brass Dominion), Blight King (Thornweald Circle), Cinder Fiend (Cinder Legion) and Fallen Seraph (Lumen Conclave).',
+          'Void Reckoning Bundle: 10 Void Reckoning packs, the Void Eye card back and the Blight King portrait, 30% off what you don\'t own yet. One per account.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.41.1',
     date: '2026-10-11',
     title: 'A steadier Campaign screen',

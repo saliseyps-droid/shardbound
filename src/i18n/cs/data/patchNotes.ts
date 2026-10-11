@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.42.0': {
+    title: 'Tváře černého slunce',
+    summary: 'Šest nových portrétů Strážce, jeden pro každou frakci, a v obchodě Balíček Void Reckoning.',
+    sections: [
+      [
+        'Nové portréty Strážců v obchodě (po 250 zlata): Hlasatel trhliny (Prázdný chór), Přízrak víru (Dvůr Jinovatky), Kněz zatmění (Mosazné dominium), Král zhouby (Kruh Trnoboru), Škvárový běs (Popelavá legie) a Padlý serafín (Konkláve Lumenu).',
+        'Balíček Void Reckoning: 10 boosterů Void Reckoning, rub karet Oko Prázdna a portrét Král zhouby, se slevou 30 % z toho, co ještě nemáš. Jednou na účet.',
+      ],
+    ],
+  },
   '0.41.1': {
     title: 'Klidnější obrazovka Kampaň',
     summary: 'Přepnutí kampaně už neposune obrazovku a o Salim se mluví tak, jak má.',

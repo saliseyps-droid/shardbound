@@ -4,6 +4,7 @@ const d: Record<string, string> = {
   'Set bundle': 'Balíček setu',
   'Legions of Shadow Bundle': 'Balíček Legions of Shadow',
   'Dragon Realm Bundle': 'Balíček Dragon Realm',
+  'Void Reckoning Bundle': 'Balíček Void Reckoning',
   'Buy the {name}?': 'Koupit {name}?',
   '{n} Gold for {packs} {set} packs, a card back and a Warden portrait.': '{n} zlata za {packs} boosterů {set}, rub karet a portrét Strážce.',
   'Bundle bought: {n} packs, a card back and a portrait.': 'Balíček koupen: {n} boosterů, rub karet a portrét.',
