@@ -19,6 +19,21 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.42.3',
+    date: '2026-10-12',
+    title: 'One account, one progress',
+    summary: 'Signing in on another device now simply loads your account.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Signing in on another device no longer asks which progress to keep: the game reloads straight into the progress saved in your account. The first time you link a device to an account that has no progress yet, the progress from that device is uploaded as before.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.42.2',
     date: '2026-10-12',
     title: 'Every bolt counts',

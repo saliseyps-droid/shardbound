@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { MemoryStore } from '@/persistence/storage';
-import { CloudSync, MirroredStore, decideInitialSync, type CloudBackend, type CloudMeta } from '@/cloud/sync';
+import { CloudSync, MirroredStore, REPLACED_BACKUP_KEY, decideInitialSync, type CloudBackend, type CloudMeta } from '@/cloud/sync';
 
 /** In-memory stand-in for Firestore. */
 class FakeBackend implements CloudBackend {
@@ -56,11 +56,12 @@ describe('decideInitialSync', () => {
     expect(decideInitialSync({ uid: 'u', localUpdatedAt: 20, link, cloud: meta(10) })).toBe('none');
     expect(decideInitialSync({ uid: 'u', localUpdatedAt: 25, link, cloud: meta(10) })).toBe('upload');
     expect(decideInitialSync({ uid: 'u', localUpdatedAt: 20, link, cloud: meta(15) })).toBe('download');
-    expect(decideInitialSync({ uid: 'u', localUpdatedAt: 25, link, cloud: meta(15) })).toBe('ask');
+    // Both changed (e.g. this device kept playing after another one took the account): the account wins.
+    expect(decideInitialSync({ uid: 'u', localUpdatedAt: 25, link, cloud: meta(15) })).toBe('download');
   });
-  it('asks when this device has a save that was never linked to the account', () => {
-    expect(decideInitialSync({ uid: 'u', localUpdatedAt: 5, link: null, cloud: meta(9) })).toBe('ask');
-    expect(decideInitialSync({ uid: 'u', localUpdatedAt: 5, link: { uid: 'other', cloudUpdatedAt: 1, localUpdatedAt: 1 }, cloud: meta(9) })).toBe('ask');
+  it('loads the account save over a device save that was never linked to the account', () => {
+    expect(decideInitialSync({ uid: 'u', localUpdatedAt: 5, link: null, cloud: meta(9) })).toBe('download');
+    expect(decideInitialSync({ uid: 'u', localUpdatedAt: 5, link: { uid: 'other', cloudUpdatedAt: 1, localUpdatedAt: 1 }, cloud: meta(9) })).toBe('download');
   });
 });
 
@@ -90,18 +91,17 @@ describe('CloudSync', () => {
     expect(reloaded).toBe(true);
   });
 
-  it('reports a conflict with both summaries and resolves it either way', async () => {
+  it('signing in on another device loads the account save, keeping the device save as a backup', async () => {
     const backend = new FakeBackend();
     backend.users.set('u1', { meta: { updatedAt: 500, saveVersion: 1, session: 'x' }, slices: { meta: { saveVersion: 1, updatedAt: 500 }, profile: profile('Cloud') } });
     const local = await localWithSave('Local');
-    const sync = new CloudSync(new MirroredStore(local), backend, { debounceMs: 0, reload: () => undefined });
-    const result = await sync.attach('u1');
-    expect(result.kind).toBe('conflict');
-    if (result.kind !== 'conflict') return;
-    expect(result.local.username).toBe('Local');
-    expect(result.cloud.username).toBe('Cloud');
-    await sync.resolve('local');
-    expect((backend.users.get('u1')!.slices.profile as { username: string }).username).toBe('Local');
+    let reloaded = false;
+    const sync = new CloudSync(new MirroredStore(local), backend, { debounceMs: 0, reload: () => (reloaded = true) });
+    expect(await sync.attach('u1')).toEqual({ kind: 'downloaded' });
+    expect(reloaded).toBe(true);
+    expect(((await local.get('profile')) as { username: string }).username).toBe('Cloud');
+    expect(((await local.get<Record<string, { username: string }>>(REPLACED_BACKUP_KEY))!.profile).username).toBe('Local');
+    expect((backend.users.get('u1')!.slices.profile as { username: string }).username).toBe('Cloud');
   });
 
   it('stops syncing when another device claims the account', async () => {

@@ -37,15 +37,19 @@ export interface CloudLink {
 
 export type SyncDecision = 'none' | 'upload' | 'download' | 'ask';
 
-/** Pure: what to do when a player signs in on this device. */
+/**
+ * Pure: what to do when a player signs in on this device. The account wins: a device save
+ * goes up only when the account has none yet (first link) or nothing else changed it since
+ * this device last synced. Otherwise the account's save is loaded (the device save is kept
+ * as a local backup), so playing on two devices never forks progress or doubles rewards.
+ */
 export function decideInitialSync(input: { uid: string; localUpdatedAt: number | null; link: CloudLink | null; cloud: CloudMeta | null }): SyncDecision {
   const { uid, localUpdatedAt, link, cloud } = input;
   if (!cloud) return localUpdatedAt === null ? 'none' : 'upload';
   if (localUpdatedAt === null) return 'download';
-  if (!link || link.uid !== uid) return 'ask';
+  if (!link || link.uid !== uid) return 'download';
   const cloudChanged = cloud.updatedAt !== link.cloudUpdatedAt;
   const localChanged = localUpdatedAt !== link.localUpdatedAt;
-  if (cloudChanged && localChanged) return 'ask';
   if (cloudChanged) return 'download';
   if (localChanged) return 'upload';
   return 'none';
@@ -72,6 +76,8 @@ export function summarize(slices: Record<string, unknown>): SaveSummary {
 /** Save slices that travel to the cloud (backups and the link itself stay on the device). */
 const SYNCED_KEYS: readonly string[] = Object.values(KEYS);
 const LINK_KEY = 'cloudLink';
+/** The device save that the last download replaced (one copy, overwritten each time). */
+export const REPLACED_BACKUP_KEY = 'backup_replaced_by_cloud';
 
 /**
  * KeyValueStore wrapper used by the game: writes go to the local store and the
@@ -315,6 +321,7 @@ export class CloudSync {
     // Not 'syncing': the local save is about to be replaced, nothing may be claimed on it now.
     this.setStatus('checking');
     const [slices, meta] = await Promise.all([this.backend.loadSlices(uid), this.backend.loadMeta(uid)]);
+    if (await this.store.local.get(KEYS.profile)) await this.store.local.set(REPLACED_BACKUP_KEY, await this.readLocal());
     const entries: [string, unknown][] = [];
     for (const k of SYNCED_KEYS) if (slices[k] !== undefined && slices[k] !== null) entries.push([k, slices[k]]);
     for (const k of SYNCED_KEYS) if (slices[k] === undefined || slices[k] === null) await this.store.local.delete(k);

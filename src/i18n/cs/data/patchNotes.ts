@@ -1,6 +1,15 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.42.3': {
+    title: 'Jeden účet, jeden postup',
+    summary: 'Přihlášení na jiném zařízení teď rovnou načte tvůj účet.',
+    sections: [
+      [
+        'Přihlášení na jiném zařízení se už neptá, který postup si nechat: hra se znovu načte rovnou s postupem uloženým v tvém účtu. Když zařízení poprvé propojíš s účtem, který ještě žádný postup nemá, nahraje se do něj postup ze zařízení jako dřív.',
+      ],
+    ],
+  },
   '0.42.2': {
     title: 'Každá střela se počítá',
     summary: 'Planoucí palba ukáže všechny své zásahy, Očištění vrátí rozloženým jednotkám jejich text a denní odměnu už nejde vyzvednout dvakrát.',
