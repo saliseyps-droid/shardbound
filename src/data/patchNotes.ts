@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.42.4',
+    date: '2026-10-12',
+    title: 'A new gift code',
+    summary: 'A new one-time gift code is out there.',
+    sections: [{ kind: 'new', items: ['New gift code worth a Void Reckoning pack, a Legions of Shadow pack, 200 Gold and 200 Essence. Redeem it in your Profile; each code works once per account.'] }],
+    commits: [],
+  },
+  {
     version: '0.42.3',
     date: '2026-10-12',
     title: 'One account, one progress',

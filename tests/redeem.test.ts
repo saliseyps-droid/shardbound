@@ -76,3 +76,20 @@ describe('card removal codes', () => {
     expect(applyRedeem(res.value.save, def, 3).ok).toBe(false);
   });
 });
+
+describe('redeem codes with packs from several sets', () => {
+  it('adds one unopened pack of each set', async () => {
+    const { applyRedeem } = await import('@/domain/redeem');
+    const svc = new GameService(new IndexedDbStore('test_redeem_packs'));
+    await svc.init();
+    await svc.createProfile('P', 'a');
+    const save = svc.current!;
+    const res = applyRedeem(save, { id: 'multi', sha256: '0'.repeat(64), label: 'Test: packs', reward: { gold: 200, essence: 200, packs: [{ setId: 'RECKONING', amount: 1 }, { setId: 'ABYSS', amount: 1 }] } }, Date.now());
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(res.value.save.economy.packs.RECKONING).toBe((save.economy.packs.RECKONING ?? 0) + 1);
+    expect(res.value.save.economy.packs.ABYSS).toBe((save.economy.packs.ABYSS ?? 0) + 1);
+    expect(res.value.save.profile.gold).toBe(save.profile.gold + 200);
+    expect(res.value.save.profile.essence).toBe(save.profile.essence + 200);
+  });
+});

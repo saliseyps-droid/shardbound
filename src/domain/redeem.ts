@@ -27,8 +27,9 @@ export function applyRedeem(save: GameSave, def: RedeemCodeDef | undefined, now:
     redeemedCodes: [...save.redeemedCodes, def.id],
     profile: { ...save.profile, gold: save.profile.gold + (r.gold ?? 0), essence: save.profile.essence + (r.essence ?? 0) },
   };
-  if (r.packs) {
-    next = { ...next, economy: { ...next.economy, packs: { ...next.economy.packs, [r.packs.setId]: (next.economy.packs[r.packs.setId] ?? 0) + r.packs.amount } } };
+  const packs = r.packs ? [r.packs].flat() : [];
+  for (const p of packs) {
+    next = { ...next, economy: { ...next.economy, packs: { ...next.economy.packs, [p.setId]: (next.economy.packs[p.setId] ?? 0) + p.amount } } };
   }
   if (r.cards?.length) next = { ...next, collection: addCards(next.collection, r.cards) };
   if (def.removeCards?.length) {
@@ -36,6 +37,6 @@ export function applyRedeem(save: GameSave, def: RedeemCodeDef | undefined, now:
     for (const id of def.removeCards) delete cards[id];
     next = { ...next, collection: { cards, unseen: next.collection.unseen.filter((id) => !def.removeCards!.includes(id)) } };
   }
-  next = pushReward(next, { source: `Code: ${def.label}`, gold: r.gold, essence: r.essence, packs: r.packs, cards: r.cards }, now);
+  next = pushReward(next, { source: `Code: ${def.label}`, gold: r.gold, essence: r.essence, packs: packs[0] ? { setId: packs[0].setId, amount: packs.reduce((a, p) => a + p.amount, 0) } : undefined, cards: r.cards }, now);
   return ok({ save: next, def });
 }

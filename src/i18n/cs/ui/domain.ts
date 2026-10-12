@@ -149,6 +149,7 @@ const d: Record<string, string> = {
   'Code: {label}': 'Kód: {label}',
   'Gift: 1000 Gold': 'Dárek: 1000 zlata',
   'Gift: 1000 Essence': 'Dárek: 1000 esence',
+  'Gift: Void Reckoning and Legions of Shadow packs, 200 Gold, 200 Essence': 'Dárek: boostery Void Reckoning a Legions of Shadow, 200 zlata, 200 esence',
   'Gift: Prismatic Meowchick': 'Dárek: Prizmatická karta Meowchick',
   'Meowchick removed from your collection': 'Meowchick byl odebrán z tvé sbírky',
 
