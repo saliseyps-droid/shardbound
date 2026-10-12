@@ -280,6 +280,14 @@ body .audio-toggles { left: calc(10px + var(--safe-left)); bottom: calc(10px + v
 /* The opponent's hand is shrunk on phones: keep its card count readable. */
 @media (max-height: 520px) {
   body .enemy-hand .hand-count { scale: 1.8; transform-origin: 50% 0; }
+  /* Sideways: the cards peek out by half (easier to see and tap) and a badge always shows how many. */
+  body .enemy-hand { top: -14px; }
+  body .enemy-hand-n {
+    display: grid; place-items: center; position: absolute; top: 46px; left: calc(var(--n) * 18px + 20px);
+    min-width: 46px; height: 46px; padding: 0 10px; border-radius: 999px;
+    background: rgba(10, 8, 24, 0.9); border: 2px solid rgba(232, 184, 78, 0.7);
+    color: var(--gold-bright); font: 800 1.9rem var(--font-body);
+  }
 }
 body .spectate-bar { right: calc(var(--sidebar-w) + 10px + var(--safe-right)); bottom: calc(10px + var(--safe-bottom)); }
 body .spectator-count { top: calc(10px + var(--safe-top)); right: calc(var(--sidebar-w) + 10px + var(--safe-right)); }

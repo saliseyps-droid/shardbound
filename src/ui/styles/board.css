@@ -187,6 +187,7 @@
 
 /* Enemy hand --------------------------------------------------------- */
 .enemy-hand { position: absolute; top: calc(-64px * 0.7); left: 50%; height: 90px; width: 0; }
+.enemy-hand-n { display: none; }
 .enemy-hand-card {
   position: absolute; left: 0; top: 0;
   transform: translateX(calc(var(--i) * 36px - 32px)) rotate(calc(var(--i) * -4deg)) translateY(calc(var(--i) * var(--i) * 1.2px));

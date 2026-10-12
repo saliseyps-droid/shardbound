@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.43.3': {
+    title: 'Vidíš soupeři do karet',
+    summary: 'Na mobilu je vidět soupeřova ruka i kolik v ní má karet.',
+    sections: [['Telefon na šířku: soupeřova ruka víc vykukuje na obrazovku, takže je líp vidět a dá se na ni snáz ťuknout, a odznak vedle ní pořád ukazuje, kolik má karet.']],
+  },
   '0.43.2': {
     title: 'Přehlednější obchod',
     summary: 'Už koupené balíčky se přesunou pod boostery.',

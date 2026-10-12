@@ -553,6 +553,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       <section className="side enemy-side" aria-label={t('Opponent')}>
         <div
           className={`enemy-hand ${handTapped === AI ? 'show-count' : ''}`}
+          style={{ '--n': opp.hand.length } as CSSProperties}
           aria-label={tn(opp.hand.length, 'Opponent has {n} card', 'Opponent has {n} cards')}
           onClick={() => showHandCount(AI)}
         >
@@ -566,6 +567,10 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
               {tn(opp.hand.length, '{n} card in hand', '{n} cards in hand')}
             </span>
           )}
+          {/* Phones: the shrunken hand keeps its size readable at a glance. */}
+          <span className="enemy-hand-n num" aria-hidden>
+            {opp.hand.length}
+          </span>
         </div>
         <div className="hero-area hero-enemy-area">
           <div className="hero-col-left">

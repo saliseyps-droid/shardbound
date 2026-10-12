@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.43.3',
+    date: '2026-10-13',
+    title: "Read your opponent's hand",
+    summary: "On phones you can see the opponent's hand and how many cards it holds.",
+    sections: [{ kind: 'improved', items: ["Phones held sideways: the opponent's hand peeks further into the screen, so it is easier to see and tap, and a badge next to it always shows how many cards they hold."] }],
+    commits: [],
+  },
+  {
     version: '0.43.2',
     date: '2026-10-13',
     title: 'Tidier shop',
