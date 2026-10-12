@@ -106,8 +106,10 @@ export const CARD_ART_FOCUS: Record<string, number> = {
   neu_abyssal_pyre: 42,
   neu_aegis_pilgrim: 22,
   neu_aeon_pale_wanderer: 22,
-  // Full-width art on top, blurred fill below (src/assets/cards/neu_nyx_lantern_of_nul.webp).
+  // Lamplighter legends: full-width art on top, blurred fill below.
   neu_nyx_lantern_of_nul: 0,
+  neu_oblivia_keeper_of_the_last_page: 0,
+  neu_vael_the_void_knell: 0,
   neu_ashroad_sellsword: 20,
   neu_bog_toadcaller: 30,
   neu_bounty_stalker: 32,
