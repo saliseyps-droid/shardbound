@@ -137,6 +137,9 @@ export default function ShopScreen() {
   const navigate = useNavigate();
   const gold = useAccount((s) => s.save?.profile.gold ?? 0);
   const packs = useAccount((s) => s.save?.economy.packs ?? {});
+  const bundlesBought = useAccount((s) => s.save?.profile.bundlesBought);
+  // Bundles still to buy lead the shop; bought ones move below the packs.
+  const isBought = (id: string) => !!bundlesBought?.includes(id);
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState<PackId | null>(null);
 
@@ -185,7 +188,7 @@ export default function ShopScreen() {
           </>
         }
       />
-      {BUNDLES.map((b) => (
+      {BUNDLES.filter((b) => !isBought(b.id)).map((b) => (
         <BundleOffer key={b.id} bundle={b} />
       ))}
       <div className="shop-sets">
@@ -225,6 +228,9 @@ export default function ShopScreen() {
           );
         })}
       </div>
+      {BUNDLES.filter((b) => isBought(b.id)).map((b) => (
+        <BundleOffer key={b.id} bundle={b} />
+      ))}
       <OddsTable />
       <CardBackShop />
       <PortraitShop />

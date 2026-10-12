@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.43.2',
+    date: '2026-10-13',
+    title: 'Tidier shop',
+    summary: 'Bundles you already bought move below the packs.',
+    sections: [{ kind: 'improved', items: ['Shop: once you buy a bundle, its offer moves below the booster packs, so the top of the shop shows what you can still get.'] }],
+    commits: [],
+  },
+  {
     version: '0.43.1',
     date: '2026-10-12',
     title: 'The Creator, every turn',

@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.43.2': {
+    title: 'Přehlednější obchod',
+    summary: 'Už koupené balíčky se přesunou pod boostery.',
+    sections: [['Obchod: když si balíček koupíš, jeho nabídka se přesune pod boostery, takže nahoře vidíš jen to, co ještě můžeš získat.']],
+  },
   '0.43.1': {
     title: 'Stvořitel každé kolo',
     summary: 'Když se tvůj Sali stane tvým Strážcem, jeho dvě schopnosti fungují každé kolo. Ostřejší a vycentrované obrázky Saliho a legend z Cesty lampářů.',
