@@ -2,6 +2,7 @@ import type { ArenaState } from '@/domain/arena';
 import type { Deck } from '@/domain/decks';
 import type { CollectionState, DailyState, EconomyState, GameSave, MatchRecord, PlayerProfile, PveState, QuestState, RewardEntry } from '@/domain/save';
 import type { KeyValueStore } from './storage';
+import { APP_VERSION, OutdatedClientError, isNewerVersion } from './appVersion';
 
 /** Repository interfaces: the only way game code touches persistence. */
 export interface PlayerRepository {
@@ -46,6 +47,8 @@ export const KEYS = {
 export interface SaveMeta {
   saveVersion: number;
   updatedAt: number;
+  /** Game version that wrote the save (src/persistence/appVersion.ts); missing on saves before 0.42.1. */
+  appVersion?: string;
 }
 
 /**
@@ -75,6 +78,7 @@ export class SaveGateway {
     const progress = (await this.progress.load()) as Partial<ProgressData> | undefined;
     return {
       saveVersion: meta?.saveVersion ?? 0,
+      appVersion: meta?.appVersion,
       profile,
       collection: await this.collection.load(),
       decks: await this.decks.loadAll(),
@@ -83,8 +87,11 @@ export class SaveGateway {
     };
   }
 
+  /** Refuses (OutdatedClientError) to write over a save made by a newer version of the game. */
   async persist(next: GameSave, prev: GameSave | null): Promise<void> {
-    const entries: [string, unknown][] = [[KEYS.meta, { saveVersion: next.saveVersion, updatedAt: Date.now() } satisfies SaveMeta]];
+    const stored = await this.store.get<SaveMeta>(KEYS.meta);
+    if (isNewerVersion(stored?.appVersion, APP_VERSION)) throw new OutdatedClientError(stored!.appVersion!);
+    const entries: [string, unknown][] = [[KEYS.meta, { saveVersion: next.saveVersion, updatedAt: Date.now(), appVersion: APP_VERSION } satisfies SaveMeta]];
     const changed = <K extends keyof GameSave>(k: K) => !prev || prev[k] !== next[k];
     if (changed('profile')) entries.push([KEYS.profile, next.profile]);
     if (changed('collection')) entries.push([KEYS.collection, next.collection]);

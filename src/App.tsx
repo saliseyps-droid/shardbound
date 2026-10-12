@@ -12,7 +12,7 @@ import { CardInspector } from '@/ui/components/CardInspector';
 import { PortraitInspector } from '@/ui/components/PortraitInspector';
 import { CloudDialogs } from '@/ui/components/CloudAccount';
 import { SocialHost } from '@/ui/components/SocialHost';
-import { BootScreen, CorruptedSaveScreen, WelcomeScreen } from '@/ui/screens/BootScreens';
+import { BootScreen, CorruptedSaveScreen, OutdatedScreen, WelcomeScreen } from '@/ui/screens/BootScreens';
 
 const HomeScreen = lazyWithReload(() => import('@/ui/screens/HomeScreen'));
 const PlayScreen = lazyWithReload(() => import('@/ui/screens/PlayScreen'));
@@ -120,6 +120,7 @@ export default function App() {
       {status === 'BOOTING' && <BootScreen />}
       {status === 'NEW' && <WelcomeScreen />}
       {status === 'CORRUPTED' && <CorruptedSaveScreen />}
+      {status === 'OUTDATED' && <OutdatedScreen />}
       {status === 'READY' && <Shell />}
       <CardInspector />
       <PortraitInspector />

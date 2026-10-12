@@ -1,6 +1,15 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.42.1': {
+    title: 'Karty zůstanou na svém místě',
+    summary: 'Stará kopie hry ti už nemůže vzít nové karty z kolekce a balíčků.',
+    sections: [
+      [
+        'Starší kopie Shardbound (zapomenutý otevřený tab, stránka z mezipaměti nebo jiné zařízení) mohla načíst tvou uloženou hru, vyhodit z kolekce a balíčků karty Void Reckoning, které neznala, a takhle ji uložit. Teď hra uloženou pozici označí svou verzí a starší kopie místo zásahu požádá o znovunačtení stránky.',
+      ],
+    ],
+  },
   '0.42.0': {
     title: 'Tváře černého slunce',
     summary: 'Šest nových portrétů Strážce, jeden pro každou frakci, a v obchodě Balíček Void Reckoning.',

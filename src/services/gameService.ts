@@ -16,7 +16,8 @@ import { createNewSave } from '@/domain/newAccount';
 import type { PackCard } from '@/domain/packs';
 import { grantXp, type LevelUp } from '@/domain/progression';
 import { applyQuestProgress, claimQuest, refreshQuests, rerollQuest } from '@/domain/quests';
-import { emptyVariants, pushReward, type GameSave, type Quest } from '@/domain/save';
+import { CURRENT_SAVE_VERSION, emptyVariants, pushReward, type GameSave, type Quest } from '@/domain/save';
+import { APP_VERSION, OutdatedClientError, isNewerVersion } from '@/persistence/appVersion';
 import { decodeDeck } from '@/domain/deckCode';
 import { buyPortrait, choosePortrait } from '@/domain/portraits';
 import { buyBundle } from '@/domain/bundles';
@@ -32,7 +33,9 @@ import { IndexedDbStore, MemoryStore, type KeyValueStore } from '@/persistence/s
 export type InitStatus =
   | { kind: 'NEW' }
   | { kind: 'LOADED'; notes: string[]; /** A match left by reloading/closing the app was recorded as a loss. */ abandonedMatch?: boolean }
-  | { kind: 'CORRUPTED'; error: string; backupKey?: string };
+  | { kind: 'CORRUPTED'; error: string; backupKey?: string }
+  /** The save was written by a newer version of the game: nothing is loaded or written until a reload. */
+  | { kind: 'OUTDATED'; savedBy: string };
 
 type Listener = (save: GameSave | null) => void;
 type ErrorListener = (message: string) => void;
@@ -49,6 +52,9 @@ export class GameService {
   private listeners = new Set<Listener>();
   private errorListeners = new Set<ErrorListener>();
   private achievementListeners = new Set<AchievementListener>();
+  private outdatedListeners = new Set<(savedBy: string) => void>();
+  /** Set once a newer version of the game has written the save; from then on nothing is written. */
+  private outdated = false;
   private writeChain: Promise<void> = Promise.resolve();
   private readonly gateway: SaveGateway;
   /** Injectable clock for tests. */
@@ -81,6 +87,24 @@ export class GameService {
     return () => this.errorListeners.delete(listener);
   }
 
+  /** A newer version of the game (another tab or device) took over the save. */
+  onOutdated(listener: (savedBy: string) => void): () => void {
+    this.outdatedListeners.add(listener);
+    return () => this.outdatedListeners.delete(listener);
+  }
+
+  private markOutdated(savedBy: string) {
+    if (this.outdated) return;
+    this.outdated = true;
+    for (const l of this.outdatedListeners) l(savedBy);
+  }
+
+  /** Writes a save unless a newer version of the game owns it. */
+  private persist(next: GameSave, prev: GameSave | null): Promise<void> {
+    if (this.outdated) return Promise.resolve();
+    return this.gateway.persist(next, prev);
+  }
+
   onAchievements(listener: AchievementListener): () => void {
     this.achievementListeners.add(listener);
     return () => this.achievementListeners.delete(listener);
@@ -110,11 +134,12 @@ export class GameService {
     for (const l of this.listeners) l(next);
     this.emitAchievements([...unlocked, ...settled.unlocked], false);
     this.writeChain = this.writeChain
-      .then(() => this.gateway.persist(next, this.lastPersisted))
+      .then(() => this.persist(next, this.lastPersisted))
       .then(() => {
         this.lastPersisted = next;
       })
       .catch((e) => {
+        if (e instanceof OutdatedClientError) return this.markOutdated(e.savedBy);
         console.error('[save] persist failed', e);
         this.lastPersisted = null;
         for (const l of this.errorListeners) l('Could not save your progress. It will be retried on the next change.');
@@ -148,6 +173,12 @@ export class GameService {
       return { kind: 'CORRUPTED', error: `Storage unavailable: ${(e as Error).message}` };
     }
     if (!raw) return { kind: 'NEW' };
+    // An older copy of the game must not load (and strip the cards it does not know from) a newer save.
+    const savedBy = typeof raw.appVersion === 'string' ? raw.appVersion : null;
+    if (isNewerVersion(savedBy, APP_VERSION) || Number(raw.saveVersion) > CURRENT_SAVE_VERSION) {
+      this.outdated = true;
+      return { kind: 'OUTDATED', savedBy: savedBy ?? '?' };
+    }
     try {
       const report = migrateSave(raw);
       let save = report.save;
@@ -165,12 +196,11 @@ export class GameService {
       this.save = save;
       for (const l of this.listeners) l(save);
       // Persist the migrated/repaired save in full.
-      this.writeChain = this.gateway
-        .persist(save, null)
+      this.writeChain = this.persist(save, null)
         .then(() => {
           this.lastPersisted = save;
         })
-        .catch((e) => console.error('[save] persist after migration failed', e));
+        .catch((e) => (e instanceof OutdatedClientError ? this.markOutdated(e.savedBy) : console.error('[save] persist after migration failed', e)));
       this.emitAchievements(retro.unlocked, true);
       return { kind: 'LOADED', notes: report.notes, abandonedMatch: !!abandoned.settled };
     } catch (e) {

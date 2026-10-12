@@ -86,6 +86,26 @@ function LanguageToggle() {
   );
 }
 
+/** The save was written by a newer version of the game (another tab, device or a cached page). */
+export function OutdatedScreen() {
+  const savedBy = useAccount((s) => s.savedBy);
+  // A fresh query string skips a cached copy of the old page.
+  const reload = () => location.replace(`${location.pathname}?v=${Date.now()}${location.hash}`);
+  return (
+    <div className="boot-screen">
+      <div className="panel" style={{ maxWidth: 560 }}>
+        <h2>{t('A newer version of Shardbound is out')}</h2>
+        <p className="muted">{t('Your save was last played on version {v}. Reload to update the game; your cards and progress stay safe, this old version will not change them.', { v: savedBy ?? '?' })}</p>
+        <div className="modal-actions">
+          <button className="btn btn-primary" onClick={reload}>
+            {t('Reload')}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function CorruptedSaveScreen() {
   const error = useAccount((s) => s.initError);
   const [busy, setBusy] = useState(false);

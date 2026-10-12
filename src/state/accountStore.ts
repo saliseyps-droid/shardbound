@@ -17,8 +17,10 @@ export const saveStore = new MirroredStore(GameService.defaultStore());
 export const gameService = new GameService(saveStore);
 
 interface AccountStore {
-  status: 'BOOTING' | 'NEW' | 'READY' | 'CORRUPTED';
+  status: 'BOOTING' | 'NEW' | 'READY' | 'CORRUPTED' | 'OUTDATED';
   initError?: string;
+  /** Version that wrote the save, when it is newer than this copy of the game. */
+  savedBy?: string;
   migrationNotes: string[];
   save: GameSave | null;
   boot: () => Promise<InitStatus>;
@@ -35,6 +37,7 @@ export const useAccount = create<AccountStore>((set, get) => ({
       set({ status: 'READY', save: gameService.current, migrationNotes: result.notes });
       if (result.abandonedMatch) toast(t('Your unfinished match was counted as a loss.'), 'info');
     }
+    else if (result.kind === 'OUTDATED') set({ status: 'OUTDATED', savedBy: result.savedBy });
     else set({ status: 'CORRUPTED', initError: result.error });
     void get;
     return result;
@@ -42,8 +45,9 @@ export const useAccount = create<AccountStore>((set, get) => ({
 }));
 
 gameService.subscribe((save) => {
-  useAccount.setState({ save, status: save ? 'READY' : 'NEW' });
+  useAccount.setState((s) => ({ save, status: s.status === 'OUTDATED' ? 'OUTDATED' : save ? 'READY' : 'NEW' }));
 });
+gameService.onOutdated((savedBy) => useAccount.setState({ status: 'OUTDATED', savedBy }));
 gameService.onError((message) => toast(message, 'error'));
 // Achievement unlocks: one toast each, or one summary for a batch (retroactive unlocks on load).
 gameService.onAchievements((ids, retroactive) => {

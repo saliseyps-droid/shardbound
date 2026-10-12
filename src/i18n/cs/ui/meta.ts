@@ -432,6 +432,9 @@ const d: Record<string, string> = {
   'Binding shards…': 'Spojuji střepy…',
   Begin: 'Začít',
   'Your save could not be loaded': 'Tvou uloženou hru se nepodařilo načíst',
+  Reload: 'Načíst znovu',
+  'A newer version of Shardbound is out': 'Vyšla novější verze Shardbound',
+  'Your save was last played on version {v}. Reload to update the game; your cards and progress stay safe, this old version will not change them.': 'Tvoje uložená hra se naposledy hrála ve verzi {v}. Načti stránku znovu a hra se aktualizuje. Karty i postup zůstanou v bezpečí, tahle stará verze na ně nesáhne.',
   'The stored data is damaged or unreadable. A backup copy was kept in local storage. You can start a new Warden; the damaged data will be replaced.':
     'Uložená data jsou poškozená nebo nečitelná. Záložní kopie zůstala v místním úložišti. Můžeš začít s novým Strážcem; poškozená data budou nahrazena.',
   Retry: 'Zkusit znovu',

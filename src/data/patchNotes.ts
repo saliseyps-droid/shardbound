@@ -19,6 +19,21 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.42.1',
+    date: '2026-10-12',
+    title: 'Your cards stay put',
+    summary: 'An old copy of the game can no longer take new cards out of your collection and decks.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          'An older copy of Shardbound (a tab left open, a cached page or another device) could load your save, drop the Void Reckoning cards it did not know from your collection and decks, and save that. Now the game marks your save with its version, and an older copy asks you to reload instead of touching it.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.42.0',
     date: '2026-10-12',
     title: 'Faces of the black sun',

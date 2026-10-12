@@ -1,5 +1,6 @@
 import type { KeyValueStore } from '@/persistence/storage';
 import { KEYS, type SaveMeta } from '@/persistence/repositories';
+import { APP_VERSION, isNewerVersion } from '@/persistence/appVersion';
 
 /**
  * Cloud save. The device keeps its local store (IndexedDB) as the working copy, so the
@@ -186,6 +187,8 @@ export class CloudSync {
   /** The player chose which save to keep after a conflict. */
   async resolve(keep: 'local' | 'cloud') {
     if (!this.uid || !this.pendingConflict) return;
+    // A cloud save from a newer version of the game is never overwritten by this older one.
+    if (isNewerVersion((this.pendingConflict.cloud[KEYS.meta] as SaveMeta | undefined)?.appVersion, APP_VERSION)) keep = 'cloud';
     this.pendingConflict = null;
     if (keep === 'cloud') {
       await this.download();
