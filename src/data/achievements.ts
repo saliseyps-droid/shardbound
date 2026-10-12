@@ -2,7 +2,7 @@ import type { LevelReward } from '@/config/progression';
 import { MAX_LEVEL } from '@/config/progression';
 import { ARENA } from '@/config/arena';
 import { CAMPAIGN } from './opponents';
-import { collectibleCards } from './cards';
+import { collectibleCards, poolCards } from './cards';
 import { AI_TIERS, aiTierIndex, type AiTierName } from '@/domain/aiRanked';
 import { ownedCopies, type GameSave, type MatchRecord } from '@/domain/save';
 import type { MatchSummary } from '@/domain/matchResults';
@@ -101,7 +101,7 @@ function bestLegendaryFaction(save: GameSave): AchievementProgress {
 }
 
 const setProgress = (save: GameSave, set: SetId) => {
-  const pool = collectibleCards().filter((c) => c.set === set);
+  const pool = poolCards().filter((c) => c.set === set);
   return count(ownedOf(save, pool), pool.length);
 };
 const shinyCards = (save: GameSave) => Object.values(save.collection.cards).filter((v) => v.FOIL + v.PRISMATIC > 0).length;
@@ -194,7 +194,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: 'set_core', name: 'Core Complete', description: 'Own at least one copy of every card in the Core set.', category: 'COLLECTION', tier: 'GOLD', icon: 'deck', rewards: [cardBack, gold(300)],
     progress: (s) => {
-      const pool = collectibleCards().filter((c) => c.set === 'CORE');
+      const pool = poolCards().filter((c) => c.set === 'CORE');
       return count(ownedOf(s, pool), pool.length);
     },
   },

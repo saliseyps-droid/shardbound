@@ -168,6 +168,7 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
     s = {
       ...s,
       pve: {
+        ...s.pve,
         completed: {
           ...s.pve.completed,
           [summary.pveEncounterId]: { firstClearAt: prev?.firstClearAt ?? now, wins: (prev?.wins ?? 0) + 1 },

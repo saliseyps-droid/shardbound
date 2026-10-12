@@ -1,4 +1,4 @@
-import { collectibleCards } from '@/data/cards';
+import { poolCards } from '@/data/cards';
 import type { PlayableFaction } from '@/game/types';
 
 export interface StarterDeckDef {
@@ -16,7 +16,7 @@ export const STARTER_DECKS: StarterDeckDef[] = [
 ];
 
 export function starterCardIds(faction?: PlayableFaction | 'NEUTRAL'): string[] {
-  return collectibleCards()
+  return poolCards()
     .filter((c) => c.starter && (!faction || c.faction === faction))
     .map((c) => c.id);
 }

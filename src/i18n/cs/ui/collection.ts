@@ -174,6 +174,7 @@ const d: Record<string, string> = {
   'Play entrance': 'Přehrát příchod',
   '{name} is playing': 'Hraje {name}',
   'Stop watching': 'Přestat sledovat',
+  '{n} watching': 'Sleduje: {n}',
   'Watching {a} vs {b}': 'Sleduješ: {a} vs {b}',
   'The players are choosing their opening hands…': 'Hráči si vybírají počáteční karty…',
   '{name} wins': 'Vyhrál(a) {name}',

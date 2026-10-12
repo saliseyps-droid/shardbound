@@ -19,6 +19,26 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.43.0',
+    date: '2026-10-12',
+    title: "The Lamplighters' Road",
+    summary: 'A new side campaign through the Nulwood. Each chapter boss joins you as a Neutral legend you cannot get anywhere else.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          "The Lamplighters' Road: a third campaign, apart from both other stories. 3 chapters of 3 fights against the Nul-touched wardens of the Nulwood, each with its own portrait. Pick it in the campaign switcher; each chapter opens for 500 Gold.",
+          'Nyx, Lantern of Nul (3 Mana, 2/5, Guard): whenever you cast a spell, restore 2 Health to your Warden. Reward for Chapter I.',
+          'Vael, the Void Knell (6 Mana, 3/6, Guard): On Deploy, deal 2 damage to all other units. Reward for Chapter II.',
+          'Oblivia, Keeper of the Last Page (7 Mana, 5/6): On Deploy, add copies of the last 2 different spells you cast this game to your hand. Reward for Chapter III.',
+          'These three legends are campaign rewards only: they never drop from packs and cannot be crafted or recycled. They are built to help slower, spell-heavy decks hold out against wide boards.',
+          'While you play, an eye icon with a number in the top-right corner of the board shows how many spectators are watching your match.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.42.4',
     date: '2026-10-12',
     title: 'A new gift code',

@@ -47,6 +47,8 @@ export type NetMessage =
   /** Sent by the guest in its own (mirrored) coordinates; the host converts it. */
   | { t: 'action'; action: GameAction }
   | { t: 'error'; message: string }
+  /** Host: how many spectators are watching the match (older guests ignore it). */
+  | { t: 'spectators'; count: number }
   | { t: 'ping' }
   | { t: 'bye' };
 

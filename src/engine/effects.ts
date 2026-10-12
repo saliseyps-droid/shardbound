@@ -1,4 +1,4 @@
-import { collectibleCards, getCard } from '@/data/cards';
+import { getCard, poolCards } from '@/data/cards';
 import { GAME_RULES } from '@/config/gameRules';
 import { pickOne } from '@/core/rng';
 import type { Condition, Effect, TargetSelector, ValueExpr } from '@/game/types';
@@ -272,7 +272,7 @@ function unitsOnly(ctx: EngineContext, targets: TargetRef[]): UnitInstance[] {
 }
 
 function randomPoolCard(ctx: EngineContext, pool: NonNullable<Extract<Effect, { type: 'CREATE_CARD' }>['pool']>): string | undefined {
-  const candidates = collectibleCards().filter(
+  const candidates = poolCards().filter(
     (c) =>
       (!pool.faction || c.faction === pool.faction) &&
       (!pool.cardType || c.cardType === pool.cardType) &&
@@ -509,6 +509,18 @@ export function executeEffect(
       return units.length > 0;
     }
     case 'CREATE_CARD': {
+      if (effect.recentSpells) {
+        // The last N different spells, oldest first.
+        const recent: string[] = [];
+        for (const id of [...(state.players[me].spellsCast ?? [])].reverse()) {
+          if (recent.length >= effect.recentSpells) break;
+          if (!recent.includes(id)) recent.push(id);
+        }
+        for (const cardId of recent.reverse()) {
+          if (addToHand(ctx, me, makeCardInstance(ctx, cardId))) emit(ctx, { type: 'CARD_CREATED', player: me, cardId, destination: 'HAND' });
+        }
+        return recent.length > 0;
+      }
       const count = effect.count ?? 1;
       for (let i = 0; i < count; i++) {
         const cardId = effect.cardId ?? (effect.pool ? randomPoolCard(ctx, effect.pool) : undefined);

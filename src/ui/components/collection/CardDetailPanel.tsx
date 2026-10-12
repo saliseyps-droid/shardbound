@@ -110,7 +110,7 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
       <p className="detail-meta">
         <span style={{ color: faction.colors.primary }}>{faction.name}</span>
         <span className={`rarity-text-${card.rarity.toLowerCase()}`}>{t(card.rarity.charAt(0) + card.rarity.slice(1).toLowerCase())}</span>
-        <span className="faint">{SET_INFO[card.set].name}</span>
+        <span className="faint">{card.rewardOnly ? t('Campaign reward') : SET_INFO[card.set].name}</span>
       </p>
       <div className="owned-line">
         <span>{t('Owned')}</span>
@@ -121,6 +121,9 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
       </div>
       {usedIn.length > 0 && <p className="faint small">{t('In decks:')} {usedIn.map((d) => `${d.name} ×${d.cards[cardId]}`).join(', ')}</p>}
 
+      {card.rewardOnly ? (
+        <p className="faint small">{t('Won in The Lamplighters’ Road campaign. It cannot be crafted or recycled.')}</p>
+      ) : (
       <table className="variant-table">
         <thead>
           <tr>
@@ -166,6 +169,7 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
           })}
         </tbody>
       </table>
+      )}
       <div className="detail-foot">
         <Essence amount={essence} />
         <button className="btn btn-ghost btn-sm" onClick={() => useUi.getState().inspectCard(cardId, bestVariant(counts))}>

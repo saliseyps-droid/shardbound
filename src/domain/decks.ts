@@ -1,6 +1,6 @@
 import { DECK_RULES } from '@/config/gameRules';
 import { FACTIONS } from '@/data/factions';
-import { collectibleCards, getCard } from '@/data/cards';
+import { getCard, poolCards } from '@/data/cards';
 import type { CardDefinition, Faction, PlayableFaction } from '@/game/types';
 import { PLAYABLE_FACTIONS } from '@/game/types';
 import { createRng, nextFloat } from '@/core/rng';
@@ -190,7 +190,7 @@ export function autoBuildDeck(opts: AutoBuildOptions): Record<string, number> {
   const cards: Record<string, number> = { ...(opts.base ?? {}) };
   const factions = new Set<Faction>([opts.heroFaction, 'NEUTRAL']);
   if (opts.secondFaction) factions.add(opts.secondFaction);
-  const pool = collectibleCards().filter(
+  const pool = poolCards().filter(
     (c) => factions.has(c.faction) && (!opts.allowedRarities || opts.allowedRarities.includes(c.rarity)),
   );
   const available = (c: CardDefinition) => {

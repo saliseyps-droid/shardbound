@@ -226,6 +226,10 @@ export function describeEffect(effect: Effect, card: CardDefinition, lookup?: (i
       text = `this unit becomes your Warden with ${effect.health} Health${effect.armor ? ` and ${effect.armor} Armor` : ''}.`;
       break;
     case 'CREATE_CARD': {
+      if (effect.recentSpells) {
+        text = `add copies of the last ${effect.recentSpells} different spells you cast this game to your hand.`;
+        break;
+      }
       const count = effect.count ?? 1;
       let what: string;
       if (effect.cardId) what = lookup?.(effect.cardId)?.name ?? 'a card';

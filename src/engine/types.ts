@@ -128,6 +128,8 @@ export interface PlayerState {
   fatigue: number;
   mulliganDone: boolean;
   spellsCastThisTurn: number;
+  /** Card ids of every spell cast this game, in order. Missing in older states. */
+  spellsCast?: string[];
   cardsPlayedThisTurn: number;
   allyDiedThisTurn: boolean;
   allyDeathsThisGame: number;

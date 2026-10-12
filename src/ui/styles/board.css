@@ -773,6 +773,15 @@ html:not([data-input='touch']) .hand.is-hidden-hand:has(.hand-card:hover) .hand-
   background: rgba(10, 8, 24, 0.55); color: var(--parchment); font: 700 var(--t-lg) var(--font-body);
 }
 .t-watch { margin-top: 6px; width: 100%; }
+/* Playing: how many are watching, in the board's top-right corner (left of the battle log). */
+.spectator-count {
+  position: absolute; top: 10px; right: calc(var(--sidebar-w) + 10px); z-index: 50;
+  display: flex; align-items: center; gap: 5px;
+  height: 30px; padding: 0 10px; border-radius: 999px;
+  background: rgba(10, 8, 24, 0.75); border: 1px solid var(--line);
+  color: var(--parchment); font: 700 var(--t-sm) var(--font-body);
+}
+.spectator-count svg { color: var(--gold-bright); }
 
 /* Corrupt (Void Reckoning): violet rot creeping over the art, pulsing slowly. */
 .unit-corrupt {

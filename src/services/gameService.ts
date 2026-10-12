@@ -20,6 +20,7 @@ import { CURRENT_SAVE_VERSION, emptyVariants, pushReward, type GameSave, type Qu
 import { APP_VERSION, OutdatedClientError, isNewerVersion } from '@/persistence/appVersion';
 import { decodeDeck } from '@/domain/deckCode';
 import { buyPortrait, choosePortrait } from '@/domain/portraits';
+import { buyChapter } from '@/domain/campaignUnlock';
 import { buyBundle } from '@/domain/bundles';
 import { TOURNAMENT_PACK_SET } from '@/domain/tournament';
 import { setActiveMatch, settleAbandonedMatch, type ActiveMatch } from '@/domain/activeMatch';
@@ -333,6 +334,12 @@ export class GameService {
 
   buyBundle(id: string): Result<GameSave> {
     const res = buyBundle(this.require(), id, this.now());
+    if (res.ok) this.commit(res.value);
+    return res;
+  }
+
+  buyChapter(chapterId: string): Result<GameSave> {
+    const res = buyChapter(this.require(), chapterId, this.now());
     if (res.ok) this.commit(res.value);
     return res;
   }

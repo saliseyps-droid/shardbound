@@ -314,6 +314,8 @@ export interface CreateCardEffect extends EffectBase {
   /** Created cards vanish at end of turn. */
   fleeting?: boolean;
   costReduction?: number;
+  /** Instead: copies of the last N different spells its controller cast this game. */
+  recentSpells?: number;
 }
 export interface CopyCardEffect extends EffectBase {
   type: 'COPY_CARD';
@@ -470,6 +472,8 @@ export interface CardDefinition {
   tags?: string[];
   set: SetId;
   collectible: boolean;
+  /** Won only as a campaign reward: never in packs, crafted, recycled, generated or in bot decks. */
+  rewardOnly?: boolean;
   /** Art seed / key for the procedural art generator. */
   artwork?: string;
   artist?: string;

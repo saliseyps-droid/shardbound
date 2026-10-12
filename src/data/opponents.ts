@@ -73,6 +73,8 @@ export interface Chapter {
   id: string;
   name: string;
   description: string;
+  /** Gold to open the chapter (src/domain/campaignUnlock.ts); free when missing. */
+  price?: number;
   encounters: OpponentDef[];
 }
 
@@ -557,8 +559,107 @@ export const VOID_CAMPAIGN: Chapter[] = [
   },
 ];
 
+/**
+ * The Lamplighters' Road: a short side campaign through the Nulwood, apart from both other stories.
+ * Each chapter boss is one of the three Neutral legends it rewards (src/data/cards/lamplight.ts).
+ */
+export const LAMP_CAMPAIGN: Chapter[] = [
+  {
+    id: 'lr1',
+    name: 'Chapter I — The Unlit Mile',
+    price: 500,
+    description: 'The old trade road runs through the Nulwood. Its lanterns have gone out, and something in the trees is putting out the rest.',
+    encounters: [
+      {
+        id: 'l1_e1', name: 'Morrow Ashveil', title: 'Hollow Seer of the Nulwood', avatar: 'leaf', faction: 'VERDANT', secondFaction: 'VOID', archetype: 'Overgrowth', difficulty: 'NORMAL', personality: 'BALANCED', rarities: NORMAL_POOL,
+        intro: 'Your lantern is so bright. It hurts the trees. Put it out, and they will stop screaming.',
+        special: { extraCards: ['ver_blighted_druid', 'ver_hollow_husk'], description: ['His deck holds the rot of the Nulwood.'] },
+        firstWinReward: { gold: 150, xp: 150, essence: 50 },
+      },
+      {
+        id: 'l1_e2', name: 'Grimbark', title: 'The Antlered Shade', avatar: 'eye', faction: 'VOID', secondFaction: 'VERDANT', archetype: 'Requiem', difficulty: 'NORMAL', personality: 'BALANCED', rarities: NORMAL_POOL,
+        intro: 'Every lamplighter who walked this road is still here. Under the roots. Would you like to meet them?',
+        special: { extraCards: ['vod_hungering_shade', 'vod_umbral_acolyte'], description: ['Its deck holds shades of the lost lamplighters.'] },
+        firstWinReward: { gold: 180, xp: 180, packs: { setId: 'RECKONING', amount: 1 } },
+      },
+      {
+        id: 'l1_boss', name: 'Nyx', title: 'Lantern of Nul', avatar: 'eye', faction: 'VOID', secondFaction: 'VERDANT', archetype: 'Offering', difficulty: 'HARD', personality: 'BALANCED', rarities: NORMAL_POOL, boss: true,
+        intro: 'The lamplighters lit a thousand lanterns against the dark. I am the one the dark lit back.',
+        special: {
+          talents: [{ abilityId: 'wt_boss_rot_bloom', level: 0 }, { abilityId: 'wt_void_soul_harvest', level: 1 }],
+          extraCards: ['neu_nyx_lantern_of_nul', 'vod_sunless_hymn', 'ver_spore_cloud'],
+          description: ['Warden abilities: Rot Bloom, Soul Harvest II.', 'Her deck holds Nyx herself. Beat her and she joins you.'],
+        },
+        firstWinReward: { gold: 250, xp: 250, cardId: 'neu_nyx_lantern_of_nul' },
+      },
+    ],
+  },
+  {
+    id: 'lr2',
+    name: 'Chapter II — Roots of Nothing',
+    price: 500,
+    description: 'Deeper in, the trees grow around holes in the world. The wardens who tended them have become something heavier.',
+    encounters: [
+      {
+        id: 'l2_e1', name: 'Old Thornhide', title: 'The Barkbound Brute', avatar: 'leaf', faction: 'VERDANT', archetype: 'Overgrowth', difficulty: 'HARD', personality: 'AGGRESSIVE', rarities: NORMAL_POOL,
+        intro: 'I used to guard the road. Now I am the road. Walk on me if you can.',
+        special: { extraCards: ['ver_rotroot_sentinel', 'ver_rotting_colossus'], description: ['His deck holds a Rotroot Sentinel and a Rotting Colossus.'] },
+        firstWinReward: { gold: 200, xp: 200, essence: 75 },
+      },
+      {
+        id: 'l2_e2', name: 'Sister Ilwen', title: 'Keeper of the Rotten Staff', avatar: 'leaf', faction: 'VERDANT', secondFaction: 'VOID', archetype: 'Wellspring', difficulty: 'HARD', personality: 'BALANCED', rarities: HARD_POOL,
+        intro: 'The grove heals everything. Even what should stay dead.',
+        special: { extraCards: ['ver_grove_mender', 'ver_heart_of_the_withered_wood'], description: ['Her deck holds the Heart of the Withered Wood.'] },
+        firstWinReward: { gold: 220, xp: 220, packs: { setId: 'RECKONING', amount: 1 } },
+      },
+      {
+        id: 'l2_boss', name: 'Vael', title: 'The Void Knell', avatar: 'leaf', faction: 'VERDANT', secondFaction: 'VOID', archetype: 'Overgrowth', difficulty: 'HARD', personality: 'BALANCED', rarities: HARD_POOL, boss: true,
+        intro: 'Every bell in the Nulwood rings once. Mine rings for everyone.',
+        special: {
+          heroHealth: 35,
+          talents: [{ abilityId: 'wt_boss_black_sun', level: 0 }, { abilityId: 'wt_verdant_barkskin', level: 1 }],
+          extraCards: ['neu_vael_the_void_knell', 'ver_mother_of_rot', 'ver_rotting_colossus'],
+          description: ['Starts with 35 Health.', 'Warden abilities: Black Sun, Barkskin II.', 'His deck holds Vael himself and the Mother of Rot.'],
+        },
+        firstWinReward: { gold: 300, xp: 300, cardId: 'neu_vael_the_void_knell' },
+      },
+    ],
+  },
+  {
+    id: 'lr3',
+    name: 'Chapter III — The Last Lantern',
+    price: 500,
+    description: 'At the end of the road stands the first lighthouse of the guild. Something has been reading by its light for a very long time.',
+    encounters: [
+      {
+        id: 'l3_e1', name: 'The Thornwood Sage', title: 'Counter of Lanterns', avatar: 'leaf', faction: 'VERDANT', secondFaction: 'VOID', archetype: 'Wellspring', difficulty: 'HARD', personality: 'CONTROL', rarities: HARD_POOL,
+        intro: 'I counted every lantern you lit on the way here. Eleven. Now I will count how many you keep.',
+        special: { extraCards: ['ver_creeping_decay', 'vod_feed_the_void'], description: ['His deck holds Creeping Decay and Feed the Void.'] },
+        firstWinReward: { gold: 250, xp: 250, essence: 100 },
+      },
+      {
+        id: 'l3_e2', name: 'The Eye of the Grove', title: 'It Sees the Road Behind You', avatar: 'eye', faction: 'VOID', secondFaction: 'VERDANT', archetype: 'Requiem', difficulty: 'EXPERT', personality: 'CONTROL', rarities: HARD_POOL,
+        intro: 'I see the road behind you. It is already overgrown.',
+        special: { heroHealth: 35, extraCards: ['vod_eye_of_the_abyss', 'vod_devourer_of_names'], description: ['Starts with 35 Health.', 'Its deck holds the Eye of the Abyss.'] },
+        firstWinReward: { gold: 300, xp: 300, packs: { setId: 'RECKONING', amount: 2 } },
+      },
+      {
+        id: 'l3_boss', name: 'Oblivia', title: 'Keeper of the Last Page', avatar: 'eye', faction: 'VOID', secondFaction: 'VERDANT', archetype: 'Requiem', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
+        intro: 'Every story ends on a page that nobody reads. I keep those pages. Yours is next.',
+        special: {
+          heroHealth: 40,
+          talents: [{ abilityId: 'wt_boss_last_shard', level: 0 }, { abilityId: 'wt_verdant_wellspring', level: 1 }],
+          extraCards: ['neu_oblivia_keeper_of_the_last_page', 'vod_eclipse_rite', 'vod_feed_the_void'],
+          description: ['Starts with 40 Health.', 'Warden abilities: The Last Shard, Wellspring II.', 'Her deck holds Oblivia herself and an Eclipse Rite.'],
+        },
+        firstWinReward: { gold: 500, xp: 450, essence: 250, cardId: 'neu_oblivia_keeper_of_the_last_page' },
+      },
+    ],
+  },
+];
+
 export interface CampaignDef {
-  id: 'main' | 'void';
+  id: 'main' | 'void' | 'lamp';
   name: string;
   chapters: Chapter[];
 }
@@ -567,6 +668,7 @@ export interface CampaignDef {
 export const CAMPAIGNS: CampaignDef[] = [
   { id: 'main', name: 'The Shattering of Aethra', chapters: CAMPAIGN },
   { id: 'void', name: 'The Black Sun', chapters: VOID_CAMPAIGN },
+  { id: 'lamp', name: 'The Lamplighters’ Road', chapters: LAMP_CAMPAIGN },
 ];
 
 /**
@@ -587,11 +689,15 @@ const CAMPAIGN_PORTRAITS: Record<string, string | null> = {
   v1_e1: 'void_night_elf', v1_e2: 'verdant_forest_elf', v1_e3: 'iron_goblin_tinker', v1_e4: 'tide_frost_lich', v1_boss: 'void_horned_warlock',
   v2_e1: 'ember_flameborn', v2_e2: 'astral_white_seer', v2_e3: 'void_spectral_king', v2_b1: 'verdant_ancient_treant', v2_boss: 'void_moon_cat',
   v3_e1: 'ember_exiled_warlord', v3_b1: 'iron_lion_lord', v3_b2: 'tide_sapphire_dragon', v3_b3: 'void_shadow_tyrant', v3_final: 'sali_the_creator',
+  // The Lamplighters' Road: the Nulwood's own wardens (campaign-only art; each boss is its reward card).
+  l1_e1: 'nul_hollow_seer', l1_e2: 'nul_antlered_shade', l1_boss: 'nul_lantern_warden',
+  l2_e1: 'nul_barkbound_brute', l2_e2: 'nul_staff_keeper', l2_boss: 'nul_rootheart_colossus',
+  l3_e1: 'nul_thornwood_sage', l3_e2: 'nul_eye_of_the_grove', l3_boss: 'nul_ring_of_thorns',
 };
-for (const ch of [...CAMPAIGN, ...VOID_CAMPAIGN]) for (const e of ch.encounters) if (e.id in CAMPAIGN_PORTRAITS) e.portrait = CAMPAIGN_PORTRAITS[e.id];
+for (const ch of CAMPAIGNS.flatMap((c) => c.chapters)) for (const e of ch.encounters) if (e.id in CAMPAIGN_PORTRAITS) e.portrait = CAMPAIGN_PORTRAITS[e.id];
 
 export function findEncounter(id: string): { chapter: Chapter; encounter: OpponentDef; index: number } | undefined {
-  for (const chapter of [...CAMPAIGN, ...VOID_CAMPAIGN]) {
+  for (const chapter of CAMPAIGNS.flatMap((c) => c.chapters)) {
     const index = chapter.encounters.findIndex((e) => e.id === id);
     if (index >= 0) return { chapter, encounter: chapter.encounters[index], index };
   }

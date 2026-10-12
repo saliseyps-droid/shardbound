@@ -27,7 +27,7 @@ import { t } from '@/i18n';
 import { netSession, type NetMessage } from '@/net/session';
 import { GuestSync, HostSync } from '@/net/stateSync';
 import { guestEvents, guestView, mirrorAction } from '@/net/view';
-import { matchWatchCode, newWatchCode, watchHub, watchMatch, type Watching } from '@/net/spectate';
+import { MAX_SPECTATORS, matchWatchCode, newWatchCode, watchHub, watchMatch, type Watching } from '@/net/spectate';
 import { TUTORIAL_STEPS, tutorialAllows, tutorialOpponentAction, tutorialSetup, type TutorialIntent } from '@/ui/match/tutorial';
 
 /** How long to keep asking the signalling server about a vanished opponent (it drops dead peers after ~60 s). */
@@ -94,6 +94,8 @@ interface MatchStore {
   watchCode: string | null;
   /** Spectating: who is playing. */
   watching: { a: string; b: string; mode: string } | null;
+  /** Playing: how many spectators are watching this match (the online guest hears it from the host). */
+  spectators: number;
   /** The match intro (src/ui/match/MatchIntro.tsx) while it shows: a new id per match, null when gone. */
   intro: number | null;
   turnDeadline: number | null;
@@ -428,6 +430,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         if (cfg.online === 'host' && msg.t === 'resync') {
           const full = hostSync.resend();
           if (full) netSession.send(full);
+          if (watchHub.spectators) netSession.send({ t: 'spectators', count: watchHub.spectators });
           return;
         }
         if (cfg.online === 'guest' && (msg.t === 'state' || msg.t === 'delta')) {
@@ -440,6 +443,10 @@ export const useMatch = create<MatchStore>((set, get) => {
           if (!game) return;
           set({ busy: false });
           await present(game, update);
+          return;
+        }
+        if (cfg.online === 'guest' && msg.t === 'spectators') {
+          set({ spectators: Number.isInteger(msg.count) ? Math.max(0, Math.min(MAX_SPECTATORS, msg.count)) : 0 });
           return;
         }
         if (cfg.online === 'guest' && msg.t === 'error') {
@@ -677,6 +684,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     ascension: null,
     watchCode: null,
     watching: null,
+    spectators: 0,
     intro: null,
     turnDeadline: null,
     rewards: null,
@@ -812,6 +820,7 @@ export const useMatch = create<MatchStore>((set, get) => {
         intro: config.mode === 'TUTORIAL' || config.mode === 'PUZZLE' ? null : fxSeq++,
         watchCode,
         ...(config.mode === 'SPECTATE' ? {} : { watching: null }),
+        spectators: 0,
         config,
         game: state,
         phase: state.phase === 'MULLIGAN' ? 'mulligan' : 'playing',
@@ -1041,7 +1050,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       watchLink = null;
       watchHub.close();
       useMatchLaunch.getState().setConfig(null);
-      set({ config: null, game: null, phase: 'idle', rewards: null, fx: [], ghosts: [], selection: null, targets: [], turnDeadline: null, linkCheck: false, watchCode: null, watching: null });
+      set({ config: null, game: null, phase: 'idle', rewards: null, fx: [], ghosts: [], selection: null, targets: [], turnDeadline: null, linkCheck: false, watchCode: null, watching: null, spectators: 0 });
     },
   };
 });
@@ -1051,4 +1060,10 @@ useMatch.subscribe((s, prev) => {
   if (!s.game || s.game === prev.game || !watchHub.code) return;
   if (s.config?.online === 'guest' || s.config?.online === 'spectator') return;
   watchHub.push(s.game, spectatorEvents?.state === s.game ? spectatorEvents.events : []);
+});
+
+// The players see how many are watching: the host's count, passed on to the online guest.
+watchHub.onSpectators((count) => {
+  useMatch.setState({ spectators: count });
+  if (useMatch.getState().config?.online === 'host') netSession.send({ t: 'spectators', count });
 });

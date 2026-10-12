@@ -59,6 +59,7 @@ function createPlayer(id: PlayerId, side: SideSetup): PlayerState {
     fatigue: 0,
     mulliganDone: false,
     spellsCastThisTurn: 0,
+    spellsCast: [],
     cardsPlayedThisTurn: 0,
     allyDiedThisTurn: false,
     allyDeathsThisGame: 0,
@@ -329,6 +330,7 @@ function doPlayCard(ctx: EngineContext, playerId: PlayerId, cardUid: number, tar
   } else if (def.cardType === 'SPELL') {
     p.stats.spellsPlayed++;
     p.spellsCastThisTurn++;
+    (p.spellsCast ??= []).push(card.cardId);
     for (const ability of abilities) {
       runAbility(ctx, { source: { kind: 'spell', uid: null, cardId: card.cardId, controller: playerId }, ability, target });
     }

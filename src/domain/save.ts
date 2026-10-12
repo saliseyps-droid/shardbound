@@ -126,6 +126,8 @@ export interface DailyState {
 
 export interface PveState {
   completed: Record<string, { firstClearAt: number; wins: number }>;
+  /** Chapters bought with Gold (Chapter.price). */
+  unlockedChapters?: string[];
 }
 
 export interface MatchRecord {

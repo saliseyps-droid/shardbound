@@ -1,5 +1,5 @@
 import { createRng, hashString, nextInt, pickOne, shuffleInPlace } from '@/core/rng';
-import { collectibleCards } from '@/data/cards';
+import { poolCards } from '@/data/cards';
 import { BRAWL_MODIFIERS, type BrawlModifier, type BrawlSideMods } from '@/data/brawl';
 import { PRACTICE_OPPONENTS, type OpponentDef } from '@/data/opponents';
 import { SET_INFO } from '@/config/economy';
@@ -106,7 +106,7 @@ export function brawlFights(rotation: number): BrawlFight[] {
     const deckSeed = nextInt(rng, 0, 1_000_000);
     const opp = mergeMods(modifiers.flatMap((m) => [m.both, m.opponent]));
     if (modifiers.some((m) => m.opponentLegendary)) {
-      const legends = collectibleCards().filter((c) => c.faction === faction && c.rarity === 'LEGENDARY' && c.cardType === 'UNIT');
+      const legends = poolCards().filter((c) => c.faction === faction && c.rarity === 'LEGENDARY' && c.cardType === 'UNIT');
       const legend = pickOne(rng, legends);
       if (legend) opp.startingBoard = [legend.id, ...(opp.startingBoard ?? [])];
     }

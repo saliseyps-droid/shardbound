@@ -77,9 +77,20 @@ class WatchHub {
   private heartbeat: number | null = null;
   /** Bumped by every open/close, so a slow open that was overtaken gives up. */
   private gen = 0;
+  private listeners = new Set<(count: number) => void>();
 
   get spectators() {
     return this.watchers.size;
+  }
+
+  /** Calls `l` with the number of spectators whenever someone joins or leaves; returns the unsubscribe. */
+  onSpectators(l: (count: number) => void) {
+    this.listeners.add(l);
+    return () => void this.listeners.delete(l);
+  }
+
+  private notify() {
+    for (const l of this.listeners) l(this.watchers.size);
   }
 
   /** Opens the watch room; failures (offline, code taken) only mean nobody can watch. */
@@ -121,6 +132,7 @@ class WatchHub {
         }
         const w: Watcher = { conn, gzip: (raw as { gzip?: boolean }).gzip === true && gzipSupported(), lastSeen: Date.now() };
         this.watchers.add(w);
+        this.notify();
         conn.on('data', () => void (w.lastSeen = Date.now()));
         conn.on('close', () => this.drop(w));
         conn.on('error', () => this.drop(w));
@@ -133,6 +145,7 @@ class WatchHub {
 
   private drop(w: Watcher) {
     if (!this.watchers.delete(w)) return;
+    this.notify();
     try {
       w.conn.close();
     } catch {
@@ -170,7 +183,9 @@ class WatchHub {
     }
     const peer = this.peer;
     setTimeout(() => peer?.destroy(), 1500);
+    const had = this.watchers.size > 0;
     this.watchers.clear();
+    if (had) this.notify();
     this.peer = null;
     this.code = null;
     this.info = null;

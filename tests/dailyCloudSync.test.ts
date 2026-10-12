@@ -59,7 +59,8 @@ describe('daily reward across devices', () => {
     await pc.createProfile('Player', 'a');
     await pc.flush();
     const pcMeta = (await pcStore.get<SaveMeta>(KEYS.meta))!;
-    await pcStore.set('cloudLink', { uid: 'u', cloudUpdatedAt: pcMeta.updatedAt - 1, localUpdatedAt: pcMeta.updatedAt });
+    // Linked long before: the cloud save has changed since (cloudUpdatedAt 0 never matches a real save time).
+    await pcStore.set('cloudLink', { uid: 'u', cloudUpdatedAt: 0, localUpdatedAt: pcMeta.updatedAt });
     // The stale PC save on its own would offer Day 1.
     expect(pc.current!.daily.lastClaimDay).toBeNull();
 

@@ -1,6 +1,6 @@
 import { DUNGEON, DUNGEON_MATCHES } from '@/config/dungeon';
 import { CAMPAIGN, DIFFICULTY_POOLS, PRACTICE_OPPONENTS, type OpponentDef } from '@/data/opponents';
-import { collectibleCards, getCard } from '@/data/cards';
+import { getCard, poolCards } from '@/data/cards';
 import { DUNGEON_TREASURES, getTreasure } from '@/data/dungeonTreasures';
 import { defaultBuild } from '@/data/wardenTalents';
 import { createRng, hashString, nextFloat, shuffleInPlace, type RngState } from '@/core/rng';
@@ -78,7 +78,7 @@ export const isBossMatch = (wins: number) => wins % DUNGEON.perFloor === DUNGEON
 /** Deterministic random numbers for one step of a run (reloading never re-rolls). */
 const rngFor = (run: Pick<DungeonRun, 'seed'>, step: string) => createRng(hashString(`dungeon:${run.seed}:${step}`));
 
-const poolFor = (faction: PlayableFaction) => collectibleCards().filter((c) => c.faction === faction || c.faction === 'NEUTRAL');
+const poolFor = (faction: PlayableFaction) => poolCards().filter((c) => c.faction === faction || c.faction === 'NEUTRAL');
 
 export function hasFreeDungeonEntry(save: GameSave, now: number): boolean {
   return isLaterKey(dayKey(trustedNow(save, now)), dungeonOf(save).freeEntryDay);

@@ -12,6 +12,9 @@ import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { DeckPicker, DIFFICULTY_INFO, factionStyle, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { campaignProgress, isCleared, isUnlocked, nextEncounter } from '@/ui/components/meta/campaign';
 import { audio } from '@/audio/audioService';
+import { gameService } from '@/state/accountStore';
+import { toast } from '@/state/uiStore';
+import { canBuyChapter, isChapterBought } from '@/domain/campaignUnlock';
 import '@/ui/styles/meta.css';
 import { t } from '@/i18n';
 
@@ -73,6 +76,18 @@ export default function CampaignScreen() {
   const unlocked = enc ? isUnlocked(save, enc.id) : false;
   const cleared = enc ? isCleared(save, enc.id) : false;
   const validDeck = deckId && firstValidDeck(save, deckId) === deckId;
+
+  const buyChapter = (chapterId: string) => {
+    const res = gameService.buyChapter(chapterId);
+    if (res.ok) {
+      audio.play('coin');
+      toast(t('Chapter unlocked'), 'reward');
+    } else {
+      audio.play('error');
+      toast(res.error, 'error');
+    }
+  };
+  const forSale = sel && !isChapterBought(save, sel.chapter) ? sel.chapter : null;
 
   const fight = () => {
     if (!enc || !unlocked || !validDeck) return;
@@ -138,7 +153,7 @@ export default function CampaignScreen() {
                 <header className="chapter-head">
                   <h3 id={`${ch.id}-t`}>{ch.name}</h3>
                   <span className="faint">
-                    {chLocked ? t('Locked') : `${chCleared} / ${ch.encounters.length}`}
+                    {!isChapterBought(save, ch) ? <Gold amount={ch.price!} size={15} /> : chLocked ? t('Locked') : `${chCleared} / ${ch.encounters.length}`}
                   </span>
                 </header>
                 <p className="muted">{ch.description}</p>
@@ -220,7 +235,20 @@ export default function CampaignScreen() {
                 </ul>
               </div>
             )}
-            {unlocked ? (
+            {forSale ? (
+              canBuyChapter(save, forSale) ? (
+                <>
+                  <p className="muted">{t('This chapter opens for {n} Gold.', { n: forSale.price! })}</p>
+                  <button className="btn btn-primary btn-lg enc-fight" disabled={save.profile.gold < forSale.price!} onClick={() => buyChapter(forSale.id)}>
+                    {t('Unlock chapter')} <Gold amount={forSale.price!} size={16} />
+                  </button>
+                </>
+              ) : (
+                <p className="locked-note">
+                  <Glyph name="shield" size={16} /> {t('Clear the previous chapter, then unlock this one for {n} Gold.', { n: forSale.price! })}
+                </p>
+              )
+            ) : unlocked ? (
               <>
                 <div className="faint" style={{ margin: 'var(--space-3) 0 var(--space-2)' }}>
                   {t('Your deck')}

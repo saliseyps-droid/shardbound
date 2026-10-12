@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { SET_INFO } from '@/config/economy';
 import { NEWS } from '@/config/news';
-import { collectibleCards } from '@/data/cards';
+import { poolCards } from '@/data/cards';
 import { BoosterPack } from '@/ui/components/packs/BoosterPack';
 import { CardView } from '@/ui/components/CardView';
 import { t } from '@/i18n';
@@ -11,7 +11,7 @@ import '@/ui/styles/shop.css';
 /** Home: the newest set, with its pack, a fan of its Legendaries and links to buy, browse and read about it. */
 export function NewsBanner() {
   const set = SET_INFO[NEWS.setId];
-  const cards = collectibleCards().filter((c) => c.set === NEWS.setId);
+  const cards = poolCards().filter((c) => c.set === NEWS.setId);
   const legends = cards.filter((c) => c.rarity === 'LEGENDARY').length;
   return (
     <section className="news-banner panel" aria-labelledby="news-title">

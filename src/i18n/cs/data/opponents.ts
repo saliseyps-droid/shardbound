@@ -455,6 +455,60 @@ const v: OpponentsOverlay = {
         'Jeho balíček obsahuje samotného Saliho a Neutvořitele.',
       ],
     },
+    l1_e1: {
+      name: 'Morrow Popelozávoj',
+      title: 'Dutý věštec Nulského hvozdu',
+      intro: 'Tvoje lucerna je tak jasná. Stromy to bolí. Zhasni ji a přestanou křičet.',
+      special: ['Jeho balíček obsahuje hnilobu Nulského hvozdu.'],
+    },
+    l1_e2: {
+      name: 'Grimbark',
+      title: 'Parožnatý stín',
+      intro: 'Každý lampář, který šel touhle cestou, je pořád tady. Pod kořeny. Chceš se s nimi seznámit?',
+      special: ['Jeho balíček obsahuje stíny ztracených lampářů.'],
+    },
+    l1_boss: {
+      name: 'Nyx',
+      title: 'Lucerna Nulu',
+      intro: 'Lampáři rozsvítili proti tmě tisíc luceren. Já jsem ta, kterou tma rozsvítila nazpátek.',
+      special: ['Schopnosti Strážce: Květ hniloby, Žeň duší II.', 'Její balíček obsahuje samotnou Nyx. Poraz ji a přidá se k tobě.'],
+    },
+    l2_e1: {
+      name: 'Starý Trnokožec',
+      title: 'Kůrou spoutaný surovec',
+      intro: 'Kdysi jsem cestu hlídal. Teď jsem cesta já. Přejdi po mně, jestli to dokážeš.',
+      special: ['Jeho balíček obsahuje Strážce shnilých kořenů a Hnijícího kolosa.'],
+    },
+    l2_e2: {
+      name: 'Sestra Ilwen',
+      title: 'Strážkyně shnilé hole',
+      intro: 'Háj vyléčí všechno. I to, co by mělo zůstat mrtvé.',
+      special: ['Její balíček obsahuje Srdce zvadlého lesa.'],
+    },
+    l2_boss: {
+      name: 'Vael',
+      title: 'Umíráček prázdnoty',
+      intro: 'Každý zvon v Nulském hvozdu zazvoní jednou. Ten můj zvoní pro všechny.',
+      special: ['Začíná se 35 životy.', 'Schopnosti Strážce: Černé slunce, Kůra místo kůže II.', 'Jeho balíček obsahuje samotného Vaela a Matku hniloby.'],
+    },
+    l3_e1: {
+      name: 'Mudrc z Trnového lesa',
+      title: 'Počtář luceren',
+      intro: 'Spočítal jsem každou lucernu, kterou jsi cestou rozsvítil. Jedenáct. Teď spočítám, kolik si jich udržíš.',
+      special: ['Jeho balíček obsahuje Plíživý rozpad a Nasyť Prázdnotu.'],
+    },
+    l3_e2: {
+      name: 'Oko háje',
+      title: 'Vidí cestu za tebou',
+      intro: 'Vidím cestu za tebou. Už zarostla.',
+      special: ['Začíná se 35 životy.', 'Jeho balíček obsahuje Oko propasti.'],
+    },
+    l3_boss: {
+      name: 'Oblivie',
+      title: 'Strážkyně poslední stránky',
+      intro: 'Každý příběh končí na stránce, kterou nikdo nečte. Ty stránky opatruju já. Tvoje je na řadě.',
+      special: ['Začíná se 40 životy.', 'Schopnosti Strážce: Poslední Střep, Pramen II.', 'Její balíček obsahuje samotnou Oblivii a Rituál zatmění.'],
+    },
   },
   chapters: {
     ch1: {
@@ -504,6 +558,18 @@ const v: OpponentsOverlay = {
     vr3: {
       name: 'Kapitola III – Trůn ve tmě',
       description: 'Pod černým sluncem stojí trůn starší než první hvězda. Cestu k němu ti zastoupí všechny mocnosti Zúčtování.',
+    },
+    lr1: {
+      name: 'Kapitola I – Nerozsvícená míle',
+      description: 'Stará obchodní stezka vede Nulským hvozdem. Lucerny podél ní zhasly a něco mezi stromy zhasíná i ty zbylé.',
+    },
+    lr2: {
+      name: 'Kapitola II – Kořeny ničeho',
+      description: 'Hlouběji v lese rostou stromy kolem děr ve světě. Strážci, kteří o ně pečovali, se proměnili v něco těžšího.',
+    },
+    lr3: {
+      name: 'Kapitola III – Poslední lucerna',
+      description: 'Na konci cesty stojí první maják cechu. U jeho světla si něco čte už hodně dlouho.',
     },
   },
 };

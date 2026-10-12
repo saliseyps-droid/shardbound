@@ -70,7 +70,7 @@ export function openPack(save: GameSave, setId: PackId, rng: RngState): Result<{
 
 export function craftCost(cardId: string, variant: Variant = 'NORMAL'): number {
   const card = getCard(cardId);
-  if (!card) return Infinity;
+  if (!card || card.rewardOnly) return Infinity;
   return (card.craftingCost ?? CRAFTING.craft[card.rarity]) * CRAFTING.variantMultiplier[variant];
 }
 
@@ -82,7 +82,7 @@ export function recycleValue(cardId: string, variant: Variant = 'NORMAL'): numbe
 
 export function craftCard(save: GameSave, cardId: string, variant: Variant, now: number): Result<GameSave> {
   const card = getCard(cardId);
-  if (!card || !card.collectible) return err('This card cannot be crafted.');
+  if (!card || !card.collectible || card.rewardOnly) return err('This card cannot be crafted.');
   const cost = craftCost(cardId, variant);
   if (save.profile.essence < cost) return err('Not enough Essence.');
   let next: GameSave = {
@@ -97,6 +97,7 @@ export function craftCard(save: GameSave, cardId: string, variant: Variant, now:
 export function recycleCard(save: GameSave, cardId: string, variant: Variant, count = 1): Result<{ save: GameSave; essence: number }> {
   const card = getCard(cardId);
   if (!card) return err('Unknown card.');
+  if (card.rewardOnly) return err('Campaign reward cards cannot be recycled.');
   const owned = save.collection.cards[cardId]?.[variant] ?? 0;
   if (count <= 0 || owned < count) return err('You do not own enough copies to recycle.');
   const essence = recycleValue(cardId, variant) * count;

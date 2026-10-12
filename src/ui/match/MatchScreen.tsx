@@ -215,6 +215,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   /** Watching someone else's match: nothing can be played, neither hand is shown. */
   const spectating = config?.online === 'spectator';
   const watching = useMatch((s) => s.watching);
+  const spectators = useMatch((s) => s.spectators);
   const navigate = useNavigate();
   const myTurn = !spectating && game.activePlayer === HUMAN && game.phase === 'MAIN';
   const interactive = myTurn && !busy && phase === 'playing';
@@ -821,6 +822,12 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         <button className="leave-btn icon-btn" aria-label={spectating ? t('Stop watching') : t('Leave match (concede)')} onClick={() => (spectating ? navigate(-1) : void concede())}>
           ✕
         </button>
+      )}
+      {!spectating && spectators > 0 && phase !== 'ended' && (
+        <div className="spectator-count" role="status" aria-label={t('{n} watching', { n: spectators })} title={t('{n} watching', { n: spectators })}>
+          <Glyph name="eye" size={16} />
+          <span aria-hidden>{spectators}</span>
+        </div>
       )}
     </div>
   );

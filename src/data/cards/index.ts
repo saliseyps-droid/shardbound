@@ -12,6 +12,7 @@ import { NEUTRAL_CARDS } from './neutral';
 import { ABYSS_CARDS } from './abyss';
 import { DRAGON_CARDS } from './dragon';
 import { RECKONING_CARDS } from './reckoning';
+import { LAMPLIGHT_CARDS } from './lamplight';
 
 const RAW: CardDefinition[] = [
   ...TOKEN_CARDS,
@@ -25,6 +26,7 @@ const RAW: CardDefinition[] = [
   ...ABYSS_CARDS,
   ...DRAGON_CARDS,
   ...RECKONING_CARDS,
+  ...LAMPLIGHT_CARDS,
 ];
 
 export const CARD_LOAD_ERRORS: string[] = [];
@@ -52,6 +54,8 @@ function buildRegistry(): Map<string, CardDefinition> {
 const REGISTRY = buildRegistry();
 const ALL = [...REGISTRY.values()];
 const COLLECTIBLE = ALL.filter((c) => c.collectible);
+/** Collectible cards that packs, crafting, generated cards, bot decks and draft pools may hand out. */
+const POOL = COLLECTIBLE.filter((c) => !c.rewardOnly);
 
 export function getCard(id: string): CardDefinition | undefined {
   return REGISTRY.get(id);
@@ -88,8 +92,13 @@ export function collectibleCards(): readonly CardDefinition[] {
   return COLLECTIBLE;
 }
 
+/** Collectible cards without the campaign rewards (rewardOnly): what packs, drafts and random effects draw from. */
+export function poolCards(): readonly CardDefinition[] {
+  return POOL;
+}
+
 export function cardsBy(filter: { set?: SetId; rarity?: Rarity; faction?: Faction }): CardDefinition[] {
-  return COLLECTIBLE.filter(
+  return POOL.filter(
     (c) =>
       (!filter.set || c.set === filter.set) &&
       (!filter.rarity || c.rarity === filter.rarity) &&

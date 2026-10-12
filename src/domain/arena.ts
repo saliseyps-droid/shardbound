@@ -1,6 +1,6 @@
 import { ARENA } from '@/config/arena';
 import { DIFFICULTY_POOLS, PRACTICE_OPPONENTS, type OpponentDef } from '@/data/opponents';
-import { collectibleCards, getCard } from '@/data/cards';
+import { getCard, poolCards } from '@/data/cards';
 import { CARD_BACKS } from '@/data/cardBacks';
 import { validateBuild, type TalentPick } from '@/data/wardenTalents';
 import { createRng, hashString, nextFloat, pickWeighted, shuffleInPlace } from '@/core/rng';
@@ -96,7 +96,7 @@ export function currentOffer(run: ArenaRun): string[] {
   const rng = rngFor(run, `pick${run.picks.length}`);
   const counts: Record<string, number> = {};
   for (const id of run.picks) counts[id] = (counts[id] ?? 0) + 1;
-  const eligible = collectibleCards().filter((c) => (c.faction === run.faction || c.faction === 'NEUTRAL') && (counts[c.id] ?? 0) < maxCopiesFor(c));
+  const eligible = poolCards().filter((c) => (c.faction === run.faction || c.faction === 'NEUTRAL') && (counts[c.id] ?? 0) < maxCopiesFor(c));
   const rolled = pickWeighted(rng, ARENA.rarityWeights);
   // Fall back to lower rarities (then any) when the rolled one has too few cards left.
   const order: (Rarity | null)[] = [...RARITIES.slice(0, RARITIES.indexOf(rolled) + 1).reverse(), ...RARITIES.slice(RARITIES.indexOf(rolled) + 1), null];

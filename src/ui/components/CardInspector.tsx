@@ -69,7 +69,7 @@ export function CardInspector() {
               </>
             )}
             <dt>{t('Set')}</dt>
-            <dd>{SET_INFO[card.set].name}</dd>
+            <dd>{card.rewardOnly ? t('Campaign reward') : SET_INFO[card.set].name}</dd>
             {card.collectible && (
               <>
                 <dt>{t('Owned')}</dt>
@@ -82,10 +82,14 @@ export function CardInspector() {
                     </span>
                   )}
                 </dd>
-                <dt>{t('Craft')}</dt>
-                <dd className="num">{t('{n} Essence', { n: craftCost(card.id) })}</dd>
-                <dt>{t('Recycle')}</dt>
-                <dd className="num">{t('{n} Essence', { n: recycleValue(card.id) })}</dd>
+                {!card.rewardOnly && (
+                  <>
+                    <dt>{t('Craft')}</dt>
+                    <dd className="num">{t('{n} Essence', { n: craftCost(card.id) })}</dd>
+                    <dt>{t('Recycle')}</dt>
+                    <dd className="num">{t('{n} Essence', { n: recycleValue(card.id) })}</dd>
+                  </>
+                )}
               </>
             )}
             <dt>{t('Artist')}</dt>

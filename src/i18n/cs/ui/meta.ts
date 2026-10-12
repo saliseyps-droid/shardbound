@@ -319,6 +319,13 @@ const d: Record<string, string> = {
   // Campaign
   'The Shattering of Aethra': 'Roztříštění Aethry',
   'The Black Sun': 'Černé slunce',
+  'The Lamplighters’ Road': 'Cesta lampářů',
+  'Campaign reward': 'Odměna z kampaně',
+  'Chapter unlocked': 'Kapitola odemčena',
+  'This chapter opens for {n} Gold.': 'Tuhle kapitolu odemkneš za {n} zlata.',
+  'Unlock chapter': 'Odemknout kapitolu',
+  'Clear the previous chapter, then unlock this one for {n} Gold.': 'Dokonči předchozí kapitolu a pak tuhle odemkneš za {n} zlata.',
+  'Won in The Lamplighters’ Road campaign. It cannot be crafted or recycled.': 'Získáš ji v kampani Cesta lampářů. Nelze ji vyrobit ani recyklovat.',
   'Follow the falling Shards across Aethra. Each victory unlocks the next rival; first clears pay extra.': 'Následuj padající Střepy napříč Aethrou. Každé vítězství odemkne dalšího soupeře; první výhra nad každým se platí navíc.',
   Locked: 'Zamčeno',
   ', boss': ', boss',

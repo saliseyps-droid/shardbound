@@ -1,8 +1,14 @@
 import { CAMPAIGN, campaignOf, type Chapter, type OpponentDef } from '@/data/opponents';
 import type { GameSave } from '@/domain/save';
+import { isChapterBought } from '@/domain/campaignUnlock';
 
-/** An encounter unlocks when the previous one (across chapters of its own campaign) has been cleared. */
+/**
+ * An encounter unlocks when the previous one (across chapters of its own campaign) has been cleared
+ * and, for a chapter with a price, once the chapter is bought.
+ */
 export function isUnlocked(save: GameSave, encounterId: string): boolean {
+  const chapter = campaignOf(encounterId).chapters.find((c) => c.encounters.some((e) => e.id === encounterId));
+  if (chapter && !isChapterBought(save, chapter)) return false;
   const flat = campaignOf(encounterId).chapters.flatMap((c) => c.encounters);
   const idx = flat.findIndex((e) => e.id === encounterId);
   if (idx <= 0) return true;

@@ -1,6 +1,20 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.43.0': {
+    title: 'Cesta lampářů',
+    summary: 'Nová vedlejší kampaň Nulským hvozdem. Každý boss kapitoly se k tobě přidá jako neutrální legenda, kterou jinde nezískáš.',
+    sections: [
+      [
+        'Cesta lampářů: třetí kampaň, oddělená od obou dalších příběhů. 3 kapitoly po 3 soubojích proti strážcům Nulského hvozdu, kterých se dotkla prázdnota, každý s vlastním portrétem. Vybereš ji v přepínači kampaní; každou kapitolu odemkneš za 500 zlata.',
+        'Nyx, lucerna Nulu (3 many, 2/5, Stráž): kdykoli sešleš kouzlo, obnoví tvému Strážci 2 životy. Odměna za kapitolu I.',
+        'Vael, umíráček prázdnoty (6 many, 3/6, Stráž): při nasazení způsobí 2 poškození všem ostatním jednotkám. Odměna za kapitolu II.',
+        'Oblivie, strážkyně poslední stránky (7 many, 5/6): při nasazení ti přidá do ruky kopie posledních 2 různých kouzel, která jsi v této hře seslal. Odměna za kapitolu III.',
+        'Tyhle tři legendy jsou jen odměnou z kampaně: nepadají z boosterů a nejde je vyrobit ani recyklovat. Mají pomoct pomalejším balíčkům postaveným na kouzlech ubránit se plnému stolu soupeře.',
+        'Během hry ukazuje ikona oka s číslem v pravém horním rohu herní plochy, kolik diváků tvůj zápas sleduje.',
+      ],
+    ],
+  },
   '0.42.4': {
     title: 'Nový dárkový kód',
     summary: 'Venku je nový jednorázový dárkový kód.',

@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { CAMPAIGN, CAMPAIGNS, VOID_CAMPAIGN, allEncounters, campaignOf, findEncounter } from '@/data/opponents';
+import { CAMPAIGN, CAMPAIGNS, LAMP_CAMPAIGN, VOID_CAMPAIGN, allEncounters, campaignOf, findEncounter } from '@/data/opponents';
 import { hasCard } from '@/data/cards';
 import { getPortrait } from '@/data/portraits';
 import { getTalent } from '@/data/wardenTalents';
@@ -20,11 +20,11 @@ describe('The Black Sun (Void Reckoning campaign)', () => {
   });
 
   it('is its own campaign: listed after the main one and found by encounter id', () => {
-    expect(CAMPAIGNS.map((c) => c.id)).toEqual(['main', 'void']);
+    expect(CAMPAIGNS.map((c) => c.id).slice(0, 2)).toEqual(['main', 'void']);
     expect(campaignOf('v2_b1').id).toBe('void');
     expect(campaignOf('c1_e1').id).toBe('main');
     expect(findEncounter('v3_final')?.chapter.id).toBe('vr3');
-    expect(allEncounters()).toHaveLength(CAMPAIGN.flatMap((c) => c.encounters).length + flat.length);
+    expect(allEncounters()).toHaveLength(CAMPAIGN.flatMap((c) => c.encounters).length + flat.length + LAMP_CAMPAIGN.flatMap((c) => c.encounters).length);
   });
 
   it('opens from the start and unlocks fight by fight, apart from the main campaign', () => {

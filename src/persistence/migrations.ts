@@ -203,7 +203,7 @@ export function migrateSave(input: Raw): MigrationReport {
     economy: { packs: { ...(raw.economy?.packs ?? {}) }, pity: { ...(raw.economy?.pity ?? {}) } },
     quests,
     daily: { ...defaults.daily, ...(raw.daily ?? {}) },
-    pve: { completed: { ...(raw.pve?.completed ?? {}) } },
+    pve: { completed: { ...(raw.pve?.completed ?? {}) }, unlockedChapters: Array.isArray(raw.pve?.unlockedChapters) ? raw.pve.unlockedChapters.filter((id: unknown) => typeof id === 'string') : [] },
     matchHistory: Array.isArray(raw.matchHistory) ? raw.matchHistory.slice(0, 100) : [],
     recentRewards: Array.isArray(raw.recentRewards) ? raw.recentRewards.slice(0, 20) : [],
     arena: repairArena(raw.arena),
