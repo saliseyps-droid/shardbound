@@ -492,6 +492,15 @@ export function executeEffect(
     case 'CLEANSE': {
       const units = unitsOnly(ctx, resolveTargets(ctx, selector, source, chosen, triggerUnitUid));
       for (const u of units) {
+        // Corrupt is what silenced it, so lifting Corrupt gives back the unit's printed text
+        // (keywords and abilities; lost buffs, a spent Barrier and Ambush stay gone).
+        const def = u.corrupt ? getCard(u.cardId) : undefined;
+        if (def) {
+          u.silenced = false;
+          u.keywords = [...(def.keywords ?? [])];
+          u.keywordValues = { ...(def.keywordValues ?? {}) };
+          u.abilities = structuredClone(def.abilities ?? []);
+        }
         u.corrupt = false;
         u.frozen = false;
         u.thawPending = false;

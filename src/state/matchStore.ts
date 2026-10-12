@@ -208,7 +208,8 @@ function soundsFor(events: GameEvent[]): SoundEvent[] {
   return [...out];
 }
 
-function fxFrom(events: GameEvent[]): Fx[] {
+/** Exported for tests. */
+export function fxFrom(events: GameEvent[]): Fx[] {
   const fx: Fx[] = [];
   for (const e of events) {
     if (e.type === 'DAMAGE_DEALT') fx.push({ id: fxSeq++, target: entityKey(e.target), kind: 'damage', amount: e.amount });
@@ -222,8 +223,15 @@ function fxFrom(events: GameEvent[]): Fx[] {
     else if (e.type === 'UNIT_SUMMONED') fx.push({ id: fxSeq++, target: `u:${e.uid}`, kind: 'summon' });
     else if (e.type === 'UNIT_SILENCED') fx.push({ id: fxSeq++, target: `u:${e.uid}`, kind: 'silence' });
   }
-  // Merge damage per target for readability (area effects).
-  return fx;
+  // Merge damage (and healing) per target: popups on one target are drawn on top of each other,
+  // so 5 bolts that hit the hero 3 times would otherwise read as a single −1.
+  const merged: Fx[] = [];
+  for (const f of fx) {
+    const same = (f.kind === 'damage' || f.kind === 'heal') && merged.find((m) => m.kind === f.kind && m.target === f.target);
+    if (same) same.amount = (same.amount ?? 0) + (f.amount ?? 0);
+    else merged.push(f);
+  }
+  return merged;
 }
 
 function ghostsFrom(prev: GameState, events: GameEvent[]): Ghost[] {

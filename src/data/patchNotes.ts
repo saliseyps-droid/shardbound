@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.42.2',
+    date: '2026-10-12',
+    title: 'Every bolt counts',
+    summary: 'Blazing Barrage shows all of its hits, Cleanse gives Corrupted units their text back, and the daily reward can no longer be claimed twice.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          'Blazing Barrage and other spells that hit several times: hits on the same target now add up into one number. Before, they were drawn on top of each other, so 5 bolts looked like a single -1 on three targets.',
+          'Cleanse now gives a Corrupted unit its text back: its keywords and abilities (such as Regenerate) work again and their badges show on the unit.',
+          'Daily login rewards can no longer be claimed twice by playing on two devices: when you are signed in, the reward is offered only after your progress has synced with your account.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.42.1',
     date: '2026-10-12',
     title: 'Your cards stay put',

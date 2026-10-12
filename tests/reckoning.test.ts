@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { act, giveCard, newGame, setEnergy, unitAt } from './helpers';
 import { getCard, collectibleCards } from '@/data/cards';
-import { currentHealth, unitAttack } from '@/engine/queries';
+import { currentHealth, hasKeyword, unitAttack } from '@/engine/queries';
 import { applyAction } from '@/engine';
 
 /** Void Reckoning: Consume and Corrupt. */
@@ -66,6 +66,35 @@ describe('Corrupt', () => {
     expect(after.corrupt).toBe(false);
     expect(after.frozen).toBe(false);
     expect(after.burn).toBe(0);
+  });
+
+  it('Cleanse gives a Corrupted unit its text back (keywords and abilities, so their badges show)', () => {
+    let s = newGame({ board1: ['ver_mossback_grazer'] });
+    setEnergy(s, 0, 10);
+    const target = unitAt(s, 1, 0);
+    const hymn = giveCard(s, 0, 'vod_sunless_hymn');
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: hymn, target: { type: 'unit', uid: target.uid } });
+    expect(hasKeyword(s, s.players[1].board[0], 'REGENERATE')).toBe(false);
+    s = act(s, { type: 'END_TURN', player: 0 });
+    setEnergy(s, 1, 10);
+    const mender = giveCard(s, 1, 'ver_grove_mender');
+    s = act(s, { type: 'PLAY_CARD', player: 1, cardUid: mender });
+    const after = s.players[1].board.find((x) => x.uid === target.uid)!;
+    expect(after.corrupt).toBe(false);
+    expect(after.silenced).toBe(false);
+    expect(hasKeyword(s, after, 'REGENERATE')).toBe(true);
+  });
+
+  it('Cleanse does not undo a plain Silence', () => {
+    let s = newGame({ board0: ['ver_mossback_grazer'] });
+    const u = unitAt(s, 0, 0);
+    u.silenced = true;
+    u.keywords = [];
+    setEnergy(s, 0, 10);
+    const uid = giveCard(s, 0, 'ast_purify');
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: uid });
+    expect(s.players[0].board[0].silenced).toBe(true);
+    expect(hasKeyword(s, s.players[0].board[0], 'REGENERATE')).toBe(false);
   });
 
   it('extra damage against Corrupted units', () => {

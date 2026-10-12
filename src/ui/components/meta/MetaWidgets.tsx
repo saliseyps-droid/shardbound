@@ -7,6 +7,8 @@ import { dailyStatus } from '@/domain/daily';
 import { canReroll } from '@/domain/quests';
 import { ownedCopies, type GameSave, type Quest } from '@/domain/save';
 import { gameService } from '@/state/accountStore';
+import { useCloud } from '@/state/cloudStore';
+import { cloudSettled } from '@/cloud/sync';
 import { toast } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
 import { getCardSafe } from '@/data/cards';
@@ -120,7 +122,10 @@ function rewardLabel(r: DailyReward): { icon: React.ReactNode; text: string } {
 export function DailyTrack({ save }: { save: GameSave }) {
   const status = dailyStatus(save, Date.now());
   const claimedToday = !status.canClaim && save.daily.lastClaimDay !== null;
+  // Signed in: wait until this device matches the cloud save, which may have claimed today elsewhere.
+  const settled = useCloud((c) => cloudSettled({ configured: c.configured, ready: c.ready, signedIn: !!c.user, status: c.status }));
   const claim = () => {
+    if (!settled) return;
     const res = gameService.claimDaily();
     if (res.ok) {
       audio.play('coin');
@@ -151,7 +156,9 @@ export function DailyTrack({ save }: { save: GameSave }) {
         })}
       </ol>
       <div className="daily-actions">
-        {status.canClaim ? (
+        {status.canClaim && !settled ? (
+          <span className="muted">{t('Checking your cloud save…')}</span>
+        ) : status.canClaim ? (
           <button className="btn btn-primary" onClick={claim}>
             {t('Claim day {n}', { n: status.index + 1 })}
           </button>

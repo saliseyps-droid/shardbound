@@ -290,7 +290,7 @@ export interface SilenceEffect extends EffectBase {
 export interface ConsumeEffect extends EffectBase {
   type: 'CONSUME';
 }
-/** Removes Corrupt, Frozen and Burn. */
+/** Removes Corrupt (giving back the text it took), Frozen and Burn. */
 export interface CleanseEffect extends EffectBase {
   type: 'CLEANSE';
 }

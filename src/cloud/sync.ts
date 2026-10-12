@@ -116,6 +116,19 @@ export class MirroredStore implements KeyValueStore {
 
 export type SyncStatus = 'signed-out' | 'checking' | 'synced' | 'syncing' | 'error' | 'paused' | 'conflict';
 
+/**
+ * Whether this device's save may hand out once-per-day rewards. A signed-in device must
+ * first match the cloud save: until then it may still be replaced by (or conflict with) a
+ * save that already claimed today on another device, so the claim would be offered twice.
+ */
+export function cloudSettled(input: { configured: boolean; ready: boolean; signedIn: boolean; status: SyncStatus }): boolean {
+  if (!input.configured) return true;
+  // Firebase has not reported yet whether a player is signed in.
+  if (!input.ready) return false;
+  if (!input.signedIn) return true;
+  return input.status === 'synced' || input.status === 'syncing' || input.status === 'error';
+}
+
 export type AttachResult = { kind: 'uploaded' } | { kind: 'downloaded' } | { kind: 'in-sync' } | { kind: 'conflict'; local: SaveSummary; cloud: SaveSummary };
 
 interface SyncOptions {
@@ -299,7 +312,8 @@ export class CloudSync {
   /** Replaces the local save with the cloud one, then restarts the app from it. */
   private async download() {
     const uid = this.uid!;
-    this.setStatus('syncing');
+    // Not 'syncing': the local save is about to be replaced, nothing may be claimed on it now.
+    this.setStatus('checking');
     const [slices, meta] = await Promise.all([this.backend.loadSlices(uid), this.backend.loadMeta(uid)]);
     const entries: [string, unknown][] = [];
     for (const k of SYNCED_KEYS) if (slices[k] !== undefined && slices[k] !== null) entries.push([k, slices[k]]);

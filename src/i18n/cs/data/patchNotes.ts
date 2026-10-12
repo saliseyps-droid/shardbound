@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.42.2': {
+    title: 'Každá střela se počítá',
+    summary: 'Planoucí palba ukáže všechny své zásahy, Očištění vrátí rozloženým jednotkám jejich text a denní odměnu už nejde vyzvednout dvakrát.',
+    sections: [
+      [
+        'Planoucí palba a další kouzla, která zasahují víckrát: zásahy do stejného cíle se teď sečtou do jednoho čísla. Dřív se kreslily přes sebe, takže 5 střel vypadalo jako jediné -1 na třech cílech.',
+        'Očištění teď rozložené jednotce vrátí její text: klíčová slova a schopnosti (třeba Regenerace) zase fungují a jejich odznaky se na jednotce zobrazí.',
+        'Denní odměnu za přihlášení už nejde vyzvednout dvakrát hraním na dvou zařízeních: když jsi přihlášený, odměna se nabídne až po synchronizaci postupu s tvým účtem.',
+      ],
+    ],
+  },
   '0.42.1': {
     title: 'Karty zůstanou na svém místě',
     summary: 'Stará kopie hry ti už nemůže vzít nové karty z kolekce a balíčků.',
