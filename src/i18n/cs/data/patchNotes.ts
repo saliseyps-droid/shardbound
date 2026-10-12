@@ -15,11 +15,6 @@ const notes: PatchNotesOverlay = {
       ],
     ],
   },
-  '0.42.4': {
-    title: 'Nový dárkový kód',
-    summary: 'Venku je nový jednorázový dárkový kód.',
-    sections: [['Nový dárkový kód: booster Void Reckoning, booster Legions of Shadow, 200 zlata a 200 esence. Uplatni ho v Profilu; každý kód funguje jednou na účet.']],
-  },
   '0.42.3': {
     title: 'Jeden účet, jeden postup',
     summary: 'Přihlášení na jiném zařízení teď rovnou načte tvůj účet.',
