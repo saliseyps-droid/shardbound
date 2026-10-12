@@ -24,6 +24,16 @@ const THEMES: Record<string, LegendTheme> = {
   neu_sali_the_creator: 'sali',
 };
 
+/**
+ * Legendaries whose card art is landscape with a filler below (the Lamplighter legends): their
+ * tall entrance frame shows the matching campaign portrait (src/assets/portraits) instead.
+ */
+export const ENTRANCE_PORTRAITS: Record<string, string> = {
+  neu_nyx_lantern_of_nul: 'nul_lantern_warden',
+  neu_vael_the_void_knell: 'nul_rootheart_colossus',
+  neu_oblivia_keeper_of_the_last_page: 'nul_ring_of_thorns',
+};
+
 /** How long an entrance plays (ms, before reduced-motion scaling): Sali's is the longest. */
 export function legendDuration(cardId: string): number {
   return legendTheme(cardId) === 'sali' ? 3400 : 2150;

@@ -4,7 +4,8 @@ import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import { useMatch, AI } from '@/state/matchStore';
 import { cardArtUri } from '@/ui/components/cardArt';
-import { dragonElement, legendDuration, legendTheme, type LegendTheme } from './legendEntrance';
+import { ENTRANCE_PORTRAITS, dragonElement, legendDuration, legendTheme, type LegendTheme } from './legendEntrance';
+import { portraitUrl } from '@/ui/components/WardenPortrait';
 import { audio } from '@/audio/audioService';
 import { anim } from '@/state/settingsStore';
 import { t } from '@/i18n';
@@ -693,6 +694,7 @@ export function LegendaryEntranceView({ cardId, enemy }: { cardId: string; enemy
   const theme = legendTheme(cardId);
   const extras = EXTRAS[theme] ?? {};
   const faction = FACTIONS[card.faction] ?? FACTIONS.NEUTRAL;
+  const art = (ENTRANCE_PORTRAITS[cardId] && portraitUrl(null, ENTRANCE_PORTRAITS[cardId])) || cardArtUri(card);
   return (
     <div
       className={`legend-entrance theme-${theme} ${theme === 'dragon' ? `el-${dragonElement(cardId)}` : ''} ${enemy ? 'from-enemy' : 'from-self'}`}
@@ -706,7 +708,7 @@ export function LegendaryEntranceView({ cardId, enemy }: { cardId: string; enemy
       {theme === 'sali' && <img className="sl2-colossus" src={cardArtUri(card)} alt="" draggable={false} />}
       <div className="legend-stage">
         <div className="legend-portrait">
-          <img src={cardArtUri(card)} alt="" draggable={false} />
+          <img src={art} alt="" draggable={false} />
         </div>
         {extras.stage?.()}
         <div className="legend-banner">
