@@ -313,6 +313,8 @@ export const CARD_ART_FOCUS: Record<string, number> = {
   vod_wyrmbone_sanctum: 40,
   vod_grave_dragons_pact: 30,
   vod_umbral_siphon: 30,
+  // Full oval width on top, blurred fill below.
+  vod_umbral_drake: 0,
   ver_thornhide_drake: 30,
   ver_glade_wyrm: 30,
   ver_elderhorn_wyrm: 30,

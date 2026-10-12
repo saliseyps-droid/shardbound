@@ -36,6 +36,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Sali\'s card art and Warden portrait are centred, so his entrance is too.',
           'Nyx, Vael and Oblivia show their whole figure on the card, and their legendary entrance uses their sharp campaign portrait.',
           'Campaign: the Claimed tag of a first-clear reward lines up with the rest of the reward.',
+          'Umbral Drake: zoomed-out card art that shows its whole head.',
         ],
       },
     ],

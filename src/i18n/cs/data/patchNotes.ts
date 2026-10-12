@@ -12,6 +12,7 @@ const notes: PatchNotesOverlay = {
         'Obrázek karty Saliho i jeho portrét Strážce jsou vycentrované, takže i jeho vstup na scénu.',
         'Nyx, Vael a Oblivie ukazují na kartě celou postavu a při legendárním vstupu jejich ostrý portrét z kampaně.',
         'Kampaň: štítek Vyzvednuto u odměny za první výhru je teď v řádku se zbytkem odměny.',
+        'Stínový drak: oddálený obrázek karty, na kterém je vidět celá hlava.',
       ],
     ],
   },
