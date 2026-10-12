@@ -577,7 +577,7 @@ export const RECKONING_CARDS: CardDefinition[] = [
       { trigger: 'ON_DEPLOY', effects: [
         { type: 'DESTROY', target: 'ALL_OTHER_UNITS' },
       ] },
-      { trigger: 'LAST_BREATH', effects: [{ type: 'BECOME_WARDEN', health: 10, armor: 5, portrait: 'sali_the_creator', abilities: ['wt_boss_sali_sovereign', 'wt_boss_sali_warden'] }] },
+      { trigger: 'LAST_BREATH', effects: [{ type: 'BECOME_WARDEN', health: 10, armor: 5, portrait: 'sali_the_creator', abilities: ['wt_boss_sali_risen_sovereign', 'wt_boss_sali_risen_eclipse'] }] },
     ],
     description: 'Guard. Ward. On Deploy: Destroy all other units. Last Breath: Sali replaces your Warden.',
     flavorText: 'Before the first star, before the first word, there was a throne in the dark. Someone was already sitting on it.',

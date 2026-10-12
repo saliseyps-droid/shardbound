@@ -235,11 +235,17 @@ describe('Sali, the Creator', () => {
     expect(s.players[0].hero.name).toBe('Sali, the Creator');
     expect(s.players[0].hero.portrait).toBe('sali_the_creator');
     // Its two abilities summon the Sovereign and the Warden.
-    expect(s.players[0].hero.abilities.map((a) => a.id)).toEqual(['wt_boss_sali_sovereign', 'wt_boss_sali_warden']);
+    expect(s.players[0].hero.abilities.map((a) => a.id)).toEqual(['wt_boss_sali_risen_sovereign', 'wt_boss_sali_risen_eclipse']);
     setEnergy(s, 0, 10);
     s = act(s, { type: 'HERO_POWER', player: 0, slot: 0 });
     s = act(s, { type: 'HERO_POWER', player: 0, slot: 1 });
-    expect(s.players[0].board.map((u) => u.cardId).sort()).toEqual(['neu_rift_spawn', 'token_eclipse_warden', 'token_hollow_sovereign']);
+    expect(s.players[0].board.map((u) => u.cardId).sort()).toEqual(['neu_rift_spawn', 'token_eclipse_warden', 'token_hollow_sovereign']);    // No cooldown: both are usable again on the very next turn.
+    s = act(s, { type: 'END_TURN', player: 0 });
+    s = act(s, { type: 'END_TURN', player: 1 });
+    setEnergy(s, 0, 10);
+    s = act(s, { type: 'HERO_POWER', player: 0, slot: 0 });
+    s = act(s, { type: 'HERO_POWER', player: 0, slot: 1 });
+    expect(s.players[0].board.filter((u) => u.cardId.startsWith('token_')).length).toBe(4);
   });
 });
 

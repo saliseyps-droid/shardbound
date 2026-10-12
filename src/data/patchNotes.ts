@@ -19,6 +19,29 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.43.1',
+    date: '2026-10-12',
+    title: 'The Creator, every turn',
+    summary: 'Once your Sali becomes your Warden, his two abilities work every turn. Sharper, centred art for Sali and the Lamplighter legends.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Sali, the Creator: once he takes your Warden\'s place, Raise the Sovereign and Call the Eclipse can be used every turn (they used to recharge for a turn). Sali as the final boss of The Black Sun keeps the old pace.',
+        ],
+      },
+      {
+        kind: 'improved',
+        items: [
+          'Sali\'s card art and Warden portrait are centred, so his entrance is too.',
+          'Nyx, Vael and Oblivia show their whole figure on the card, and their legendary entrance uses their sharp campaign portrait.',
+          'Campaign: the Claimed tag of a first-clear reward lines up with the rest of the reward.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.43.0',
     date: '2026-10-12',
     title: "The Lamplighters' Road",

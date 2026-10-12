@@ -34,7 +34,7 @@ const tabOf = (chapters: Chapter[], encounterId: string | null) => {
 /** The campaign shown last, so coming back from a fight opens the same one. */
 let lastCampaign: CampaignDef['id'] = 'main';
 
-function RewardList({ r }: { r: OpponentReward }) {
+function RewardList({ r, claimed }: { r: OpponentReward; claimed?: boolean }) {
   return (
     <span className="reward-bits">
       {r.gold ? <Gold amount={r.gold} size={15} /> : null}
@@ -46,6 +46,7 @@ function RewardList({ r }: { r: OpponentReward }) {
         </span>
       ) : null}
       {r.cardId ? <span className="chip">{getCardSafe(r.cardId).name}</span> : null}
+      {claimed && <span className="chip">{t('Claimed')}</span>}
     </span>
   );
 }
@@ -214,7 +215,7 @@ export default function CampaignScreen() {
                 <>
                   <dt>{t('First clear')}</dt>
                   <dd>
-                    <RewardList r={enc.firstWinReward} /> {cleared && <span className="chip">{t('Claimed')}</span>}
+                    <RewardList r={enc.firstWinReward} claimed={cleared} />
                   </dd>
                 </>
               )}

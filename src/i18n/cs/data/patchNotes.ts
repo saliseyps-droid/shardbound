@@ -1,6 +1,20 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.43.1': {
+    title: 'Stvořitel každé kolo',
+    summary: 'Když se tvůj Sali stane tvým Strážcem, jeho dvě schopnosti fungují každé kolo. Ostřejší a vycentrované obrázky Saliho a legend z Cesty lampářů.',
+    sections: [
+      [
+        'Sali, Stvořitel: jakmile nahradí tvého Strážce, můžeš Povstání vládce a Volání zatmění použít každé kolo (dřív se jedno kolo nabíjely). Sali jako finální boss Černého slunce si nechává původní tempo.',
+      ],
+      [
+        'Obrázek karty Saliho i jeho portrét Strážce jsou vycentrované, takže i jeho vstup na scénu.',
+        'Nyx, Vael a Oblivie ukazují na kartě celou postavu a při legendárním vstupu jejich ostrý portrét z kampaně.',
+        'Kampaň: štítek Vyzvednuto u odměny za první výhru je teď v řádku se zbytkem odměny.',
+      ],
+    ],
+  },
   '0.43.0': {
     title: 'Cesta lampářů',
     summary: 'Nová vedlejší kampaň Nulským hvozdem. Každý boss kapitoly se k tobě přidá jako neutrální legenda, kterou jinde nezískáš.',

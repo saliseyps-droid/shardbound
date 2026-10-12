@@ -245,6 +245,9 @@ export const BOSS_TALENTS: TalentAbility[] = [
   // Sali, the Creator (Void Reckoning): the Warden's abilities once Sali takes the Warden's place.
   active('BOSS', 'sali_sovereign', 'Raise the Sovereign', [{ cost: 1, cooldown: 1, effects: [{ type: 'SUMMON', cardId: 'token_hollow_sovereign' }], description: 'Summon a 3/4 Hollow Sovereign. Usable every other turn.' }]),
   active('BOSS', 'sali_warden', 'Call the Eclipse', [{ cost: 1, cooldown: 1, effects: [{ type: 'SUMMON', cardId: 'token_eclipse_warden' }], description: 'Summon a 4/3 Eclipse Warden. Usable every other turn.' }]),
+  // The player's Sali card becoming the Warden (BECOME_WARDEN): the same abilities, usable every turn.
+  active('BOSS', 'sali_risen_sovereign', 'Raise the Sovereign', [{ cost: 1, effects: [{ type: 'SUMMON', cardId: 'token_hollow_sovereign' }], description: 'Summon a 3/4 Hollow Sovereign.' }]),
+  active('BOSS', 'sali_risen_eclipse', 'Call the Eclipse', [{ cost: 1, effects: [{ type: 'SUMMON', cardId: 'token_eclipse_warden' }], description: 'Summon a 4/3 Eclipse Warden.' }]),
   // The Black Sun (Void Reckoning campaign)
   active('BOSS', 'black_sun', 'Black Sun', [{ cost: 2, effects: [{ type: 'APPLY_STATUS', status: 'CORRUPT', target: 'RANDOM_ENEMY_UNIT' }], description: 'Corrupt a random enemy unit.' }]),
   active('BOSS', 'rot_bloom', 'Rot Bloom', [{ cost: 2, effects: [{ type: 'APPLY_STATUS', status: 'CORRUPT', target: 'RANDOM_ENEMY_UNIT' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }], description: 'Corrupt a random enemy unit and restore 2 Health to your Warden.' }]),
