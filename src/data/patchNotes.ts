@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.44.2',
+    date: '2026-10-13',
+    title: 'Fluffseeker',
+    summary: 'Collect all four cat Legendaries for a new title.',
+    sections: [{ kind: 'new', items: ['New achievement Four Legendary Paws: own Artemis, Simba, Scar and Archmage Elinka to earn the title Fluffseeker.'] }],
+    commits: [],
+  },
+  {
     version: '0.44.1',
     date: '2026-10-13',
     title: 'A sharper Nulwood',

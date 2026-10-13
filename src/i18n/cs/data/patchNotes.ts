@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.44.2': {
+    title: 'Lovec chlupáčů',
+    summary: 'Nasbírej všechny čtyři kočičí legendárky a získej nový titul.',
+    sections: [['Nový úspěch Čtyři legendární tlapky: měj Artemis, Simbu, Scara a Arcimágyni Elinku a získáš titul Lovec chlupáčů.']],
+  },
   '0.44.1': {
     title: 'Ostřejší Nulský hvozd',
     summary: 'Klipy Cesty lampářů mají nové, ostré malby krajiny.',

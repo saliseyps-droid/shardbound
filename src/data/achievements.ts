@@ -107,6 +107,8 @@ const setProgress = (save: GameSave, set: SetId) => {
 const shinyCards = (save: GameSave) => Object.values(save.collection.cards).filter((v) => v.FOIL + v.PRISMATIC > 0).length;
 const prismaticCards = (save: GameSave) => Object.values(save.collection.cards).filter((v) => v.PRISMATIC > 0).length;
 const dragonPool = () => collectibleCards().filter((c) => c.tags?.includes('Dragon'));
+/** The four cat Legendaries of Void Reckoning. */
+export const CAT_LEGENDS = ['emb_artemis_qinnys_bane', 'vod_simba_ultimate_predator', 'ver_scar_liu_kanos_mauler', 'ast_archmage_elinka'];
 /** Brawl fights won in the saved (latest) rotation. */
 const brawlFightsWon = (save: GameSave) => save.profile.brawl?.won.length ?? 0;
 
@@ -208,6 +210,10 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: 'dragons_20', name: 'Dragon Tamer', description: 'Own 20 different Dragon cards.', category: 'COLLECTION', tier: 'SILVER', icon: 'wing', rewards: [pack('DRAGON', 2)],
     progress: (s) => count(ownedOf(s, dragonPool()), Math.min(20, dragonPool().length)),
+  },
+  {
+    id: 'cat_legends', name: 'Four Legendary Paws', description: 'Own Artemis, Simba, Scar and Archmage Elinka.', category: 'COLLECTION', tier: 'GOLD', icon: 'paw', rewards: [title('Fluffseeker')],
+    progress: (s) => count(CAT_LEGENDS.filter((id) => ownedCopies(s.collection, id) > 0).length, CAT_LEGENDS.length),
   },
   {
     id: 'legend_10', name: 'Legend Collector', description: 'Own 10 different Legendary cards.', category: 'COLLECTION', tier: 'SILVER', icon: 'crystal', rewards: [essence(200)],
