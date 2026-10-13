@@ -667,7 +667,7 @@ export const INN_CAMPAIGN: Chapter[] = [
   {
     id: 'wi1',
     name: 'Chapter I — A Seat by the Fire',
-    price: 500,
+    price: 1000,
     description: 'Deep in the haunted forest stands an inn that is on no map. Its lanterns are lit, its door is open, and every table is waiting for a player.',
     encounters: [
       {
@@ -693,7 +693,7 @@ export const INN_CAMPAIGN: Chapter[] = [
   {
     id: 'wi2',
     name: 'Chapter II — Last Orders',
-    price: 500,
+    price: 1000,
     description: 'The bell above the bar rings for last orders. The guests at the back tables never leave, and they do not like to lose.',
     encounters: [
       {
@@ -719,7 +719,7 @@ export const INN_CAMPAIGN: Chapter[] = [
   {
     id: 'wi3',
     name: 'Chapter III — The Cellar Stairs',
-    price: 500,
+    price: 1000,
     description: 'Below the inn the stairs go down further than the house is tall. The guests down there came up out of the water.',
     encounters: [
       {
@@ -745,7 +745,7 @@ export const INN_CAMPAIGN: Chapter[] = [
   {
     id: 'wi4',
     name: 'Chapter IV — The Host’s Table',
-    price: 500,
+    price: 1000,
     description: 'At the head of the inn stands one long table. Every guest you beat has taken a seat at it, and the host is waiting at the far end.',
     encounters: [
       {

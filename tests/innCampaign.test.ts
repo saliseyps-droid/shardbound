@@ -16,11 +16,11 @@ const flat = INN_CAMPAIGN.flatMap((c) => c.encounters);
 const rewards = flat.map((e) => e.firstWinReward?.cardId ?? '');
 
 describe('The Wraithwood Inn', () => {
-  it('is four chapters of three fights, each sold for 500 Gold, and opens with its cinematic', () => {
+  it('is four chapters of three fights, each sold for 1000 Gold, and opens with its cinematic', () => {
     expect(INN_CAMPAIGN).toHaveLength(4);
     for (const ch of INN_CAMPAIGN) {
       expect(ch.encounters).toHaveLength(3);
-      expect(ch.price).toBe(500);
+      expect(ch.price).toBe(1000);
       expect(ch.encounters.at(-1)!.boss).toBe(true);
       expect(cs.chapters?.[ch.id]?.name, ch.id).toBeTruthy();
     }

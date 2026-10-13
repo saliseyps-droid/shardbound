@@ -6,7 +6,7 @@ const notes: PatchNotesOverlay = {
     summary: 'Čtvrtá kampaň: hraj karty proti mrtvým hraničářům a přízrakům ve strašidelné hospodě a vyhraj kartu každého, koho porazíš.',
     sections: [
       [
-        'Nová kampaň Hostinec v Přízračném hvozdu: čtyři kapitoly po třech soubojích ve strašidelném hostinci hluboko v lese. Každou kapitolu odemkneš za 500 zlata a kampaň začíná i končí vlastním filmovým klipem.',
+        'Nová kampaň Hostinec v Přízračném hvozdu: čtyři kapitoly po třech soubojích ve strašidelném hostinci hluboko v lese. Každou kapitolu odemkneš za 1000 zlata a kampaň začíná i končí vlastním filmovým klipem.',
         'Dvanáct nových karet jen z kampaně, dvě pro každou frakci: každý host hraje se svou vlastní kartou a při první porážce ti ji dá. Čtyři hostitelé kapitol (Mechoplášť, Bramhorn, Vdova v bílém a Dutý hostitel) jsou legendární.',
         'Dvanáct nových portrétů Strážců pro hosty hostince.',
       ],
