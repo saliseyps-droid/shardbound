@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.44.1',
+    date: '2026-10-13',
+    title: 'A sharper Nulwood',
+    summary: "The Lamplighters' Road cinematics use new, sharp landscape paintings.",
+    sections: [{ kind: 'improved', items: ["The Lamplighters' Road intro and ending: new full-resolution paintings of the Nulwood instead of the blurry close-ups, and a tighter three-shot ending."] }],
+    commits: [],
+  },
+  {
     version: '0.44.0',
     date: '2026-10-13',
     title: 'Lights, camera, Nulwood',

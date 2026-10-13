@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.44.1': {
+    title: 'Ostřejší Nulský hvozd',
+    summary: 'Klipy Cesty lampářů mají nové, ostré malby krajiny.',
+    sections: [['Úvod a závěr Cesty lampářů: nové malby Nulského hvozdu v plném rozlišení místo rozmazaných detailů a sevřenější závěr o třech záběrech.']],
+  },
   '0.44.0': {
     title: 'Světla, kamera, Nulský hvozd',
     summary: 'Cesta lampářů začíná i končí krátkým filmovým klipem.',

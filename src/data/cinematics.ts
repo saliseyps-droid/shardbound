@@ -28,20 +28,19 @@ export const CINEMATICS: Record<string, CinematicDef> = {
     title: 'The Lamplighters’ Road',
     shots: [
       { image: 'lamp_road', motion: 'push-in', ms: 5500, text: 'For a hundred years, the lamplighters kept a road of light through the Nulwood.' },
-      { image: 'lamp_darkening', motion: 'pan-left', ms: 5000, text: 'Then Nul woke beneath the roots, and the lanterns began to go out.' },
-      { image: 'lamp_wardens', motion: 'pull-out', ms: 5000, text: 'The wardens of the grove did not die. They changed.' },
-      { image: 'lamp_last_flame', motion: 'tilt-up', ms: 6000, text: 'Now something else carries the last flame of the wood. And it burns purple.' },
-      { image: 'lamp_call', motion: 'pan-right', ms: 5000, text: 'Take up your lantern, Warden. The road is waiting.' },
+      { image: 'lamp_waking', motion: 'pan-left', ms: 5000, text: 'Then Nul woke beneath the roots, and the lanterns began to go out.' },
+      { image: 'lamp_torn_sky', motion: 'pull-out', ms: 5000, text: 'The sky tore open, and the grove itself began to change.' },
+      { image: 'lamp_purple_flame', motion: 'push-in', ms: 5500, focus: '56% 40%', text: 'Now something else carries the last flame of the wood. And it burns purple.' },
+      { image: 'lamp_call', motion: 'push-in', ms: 5000, focus: '58% 55%', text: 'Take up your lantern, Warden. The road is waiting.' },
     ],
   },
   lamp_outro: {
     id: 'lamp_outro',
     title: 'The road is lit',
     shots: [
-      { image: 'lamp_last_page', motion: 'pull-out', ms: 5500, text: 'The last page is turned. Oblivia’s story ends where yours goes on.' },
-      { image: 'lamp_eye', motion: 'push-in', ms: 5000, text: 'The eye of the grove closes, and the roots fall quiet.' },
-      { image: 'lamp_light', motion: 'pull-out', ms: 5500, text: 'One by one, the lanterns of the old road catch fire again.' },
-      { image: 'lamp_quiet', motion: 'pan-left', ms: 5500, text: 'The Nulwood sleeps. Somewhere beneath it, Nul is still dreaming.' },
+      { image: 'lamp_eye_closing', motion: 'push-in', ms: 5500, focus: '57% 30%', text: 'The last page is turned, and the eye above the grove begins to close.' },
+      { image: 'lamp_light', motion: 'pull-out', ms: 5500, focus: '50% 25%', text: 'One by one, the lanterns of the old road catch fire again.' },
+      { image: 'lamp_waking', motion: 'pan-right', ms: 5500, text: 'The Nulwood sleeps. Somewhere beneath it, Nul is still dreaming.' },
     ],
   },
 };

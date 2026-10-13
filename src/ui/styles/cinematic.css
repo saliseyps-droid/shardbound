@@ -10,7 +10,7 @@
 
 .cine-shot { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease; }
 .cine-shot.is-on { opacity: 1; }
-.cine-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; transform-origin: 50% 30%; will-change: transform; }
+.cine-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; transform-origin: 50% 45%; will-change: transform; }
 /* The camera move runs only while the shot is on screen (and a little into the fade out). */
 .cine-shot.is-on .cine-img, .cine-shot.is-past .cine-img { animation: var(--motion) var(--ms) ease-out forwards; }
 .motion-push-in { --motion: cine-push-in; }
