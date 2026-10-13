@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.45.2',
+    date: '2026-10-13',
+    title: 'Trophies for the road and the inn',
+    summary: "Seven new achievements for The Lamplighters' Road and The Wraithwood Inn.",
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          "The Lamplighters' Road: Lantern Lit (clear Chapter I), The Last Page (defeat Oblivia, title Lamplighter) and Keepers of the Flame (own Nyx, Vael and Oblivia).",
+          'The Wraithwood Inn: A Seat at the Table (win your first game there), Last Orders Served (clear Chapter II), Closing Time (defeat the Hollow Host, title Regular of the Wraithwood) and Full House (own all twelve guest cards, title Innkeeper).',
+          'Progress you already made counts: achievements you have earned unlock right away.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.45.1',
     date: '2026-10-13',
     title: 'Embers over the inn',

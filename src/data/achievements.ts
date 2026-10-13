@@ -1,7 +1,7 @@
 import type { LevelReward } from '@/config/progression';
 import { MAX_LEVEL } from '@/config/progression';
 import { ARENA } from '@/config/arena';
-import { CAMPAIGN } from './opponents';
+import { CAMPAIGN, CAMPAIGNS, INN_CAMPAIGN } from './opponents';
 import { collectibleCards, poolCards } from './cards';
 import { AI_TIERS, aiTierIndex, type AiTierName } from '@/domain/aiRanked';
 import { ownedCopies, type GameSave, type MatchRecord } from '@/domain/save';
@@ -64,7 +64,7 @@ const cardBack: LevelReward = { kind: 'CARD_BACK' };
 const count = (current: number, target: number) => ({ current, target });
 const cleared = (save: GameSave, id: string) => !!save.pve.completed[id];
 const chapterCleared = (save: GameSave, chapterId: string) => {
-  const ch = CAMPAIGN.find((c) => c.id === chapterId);
+  const ch = CAMPAIGNS.flatMap((c) => c.chapters).find((c) => c.id === chapterId);
   return !!ch && ch.encounters.every((e) => cleared(save, e.id));
 };
 const allEncounterIds = () => CAMPAIGN.flatMap((c) => c.encounters.map((e) => e.id));
@@ -109,6 +109,11 @@ const prismaticCards = (save: GameSave) => Object.values(save.collection.cards).
 const dragonPool = () => collectibleCards().filter((c) => c.tags?.includes('Dragon'));
 /** The four cat Legendaries of Void Reckoning. */
 export const CAT_LEGENDS = ['emb_artemis_qinnys_bane', 'vod_simba_ultimate_predator', 'ver_scar_liu_kanos_mauler', 'ast_archmage_elinka'];
+/** The three Lamplighter legends and the twelve guests of the Wraithwood Inn (campaign-only cards). */
+export const LAMP_LEGENDS = ['neu_nyx_lantern_of_nul', 'neu_vael_the_void_knell', 'neu_oblivia_keeper_of_the_last_page'];
+export const innGuestCards = () => INN_CAMPAIGN.flatMap((ch) => ch.encounters.map((e) => e.firstWinReward?.cardId ?? '')).filter(Boolean);
+const ownedIds = (save: GameSave, ids: string[]) => ids.filter((id) => ownedCopies(save.collection, id) > 0).length;
+const innCleared = (save: GameSave) => INN_CAMPAIGN.flatMap((ch) => ch.encounters).filter((e) => cleared(save, e.id)).length;
 /** Brawl fights won in the saved (latest) rotation. */
 const brawlFightsWon = (save: GameSave) => save.profile.brawl?.won.length ?? 0;
 
@@ -151,6 +156,13 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'camp_ch6', name: 'Through the Burning Bloom', description: 'Clear every encounter of Chapter VI.', category: 'CAMPAIGN', tier: 'SILVER', icon: 'flame', rewards: [pack('ABYSS'), gold(150)], check: (s) => chapterCleared(s, 'ch6') },
   { id: 'camp_crown', name: 'The Last Shard', description: 'Defeat The Sundered Crown at the end of Chapter IX.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'crown', rewards: [title('Crown Sunderer'), pack('ABYSS', 2)], check: (s) => cleared(s, 'c9_final') },
   { id: 'camp_sali', name: 'Dethroned', description: 'Defeat Sali at the end of The Black Sun.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'crown', rewards: [title('Sunbreaker'), pack('RECKONING', 2)], check: (s) => cleared(s, 'v3_final') },
+  // The Lamplighters' Road
+  { id: 'lamp_ch1', name: 'Lantern Lit', description: 'Clear Chapter I of The Lamplighters’ Road.', category: 'CAMPAIGN', tier: 'BRONZE', icon: 'flame', rewards: [gold(150)], check: (s) => chapterCleared(s, 'lr1') },
+  { id: 'lamp_oblivia', name: 'The Last Page', description: 'Defeat Oblivia at the end of The Lamplighters’ Road.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'eye', rewards: [title('Lamplighter'), pack('RECKONING', 2)], check: (s) => cleared(s, 'l3_boss') },
+  // The Wraithwood Inn
+  { id: 'inn_first', name: 'A Seat at the Table', description: 'Win your first game at The Wraithwood Inn.', category: 'CAMPAIGN', tier: 'BRONZE', icon: 'chalice', rewards: [gold(100)], progress: (s) => count(innCleared(s), 1) },
+  { id: 'inn_ch2', name: 'Last Orders Served', description: 'Clear Chapter II of The Wraithwood Inn.', category: 'CAMPAIGN', tier: 'SILVER', icon: 'chalice', rewards: [gold(200), essence(100)], check: (s) => chapterCleared(s, 'wi2') },
+  { id: 'inn_host', name: 'Closing Time', description: 'Defeat the Hollow Host at the end of The Wraithwood Inn.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'skull', rewards: [title('Regular of the Wraithwood'), pack('ABYSS', 2)], check: (s) => cleared(s, 'w4_boss') },
   {
     id: 'camp_all', name: 'Cartographer of Shards', description: 'Clear every encounter of the campaign.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'compass', rewards: [cardBack, essence(300)],
     progress: (s) => {
@@ -214,6 +226,14 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: 'cat_legends', name: 'Four Legendary Paws', description: 'Own Artemis, Simba, Scar and Archmage Elinka.', category: 'COLLECTION', tier: 'GOLD', icon: 'paw', rewards: [title('Fluffseeker')],
     progress: (s) => count(CAT_LEGENDS.filter((id) => ownedCopies(s.collection, id) > 0).length, CAT_LEGENDS.length),
+  },
+  {
+    id: 'lamp_legends', name: 'Keepers of the Flame', description: 'Own Nyx, Vael and Oblivia.', category: 'COLLECTION', tier: 'SILVER', icon: 'flame', rewards: [essence(200)],
+    progress: (s) => count(ownedIds(s, LAMP_LEGENDS), LAMP_LEGENDS.length),
+  },
+  {
+    id: 'inn_guests', name: 'Full House', description: 'Own all twelve cards of The Wraithwood Inn.', category: 'COLLECTION', tier: 'GOLD', icon: 'people', rewards: [title('Innkeeper'), essence(300)],
+    progress: (s) => count(ownedIds(s, innGuestCards()), innGuestCards().length),
   },
   {
     id: 'legend_10', name: 'Legend Collector', description: 'Own 10 different Legendary cards.', category: 'COLLECTION', tier: 'SILVER', icon: 'crystal', rewards: [essence(200)],

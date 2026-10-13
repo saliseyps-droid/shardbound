@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.45.2': {
+    title: 'Trofeje z cesty i z hostince',
+    summary: 'Sedm nových úspěchů pro Cestu lampářů a Hostinec v Přízračném hvozdu.',
+    sections: [
+      [
+        'Cesta lampářů: Lucerna rozsvícena (dokonči kapitolu I), Poslední stránka (poraz Oblivii, titul Lampář) a Strážci plamene (měj Nyx, Vaela a Oblivii).',
+        'Hostinec v Přízračném hvozdu: Místo u stolu (vyhraj tam první hru), Poslední objednávka vyřízena (dokonči kapitolu II), Zavírací hodina (poraz Dutého hostitele, titul Štamgast Přízračného hvozdu) a Plný lokál (měj všech dvanáct karet hostů, titul Hostinský).',
+        'Dosavadní postup se počítá: úspěchy, které už máš splněné, se odemknou hned.',
+      ],
+    ],
+  },
   '0.45.1': {
     title: 'Uhlíky nad hostincem',
     summary: 'Klipy Hostince v Přízračném hvozdu žhnou jako krb.',
