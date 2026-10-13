@@ -1,5 +1,7 @@
 import { BrandLogo } from '@/ui/components/BrandLogo';
 import { useState } from 'react';
+import { Cinematic } from '@/ui/components/Cinematic';
+import { introSeen, markIntroSeen } from '@/ui/introSeen';
 import { gameService, useAccount } from '@/state/accountStore';
 import { WORLD_LORE } from '@/data/factions';
 import { Spinner } from '@/ui/components/common';
@@ -24,6 +26,8 @@ export function BootScreen() {
 export function WelcomeScreen() {
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
+  // The world intro plays by itself the first time, then from the button.
+  const [intro, setIntro] = useState(() => !introSeen());
   const valid = name.trim().length >= 2;
   const create = async () => {
     if (!valid || busy) return;
@@ -45,7 +49,19 @@ export function WelcomeScreen() {
         {WORLD_LORE.paragraphs.map((p) => (
           <p key={p}>{p}</p>
         ))}
+        <button type="button" className="btn btn-ghost btn-sm" onClick={() => setIntro(true)}>
+          ▶ {t('Watch the intro')}
+        </button>
       </section>
+      {intro && (
+        <Cinematic
+          id="world_intro"
+          onDone={() => {
+            markIntroSeen();
+            setIntro(false);
+          }}
+        />
+      )}
       <form
         className="welcome-form panel"
         onSubmit={(e) => {

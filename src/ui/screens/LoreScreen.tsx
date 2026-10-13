@@ -7,10 +7,13 @@ import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { factionStyle } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
 import { t } from '@/i18n';
+import { useState } from 'react';
+import { Cinematic } from '@/ui/components/Cinematic';
 
 const CATEGORY = { static: 'Unit abilities', trigger: 'Triggers', status: 'Statuses' } as const;
 
 export default function LoreScreen() {
+  const [intro, setIntro] = useState(false);
   return (
     <div className="screen lore-screen">
       <ScreenHeader title={WORLD_LORE.title} />
@@ -18,7 +21,11 @@ export default function LoreScreen() {
         {WORLD_LORE.paragraphs.map((p) => (
           <p key={p}>{p}</p>
         ))}
+        <button type="button" className="btn btn-ghost btn-sm" onClick={() => setIntro(true)}>
+          ▶ {t('Watch the intro')}
+        </button>
       </section>
+      {intro && <Cinematic id="world_intro" onDone={() => setIntro(false)} />}
 
       <div className="faction-codex">
         {ALL_FACTIONS.map((id) => {

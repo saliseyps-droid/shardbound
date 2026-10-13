@@ -19,6 +19,17 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.46.0',
+    date: '2026-10-13',
+    title: 'Where it all began',
+    summary: 'New players are greeted by a cinematic about the shattering of the Crown.',
+    sections: [
+      { kind: 'new', items: ['World intro: a five-shot cinematic tells how the Sundered Crown broke into the Shards. It plays once before you awaken your first Warden, and anyone can replay it from Profile → Lore and keywords.'] },
+      { kind: 'fixed', items: ['Cinematics: the Skip button could slide off the left edge of the screen.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.45.7',
     date: '2026-10-13',
     title: 'Under the black sun',

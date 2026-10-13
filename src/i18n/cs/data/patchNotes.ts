@@ -1,6 +1,14 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.46.0': {
+    title: 'Kde to všechno začalo',
+    summary: 'Nové hráče přivítá filmový klip o roztříštění Koruny.',
+    sections: [
+      ['Úvod do světa: klip o pěti záběrech vypráví, jak se Rozťatá koruna roztříštila na Střepy. Pustí se jednou, než probudíš svého prvního Strážce, a kdokoli si ho může znovu přehrát v Profil → Příběh a klíčová slova.'],
+      ['Filmové klipy: tlačítko Přeskočit mohlo ujet za levý okraj obrazovky.'],
+    ],
+  },
   '0.45.7': {
     title: 'Pod černým sluncem',
     summary: 'Černé slunce teď začíná i končí filmovým klipem.',

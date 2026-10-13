@@ -25,6 +25,18 @@ export interface CinematicDef {
 }
 
 export const CINEMATICS: Record<string, CinematicDef> = {
+  // The world intro: plays once on the welcome screen before the first Warden (and from the Lore screen).
+  world_intro: {
+    id: 'world_intro',
+    title: 'Shardbound',
+    shots: [
+      { image: 'world_crown_isle', motion: 'push-in', ms: 6000, focus: '50% 45%', text: 'For a thousand years the Sundered Crown hovered above the world of Aethra and held the elements in balance.' },
+      { image: 'world_shattering', motion: 'pull-out', ms: 6000, focus: '48% 35%', text: 'When the last Sovereign vanished, the Crown cracked into ten thousand Shards and rained across the continents.' },
+      { image: 'world_aether', motion: 'tilt-up', ms: 6000, text: 'Each Shard is raw Aether: power enough to raise a forest overnight, boil a sea, or wake the dead.' },
+      { image: 'world_wardens', motion: 'pan-left', ms: 6000, text: 'Those who can bind the Shards are called Wardens, and every faction of Aethra now races to claim them.' },
+      { image: 'world_awaken', motion: 'push-in', ms: 5500, focus: '50% 40%', text: 'You are a newly awakened Warden. Your Shards are waiting for your call.' },
+    ],
+  },
   void_intro: {
     id: 'void_intro',
     title: 'The Black Sun',

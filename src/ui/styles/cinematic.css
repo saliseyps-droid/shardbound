@@ -65,7 +65,8 @@
 .cine-dots span { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); transition: background 0.3s; }
 .cine-dots span.is-on { background: #d9b8ff; box-shadow: 0 0 8px #a26bff; }
 
-.cine-skip { position: absolute; top: calc(9vh + 14px); right: calc(18px + var(--safe-right, 0px)); z-index: 4; opacity: 0.8; }
+/* Doubled class: beats .btn { position: relative } whichever stylesheet loads last (the welcome screen loads this one first). */
+.cine-skip.cine-skip { position: absolute; top: calc(9vh + 14px); right: calc(18px + var(--safe-right, 0px)); z-index: 4; opacity: 0.8; }
 .cine-skip:hover { opacity: 1; }
 
 /* Ember theme (The Wraithwood Inn): flame-orange lettering, glowing embers and fireflies drifting up. */
@@ -120,5 +121,5 @@
   .cine-title { top: 16vh; }
   .cine-text { bottom: calc(6vh + 18px); }
   .cine-dots { bottom: calc(6vh - 14px); }
-  .cine-skip { top: calc(6vh + 8px); }
+  .cine-skip.cine-skip { top: calc(6vh + 8px); }
 }
