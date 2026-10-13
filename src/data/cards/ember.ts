@@ -50,7 +50,7 @@ export const EMBER_CARDS: CardDefinition[] = [
     ...base, id: 'emb_kindle', name: 'Kindle', cardType: 'SPELL', rarity: 'COMMON', set: 'CORE',
     manaCost: 1, target: { kind: 'ENEMY_UNIT' }, archetypes: ['Pyromancy'],
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'APPLY_STATUS', status: 'BURN', amount: 3, target: 'TARGET' }, { type: 'DRAW_CARDS', amount: 1, condition: { kind: 'SPELLS_CAST_THIS_TURN_GTE', n: 2 } }] }],
-    description: 'Apply Burn 3 to an enemy unit. If you cast 2 or more spells this turn, draw a card.',
+    description: 'Apply Burn 3 to an enemy unit. If this is at least your 2nd spell this turn, draw a card.',
     flavorText: 'Patience is a virtue. Burning is faster.',
   },
   {

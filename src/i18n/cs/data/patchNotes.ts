@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.43.4': {
+    title: 'Jasnější text karet',
+    summary: 'Jiskra vhledu a Rozdmýchání teď přesně říkají, kdy si lízneš.',
+    sections: [['Jiskra vhledu a Rozdmýchání: text teď zní „Pokud je to už aspoň tvoje 2. kouzlo v tomto tahu, lízni si kartu.“ Fungují stejně jako dřív: počítá se i samotné kouzlo, takže stačí jedno kouzlo před ním. Jednotky se nepočítají nikdy.']],
+  },
   '0.43.3': {
     title: 'Vidíš soupeři do karet',
     summary: 'Na mobilu je vidět soupeřova ruka i kolik v ní má karet.',

@@ -24,6 +24,8 @@ export const TOKEN_CARDS: CardDefinition[] = [
     set: 'CORE',
     collectible: false,
     abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 1, target: 'RANDOM_ENEMY' }, { type: 'DRAW_CARDS', amount: 1, condition: { kind: 'SPELLS_CAST_THIS_TURN_GTE', n: 2 } }] }],
+    // The count includes this spell itself.
+    description: 'Deal 1 damage to a random enemy. If this is at least your 2nd spell this turn, draw a card.',
   },
   { id: 'token_hollow_wisp', name: 'Hollow Wisp', cardType: 'UNIT', faction: 'VOID', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, set: 'CORE', collectible: false, tags: ['Wraith'] },
   { id: 'token_ember_imp', name: 'Ember Imp', cardType: 'UNIT', faction: 'EMBER', rarity: 'COMMON', manaCost: 1, attack: 2, health: 1, set: 'CORE', collectible: false, tags: ['Elemental'] },

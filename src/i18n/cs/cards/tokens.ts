@@ -15,7 +15,7 @@ const cards: CardsOverlay = {
   brawl_rule_last_breath: { name: 'Poslední dech', description: 'Když zemře jedna z tvých jednotek, lízni si kartu.' },
   token_brawl_wall: { name: 'Obléhací zeď', flavorText: 'Postavili ji, aby vydržela. Ne aby se líbila.' },
   token_aether_shard: { name: 'Éterový střep', description: 'Získej v tomto tahu 1 energii.', flavorText: 'Úlomek Koruny, který bzučí vypůjčeným časem.' },
-  token_mote_insight: { name: 'Jiskra vhledu', description: 'Způsob 1 poškození náhodnému nepříteli. Pokud jsi v tomto tahu seslal 2 nebo více kouzel, lízni si kartu.' },
+  token_mote_insight: { name: 'Jiskra vhledu', description: 'Způsob 1 poškození náhodnému nepříteli. Pokud je to už aspoň tvoje 2. kouzlo v tomto tahu, lízni si kartu.' },
   token_hollow_wisp: { name: 'Prázdná světluška' },
   token_ember_imp: { name: 'Žhavý skřet' },
   token_sapling: { name: 'Semenáček' },

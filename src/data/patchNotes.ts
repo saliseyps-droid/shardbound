@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.43.4',
+    date: '2026-10-13',
+    title: 'Clearer card text',
+    summary: 'Mote of Insight and Kindle now say exactly when they draw.',
+    sections: [{ kind: 'improved', items: ['Mote of Insight and Kindle: the text now reads "If this is at least your 2nd spell this turn, draw a card." They work as before: the spell itself counts, so one spell before it is enough. Units never count.'] }],
+    commits: [],
+  },
+  {
     version: '0.43.3',
     date: '2026-10-13',
     title: "Read your opponent's hand",

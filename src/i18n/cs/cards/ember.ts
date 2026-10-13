@@ -8,7 +8,7 @@ const cards: CardsOverlay = {
   emb_pyre_hound: { name: 'Hranicový ohař', description: 'Spěch.', flavorText: 'Aport? Raději „zapal“.' },
   emb_ember_volley: { name: 'Uhlíková salva', description: 'Způsob 1 poškození všem nepřátelům.', flavorText: 'Na míření nezáleží, když hoří samo nebe.' },
   emb_magma_brute: { name: 'Magmový hromotluk', description: 'Při nasazení: Způsob 2 poškození nepřátelskému Strážci.', flavorText: 'Nechodí, spíš stéká z kopce vstříc svým nepřátelům.' },
-  emb_kindle: { name: 'Rozdmýchání', description: 'Uděl nepřátelské jednotce Hoření 3. Pokud jsi v tomto tahu seslal 2 nebo více kouzel, lízni si kartu.', flavorText: 'Trpělivost je ctnost. Hoření je rychlejší.' },
+  emb_kindle: { name: 'Rozdmýchání', description: 'Uděl nepřátelské jednotce Hoření 3. Pokud je to už aspoň tvoje 2. kouzlo v tomto tahu, lízni si kartu.', flavorText: 'Trpělivost je ctnost. Hoření je rychlejší.' },
   emb_flamecaller_initiate: { name: 'Novicka vyvolávačů plamene', description: 'Poté, co sešleš kouzlo, způsob 1 poškození náhodnému nepříteli.', flavorText: 'Každé zaříkadlo zanechá jiskry. Ona je sbírá.' },
   emb_cinderbreath_drake: { name: 'Drak popelavého dechu', description: 'Spěch.', flavorText: 'Jezdci Legie se se svými draky spojují v kaldeře. Ti, kdo přežijí, jsou povýšeni.' },
   emb_sparkblade_duelist: { name: 'Duelantka s jiskrnou čepelí', description: 'Kdykoli tato jednotka útočí, získá v tomto tahu +2/+0.', flavorText: 'Její čepel je tupá. Blesk v ní ne.' },
