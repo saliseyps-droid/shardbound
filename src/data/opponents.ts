@@ -782,7 +782,7 @@ export interface CampaignDef {
 /** Every campaign, each with its own chapters and progress; the main one comes first. */
 export const CAMPAIGNS: CampaignDef[] = [
   { id: 'main', name: 'The Shattering of Aethra', chapters: CAMPAIGN, intro: 'aethra_intro', outro: 'aethra_outro' },
-  { id: 'void', name: 'The Black Sun', chapters: VOID_CAMPAIGN },
+  { id: 'void', name: 'The Black Sun', chapters: VOID_CAMPAIGN, intro: 'void_intro', outro: 'void_outro' },
   { id: 'lamp', name: 'The Lamplighters’ Road', chapters: LAMP_CAMPAIGN, intro: 'lamp_intro', outro: 'lamp_outro' },
   { id: 'inn', name: 'The Wraithwood Inn', chapters: INN_CAMPAIGN, intro: 'inn_intro', outro: 'inn_outro' },
 ];

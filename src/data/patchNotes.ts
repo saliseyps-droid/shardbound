@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.45.7',
+    date: '2026-10-13',
+    title: 'Under the black sun',
+    summary: 'The Black Sun now opens and ends with a cinematic.',
+    sections: [{ kind: 'new', items: ['The Black Sun: a four-shot intro over the floating islands the black sun pulled into the sky, and a three-shot ending after you defeat Sali. Both play once on their own and can be replayed from the campaign screen.'] }],
+    commits: [],
+  },
+  {
     version: '0.45.6',
     date: '2026-10-13',
     title: 'Where the Shards fell',

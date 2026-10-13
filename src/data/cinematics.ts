@@ -25,6 +25,25 @@ export interface CinematicDef {
 }
 
 export const CINEMATICS: Record<string, CinematicDef> = {
+  void_intro: {
+    id: 'void_intro',
+    title: 'The Black Sun',
+    shots: [
+      { image: 'bs_spire', motion: 'push-in', ms: 5500, focus: '62% 25%', text: 'At noon a black sun climbed over Aethra, and the sky around it turned the colour of a bruise.' },
+      { image: 'bs_cathedral', motion: 'pull-out', ms: 5500, focus: '50% 35%', text: 'Islands of rock tore loose from the earth and rose towards it, carrying their cathedrals with them.' },
+      { image: 'bs_eye_isle', motion: 'tilt-up', ms: 6000, text: 'Under the black sun the cultists sing, and the land they sing over begins to rot.' },
+      { image: 'bs_vortex', motion: 'push-in', ms: 5500, focus: '50% 45%', text: 'Above it all stands a throne older than the first star. Someone has been sitting on it the whole time.' },
+    ],
+  },
+  void_outro: {
+    id: 'void_outro',
+    title: 'The sun goes out',
+    shots: [
+      { image: 'bs_crystal', motion: 'push-in', ms: 5500, focus: '55% 55%', text: 'The Creator falls from his throne, and the black sun flickers out like a snuffed candle.' },
+      { image: 'bs_eye_isle', motion: 'pan-right', ms: 5500, focus: '50% 40%', text: 'One by one the floating islands sink back towards the earth.' },
+      { image: 'bs_spire', motion: 'pull-out', ms: 6000, focus: '62% 25%', text: 'The sky heals slowly. But a sun that has turned black once remembers how.' },
+    ],
+  },
   aethra_intro: {
     id: 'aethra_intro',
     title: 'The Shattering of Aethra',
