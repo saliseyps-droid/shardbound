@@ -509,6 +509,78 @@ const v: OpponentsOverlay = {
       intro: 'Každý příběh končí na stránce, kterou nikdo nečte. Ty stránky opatruju já. Tvoje je na řadě.',
       special: ['Začíná se 40 životy.', 'Schopnosti Strážce: Poslední Střep, Pramen II.', 'Její balíček obsahuje samotnou Oblivii a Rituál zatmění.'],
     },
+    w1_e1: {
+      name: 'Bledý nocležník',
+      title: 'Host od okna',
+      intro: 'Posaď se, posaď. Karty jsou studené, ale to já taky.',
+      special: ['Jeho balíček obsahuje Bledého nocležníka. Poraz ho a karta je tvoje.'],
+    },
+    w1_e2: {
+      name: 'Dutý Tom',
+      title: 'Noční hraničář z okraje lesa',
+      intro: 'Čtyřicet let jsem hlídal okraj lesa. Teď hlídám dveře. Bez partičky nikdo neodejde.',
+      special: ['Jeho balíček obsahuje samotného Dutého Toma. Poraz ho a karta je tvoje.'],
+    },
+    w1_boss: {
+      name: 'Mechoplášť',
+      title: 'Parožnatý hraničář',
+      intro: 'Les mě poslal hlídat tenhle hostinec. Hostinec mě poprosil, ať zůstanu. Hraj, Strážce, a já ti řeknu, kdo z nich vyhrál.',
+      special: ['Schopnosti Strážce: Vrcholný lov, Kůra místo kůže II.', 'Jeho balíček obsahuje samotného Mechopláště. Poraz ho a přidá se k tobě.'],
+    },
+    w2_e1: {
+      name: 'Doktor Corvin',
+      title: 'Zobákatý lékař',
+      intro: 'Bledá kůže, studené ruce, slabý tep. Sem zapadneš dokonale.',
+      special: ['Jeho balíček obsahuje samotného doktora Corvina. Poraz ho a karta je tvoje.'],
+    },
+    w2_e2: {
+      name: 'Karmínová kápě',
+      title: 'Hraničářka, která zrudla',
+      intro: 'Hraničáři chrání les. Já ho chráním před hraničáři.',
+      special: ['Její balíček obsahuje Karmínovou kápi. Poraz ji a karta je tvoje.'],
+    },
+    w2_boss: {
+      name: 'Bramhorn',
+      title: 'Lovec s lebkou místo tváře',
+      intro: 'Lovím všechno, co vejde do tohohle lesa. Dnes v noci lovím tebe, v kartách. Zítra, kdo ví.',
+      special: ['Začíná se 35 životy.', 'Schopnosti Strážce: Přísaha popela, Rozdmýchaný hněv II.', 'Jeho balíček obsahuje samotného Bramhorna. Poraz ho a přidá se k tobě.'],
+    },
+    w3_e1: {
+      name: 'Utopený host',
+      title: 'Vylezl studnou',
+      intro: 'Promiň. Dlouho jsem nemluvil. Voda se dostává do slov. Rozdej karty.',
+      special: ['Jeho balíček obsahuje Utopeného hosta. Poraz ho a karta je tvoje.'],
+    },
+    w3_e2: {
+      name: 'Hartwrath',
+      title: 'Jelení hraničář',
+      intro: 'Byl jsem nejlepší stopař, jakého hraničáři kdy měli. Pak jsem stopoval velkého jelena. Teď máme společnou hlavu.',
+      special: ['Jeho balíček obsahuje samotného Hartwratha. Poraz ho a karta je tvoje.'],
+    },
+    w3_boss: {
+      name: 'Vdova v bílém',
+      title: 'Nevěsta z jezera',
+      intro: 'Slíbil, že se z jezera vrátí. Ty neseš jeho lucernu. Kde je?',
+      special: ['Začíná se 35 životy.', 'Schopnosti Strážce: Zamrzlá hymna, Náhlý mráz II.', 'Její balíček obsahuje samotnou Vdovu. Poraz ji a přidá se k tobě.'],
+    },
+    w4_e1: {
+      name: 'Mlčenlivý host',
+      title: 'Sleduje karty',
+      intro: '…',
+      special: ['Jeho balíček obsahuje Mlčenlivého hosta. Poraz ho a karta je tvoje.'],
+    },
+    w4_e2: {
+      name: 'Starý Kostník',
+      title: 'Výčepní',
+      intro: 'Ještě jednu rundu? Ale jistě. Před poslední objednávkou nikdo neodchází. A já poslední objednávku nikdy nevyhlásím.',
+      special: ['Začíná se 35 životy.', 'Jeho balíček obsahuje samotného Starého Kostníka. Poraz ho a karta je tvoje.'],
+    },
+    w4_boss: {
+      name: 'Dutý hostitel',
+      title: 'Pán hostince v Přízračném hvozdu',
+      intro: 'Každý host u mého stolu si kdysi myslel, že mě porazí. Posaď se, Strážce. Tvoje židle tu čeká už hodně dlouho.',
+      special: ['Začíná se 45 životy a 1 energií navíc.', 'Schopnosti Strážce: Stínový nábor, Zesílený trup II.', 'Jeho balíček obsahuje samotného Dutého hostitele. Poraz ho a přidá se k tobě.'],
+    },
   },
   chapters: {
     ch1: {
@@ -570,6 +642,22 @@ const v: OpponentsOverlay = {
     lr3: {
       name: 'Kapitola III – Poslední lucerna',
       description: 'Na konci cesty stojí první maják cechu. U jeho světla si něco čte už hodně dlouho.',
+    },
+    wi1: {
+      name: 'Kapitola I – Místo u ohně',
+      description: 'Hluboko ve strašidelném lese stojí hostinec, který není na žádné mapě. Lucerny svítí, dveře jsou otevřené a u každého stolu čeká hráč.',
+    },
+    wi2: {
+      name: 'Kapitola II – Poslední objednávka',
+      description: 'Zvonek nad výčepem ohlašuje poslední objednávku. Hosté u zadních stolů nikdy neodcházejí a neradi prohrávají.',
+    },
+    wi3: {
+      name: 'Kapitola III – Schody do sklepa',
+      description: 'Pod hostincem vedou schody hlouběji, než je dům vysoký. Hosté tam dole vylezli z vody.',
+    },
+    wi4: {
+      name: 'Kapitola IV – Stůl hostitele',
+      description: 'V čele hostince stojí jeden dlouhý stůl. Každý host, kterého porazíš, si k němu sedne, a na druhém konci čeká hostitel.',
     },
   },
 };

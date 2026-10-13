@@ -1,4 +1,5 @@
 import { getCard } from '@/data/cards';
+import { rewardCampaign } from '@/data/opponents';
 import { FACTIONS } from '@/data/factions';
 import { CRAFTING, SET_INFO } from '@/config/economy';
 import { craftCost, recycleValue } from '@/domain/economy';
@@ -122,7 +123,7 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
       {usedIn.length > 0 && <p className="faint small">{t('In decks:')} {usedIn.map((d) => `${d.name} ×${d.cards[cardId]}`).join(', ')}</p>}
 
       {card.rewardOnly ? (
-        <p className="faint small">{t('Won in The Lamplighters’ Road campaign. It cannot be crafted or recycled.')}</p>
+        <p className="faint small">{t('Won in the {campaign} campaign. It cannot be crafted or recycled.', { campaign: t(rewardCampaign(card.id)?.name ?? 'Campaign') })}</p>
       ) : (
       <table className="variant-table">
         <thead>

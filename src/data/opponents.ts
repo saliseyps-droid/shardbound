@@ -658,8 +658,120 @@ export const LAMP_CAMPAIGN: Chapter[] = [
   },
 ];
 
+/**
+ * The Wraithwood Inn: a haunted tavern deep in the forest where the Warden plays cards against
+ * dead rangers and ghosts. Every guest plays its own card (src/data/cards/wraithwood.ts, two per
+ * faction) and gives it up when beaten; each chapter host is a Legendary.
+ */
+export const INN_CAMPAIGN: Chapter[] = [
+  {
+    id: 'wi1',
+    name: 'Chapter I — A Seat by the Fire',
+    price: 500,
+    description: 'Deep in the haunted forest stands an inn that is on no map. Its lanterns are lit, its door is open, and every table is waiting for a player.',
+    encounters: [
+      {
+        id: 'w1_e1', name: 'The Pale Lodger', title: 'The Guest by the Window', avatar: 'eye', faction: 'ASTRAL', archetype: 'Starlit Control', difficulty: 'NORMAL', personality: 'BALANCED', rarities: NORMAL_POOL,
+        intro: 'Sit, sit. The cards are cold, but so am I.',
+        special: { extraCards: ['ast_the_pale_lodger'], description: ['Its deck holds The Pale Lodger. Beat it and the card is yours.'] },
+        firstWinReward: { gold: 150, xp: 150, cardId: 'ast_the_pale_lodger' },
+      },
+      {
+        id: 'w1_e2', name: 'Hollow Tom', title: 'Night Ranger of the Forest Edge', avatar: 'eye', faction: 'VOID', secondFaction: 'VERDANT', archetype: 'Requiem', difficulty: 'NORMAL', personality: 'AGGRESSIVE', rarities: NORMAL_POOL,
+        intro: 'I kept the forest edge for forty years. Now I keep the door. Nobody gets out without a game.',
+        special: { extraCards: ['vod_hollow_tom_night_ranger'], description: ['His deck holds Hollow Tom himself. Beat him and the card is yours.'] },
+        firstWinReward: { gold: 180, xp: 180, cardId: 'vod_hollow_tom_night_ranger' },
+      },
+      {
+        id: 'w1_boss', name: 'Mossmantle', title: 'The Antlered Ranger', avatar: 'eye', faction: 'VERDANT', archetype: 'Overgrowth', difficulty: 'HARD', personality: 'BALANCED', rarities: NORMAL_POOL, boss: true,
+        intro: 'The forest sent me to guard this inn. The inn asked me to stay. Play, Warden, and I will tell you which of us won.',
+        special: { talents: [{ abilityId: 'wt_boss_apex_hunt', level: 0 }, { abilityId: 'wt_verdant_barkskin', level: 1 }], extraCards: ['ver_mossmantle_the_antlered_ranger', 'ver_rotroot_sentinel'], description: ['Warden abilities: Apex Hunt, Barkskin II.', 'His deck holds Mossmantle himself. Beat him and he joins you.'] },
+        firstWinReward: { gold: 250, xp: 250, cardId: 'ver_mossmantle_the_antlered_ranger' },
+      },
+    ],
+  },
+  {
+    id: 'wi2',
+    name: 'Chapter II — Last Orders',
+    price: 500,
+    description: 'The bell above the bar rings for last orders. The guests at the back tables never leave, and they do not like to lose.',
+    encounters: [
+      {
+        id: 'w2_e1', name: 'Doctor Corvin', title: 'The Beaked Physician', avatar: 'eye', faction: 'IRON', archetype: 'Assembly Line', difficulty: 'HARD', personality: 'CONTROL', rarities: NORMAL_POOL,
+        intro: 'Pale skin, cold hands, a weak pulse. You will fit in here perfectly.',
+        special: { extraCards: ['irn_doctor_corvin'], description: ['His deck holds Doctor Corvin himself. Beat him and the card is yours.'] },
+        firstWinReward: { gold: 200, xp: 200, cardId: 'irn_doctor_corvin' },
+      },
+      {
+        id: 'w2_e2', name: 'The Crimson Hood', title: 'The Ranger Gone Red', avatar: 'eye', faction: 'EMBER', archetype: 'Blitz', difficulty: 'HARD', personality: 'AGGRESSIVE', rarities: HARD_POOL,
+        intro: 'Rangers protect the forest. I protect it from rangers.',
+        special: { extraCards: ['emb_the_crimson_hood'], description: ['Her deck holds The Crimson Hood. Beat it and the card is yours.'] },
+        firstWinReward: { gold: 220, xp: 220, cardId: 'emb_the_crimson_hood' },
+      },
+      {
+        id: 'w2_boss', name: 'Bramhorn', title: 'The Skull-Masked Hunter', avatar: 'eye', faction: 'EMBER', secondFaction: 'VERDANT', archetype: 'Blitz', difficulty: 'HARD', personality: 'AGGRESSIVE', rarities: HARD_POOL, boss: true,
+        intro: 'I hunt everything that walks into this forest. Tonight I hunt you at cards. Tomorrow, who knows.',
+        special: { heroHealth: 35, talents: [{ abilityId: 'wt_boss_oath_of_cinders', level: 0 }, { abilityId: 'wt_ember_kindled_fury', level: 1 }], extraCards: ['emb_bramhorn_the_skull_masked', 'emb_the_crimson_hood'], description: ['Starts with 35 Health.', 'Warden abilities: Oath of Cinders, Kindled Fury II.', 'His deck holds Bramhorn himself. Beat him and he joins you.'] },
+        firstWinReward: { gold: 300, xp: 300, cardId: 'emb_bramhorn_the_skull_masked' },
+      },
+    ],
+  },
+  {
+    id: 'wi3',
+    name: 'Chapter III — The Cellar Stairs',
+    price: 500,
+    description: 'Below the inn the stairs go down further than the house is tall. The guests down there came up out of the water.',
+    encounters: [
+      {
+        id: 'w3_e1', name: 'The Drowned Guest', title: 'It Came Up the Well', avatar: 'eye', faction: 'TIDE', archetype: 'Deep Freeze', difficulty: 'HARD', personality: 'CONTROL', rarities: HARD_POOL,
+        intro: 'Forgive me. I have not spoken in a long while. The water gets into the words. Deal the cards.',
+        special: { extraCards: ['tid_the_drowned_guest'], description: ['Its deck holds The Drowned Guest. Beat it and the card is yours.'] },
+        firstWinReward: { gold: 250, xp: 250, cardId: 'tid_the_drowned_guest' },
+      },
+      {
+        id: 'w3_e2', name: 'Hartwrath', title: 'The Stag Ranger', avatar: 'eye', faction: 'VERDANT', archetype: 'Overgrowth', difficulty: 'EXPERT', personality: 'AGGRESSIVE', rarities: HARD_POOL,
+        intro: 'I was the best tracker the rangers ever had. Then I tracked the great stag. Now we share a head.',
+        special: { extraCards: ['ver_hartwrath_the_stag_ranger'], description: ['His deck holds Hartwrath himself. Beat him and the card is yours.'] },
+        firstWinReward: { gold: 280, xp: 280, cardId: 'ver_hartwrath_the_stag_ranger' },
+      },
+      {
+        id: 'w3_boss', name: 'The Widow in White', title: 'Bride of the Lake', avatar: 'eye', faction: 'TIDE', secondFaction: 'VOID', archetype: 'Deep Freeze', difficulty: 'EXPERT', personality: 'CONTROL', rarities: HARD_POOL, boss: true,
+        intro: 'He promised to come back from the lake. You carry his lantern. Where is he?',
+        special: { heroHealth: 35, talents: [{ abilityId: 'wt_boss_frozen_hymn', level: 0 }, { abilityId: 'wt_tide_cold_snap', level: 1 }], extraCards: ['tid_the_widow_in_white', 'tid_the_drowned_guest'], description: ['Starts with 35 Health.', 'Warden abilities: Frozen Hymn, Cold Snap II.', 'Her deck holds the Widow herself. Beat her and she joins you.'] },
+        firstWinReward: { gold: 350, xp: 350, essence: 150, cardId: 'tid_the_widow_in_white' },
+      },
+    ],
+  },
+  {
+    id: 'wi4',
+    name: 'Chapter IV — The Host’s Table',
+    price: 500,
+    description: 'At the head of the inn stands one long table. Every guest you beat has taken a seat at it, and the host is waiting at the far end.',
+    encounters: [
+      {
+        id: 'w4_e1', name: 'The Quiet Patron', title: 'He Watches the Cards', avatar: 'eye', faction: 'ASTRAL', secondFaction: 'VOID', archetype: 'Starlit Control', difficulty: 'EXPERT', personality: 'CONTROL', rarities: HARD_POOL,
+        intro: '…',
+        special: { extraCards: ['ast_the_quiet_patron'], description: ['His deck holds The Quiet Patron. Beat him and the card is yours.'] },
+        firstWinReward: { gold: 300, xp: 300, cardId: 'ast_the_quiet_patron' },
+      },
+      {
+        id: 'w4_e2', name: 'Old Marrow', title: 'The Barkeep', avatar: 'eye', faction: 'VOID', archetype: 'Requiem', difficulty: 'EXPERT', personality: 'BALANCED', rarities: ALL,
+        intro: 'Another round? Of course. Nobody leaves before last orders, and I never call last orders.',
+        special: { heroHealth: 35, extraCards: ['vod_old_marrow_the_barkeep'], description: ['Starts with 35 Health.', 'His deck holds Old Marrow himself. Beat him and the card is yours.'] },
+        firstWinReward: { gold: 320, xp: 320, cardId: 'vod_old_marrow_the_barkeep' },
+      },
+      {
+        id: 'w4_boss', name: 'The Hollow Host', title: 'Lord of the Wraithwood Inn', avatar: 'eye', faction: 'IRON', secondFaction: 'VOID', archetype: 'Assembly Line', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
+        intro: 'Every guest at my table once thought they could beat me. Take a seat, Warden. Yours has been waiting a long time.',
+        special: { heroHealth: 45, bonusStartingEnergy: 1, talents: [{ abilityId: 'wt_boss_shadow_muster', level: 0 }, { abilityId: 'wt_iron_reinforced_hull', level: 1 }], extraCards: ['irn_the_hollow_host', 'irn_doctor_corvin', 'vod_old_marrow_the_barkeep'], description: ['Starts with 45 Health and 1 extra Energy.', 'Warden abilities: Shadow Muster, Reinforced Hull II.', 'His deck holds the Hollow Host himself. Beat him and he joins you.'] },
+        firstWinReward: { gold: 600, xp: 500, essence: 300, cardId: 'irn_the_hollow_host' },
+      },
+    ],
+  },
+];
+
 export interface CampaignDef {
-  id: 'main' | 'void' | 'lamp';
+  id: 'main' | 'void' | 'lamp' | 'inn';
   name: string;
   chapters: Chapter[];
   /** Cinematics (src/data/cinematics.ts): before the first fight and after the last one. */
@@ -672,6 +784,7 @@ export const CAMPAIGNS: CampaignDef[] = [
   { id: 'main', name: 'The Shattering of Aethra', chapters: CAMPAIGN },
   { id: 'void', name: 'The Black Sun', chapters: VOID_CAMPAIGN },
   { id: 'lamp', name: 'The Lamplighters’ Road', chapters: LAMP_CAMPAIGN, intro: 'lamp_intro', outro: 'lamp_outro' },
+  { id: 'inn', name: 'The Wraithwood Inn', chapters: INN_CAMPAIGN, intro: 'inn_intro', outro: 'inn_outro' },
 ];
 
 /**
@@ -696,6 +809,11 @@ const CAMPAIGN_PORTRAITS: Record<string, string | null> = {
   l1_e1: 'nul_hollow_seer', l1_e2: 'nul_antlered_shade', l1_boss: 'nul_lantern_warden',
   l2_e1: 'nul_barkbound_brute', l2_e2: 'nul_staff_keeper', l2_boss: 'nul_rootheart_colossus',
   l3_e1: 'nul_thornwood_sage', l3_e2: 'nul_eye_of_the_grove', l3_boss: 'nul_ring_of_thorns',
+  // The Wraithwood Inn: every guest at its own table (campaign-only art, the same painting as its card).
+  w1_e1: 'inn_pale_lodger', w1_e2: 'inn_hollow_tom', w1_boss: 'inn_mossmantle',
+  w2_e1: 'inn_doctor_corvin', w2_e2: 'inn_crimson_hood', w2_boss: 'inn_bramhorn',
+  w3_e1: 'inn_drowned_guest', w3_e2: 'inn_hartwrath', w3_boss: 'inn_widow_in_white',
+  w4_e1: 'inn_quiet_patron', w4_e2: 'inn_old_marrow', w4_boss: 'inn_hollow_host',
 };
 for (const ch of CAMPAIGNS.flatMap((c) => c.chapters)) for (const e of ch.encounters) if (e.id in CAMPAIGN_PORTRAITS) e.portrait = CAMPAIGN_PORTRAITS[e.id];
 
@@ -710,6 +828,11 @@ export function findEncounter(id: string): { chapter: Chapter; encounter: Oppone
 /** Every encounter of every campaign. */
 export function allEncounters(): OpponentDef[] {
   return CAMPAIGNS.flatMap((c) => c.chapters.flatMap((ch) => ch.encounters));
+}
+
+/** The campaign whose fights give this card as a first-win reward (campaign-only cards). */
+export function rewardCampaign(cardId: string): CampaignDef | undefined {
+  return CAMPAIGNS.find((c) => c.chapters.some((ch) => ch.encounters.some((e) => e.firstWinReward?.cardId === cardId)));
 }
 
 /** The campaign an encounter belongs to (the main one when unknown). */

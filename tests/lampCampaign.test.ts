@@ -20,7 +20,7 @@ const REWARDS = ['neu_nyx_lantern_of_nul', 'neu_vael_the_void_knell', 'neu_obliv
 
 describe("The Lamplighters' Road", () => {
   it('is a third campaign of three chapters, three fights each, every boss paying its own legend', () => {
-    expect(CAMPAIGNS.map((c) => c.id)).toEqual(['main', 'void', 'lamp']);
+    expect(CAMPAIGNS.map((c) => c.id)).toEqual(['main', 'void', 'lamp', 'inn']);
     expect(LAMP_CAMPAIGN).toHaveLength(3);
     LAMP_CAMPAIGN.forEach((ch, i) => {
       expect(ch.encounters).toHaveLength(3);

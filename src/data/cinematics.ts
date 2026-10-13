@@ -34,6 +34,26 @@ export const CINEMATICS: Record<string, CinematicDef> = {
       { image: 'lamp_call', motion: 'push-in', ms: 5000, focus: '58% 55%', text: 'Take up your lantern, Warden. The road is waiting.' },
     ],
   },
+  inn_intro: {
+    id: 'inn_intro',
+    title: 'The Wraithwood Inn',
+    shots: [
+      { image: 'inn_0', motion: 'push-in', ms: 5500, focus: '45% 55%', text: 'Deep in the Wraithwood stands an inn that is on no map.' },
+      { image: 'inn_1', motion: 'pan-left', ms: 6000, text: 'Its lanterns burn all night. The rangers who once guarded the forest came here to rest, and never left.' },
+      { image: 'inn_2', motion: 'pull-out', ms: 5500, text: 'Now the dead drink beside the living, and every night the cards are dealt.' },
+      { image: 'inn_3', motion: 'pan-right', ms: 5500, text: 'Every guest plays for the card they carry. Beat them, and it is yours.' },
+      { image: 'inn_4', motion: 'push-in', ms: 5500, focus: '50% 45%', text: 'A seat is waiting for you, Warden. Deal yourself in.' },
+    ],
+  },
+  inn_outro: {
+    id: 'inn_outro',
+    title: 'Last orders',
+    shots: [
+      { image: 'inn_0', motion: 'pull-out', ms: 5500, focus: '45% 55%', text: 'The Hollow Host lays down his last card, and for the first time in a hundred years the inn falls silent.' },
+      { image: 'inn_end1', motion: 'push-in', ms: 5500, focus: '52% 55%', text: 'One by one the guests rise from their tables. Their cards are yours now, and so are their stories.' },
+      { image: 'inn_end2', motion: 'push-in', ms: 6000, focus: '50% 40%', text: 'Behind you, the lanterns of the Wraithwood light the road home.' },
+    ],
+  },
   lamp_outro: {
     id: 'lamp_outro',
     title: 'The road is lit',

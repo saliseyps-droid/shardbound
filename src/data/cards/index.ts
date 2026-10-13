@@ -13,6 +13,7 @@ import { ABYSS_CARDS } from './abyss';
 import { DRAGON_CARDS } from './dragon';
 import { RECKONING_CARDS } from './reckoning';
 import { LAMPLIGHT_CARDS } from './lamplight';
+import { WRAITHWOOD_CARDS } from './wraithwood';
 
 const RAW: CardDefinition[] = [
   ...TOKEN_CARDS,
@@ -27,6 +28,7 @@ const RAW: CardDefinition[] = [
   ...DRAGON_CARDS,
   ...RECKONING_CARDS,
   ...LAMPLIGHT_CARDS,
+  ...WRAITHWOOD_CARDS,
 ];
 
 export const CARD_LOAD_ERRORS: string[] = [];

@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.45.0',
+    date: '2026-10-13',
+    title: 'The Wraithwood Inn',
+    summary: 'A fourth campaign: play cards against dead rangers and ghosts in a haunted tavern, and win the card of everyone you beat.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'New campaign The Wraithwood Inn: four chapters of three fights in a haunted tavern deep in the forest. Each chapter is bought for 500 Gold, and the campaign opens and ends with its own cinematic.',
+          'Twelve new campaign-only cards, two for every faction: every guest plays its own card and gives it to you the first time you beat it. The four chapter hosts (Mossmantle, Bramhorn, the Widow in White and the Hollow Host) are Legendary.',
+          'Twelve new Warden portraits for the guests of the inn.',
+        ],
+      },
+      { kind: 'improved', items: ['Campaign-only cards now say which campaign they come from.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.44.2',
     date: '2026-10-13',
     title: 'Fluffseeker',
