@@ -322,6 +322,9 @@ button.deckbox:hover:not(:disabled) { filter: brightness(1.15); }
 .faction-bars .num { text-align: right; color: var(--parchment); }
 .rarity-progress li { display: grid; grid-template-columns: 90px 1fr 70px; gap: var(--space-3); align-items: center; font-size: var(--t-sm); }
 .rarity-progress .num { text-align: right; }
+.set-progress { margin-bottom: var(--space-3); }
+.set-progress li { grid-template-columns: 150px 1fr 70px; }
+.profile-rarity > .panel-title + .set-progress, .profile-rarity .rarity-progress + .panel-title { margin-top: var(--space-4); }
 
 /* ---------------- History ---------------- */
 .history-table-wrap { overflow-x: auto; }

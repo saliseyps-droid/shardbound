@@ -9,7 +9,7 @@ import { LEVELS, MAX_LEVEL, type LevelReward } from '@/config/progression';
 import { SET_INFO } from '@/config/economy';
 import { xpToNext } from '@/domain/progression';
 import { ownedCopies } from '@/domain/save';
-import { PLAYABLE_FACTIONS, RARITIES } from '@/game/types';
+import { PLAYABLE_FACTIONS, RARITIES, type SetId } from '@/game/types';
 import { Essence, Gold, ProgressBar, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
@@ -242,6 +242,27 @@ export default function ProfileScreen() {
                 <li key={r}>
                   <span className={`rarity-text-${r.toLowerCase()}`}>{t(r.charAt(0) + r.slice(1).toLowerCase())}</span>
                   <ProgressBar value={owned} max={pool.length} label={t('{rarity} collected', { rarity: t(r) })} />
+                  <span className="num faint">
+                    {owned} / {pool.length}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="panel-title">{t('By set')}</div>
+          <ul className="rarity-progress set-progress">
+            {[
+              // Sets in release order, then the campaign-only legends.
+              ...(Object.keys(SET_INFO) as SetId[])
+                .sort((a, b) => SET_INFO[a].releaseOrder - SET_INFO[b].releaseOrder)
+                .map((id) => ({ key: id, label: SET_INFO[id].name, pool: all.filter((c) => c.set === id && !c.rewardOnly) })),
+              { key: 'rewards', label: t('Campaign rewards'), pool: all.filter((c) => c.rewardOnly) },
+            ].map(({ key, label, pool }) => {
+              const owned = pool.filter((c) => ownedCopies(save.collection, c.id) > 0).length;
+              return (
+                <li key={key}>
+                  <span>{label}</span>
+                  <ProgressBar value={owned} max={pool.length} label={t('{set} collected', { set: label })} />
                   <span className="num faint">
                     {owned} / {pool.length}
                   </span>

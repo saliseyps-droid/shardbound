@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.43.5': {
+    title: 'Sbírka po sadách',
+    summary: 'Profil ukazuje, kolik máš nasbíráno z každé sady.',
+    sections: [['Profil: v části Sbírka a ekonomika je nový přehled Podle sady, kolik karet z každé sady máš, a k tomu legendy jen z kampaní.']],
+  },
   '0.43.4': {
     title: 'Jasnější text karet',
     summary: 'Jiskra vhledu a Rozdmýchání teď přesně říkají, kdy si lízneš.',

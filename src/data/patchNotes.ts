@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.43.5',
+    date: '2026-10-13',
+    title: 'Your collection, set by set',
+    summary: 'The Profile shows how much of each set you have collected.',
+    sections: [{ kind: 'new', items: ['Profile: under Collection and economy, a new By set list shows how many cards of each set you have, plus the campaign-only legends.'] }],
+    commits: [],
+  },
+  {
     version: '0.43.4',
     date: '2026-10-13',
     title: 'Clearer card text',
