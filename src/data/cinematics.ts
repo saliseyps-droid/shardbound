@@ -21,13 +21,17 @@ export interface CinematicDef {
   title: string;
   /** Look of the lettering and the floating particles: violet motes (default) or flame-orange embers. */
   theme?: 'void' | 'ember';
+  /** Recorded music under the shots (src/assets/music/<id>.mp3) and where in it to start (s); the generative music pauses meanwhile. */
+  music?: { track: string; at: number };
   shots: CinematicShot[];
 }
 
+// Music: Paranoid Truth by Tsorthan Grove (CC0, opengameart.org/content/paranoid-truth), a different part for each cinematic.
 export const CINEMATICS: Record<string, CinematicDef> = {
   // The world intro: plays once on the welcome screen before the first Warden (and from the Lore screen).
   world_intro: {
     id: 'world_intro',
+    music: { track: 'paranoid_truth', at: 0 },
     title: 'Shardbound',
     shots: [
       { image: 'world_crown_isle', motion: 'push-in', ms: 6000, focus: '50% 45%', text: 'For a thousand years the Sundered Crown hovered above the world of Aethra and held the elements in balance.' },
@@ -39,6 +43,7 @@ export const CINEMATICS: Record<string, CinematicDef> = {
   },
   void_intro: {
     id: 'void_intro',
+    music: { track: 'paranoid_truth', at: 51 },
     title: 'The Black Sun',
     shots: [
       { image: 'bs_spire', motion: 'push-in', ms: 5500, focus: '62% 25%', text: 'At noon a black sun climbed over Aethra, and the sky around it turned the colour of a bruise.' },
@@ -49,6 +54,7 @@ export const CINEMATICS: Record<string, CinematicDef> = {
   },
   void_outro: {
     id: 'void_outro',
+    music: { track: 'paranoid_truth', at: 68 },
     title: 'The sun goes out',
     shots: [
       { image: 'bs_crystal', motion: 'push-in', ms: 5500, focus: '55% 55%', text: 'The Creator falls from his throne, and the black sun flickers out like a snuffed candle.' },
@@ -58,6 +64,7 @@ export const CINEMATICS: Record<string, CinematicDef> = {
   },
   aethra_intro: {
     id: 'aethra_intro',
+    music: { track: 'paranoid_truth', at: 17 },
     title: 'The Shattering of Aethra',
     shots: [
       { image: 'aethra_path', motion: 'push-in', ms: 5500, focus: '50% 45%', text: 'For a thousand years the Sundered Crown hung above Aethra and held its wild places in balance.' },
@@ -68,6 +75,7 @@ export const CINEMATICS: Record<string, CinematicDef> = {
   },
   aethra_outro: {
     id: 'aethra_outro',
+    music: { track: 'paranoid_truth', at: 34 },
     title: 'The last Shard',
     shots: [
       { image: 'aethra_butterflies', motion: 'pull-out', ms: 5500, text: 'The Sundered Crown falls silent, and its last Shard answers only to you.' },
@@ -77,6 +85,7 @@ export const CINEMATICS: Record<string, CinematicDef> = {
   },
   lamp_intro: {
     id: 'lamp_intro',
+    music: { track: 'paranoid_truth', at: 85 },
     title: 'The Lamplighters’ Road',
     shots: [
       { image: 'lamp_walkers', motion: 'push-in', ms: 5500, focus: '55% 50%', text: 'For a hundred years the lamplighters walked the Nulwood, and wherever they stopped, the dark stepped back.' },
@@ -88,6 +97,7 @@ export const CINEMATICS: Record<string, CinematicDef> = {
   },
   inn_intro: {
     id: 'inn_intro',
+    music: { track: 'paranoid_truth', at: 119 },
     title: 'The Wraithwood Inn',
     theme: 'ember',
     shots: [
@@ -100,6 +110,7 @@ export const CINEMATICS: Record<string, CinematicDef> = {
   },
   inn_outro: {
     id: 'inn_outro',
+    music: { track: 'paranoid_truth', at: 136 },
     title: 'Last orders',
     theme: 'ember',
     shots: [
@@ -110,6 +121,7 @@ export const CINEMATICS: Record<string, CinematicDef> = {
   },
   lamp_outro: {
     id: 'lamp_outro',
+    music: { track: 'paranoid_truth', at: 102 },
     title: 'The road is lit',
     shots: [
       { image: 'lamp_chapel', motion: 'pull-out', ms: 5500, focus: '50% 45%', text: 'The last page is turned, and the purple flame in the old chapel burns down to nothing.' },

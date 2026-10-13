@@ -19,6 +19,21 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.47.0',
+    date: '2026-10-13',
+    title: 'Something is humming in the dark',
+    summary: 'Every cinematic now has creepy ambient music.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Cinematics have music: a dark ambient score (Paranoid Truth by Tsorthan Grove, public domain) plays under every intro and ending, each one from a different part of the track. It fades in, fades out when the cinematic ends or is skipped, and follows your music volume and mute settings.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.46.2',
     date: '2026-10-13',
     title: 'A new coat of Nulwood',

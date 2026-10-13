@@ -1,6 +1,15 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.47.0': {
+    title: 'Ve tmě něco hučí',
+    summary: 'Všechny filmové klipy mají strašidelnou ambientní hudbu.',
+    sections: [
+      [
+        'Filmové klipy mají hudbu: pod každým úvodem i závěrem hraje temný ambient (Paranoid Truth od Tsorthana Grovea, volné dílo), každý klip z jiné části skladby. Pozvolna se rozezní, po skončení nebo přeskočení klipu se ztratí a řídí se hlasitostí a ztlumením hudby v nastavení.',
+      ],
+    ],
+  },
   '0.46.2': {
     title: 'Nulský hvozd v novém',
     summary: 'Klipy Cesty lampářů mají úplně nové malby.',

@@ -133,6 +133,9 @@ class AudioService {
   private buffers = new Map<SoundEvent, AudioBuffer[]>();
   private samplesRequested = false;
   private inMatch = false;
+  /** A recorded music track (cinematics) is playing: the generative pads pause meanwhile. */
+  private trackActive = false;
+  private trackBuffers = new Map<string, Promise<AudioBuffer | null>>();
 
   private loadSamples() {
     if (this.samplesRequested || !this.ctx) return;
@@ -271,13 +274,63 @@ class AudioService {
     this.musicTimer = null;
   }
 
+  /**
+   * Plays a recorded track on the music bus (so it follows the music volume and mute) from `offset`
+   * seconds, looping, fading in over 2 s. Returns a stop function that fades it out. The generative music pauses meanwhile.
+   */
+  /** Whether the audio context exists (after the first user gesture). */
+  get ready() {
+    return !!this.ctx;
+  }
+
+  playTrack(url: string, offset = 0): () => void {
+    const ctx = this.ctx;
+    const out = this.musicGain;
+    if (!ctx || !out) return () => {};
+    this.trackActive = true;
+    let stopped = false;
+    let node: { src: AudioBufferSourceNode; gain: GainNode } | null = null;
+    if (!this.trackBuffers.has(url)) {
+      this.trackBuffers.set(
+        url,
+        fetch(url)
+          .then((r) => r.arrayBuffer())
+          .then((data) => ctx.decodeAudioData(data))
+          .catch(() => null),
+      );
+    }
+    void this.trackBuffers.get(url)!.then((buffer) => {
+      if (!buffer || stopped) return;
+      const src = ctx.createBufferSource();
+      src.buffer = buffer;
+      src.loop = true;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(1, ctx.currentTime + 2);
+      src.connect(gain).connect(out);
+      src.start(0, offset % buffer.duration);
+      node = { src, gain };
+    });
+    return () => {
+      if (stopped) return;
+      stopped = true;
+      this.trackActive = false;
+      if (!node) return;
+      const t = ctx.currentTime;
+      node.gain.gain.cancelScheduledValues(t);
+      node.gain.gain.setValueAtTime(node.gain.gain.value, t);
+      node.gain.gain.linearRampToValueAtTime(0, t + 1.5);
+      node.src.stop(t + 1.6);
+    };
+  }
+
   private startMusicLoop() {
     if (this.musicTimer !== null || !this.ctx || !this.musicGain) return;
     let step = 0;
     const playChord = () => {
       if (!this.ctx || !this.musicGain) return;
       const s = useSettings.getState();
-      if (s.muted || s.musicMuted || s.musicVolume === 0) return;
+      if (s.muted || s.musicMuted || s.musicVolume === 0 || this.trackActive) return;
       const t0 = this.ctx.currentTime;
       const root = SCALE[(step * 3) % SCALE.length] / 2;
       for (const [i, mult] of [1, 1.5, 2.0, 2.5].entries()) {

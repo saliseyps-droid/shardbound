@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import { CINEMATICS } from '@/data/cinematics';
 import { anim, useSettings } from '@/state/settingsStore';
@@ -8,6 +8,8 @@ import '@/ui/styles/cinematic.css';
 
 const images = import.meta.glob('../../assets/cinematics/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 const imageUrl = (id: string) => images[`../../assets/cinematics/${id}.webp`];
+const tracks = import.meta.glob('../../assets/music/*.mp3', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const trackUrl = (id: string) => tracks[`../../assets/music/${id}.mp3`];
 
 /** Floating motes of light over the shots (fixed positions, so every replay looks the same). */
 const MOTES = Array.from({ length: 22 }, (_, i) => ({ x: (i * 37) % 100, d: 6 + ((i * 13) % 7), delay: (i * 0.7) % 6, size: 2 + (i % 3) }));
@@ -22,7 +24,37 @@ export function Cinematic({ id, onDone }: { id: string; onDone: () => void }) {
   const [shot, setShot] = useState(0);
   const [closing, setClosing] = useState(false);
 
+  // Its own music while it plays (fades out with the closing fade).
+  const stopMusic = useRef<() => void>(() => {});
+  useEffect(() => {
+    const url = def?.music && trackUrl(def.music.track);
+    if (!url) return;
+    const at = def.music!.at;
+    let stop = () => {};
+    const start = () => {
+      stop = audio.playTrack(url, at);
+      stopMusic.current = stop;
+    };
+    if (audio.ready) start();
+    // Before any user gesture (the world intro on a first visit) the browser keeps audio locked:
+    // the first tap or key unlocks it and the music starts then.
+    const onGesture = () => {
+      audio.unlock();
+      if (audio.ready) start();
+    };
+    if (!audio.ready) {
+      window.addEventListener('pointerdown', onGesture, { once: true });
+      window.addEventListener('keydown', onGesture, { once: true });
+    }
+    return () => {
+      window.removeEventListener('pointerdown', onGesture);
+      window.removeEventListener('keydown', onGesture);
+      stop();
+    };
+  }, [def]);
+
   const finish = useCallback(() => {
+    stopMusic.current();
     setClosing(true);
     window.setTimeout(onDone, anim(600));
   }, [onDone]);
