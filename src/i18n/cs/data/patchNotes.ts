@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.45.6': {
+    title: 'Kam padaly Střepy',
+    summary: 'Roztříštění Aethry teď začíná i končí filmovým klipem.',
+    sections: [['Roztříštění Aethry: úvod o čtyřech záběrech lesy, kam dopadly Střepy, a závěr o třech záběrech po porážce Rozťaté koruny. Oba se jednou pustí samy a znovu si je můžeš přehrát z obrazovky kampaně.']],
+  },
   '0.45.5': {
     title: 'Fajfky jsou zpátky',
     summary: 'Poražené souboje v kampani zase ukazují zelenou fajfku.',

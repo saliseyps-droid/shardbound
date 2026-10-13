@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.45.6',
+    date: '2026-10-13',
+    title: 'Where the Shards fell',
+    summary: 'The Shattering of Aethra now opens and ends with a cinematic.',
+    sections: [{ kind: 'new', items: ['The Shattering of Aethra: a four-shot intro through the forests where the Shards fell, and a three-shot ending after you defeat The Sundered Crown. Both play once on their own and can be replayed from the campaign screen.'] }],
+    commits: [],
+  },
+  {
     version: '0.45.5',
     date: '2026-10-13',
     title: 'Ticks are back',

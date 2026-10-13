@@ -25,6 +25,25 @@ export interface CinematicDef {
 }
 
 export const CINEMATICS: Record<string, CinematicDef> = {
+  aethra_intro: {
+    id: 'aethra_intro',
+    title: 'The Shattering of Aethra',
+    shots: [
+      { image: 'aethra_path', motion: 'push-in', ms: 5500, focus: '50% 45%', text: 'For a thousand years the Sundered Crown hung above Aethra and held its wild places in balance.' },
+      { image: 'aethra_fairy', motion: 'pan-right', ms: 5500, focus: '60% 40%', text: 'Then the last Sovereign vanished, and the Crown broke into ten thousand Shards.' },
+      { image: 'aethra_glade', motion: 'pull-out', ms: 5500, focus: '48% 45%', text: 'They fell through the forests like stars. Wherever one lands, something old wakes up to look at it.' },
+      { image: 'aethra_deep_path', motion: 'push-in', ms: 5500, focus: '50% 45%', text: 'You are a newly awakened Warden. Follow the falling Shards, before someone else gathers them.' },
+    ],
+  },
+  aethra_outro: {
+    id: 'aethra_outro',
+    title: 'The last Shard',
+    shots: [
+      { image: 'aethra_butterflies', motion: 'pull-out', ms: 5500, text: 'The Sundered Crown falls silent, and its last Shard answers only to you.' },
+      { image: 'aethra_clearing', motion: 'push-in', ms: 6000, focus: '50% 45%', text: 'Across Aethra the forests grow quiet again. Whatever comes next, it will be written by a Warden.' },
+      { image: 'aethra_path', motion: 'pull-out', ms: 5500, focus: '50% 45%', text: 'The road you came by is still there. It always leads to the next story.' },
+    ],
+  },
   lamp_intro: {
     id: 'lamp_intro',
     title: 'The Lamplighters’ Road',
