@@ -99,9 +99,16 @@ export default function CampaignScreen() {
   };
   const forSale = sel && !isChapterBought(save, sel.chapter) ? sel.chapter : null;
 
+  // Some bosses (Sali) get a short cinematic right before the fight.
+  const [preFight, setPreFight] = useState<string | null>(null);
+  const startFight = () => {
+    if (!enc) return;
+    launchMatch({ mode: 'PVE', deckId, opponent: enc, encounterId: enc.id }, navigate);
+  };
   const fight = () => {
     if (!enc || !unlocked || !validDeck) return;
-    launchMatch({ mode: 'PVE', deckId, opponent: enc, encounterId: enc.id }, navigate);
+    if (enc.preCinematic) setPreFight(enc.preCinematic);
+    else startFight();
   };
 
   return (
@@ -144,6 +151,16 @@ export default function CampaignScreen() {
             </button>
           )}
         </div>
+      )}
+      {preFight && (
+        <Cinematic
+          key={preFight}
+          id={preFight}
+          onDone={() => {
+            setPreFight(null);
+            startFight();
+          }}
+        />
       )}
       {cinematic && (
         <Cinematic

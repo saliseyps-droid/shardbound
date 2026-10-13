@@ -10,6 +10,8 @@ import { audio } from '@/audio/audioService';
 import { anim } from '@/state/settingsStore';
 import { t } from '@/i18n';
 import '@/ui/styles/legendary.css';
+import saliThrone from '@/assets/cinematics/sali_throne.webp';
+import paranoidTruth from '@/assets/music/paranoid_truth.mp3';
 
 /** Stable pseudo-random 0..1 per particle, so every entrance looks the same. */
 const rnd = (i: number, k: number) => {
@@ -664,8 +666,16 @@ const EXTRAS: Partial<Record<LegendTheme, { back?: () => ReactNode; stage?: () =
 export const LEGEND_MS = 2150;
 
 /** A short full-screen entrance when a Legendary unit is played, before it lands on the board. */
+/** Sali's entrance plays the loudest stretch of Paranoid Truth (the cinematic score) under it. */
+const SALI_MUSIC = { url: paranoidTruth, at: 105 };
+
 export function LegendaryEntrance() {
   const legend = useMatch((s) => s.legend);
+  // A deck with Sali in it: have his music decoded before he is played.
+  const saliInMatch = useMatch((s) => !!s.game?.players.some((p) => [...p.deck, ...p.hand].some((c) => c.cardId === 'neu_sali_the_creator')));
+  useEffect(() => {
+    if (saliInMatch) audio.preloadTrack(SALI_MUSIC.url);
+  }, [saliInMatch]);
   if (!legend) return null;
   return <LegendaryEntranceView key={legend.id} cardId={legend.cardId} enemy={legend.player === AI} />;
 }
@@ -692,6 +702,15 @@ export function LegendShowcase({ cardId, onDone }: { cardId: string; onDone: () 
 export function LegendaryEntranceView({ cardId, enemy }: { cardId: string; enemy: boolean }) {
   const card = getCardSafe(cardId);
   const theme = legendTheme(cardId);
+  useEffect(() => {
+    if (theme !== 'sali') return;
+    const stop = audio.playTrack(SALI_MUSIC.url, SALI_MUSIC.at, { fadeIn: 0.3, gain: 1.6 });
+    const id = window.setTimeout(stop, Math.max(600, anim(legendDuration(cardId)) - 900));
+    return () => {
+      window.clearTimeout(id);
+      stop();
+    };
+  }, [theme, cardId]);
   const extras = EXTRAS[theme] ?? {};
   const faction = FACTIONS[card.faction] ?? FACTIONS.NEUTRAL;
   const art = (ENTRANCE_PORTRAITS[cardId] && portraitUrl(null, ENTRANCE_PORTRAITS[cardId])) || cardArtUri(card);
@@ -705,6 +724,7 @@ export function LegendaryEntranceView({ cardId, enemy }: { cardId: string; enemy
       <div className="legend-backdrop" />
       <div className="legend-sunrays" />
       {extras.back?.()}
+      {theme === 'sali' && <div className="sl2-throne" style={{ backgroundImage: `url(${saliThrone})` }} aria-hidden />}
       {theme === 'sali' && <img className="sl2-colossus" src={cardArtUri(card)} alt="" draggable={false} />}
       <div className="legend-stage">
         <div className="legend-portrait">

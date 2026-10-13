@@ -1089,6 +1089,18 @@
   70% { transform: scaleX(1.6) scaleY(1.15); opacity: 0.85; }
   100% { transform: scaleX(2.2) scaleY(1.2); opacity: 0.5; }
 }
+/* His throne in the dark, behind everything: it rises out of the black once the lids close, the camera
+   creeps towards it, it flares violet with the quake and darkens again under the name. */
+.sl2-throne {
+  position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: 50% 62%;
+  -webkit-mask: radial-gradient(ellipse 75% 80% at 50% 55%, #000 45%, transparent 100%); mask: radial-gradient(ellipse 75% 80% at 50% 55%, #000 45%, transparent 100%);
+  opacity: 0; transform-origin: 50% 62%;
+  animation: sl2-throne-in 0.9s 0.45s ease-out forwards, sl2-throne-push 3.4s linear forwards, sl2-throne-flare 1.3s 1.9s ease-out;
+}
+.sl2-throne::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 60%, rgba(120, 40, 255, 0.25), rgba(10, 0, 25, 0.55)); mix-blend-mode: multiply; }
+@keyframes sl2-throne-in { from { opacity: 0; } to { opacity: 0.85; } }
+@keyframes sl2-throne-push { from { transform: scale(1.14); } to { transform: scale(1.02); } }
+@keyframes sl2-throne-flare { 0% { filter: brightness(1); } 15% { filter: brightness(1.9) saturate(1.6) hue-rotate(-20deg); } 100% { filter: brightness(0.7); } }
 /* A colossal, dark Sali looming behind the rift. */
 .sl2-colossus {
   position: absolute; left: 50%; top: 50%; width: min(130vmin, 1100px); aspect-ratio: 0.8; translate: -50% -50%; z-index: 1;

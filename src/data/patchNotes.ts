@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.47.1',
+    date: '2026-10-14',
+    title: 'The Throne in the Dark',
+    summary: "Sali's throne now looms before his fight and behind his entrance.",
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'The Black Sun: before every fight with Sali, a short cinematic shows his throne in the dark (skippable).',
+          "Sali, the Creator: his Legendary entrance now plays in front of his throne, which flares violet when he arrives, with a burst of the cinematic score under it. The rest of the entrance is unchanged.",
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.47.0',
     date: '2026-10-13',
     title: 'Something is humming in the dark',

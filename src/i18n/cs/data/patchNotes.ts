@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.47.1': {
+    title: 'Trůn ve tmě',
+    summary: 'Saliho trůn se teď tyčí před soubojem s ním i za jeho příchodem.',
+    sections: [
+      [
+        'Černé slunce: před každým soubojem se Salim ukáže krátký klip s jeho trůnem ve tmě (dá se přeskočit).',
+        'Sali, Stvořitel: jeho legendární příchod se teď odehrává před jeho trůnem, který při jeho příchodu fialově vzplane, a pod ním zazní úryvek hudby z klipů. Zbytek příchodu je beze změny.',
+      ],
+    ],
+  },
   '0.47.0': {
     title: 'Ve tmě něco hučí',
     summary: 'Všechny filmové klipy mají strašidelnou ambientní hudbu.',

@@ -283,22 +283,27 @@ class AudioService {
     return !!this.ctx;
   }
 
-  playTrack(url: string, offset = 0): () => void {
+  /** Starts downloading and decoding a track so a later playTrack starts without delay. */
+  preloadTrack(url: string) {
+    const ctx = this.ctx;
+    if (!ctx || this.trackBuffers.has(url)) return;
+    this.trackBuffers.set(
+      url,
+      fetch(url)
+        .then((r) => r.arrayBuffer())
+        .then((data) => ctx.decodeAudioData(data))
+        .catch(() => null),
+    );
+  }
+
+  playTrack(url: string, offset = 0, opts: { fadeIn?: number; gain?: number } = {}): () => void {
     const ctx = this.ctx;
     const out = this.musicGain;
     if (!ctx || !out) return () => {};
     this.trackActive = true;
     let stopped = false;
     let node: { src: AudioBufferSourceNode; gain: GainNode } | null = null;
-    if (!this.trackBuffers.has(url)) {
-      this.trackBuffers.set(
-        url,
-        fetch(url)
-          .then((r) => r.arrayBuffer())
-          .then((data) => ctx.decodeAudioData(data))
-          .catch(() => null),
-      );
-    }
+    this.preloadTrack(url);
     void this.trackBuffers.get(url)!.then((buffer) => {
       if (!buffer || stopped) return;
       const src = ctx.createBufferSource();
@@ -306,7 +311,7 @@ class AudioService {
       src.loop = true;
       const gain = ctx.createGain();
       gain.gain.setValueAtTime(0, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(1, ctx.currentTime + 2);
+      gain.gain.linearRampToValueAtTime(opts.gain ?? 1, ctx.currentTime + (opts.fadeIn ?? 2));
       src.connect(gain).connect(out);
       src.start(0, offset % buffer.duration);
       node = { src, gain };

@@ -324,6 +324,8 @@ const d: Record<string, string> = {
   'By set': 'Podle sady',
   Skip: 'Přeskočit',
   'Watch the intro': 'Přehrát úvod',
+  'The Throne in the Dark': 'Trůn ve tmě',
+  'Before the first star, before the first word, he was already sitting here.': 'Před první hvězdou, před prvním slovem, už tu seděl.',
   'For a thousand years the Sundered Crown hovered above the world of Aethra and held the elements in balance.': 'Tisíc let se nad světem Aethry vznášela Rozťatá koruna a držela živly v rovnováze.',
   'When the last Sovereign vanished, the Crown cracked into ten thousand Shards and rained across the continents.': 'Když zmizel poslední Vládce, Koruna pukla na deset tisíc Střepů, které se snesly na všechny kontinenty.',
   'Each Shard is raw Aether: power enough to raise a forest overnight, boil a sea, or wake the dead.': 'Každý Střep je čistý Éter: síla, která přes noc vyzdvihne les, uvaří moře nebo probudí mrtvé.',

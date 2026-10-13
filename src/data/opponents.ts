@@ -45,6 +45,8 @@ export interface OpponentDef {
   boss?: boolean;
   /** Warden portrait (src/data/portraits.ts); null = the faction's default; missing = random. */
   portrait?: string | null;
+  /** A cinematic (src/data/cinematics.ts) shown right before every campaign fight against it. */
+  preCinematic?: string;
 }
 
 const ALL: Rarity[] = ['COMMON', 'RARE', 'EPIC', 'LEGENDARY'];
@@ -544,7 +546,7 @@ export const VOID_CAMPAIGN: Chapter[] = [
         firstWinReward: { gold: 550, xp: 500, essence: 300 },
       },
       {
-        id: 'v3_final', name: 'Sali', title: 'The Creator', avatar: 'crown', faction: 'VOID', secondFaction: 'NEUTRAL', archetype: 'Requiem', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
+        id: 'v3_final', name: 'Sali', title: 'The Creator', avatar: 'crown', faction: 'VOID', secondFaction: 'NEUTRAL', archetype: 'Requiem', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true, preCinematic: 'sali_throne',
         intro: 'Before the first star, before the first word, I was already sitting here. Did you think you could stand up to me?',
         special: {
           heroHealth: 45,

@@ -41,6 +41,13 @@ export const CINEMATICS: Record<string, CinematicDef> = {
       { image: 'world_awaken', motion: 'push-in', ms: 5500, focus: '50% 40%', text: 'You are a newly awakened Warden. Your Shards are waiting for your call.' },
     ],
   },
+  // Before the fight with Sali (OpponentDef.preCinematic): one shot of his throne.
+  sali_throne: {
+    id: 'sali_throne',
+    title: 'The Throne in the Dark',
+    music: { track: 'paranoid_truth', at: 145 },
+    shots: [{ image: 'sali_throne', motion: 'push-in', ms: 7000, focus: '50% 62%', text: 'Before the first star, before the first word, he was already sitting here.' }],
+  },
   void_intro: {
     id: 'void_intro',
     music: { track: 'paranoid_truth', at: 51 },
