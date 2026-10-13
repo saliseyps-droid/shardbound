@@ -53,7 +53,7 @@ export const CINEMATICS: Record<string, CinematicDef> = {
     shots: [
       { image: 'bs_crystal', motion: 'push-in', ms: 5500, focus: '55% 55%', text: 'The Creator falls from his throne, and the black sun flickers out like a snuffed candle.' },
       { image: 'bs_eye_isle', motion: 'pan-right', ms: 5500, focus: '50% 40%', text: 'One by one the floating islands sink back towards the earth.' },
-      { image: 'bs_spire', motion: 'pull-out', ms: 6000, focus: '62% 25%', text: 'The sky heals slowly. But a sun that has turned black once remembers how.' },
+      { image: 'bs_citadel', motion: 'push-in', ms: 6000, focus: '68% 35%', text: 'The sky heals slowly. But a sun that has turned black once remembers how.' },
     ],
   },
   aethra_intro: {
@@ -79,11 +79,11 @@ export const CINEMATICS: Record<string, CinematicDef> = {
     id: 'lamp_intro',
     title: 'The Lamplighters’ Road',
     shots: [
-      { image: 'lamp_road', motion: 'push-in', ms: 5500, text: 'For a hundred years, the lamplighters kept a road of light through the Nulwood.' },
-      { image: 'lamp_waking', motion: 'pan-left', ms: 5000, text: 'Then Nul woke beneath the roots, and the lanterns began to go out.' },
-      { image: 'lamp_torn_sky', motion: 'pull-out', ms: 5000, text: 'The sky tore open, and the grove itself began to change.' },
-      { image: 'lamp_purple_flame', motion: 'push-in', ms: 5500, focus: '56% 40%', text: 'Now something else carries the last flame of the wood. And it burns purple.' },
-      { image: 'lamp_call', motion: 'push-in', ms: 5000, focus: '58% 55%', text: 'Take up your lantern, Warden. The road is waiting.' },
+      { image: 'lamp_walkers', motion: 'push-in', ms: 5500, focus: '55% 50%', text: 'For a hundred years the lamplighters walked the Nulwood, and wherever they stopped, the dark stepped back.' },
+      { image: 'lamp_waking', motion: 'pan-left', ms: 5500, focus: '50% 50%', text: 'Then Nul woke beneath the roots, and the lanterns began to go out.' },
+      { image: 'lamp_ruins', motion: 'pull-out', ms: 5500, focus: '50% 45%', text: 'The wardens of the grove did not die. They changed, and they still keep the road.' },
+      { image: 'lamp_chapel', motion: 'push-in', ms: 5500, focus: '50% 45%', text: 'At its end, something reads by the last flame of the wood. And it burns purple.' },
+      { image: 'lamp_road', motion: 'push-in', ms: 5000, focus: '52% 60%', text: 'Take up your lantern, Warden. The road is waiting.' },
     ],
   },
   inn_intro: {
@@ -112,9 +112,9 @@ export const CINEMATICS: Record<string, CinematicDef> = {
     id: 'lamp_outro',
     title: 'The road is lit',
     shots: [
-      { image: 'lamp_eye_closing', motion: 'push-in', ms: 5500, focus: '57% 30%', text: 'The last page is turned, and the eye above the grove begins to close.' },
-      { image: 'lamp_light', motion: 'pull-out', ms: 5500, focus: '50% 25%', text: 'One by one, the lanterns of the old road catch fire again.' },
-      { image: 'lamp_waking', motion: 'pan-right', ms: 5500, text: 'The Nulwood sleeps. Somewhere beneath it, Nul is still dreaming.' },
+      { image: 'lamp_chapel', motion: 'pull-out', ms: 5500, focus: '50% 45%', text: 'The last page is turned, and the purple flame in the old chapel burns down to nothing.' },
+      { image: 'lamp_glow', motion: 'pan-right', ms: 5500, focus: '30% 60%', text: 'One by one, warm lights wake again between the roots of the old road.' },
+      { image: 'lamp_waking', motion: 'pull-out', ms: 5500, text: 'The Nulwood sleeps. Somewhere beneath it, Nul is still dreaming.' },
     ],
   },
 };

@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.46.2',
+    date: '2026-10-13',
+    title: 'A new coat of Nulwood',
+    summary: "The Lamplighters' Road cinematics get all-new paintings.",
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          "The Lamplighters' Road intro and ending: new paintings of the Nulwood (the walkers in the trees, the glowing mushrooms, the drowned ruins and the purple chapel at the end of the road), with the narration reworked to match.",
+          'The Black Sun ending: a new final shot of the old citadel under the healing sky.',
+          'World intro: a sharper opening shot of the floating castle.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.46.1',
     date: '2026-10-13',
     title: 'The intro for everyone',

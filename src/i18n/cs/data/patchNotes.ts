@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.46.2': {
+    title: 'Nulský hvozd v novém',
+    summary: 'Klipy Cesty lampářů mají úplně nové malby.',
+    sections: [
+      [
+        'Úvod a závěr Cesty lampářů: nové malby Nulského hvozdu (postavy mezi stromy, svítící houby, zarostlé ruiny a fialová kaple na konci cesty) a vyprávění upravené tak, aby k nim sedělo.',
+        'Závěr Černého slunce: nový poslední záběr na starou citadelu pod hojícím se nebem.',
+        'Úvod do světa: ostřejší první záběr létajícího hradu.',
+      ],
+    ],
+  },
   '0.46.1': {
     title: 'Úvod pro všechny',
     summary: 'Úvod do světa uvidí jednou i hráči, kteří začali hrát dřív, než existoval.',
