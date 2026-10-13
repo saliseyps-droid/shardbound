@@ -1,14 +1,17 @@
 import type { CardDefinition, CardType, Faction, Rarity, SetId } from '@/game/types';
 import { ALL_FACTIONS, RARITIES } from '@/game/types';
+import { SET_INFO } from '@/config/economy';
 import { currentLocale, t } from '@/i18n';
 
-export type SortKey = 'cost' | 'name' | 'rarity' | 'faction';
+export type SortKey = 'cost' | 'name' | 'rarity' | 'faction' | 'set';
+/** A card set, or the campaign-only reward cards (rewardOnly), which belong to no set. */
+export type SetFilter = SetId | 'CAMPAIGN';
 export type OwnershipFilter = 'ALL' | 'OWNED' | 'MISSING';
 
 export interface CardFilterState {
   faction: Faction | 'ALL';
   rarity: Rarity | 'ALL';
-  set: SetId | 'ALL';
+  set: SetFilter | 'ALL';
   type: CardType | 'ALL';
   /** 0..7 where 7 means 7+. */
   cost: number | 'ALL';
@@ -30,6 +33,9 @@ export const DEFAULT_FILTERS: CardFilterState = {
 
 const rarityRank = (r: Rarity) => RARITIES.indexOf(r);
 const factionRank = (f: Faction) => ALL_FACTIONS.indexOf(f);
+const SET_ORDER = Object.keys(SET_INFO) as SetId[];
+/** Sets in release order, campaign rewards last. */
+const setRank = (c: CardDefinition) => (c.rewardOnly ? SET_ORDER.length : SET_ORDER.indexOf(c.set));
 
 function matchesSearch(card: CardDefinition, q: string): boolean {
   if (!q) return true;
@@ -54,7 +60,7 @@ export function filterCards(
     if (allowedFactions && !allowedFactions.includes(c.faction)) return false;
     if (f.faction !== 'ALL' && c.faction !== f.faction) return false;
     if (f.rarity !== 'ALL' && c.rarity !== f.rarity) return false;
-    if (f.set !== 'ALL' && c.set !== f.set) return false;
+    if (f.set === 'CAMPAIGN' ? !c.rewardOnly : f.set !== 'ALL' && (c.set !== f.set || c.rewardOnly)) return false;
     if (f.type !== 'ALL' && c.cardType !== f.type) return false;
     if (f.cost !== 'ALL' && (f.cost >= 7 ? c.manaCost < 7 : c.manaCost !== f.cost)) return false;
     if (f.ownership === 'OWNED' && owned(c.id) === 0) return false;
@@ -68,6 +74,7 @@ export function filterCards(
     name: byName,
     rarity: (a, b) => rarityRank(b.rarity) - rarityRank(a.rarity) || byCost(a, b),
     faction: (a, b) => factionRank(a.faction) - factionRank(b.faction) || byCost(a, b),
+    set: (a, b) => setRank(a) - setRank(b) || byCost(a, b),
   };
   return out.sort(cmp[f.sort]);
 }

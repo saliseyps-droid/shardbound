@@ -30,7 +30,7 @@ export default function CollectionScreen() {
   // ?set=ID opens the collection filtered to one set (from the news on Home).
   const [filters, setFilters] = useState<CardFilterState>(() => {
     const set = params.get('set');
-    return set && set in SET_INFO ? { ...DEFAULT_FILTERS, set: set as SetId } : DEFAULT_FILTERS;
+    return set && (set in SET_INFO || set === 'CAMPAIGN') ? { ...DEFAULT_FILTERS, set: set as SetId | 'CAMPAIGN' } : DEFAULT_FILTERS;
   });
   const [selected, setSelected] = useState<string | null>(null);
   const cardWidth = useCardWidth();

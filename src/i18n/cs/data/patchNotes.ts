@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.45.4': {
+    title: 'Karty z kampaní na vlastní polici',
+    summary: 'Sbírka umí ukázat odměny z kampaní jako samostatný set a řadit karty podle setu.',
+    sections: [
+      [
+        'Sbírka: filtr setu má novou volbu Odměny z kampaní se všemi kartami jen z kampaní (legendy lampářů a hosté z Hostince v Přízračném hvozdu). Pod setem Core se už neukazují.',
+        'Nové řazení: Řadit podle setu, v pořadí vydání, odměny z kampaní na konec.',
+      ],
+    ],
+  },
   '0.45.3': {
     title: 'Nocležník se vždycky vrátí',
     summary: 'Bledý nocležník dostal vlastní přízračnou schopnost.',

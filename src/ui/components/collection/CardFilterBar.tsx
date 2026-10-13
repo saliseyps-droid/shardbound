@@ -4,7 +4,7 @@ import { CARD_TYPES, RARITIES } from '@/game/types';
 import { FACTIONS } from '@/data/factions';
 import { SET_INFO } from '@/config/economy';
 import { Glyph } from '@/ui/components/Icons';
-import type { CardFilterState, OwnershipFilter, SortKey } from './cardFilters';
+import type { CardFilterState, OwnershipFilter, SetFilter, SortKey } from './cardFilters';
 import { DEFAULT_FILTERS } from './cardFilters';
 import { t } from '@/i18n';
 
@@ -92,13 +92,14 @@ export function CardFilterBar({ value, onChange, factions, disabledFactions = []
           ))}
         </select>
         {!compact && (
-          <select className="select" aria-label={t('Set')} value={value.set} onChange={(e) => set('set', e.target.value as SetId | 'ALL')}>
+          <select className="select" aria-label={t('Set')} value={value.set} onChange={(e) => set('set', e.target.value as SetFilter | 'ALL')}>
             <option value="ALL">{t('Any set')}</option>
             {(Object.keys(SET_INFO) as SetId[]).map((s) => (
               <option key={s} value={s}>
                 {SET_INFO[s].name}
               </option>
             ))}
+            <option value="CAMPAIGN">{t('Campaign rewards')}</option>
           </select>
         )}
         <select className="select" aria-label={t('Ownership')} value={value.ownership} onChange={(e) => set('ownership', e.target.value as OwnershipFilter)}>
@@ -111,6 +112,7 @@ export function CardFilterBar({ value, onChange, factions, disabledFactions = []
           <option value="name">{t('Sort by name')}</option>
           <option value="rarity">{t('Sort by rarity')}</option>
           <option value="faction">{t('Sort by faction')}</option>
+          <option value="set">{t('Sort by set')}</option>
         </select>
         {active && (
           <button className="btn btn-ghost btn-sm" onClick={() => onChange({ ...DEFAULT_FILTERS, sort: value.sort })}>

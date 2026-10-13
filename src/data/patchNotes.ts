@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.45.4',
+    date: '2026-10-13',
+    title: 'Campaign cards on their own shelf',
+    summary: 'The collection can show campaign rewards as their own set and sort cards by set.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Collection: the set filter has a new Campaign rewards option with every campaign-only card (the Lamplighter legends and the Wraithwood Inn guests). They no longer show up under the Core set.',
+          'New sorting: Sort by set, in release order with campaign rewards last.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.45.3',
     date: '2026-10-13',
     title: 'The lodger always comes back',

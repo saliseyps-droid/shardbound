@@ -326,6 +326,7 @@ const d: Record<string, string> = {
   'Sort by name': 'Řadit podle názvu',
   'Sort by rarity': 'Řadit podle vzácnosti',
   'Sort by faction': 'Řadit podle frakce',
+  'Sort by set': 'Řadit podle setu',
 
   // CollectionStats
   'Collection statistics': 'Statistiky sbírky',
