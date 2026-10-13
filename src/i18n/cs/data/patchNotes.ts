@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.45.1': {
+    title: 'Uhlíky nad hostincem',
+    summary: 'Klipy Hostince v Přízračném hvozdu žhnou jako krb.',
+    sections: [['Úvod a závěr Hostince v Přízračném hvozdu: plamenně oranžové nápisy a místo fialových jisker stoupají žhavé uhlíky a světlušky.']],
+  },
   '0.45.0': {
     title: 'Hostinec v Přízračném hvozdu',
     summary: 'Čtvrtá kampaň: hraj karty proti mrtvým hraničářům a přízrakům ve strašidelné hospodě a vyhraj kartu každého, koho porazíš.',

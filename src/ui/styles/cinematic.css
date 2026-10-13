@@ -68,6 +68,53 @@
 .cine-skip { position: absolute; top: calc(9vh + 14px); right: calc(18px + var(--safe-right, 0px)); z-index: 4; opacity: 0.8; }
 .cine-skip:hover { opacity: 1; }
 
+/* Ember theme (The Wraithwood Inn): flame-orange lettering, glowing embers and fireflies drifting up. */
+.theme-ember .cine-title {
+  color: transparent;
+  background: linear-gradient(180deg, #fff4c8 0%, #ffc04a 40%, #ff7a12 70%, #c93300 100%);
+  -webkit-background-clip: text; background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 0 18px rgba(255, 110, 20, 0.85)) drop-shadow(0 0 42px rgba(255, 70, 0, 0.45)) drop-shadow(0 3px 0 #000);
+}
+.theme-ember .cine-text { color: #ffcf8a; text-shadow: 0 2px 6px #000, 0 0 14px rgba(255, 110, 20, 0.55), 0 0 22px rgba(0, 0, 0, 0.9); }
+.theme-ember .cine-dots span.is-on { background: #ffb347; box-shadow: 0 0 8px #ff6a00; }
+.theme-ember .cine-motes span {
+  width: calc(var(--size) * 1.6); height: calc(var(--size) * 1.6);
+  background: radial-gradient(circle, #fff1c2 0%, #ffb347 45%, #ff5a00 100%);
+  box-shadow: 0 0 6px 2px rgba(255, 120, 20, 0.85), 0 0 14px 4px rgba(255, 70, 0, 0.35);
+  animation: cine-ember var(--d) var(--delay) linear infinite, cine-flicker 0.7s var(--delay) ease-in-out infinite alternate;
+}
+.theme-ember .cine-motes span:nth-child(even) { animation-name: cine-ember-b, cine-flicker; }
+/* Every fifth one is a firefly: a soft yellow-green glow that wanders. */
+.theme-ember .cine-motes span:nth-child(5n) {
+  background: #f4ff9a; box-shadow: 0 0 8px 3px rgba(200, 255, 90, 0.7);
+  animation: cine-firefly calc(var(--d) * 1.6) var(--delay) ease-in-out infinite, cine-flicker 1.6s var(--delay) ease-in-out infinite alternate;
+}
+@keyframes cine-ember {
+  0% { transform: translate(0, 0) scale(1); opacity: 0; }
+  8% { opacity: 1; }
+  30% { transform: translate(-20px, -28vh) scale(0.9); }
+  55% { transform: translate(18px, -52vh) scale(0.75); opacity: 0.9; }
+  80% { transform: translate(-12px, -76vh) scale(0.55); opacity: 0.6; }
+  100% { transform: translate(10px, -98vh) scale(0.3); opacity: 0; }
+}
+@keyframes cine-ember-b {
+  0% { transform: translate(0, 0) scale(1); opacity: 0; }
+  8% { opacity: 1; }
+  35% { transform: translate(24px, -30vh) scale(0.85); }
+  60% { transform: translate(-16px, -58vh) scale(0.7); opacity: 0.85; }
+  100% { transform: translate(20px, -96vh) scale(0.3); opacity: 0; }
+}
+@keyframes cine-firefly {
+  0% { transform: translate(0, -20vh); opacity: 0; }
+  20% { opacity: 0.9; }
+  40% { transform: translate(40px, -34vh); opacity: 0.2; }
+  60% { transform: translate(-30px, -44vh); opacity: 0.9; }
+  80% { transform: translate(20px, -56vh); opacity: 0.3; }
+  100% { transform: translate(-10px, -62vh); opacity: 0; }
+}
+@keyframes cine-flicker { from { filter: brightness(1); } to { filter: brightness(1.6); } }
+
 @media (max-height: 520px) {
   .cine-bar { height: 6vh; }
   .cine-title { top: 16vh; }

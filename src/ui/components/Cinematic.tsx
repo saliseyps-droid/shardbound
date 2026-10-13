@@ -53,7 +53,7 @@ export function Cinematic({ id, onDone }: { id: string; onDone: () => void }) {
 
   if (!def) return null;
   return createPortal(
-    <div className={`cinematic ${closing ? 'is-closing' : ''} ${reduced ? 'is-reduced' : ''}`} role="dialog" aria-label={t(def.title)} onClick={next}>
+    <div className={`cinematic theme-${def.theme ?? 'void'} ${closing ? 'is-closing' : ''} ${reduced ? 'is-reduced' : ''}`} role="dialog" aria-label={t(def.title)} onClick={next}>
       {def.shots.map((s, i) => (
         <div key={i} className={`cine-shot ${i === shot ? 'is-on' : ''} ${i < shot ? 'is-past' : ''}`} aria-hidden={i !== shot}>
           <img className={`cine-img motion-${s.motion}`} src={imageUrl(s.image)} alt="" draggable={false} style={{ '--ms': `${s.ms + 1200}ms`, ...(s.focus ? { objectPosition: s.focus, transformOrigin: s.focus } : {}) } as CSSProperties} />

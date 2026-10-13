@@ -19,6 +19,8 @@ export interface CinematicDef {
   id: string;
   /** Shown big over the first shot. */
   title: string;
+  /** Look of the lettering and the floating particles: violet motes (default) or flame-orange embers. */
+  theme?: 'void' | 'ember';
   shots: CinematicShot[];
 }
 
@@ -37,6 +39,7 @@ export const CINEMATICS: Record<string, CinematicDef> = {
   inn_intro: {
     id: 'inn_intro',
     title: 'The Wraithwood Inn',
+    theme: 'ember',
     shots: [
       { image: 'inn_0', motion: 'push-in', ms: 5500, focus: '45% 55%', text: 'Deep in the Wraithwood stands an inn that is on no map.' },
       { image: 'inn_1', motion: 'pan-left', ms: 6000, text: 'Its lanterns burn all night. The rangers who once guarded the forest came here to rest, and never left.' },
@@ -48,6 +51,7 @@ export const CINEMATICS: Record<string, CinematicDef> = {
   inn_outro: {
     id: 'inn_outro',
     title: 'Last orders',
+    theme: 'ember',
     shots: [
       { image: 'inn_0', motion: 'pull-out', ms: 5500, focus: '45% 55%', text: 'The Hollow Host lays down his last card, and for the first time in a hundred years the inn falls silent.' },
       { image: 'inn_end1', motion: 'push-in', ms: 5500, focus: '52% 55%', text: 'One by one the guests rise from their tables. Their cards are yours now, and so are their stories.' },

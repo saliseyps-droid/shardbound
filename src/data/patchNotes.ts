@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.45.1',
+    date: '2026-10-13',
+    title: 'Embers over the inn',
+    summary: 'The Wraithwood Inn cinematics glow like a hearth.',
+    sections: [{ kind: 'improved', items: ['The Wraithwood Inn intro and ending: flame-orange lettering, with glowing embers and fireflies drifting up instead of violet motes.'] }],
+    commits: [],
+  },
+  {
     version: '0.45.0',
     date: '2026-10-13',
     title: 'The Wraithwood Inn',
