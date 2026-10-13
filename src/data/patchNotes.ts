@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.45.3',
+    date: '2026-10-13',
+    title: 'The lodger always comes back',
+    summary: 'The Pale Lodger gets a ghostly ability of its own.',
+    sections: [{ kind: 'balance', items: ['The Pale Lodger (The Wraithwood Inn): now 2 Mana 2/2 with Ambush and "Last Breath: Add a new Pale Lodger to your hand" (was 1/3 that gained +1 Attack per spell, a weaker Orrery Apprentice).'] }],
+    commits: [],
+  },
+  {
     version: '0.45.2',
     date: '2026-10-13',
     title: 'Trophies for the road and the inn',

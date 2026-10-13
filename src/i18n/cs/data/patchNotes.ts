@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.45.3': {
+    title: 'Nocležník se vždycky vrátí',
+    summary: 'Bledý nocležník dostal vlastní přízračnou schopnost.',
+    sections: [['Bledý nocležník (Hostinec v Přízračném hvozdu): nově 2 many 2/2 s Léčkou a „Poslední dech: Přidej si do ruky nového Bledého nocležníka“ (dřív 1/3, který za každé kouzlo získal +1 k útoku, tedy slabší Orrery Apprentice).']],
+  },
   '0.45.2': {
     title: 'Trofeje z cesty i z hostince',
     summary: 'Sedm nových úspěchů pro Cestu lampářů a Hostinec v Přízračném hvozdu.',

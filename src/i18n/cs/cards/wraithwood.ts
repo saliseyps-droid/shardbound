@@ -2,7 +2,7 @@ import type { CardsOverlay } from '../../overlayTypes';
 
 /** The Wraithwood Inn campaign rewards (two per faction). */
 const cards: CardsOverlay = {
-  ast_the_pale_lodger: { name: 'Bledý nocležník', description: 'Kdykoli sešleš kouzlo, získá +1/+0.', flavorText: 'Pokoj u okna si vzal před sto lety. Pořád si v něm čte při měsíčním světle.' },
+  ast_the_pale_lodger: { name: 'Bledý nocležník', description: 'Léčka. Poslední dech: Přidej si do ruky nového Bledého nocležníka.', flavorText: 'Pokoj u okna si vzal před sto lety. Pokaždé, když ho vyhodí, je do rána zpátky.' },
   vod_hollow_tom_night_ranger: { name: 'Dutý Tom, noční hraničář', description: 'Vysátí. Při nasazení: Způsob 2 poškození nepřátelské jednotce.', flavorText: 'Čtyřicet let obcházel každou noc okraj lesa. Jedné noci ho les doprovodil domů.' },
   ver_mossmantle_the_antlered_ranger: { name: 'Mechoplášť, parožnatý hraničář', description: 'Stráž. Na konci tvého tahu dej jiné náhodné spřátelené jednotce +1/+1.', flavorText: 'Mech přerostl posledního hraničáře Přízračného hvozdu. Nechal ho. Hřeje ho.' },
   irn_doctor_corvin: { name: 'Doktor Corvin', description: 'Jed. Při nasazení: Získej 3 brnění.', flavorText: 'V zobáku masky nosí lék. V hostinci si o něj ještě nikdo neřekl.' },

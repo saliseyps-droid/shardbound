@@ -11,10 +11,10 @@ export const WRAITHWOOD_CARDS: CardDefinition[] = [
   // Chapter I — A Seat by the Fire
   {
     ...base, id: 'ast_the_pale_lodger', name: 'The Pale Lodger', faction: 'ASTRAL', rarity: 'EPIC',
-    manaCost: 2, attack: 1, health: 3, tags: ['Wraith'],
-    abilities: [{ trigger: 'FRIENDLY_SPELL_CAST', effects: [{ type: 'BUFF', attack: 1, target: 'SELF' }] }],
-    description: 'Whenever you cast a spell, gain +1 Attack.',
-    flavorText: 'It took the room by the window a hundred years ago. It still reads by the moonlight.',
+    manaCost: 2, attack: 2, health: 2, keywords: ['AMBUSH'], tags: ['Wraith'],
+    abilities: [{ trigger: 'LAST_BREATH', effects: [{ type: 'CREATE_CARD', cardId: 'ast_the_pale_lodger', destination: 'HAND' }] }],
+    description: 'Ambush. Last Breath: Add a new Pale Lodger to your hand.',
+    flavorText: 'It took the room by the window a hundred years ago. Every time it is thrown out, it is back by morning.',
   },
   {
     ...base, id: 'vod_hollow_tom_night_ranger', name: 'Hollow Tom, Night Ranger', faction: 'VOID', rarity: 'EPIC',

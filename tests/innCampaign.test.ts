@@ -59,6 +59,15 @@ describe('The Wraithwood Inn', () => {
     }
   });
 
+  it('The Pale Lodger comes back to your hand when it dies', () => {
+    let s = newGame({ board0: ['ast_the_pale_lodger'] });
+    setEnergy(s, 0, 10);
+    const uid = giveCard(s, 0, 'vod_feed_the_void');
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: uid, target: unitRef(s.players[0].board[0]) });
+    expect(s.players[0].board).toHaveLength(0);
+    expect(s.players[0].hand.filter((c) => c.cardId === 'ast_the_pale_lodger')).toHaveLength(1);
+  });
+
   it('The Widow in White freezes every enemy unit', () => {
     let s = newGame({ board1: ['neu_stonehide_ox', 'token_recruit'] });
     setEnergy(s, 0, 10);
