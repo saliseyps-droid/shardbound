@@ -1,6 +1,15 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.44.0': {
+    title: 'Světla, kamera, Nulský hvozd',
+    summary: 'Cesta lampářů začíná i končí krátkým filmovým klipem.',
+    sections: [
+      [
+        'Filmové klipy v kampani: Cesta lampářů teď při prvním otevření začne krátkým úvodem a po porážce posledního bosse skončí krátkým závěrem. Ťuknutím přejdeš dál, nebo dáš Přeskočit. Oba si můžeš znovu pustit z obrazovky kampaně.',
+      ],
+    ],
+  },
   '0.43.5': {
     title: 'Sbírka po sadách',
     summary: 'Profil ukazuje, kolik máš nasbíráno z každé sady.',

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
@@ -15,6 +15,7 @@ import { audio } from '@/audio/audioService';
 import { gameService } from '@/state/accountStore';
 import { toast } from '@/state/uiStore';
 import { canBuyChapter, isChapterBought } from '@/domain/campaignUnlock';
+import { Cinematic } from '@/ui/components/Cinematic';
 import '@/ui/styles/meta.css';
 import { t } from '@/i18n';
 
@@ -61,6 +62,14 @@ export default function CampaignScreen() {
   const [selectedId, setSelectedId] = useState<string | null>(() => (save ? firstOpen(camp) : null));
   const [deckId, setDeckId] = useState<string | null>(() => (save ? firstValidDeck(save, save.profile.selectedDeckId) : null));
   const [tab, setTab] = useState(() => tabOf(camp.chapters, selectedId));
+  const [cinematic, setCinematic] = useState<string | null>(null);
+  // A campaign's intro plays the first time it is opened, its outro once every fight is won.
+  const seen = save?.pve.seenCinematics ?? [];
+  const allCleared = !!save && camp.chapters.every((ch) => ch.encounters.every((e) => !!save.pve.completed[e.id]));
+  const autoCinematic = camp.outro && allCleared && !seen.includes(camp.outro) ? camp.outro : camp.intro && !seen.includes(camp.intro) && !allCleared ? camp.intro : null;
+  useEffect(() => {
+    if (autoCinematic && !cinematic) setCinematic(autoCinematic);
+  }, [autoCinematic, cinematic]);
   if (!save) return null;
   const prog = campaignProgress(save, camp.chapters);
   const pickCampaign = (c: CampaignDef) => {
@@ -122,6 +131,30 @@ export default function CampaignScreen() {
           );
         })}
       </div>
+      {(camp.intro || camp.outro) && (
+        <div className="camp-cine">
+          {camp.intro && (
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setCinematic(camp.intro!)}>
+              ▶ {t('Watch the intro')}
+            </button>
+          )}
+          {camp.outro && allCleared && (
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setCinematic(camp.outro!)}>
+              ▶ {t('Watch the ending')}
+            </button>
+          )}
+        </div>
+      )}
+      {cinematic && (
+        <Cinematic
+          key={cinematic}
+          id={cinematic}
+          onDone={() => {
+            gameService.markCinematicSeen(cinematic);
+            setCinematic(null);
+          }}
+        />
+      )}
       <div className="campaign-layout">
         <div className="chapters panel">
           {TABS.length > 1 && (

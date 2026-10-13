@@ -338,6 +338,13 @@ export class GameService {
     return res;
   }
 
+  /** A campaign cinematic has been shown: it does not play by itself again. */
+  markCinematicSeen(id: string) {
+    const save = this.require();
+    const seen = save.pve.seenCinematics ?? [];
+    if (!seen.includes(id)) this.commit({ ...save, pve: { ...save.pve, seenCinematics: [...seen, id] } });
+  }
+
   buyChapter(chapterId: string): Result<GameSave> {
     const res = buyChapter(this.require(), chapterId, this.now());
     if (res.ok) this.commit(res.value);

@@ -1,0 +1,77 @@
+/* Campaign cinematics (src/ui/components/Cinematic.tsx). */
+.cinematic {
+  position: fixed; inset: 0; z-index: 2000; background: #000; overflow: hidden; cursor: pointer;
+  animation: cine-in 0.8s ease-out both;
+  -webkit-user-select: none; user-select: none;
+}
+.cinematic.is-closing { animation: cine-out 0.6s ease-in forwards; }
+@keyframes cine-in { from { opacity: 0; } }
+@keyframes cine-out { to { opacity: 0; } }
+
+.cine-shot { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease; }
+.cine-shot.is-on { opacity: 1; }
+.cine-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; transform-origin: 50% 30%; will-change: transform; }
+/* The camera move runs only while the shot is on screen (and a little into the fade out). */
+.cine-shot.is-on .cine-img, .cine-shot.is-past .cine-img { animation: var(--motion) var(--ms) ease-out forwards; }
+.motion-push-in { --motion: cine-push-in; }
+.motion-pull-out { --motion: cine-pull-out; }
+.motion-pan-left { --motion: cine-pan-left; }
+.motion-pan-right { --motion: cine-pan-right; }
+/* From the bottom of the picture up to the top (e.g. a lantern, then the face holding it). */
+.motion-tilt-up { --motion: cine-tilt-up; }
+@keyframes cine-tilt-up { from { object-position: 50% 92%; transform: scale(1.08); } to { object-position: 50% 12%; transform: scale(1.02); } }
+@keyframes cine-push-in { from { transform: scale(1.04); } to { transform: scale(1.2); } }
+@keyframes cine-pull-out { from { transform: scale(1.22); } to { transform: scale(1.04); } }
+@keyframes cine-pan-left { from { transform: scale(1.18) translateX(4%); } to { transform: scale(1.18) translateX(-4%); } }
+@keyframes cine-pan-right { from { transform: scale(1.18) translateX(-4%); } to { transform: scale(1.18) translateX(4%); } }
+.cinematic.is-reduced .cine-img { animation: none !important; transform: scale(1.06); }
+
+.cine-vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0, 0, 0, 0.75) 100%); }
+.cine-bar { position: absolute; left: 0; right: 0; height: 9vh; background: #000; z-index: 2; }
+.cine-bar.top { top: 0; }
+.cine-bar.bottom { bottom: 0; }
+
+/* Motes of light drifting up. */
+.cine-motes { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.cine-motes span {
+  position: absolute; left: var(--x); bottom: -10px; width: var(--size); height: var(--size); border-radius: 50%;
+  background: #d9b8ff; box-shadow: 0 0 8px 2px rgba(170, 110, 255, 0.8); opacity: 0;
+  animation: cine-mote var(--d) var(--delay) linear infinite;
+}
+@keyframes cine-mote {
+  0% { transform: translate(0, 0); opacity: 0; }
+  15% { opacity: 0.9; }
+  100% { transform: translate(30px, -95vh); opacity: 0; }
+}
+.cinematic.is-reduced .cine-motes { display: none; }
+
+.cine-title {
+  position: absolute; left: 0; right: 0; top: 22vh; z-index: 3; margin: 0; text-align: center;
+  font: 700 clamp(2rem, 6vw, 4.6rem) var(--font-display); color: #f3e6ff; letter-spacing: 0.04em;
+  text-shadow: 0 0 30px rgba(150, 80, 255, 0.9), 0 3px 0 #000;
+  animation: cine-title 4.6s ease-out forwards;
+}
+@keyframes cine-title { 0% { opacity: 0; transform: translateY(12px); letter-spacing: 0.2em; } 25%, 75% { opacity: 1; transform: none; letter-spacing: 0.04em; } 100% { opacity: 0; } }
+
+.cine-text {
+  position: absolute; left: 50%; bottom: calc(9vh + 26px); z-index: 3; translate: -50% 0; width: min(900px, 86vw); margin: 0;
+  text-align: center; font: italic 500 clamp(1.05rem, 2.2vw, 1.6rem) / 1.45 var(--font-display); color: #f5ecff;
+  text-shadow: 0 2px 6px #000, 0 0 18px rgba(0, 0, 0, 0.9);
+  animation: cine-text 0.9s 0.4s ease-out both;
+}
+@keyframes cine-text { from { opacity: 0; transform: translateY(8px); } }
+
+.cine-dots { position: absolute; left: 50%; bottom: calc(9vh - 18px); translate: -50% 0; z-index: 3; display: flex; gap: 8px; }
+.cine-dots span { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); transition: background 0.3s; }
+.cine-dots span.is-on { background: #d9b8ff; box-shadow: 0 0 8px #a26bff; }
+
+.cine-skip { position: absolute; top: calc(9vh + 14px); right: calc(18px + var(--safe-right, 0px)); z-index: 4; opacity: 0.8; }
+.cine-skip:hover { opacity: 1; }
+
+@media (max-height: 520px) {
+  .cine-bar { height: 6vh; }
+  .cine-title { top: 16vh; }
+  .cine-text { bottom: calc(6vh + 18px); }
+  .cine-dots { bottom: calc(6vh - 14px); }
+  .cine-skip { top: calc(6vh + 8px); }
+}

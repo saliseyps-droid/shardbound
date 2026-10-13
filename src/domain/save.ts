@@ -128,6 +128,8 @@ export interface PveState {
   completed: Record<string, { firstClearAt: number; wins: number }>;
   /** Chapters bought with Gold (Chapter.price). */
   unlockedChapters?: string[];
+  /** Campaign cinematics already shown (they play once by themselves, then on request). */
+  seenCinematics?: string[];
 }
 
 export interface MatchRecord {

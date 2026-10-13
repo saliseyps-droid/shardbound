@@ -662,13 +662,16 @@ export interface CampaignDef {
   id: 'main' | 'void' | 'lamp';
   name: string;
   chapters: Chapter[];
+  /** Cinematics (src/data/cinematics.ts): before the first fight and after the last one. */
+  intro?: string;
+  outro?: string;
 }
 
 /** Every campaign, each with its own chapters and progress; the main one comes first. */
 export const CAMPAIGNS: CampaignDef[] = [
   { id: 'main', name: 'The Shattering of Aethra', chapters: CAMPAIGN },
   { id: 'void', name: 'The Black Sun', chapters: VOID_CAMPAIGN },
-  { id: 'lamp', name: 'The Lamplighters’ Road', chapters: LAMP_CAMPAIGN },
+  { id: 'lamp', name: 'The Lamplighters’ Road', chapters: LAMP_CAMPAIGN, intro: 'lamp_intro', outro: 'lamp_outro' },
 ];
 
 /**

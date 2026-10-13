@@ -19,6 +19,21 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.44.0',
+    date: '2026-10-13',
+    title: 'Lights, camera, Nulwood',
+    summary: "The Lamplighters' Road opens and closes with a short cinematic.",
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          "Campaign cinematics: The Lamplighters' Road now starts with a short intro the first time you open it, and ends with a short ending once you beat its last boss. Tap to move on, or Skip. Both can be watched again from the campaign screen.",
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.43.5',
     date: '2026-10-13',
     title: 'Your collection, set by set',
