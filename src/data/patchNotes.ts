@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.46.1',
+    date: '2026-10-13',
+    title: 'The intro for everyone',
+    summary: 'Players who started before the world intro existed get to see it once too.',
+    sections: [{ kind: 'improved', items: ['World intro: if your Warden has never seen it, it plays once the next time you open the game, then never again (remembered on your account, so on every device). It never interrupts a match.'] }],
+    commits: [],
+  },
+  {
     version: '0.46.0',
     date: '2026-10-13',
     title: 'Where it all began',

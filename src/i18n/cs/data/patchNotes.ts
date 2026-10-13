@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.46.1': {
+    title: 'Úvod pro všechny',
+    summary: 'Úvod do světa uvidí jednou i hráči, kteří začali hrát dřív, než existoval.',
+    sections: [['Úvod do světa: pokud ho tvůj Strážce ještě neviděl, pustí se jednou při příštím otevření hry a pak už nikdy (pamatuje si to tvůj účet, takže na všech zařízeních). Nikdy nepřeruší zápas.']],
+  },
   '0.46.0': {
     title: 'Kde to všechno začalo',
     summary: 'Nové hráče přivítá filmový klip o roztříštění Koruny.',
