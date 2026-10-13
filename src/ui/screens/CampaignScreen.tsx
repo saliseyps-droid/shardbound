@@ -199,17 +199,20 @@ export default function CampaignScreen() {
                     return (
                       <li key={e.id} className="enc-step">
                         {i > 0 && <span className={`enc-link ${isCleared(save, ch.encounters[i - 1].id) ? 'lit' : ''}`} aria-hidden />}
-                        <button
-                          type="button"
-                          className={`enc-node ${state} ${e.boss ? 'boss' : ''} ${selectedId === e.id ? 'selected' : ''}`}
-                          style={factionStyle(e.faction)}
-                          onClick={() => (audio.play('click'), setSelectedId(e.id))}
-                          aria-pressed={selectedId === e.id}
-                          aria-label={`${e.name}${e.boss ? t(', boss') : ''}, ${state === 'done' ? t('cleared') : state === 'open' ? t('available') : t('locked')}`}
-                        >
-                          {state === 'locked' ? <Glyph name="shield" size={e.boss ? 30 : 24} /> : <WardenPortrait faction={e.faction} portrait={e.portrait} fill />}
+                        <span className="enc-node-wrap">
+                          <button
+                            type="button"
+                            className={`enc-node ${state} ${e.boss ? 'boss' : ''} ${selectedId === e.id ? 'selected' : ''}`}
+                            style={factionStyle(e.faction)}
+                            onClick={() => (audio.play('click'), setSelectedId(e.id))}
+                            aria-pressed={selectedId === e.id}
+                            aria-label={`${e.name}${e.boss ? t(', boss') : ''}, ${state === 'done' ? t('cleared') : state === 'open' ? t('available') : t('locked')}`}
+                          >
+                            {state === 'locked' ? <Glyph name="shield" size={e.boss ? 30 : 24} /> : <WardenPortrait faction={e.faction} portrait={e.portrait} fill />}
+                          </button>
+                          {/* Outside the hexagon: the portrait fills the node and its clip would hide the mark. */}
                           {done && <span className="enc-check" aria-hidden>✓</span>}
-                        </button>
+                        </span>
                         <span className="enc-name">{e.name}</span>
                       </li>
                     );

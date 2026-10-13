@@ -267,14 +267,20 @@ button.deckbox:hover:not(:disabled) { filter: brightness(1.15); }
 .enc-node.done { --core: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--f1) 45%, var(--ink-3)), var(--ink-1)); }
 .enc-node.selected { transform: scale(1.1); filter: drop-shadow(0 0 10px var(--gold)); }
 .enc-node:hover { transform: scale(1.06); }
-.enc-check { position: absolute; bottom: 10px; right: 14px; font-weight: 800; color: var(--heal); text-shadow: 0 0 4px #000; }
+.enc-node-wrap { position: relative; display: block; }
+.enc-check {
+  position: absolute; right: -6px; bottom: 2px; z-index: 2; pointer-events: none;
+  width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%;
+  font-size: 14px; font-weight: 800; line-height: 1; color: #fff;
+  background: var(--heal); box-shadow: 0 0 0 2px var(--ink-1), 0 2px 6px rgba(0, 0, 0, 0.6);
+}
 .enc-name { font-size: var(--t-sm); line-height: 1.2; }
 /* Too narrow for the whole path in one row (five 120px steps): a vertical trail instead of wrapped rows,
    so every link joins two nodes and none pokes out of the panel. */
 @container (max-width: 599px) {
   .enc-path { flex-direction: column; flex-wrap: nowrap; gap: 12px; }
   .enc-step { width: auto; grid-template-columns: 84px minmax(0, 1fr); justify-items: start; align-items: center; column-gap: var(--space-3); text-align: left; }
-  .enc-step .enc-node { justify-self: center; }
+  .enc-step .enc-node-wrap { justify-self: center; }
   .enc-node.boss { margin-top: 0; }
   .enc-link { top: -14px; right: auto; left: 40.5px; width: 3px; height: 16px; }
   .enc-link.lit { background: linear-gradient(180deg, var(--gold-deep), var(--gold)); }

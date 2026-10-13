@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.45.5',
+    date: '2026-10-13',
+    title: 'Ticks are back',
+    summary: 'Beaten campaign fights show their green tick again.',
+    sections: [{ kind: 'fixed', items: ['Campaign: the green tick on beaten fights was hidden under the opponent portraits. It is now a badge on the corner of each cleared fight.'] }],
+    commits: [],
+  },
+  {
     version: '0.45.4',
     date: '2026-10-13',
     title: 'Campaign cards on their own shelf',

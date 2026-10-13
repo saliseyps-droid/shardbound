@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.45.5': {
+    title: 'Fajfky jsou zpátky',
+    summary: 'Poražené souboje v kampani zase ukazují zelenou fajfku.',
+    sections: [['Kampaň: zelená fajfka u poražených soubojů byla schovaná pod portréty soupeřů. Teď je to odznak v rohu každého dokončeného souboje.']],
+  },
   '0.45.4': {
     title: 'Karty z kampaní na vlastní polici',
     summary: 'Sbírka umí ukázat odměny z kampaní jako samostatný set a řadit karty podle setu.',
