@@ -293,18 +293,22 @@
 /* Deck statistics (src/ui/components/DeckStatsModal.tsx) */
 .deck-record { font-size: var(--t-xs); }
 /* Anchored at a fixed top (not centred), so switching mode tabs never moves the title or tabs; only the bottom edge follows the content. */
-.modal.deck-stats { align-self: start; margin-top: 6vh; max-height: calc(94vh - 32px); }
-.deck-stats section { margin-top: var(--space-4); }
-.deck-stats h4 { margin: 0 0 var(--space-2); font-size: var(--t-md); color: var(--parchment-dim); }
+.modal.deck-stats { align-self: start; margin-top: 4vh; max-height: calc(96vh - 32px); padding-block: var(--space-4); }
+.deck-stats .modal-head { margin-bottom: var(--space-3); }
+.deck-stats section { margin-top: var(--space-3); }
+.deck-stats h4 { margin: 0 0 6px; font-size: var(--t-sm); color: var(--parchment-dim); }
+/* By mode and Against each faction side by side, so the cards fit without scrolling. */
+.ds-split { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0 var(--space-4); }
 .ds-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
 .ds-tab { padding: 5px 12px; border: 1px solid var(--line); background: rgba(0, 0, 0, 0.25); color: var(--parchment-dim); font: 600 var(--t-sm) var(--font-body); cursor: pointer; clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%); }
 .ds-tab.is-active { background: var(--gold); color: var(--ink-1); border-color: var(--gold); }
 .ds-tab.is-active .faint { color: var(--ink-2); }
-.ds-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: var(--space-3); margin-top: var(--space-4); }
-.ds-summary > div { display: grid; gap: 4px; padding: var(--space-2) var(--space-3); background: rgba(0, 0, 0, 0.22); }
-.ds-summary strong { font-size: var(--t-lg); }
-.ds-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-.ds-rows li { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(110px, 160px); align-items: center; gap: var(--space-3); padding: 5px var(--space-3); background: rgba(0, 0, 0, 0.18); }
+.ds-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--space-2); margin-top: var(--space-3); }
+.ds-summary > div { display: grid; gap: 2px; padding: 6px var(--space-3); background: rgba(0, 0, 0, 0.22); }
+.ds-summary > div > .faint { font-size: var(--t-xs); }
+.ds-summary strong { font-size: var(--t-md); }
+.ds-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.ds-rows li { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(90px, 130px); align-items: center; gap: var(--space-2); padding: 3px var(--space-3); font-size: var(--t-sm); background: rgba(0, 0, 0, 0.18); }
 .ds-rate { display: inline-flex; align-items: center; gap: 8px; justify-content: flex-end; }
 .ds-bar { flex: 1; height: 6px; min-width: 50px; background: rgba(255, 255, 255, 0.08); border-radius: 3px; overflow: hidden; }
 .ds-bar > span { display: block; height: 100%; background: linear-gradient(90deg, var(--gold-deep), var(--gold)); }

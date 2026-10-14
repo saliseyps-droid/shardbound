@@ -97,6 +97,7 @@ export function DeckStatsModal({ deck, onClose }: { deck: Deck; onClose: () => v
             ) : null}
           </div>
 
+          <div className="ds-split">
           {mode === 'ALL' && modes.length > 1 && (
             <section>
               <h4>{t('By mode')}</h4>
@@ -130,6 +131,8 @@ export function DeckStatsModal({ deck, onClose }: { deck: Deck; onClose: () => v
               </ul>
             )}
           </section>
+
+          </div>
 
           <section className="ds-cards">
             <h4>{t('Cards')}</h4>

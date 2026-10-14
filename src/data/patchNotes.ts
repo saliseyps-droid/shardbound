@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.49.2',
+    date: '2026-10-15',
+    title: 'Compact stats',
+    summary: 'Deck statistics fit on one screen.',
+    sections: [{ kind: 'improved', items: ['Deck statistics: a more compact layout, with results by mode and by opponent side by side, so everything including the cards fits without scrolling.'] }],
+    commits: [],
+  },
+  {
     version: '0.49.1',
     date: '2026-10-15',
     title: 'Steadier stats',

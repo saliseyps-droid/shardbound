@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.49.2': {
+    title: 'Kompaktní statistiky',
+    summary: 'Statistiky balíčku se vejdou na jednu obrazovku.',
+    sections: [['Statistiky balíčků: kompaktnější rozložení, výsledky podle módu a podle soupeře jsou vedle sebe, takže se všechno včetně karet vejde bez posouvání.']],
+  },
   '0.49.1': {
     title: 'Klidnější statistiky',
     summary: 'Drobné opravy nových statistik balíčků.',
