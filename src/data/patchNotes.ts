@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.47.2',
+    date: '2026-10-14',
+    title: 'Fairy lights',
+    summary: 'New paintings for the end of the world intro.',
+    sections: [{ kind: 'improved', items: ['World intro: the last two shots use new paintings of the glowing forest, with the butterflies and a fairy in the light.'] }],
+    commits: [],
+  },
+  {
     version: '0.47.1',
     date: '2026-10-14',
     title: 'The Throne in the Dark',

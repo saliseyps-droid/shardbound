@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.47.2': {
+    title: 'Světla víl',
+    summary: 'Nové malby na konci úvodu do světa.',
+    sections: [['Úvod do světa: poslední dva záběry mají nové malby zářícího lesa s motýly a vílou ve světle.']],
+  },
   '0.47.1': {
     title: 'Trůn ve tmě',
     summary: 'Saliho trůn se teď tyčí před soubojem s ním i za jeho příchodem.',
