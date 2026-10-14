@@ -210,8 +210,8 @@ const d: Record<string, string> = {
   '{n} Gold per pack': '{n} zlata za booster',
   'Buy {offer} of {set} for {price} Gold': 'Koupit {offer} {set} za {price} zlata',
   'Need {n} more Gold': 'Chybí ti {n} zlata',
-  'Show off in every match: your deck on the table and the cards in your hand, as your opponent sees them, wear the back you choose. Switch between your backs under Card Backs in the menu.':
-    'Ukaž se v každém zápase: tvůj balíček na stole i karty v ruce, jak je vidí soupeř, ponesou rubovou stranu, kterou si vybereš. Mezi svými rubovými stranami přepínáš v nabídce Rubové strany.',
+  'Show off in every match: your deck on the table and the cards in your hand, as your opponent sees them, wear the back you choose. Switch between your backs under Customization in the menu.':
+    'Ukaž se v každém zápase: tvůj balíček na stole i karty v ruce, jak je vidí soupeř, ponesou rubovou stranu, kterou si vybereš. Mezi svými rubovými stranami přepínáš v nabídce Přizpůsobení.',
   'Buy {n} {set} packs?': 'Koupit {n} boosterů {set}?',
   'This spends': 'Utratíš',
   'of your': 'ze svých',

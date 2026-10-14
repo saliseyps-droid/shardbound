@@ -64,7 +64,8 @@ function Shell() {
               <Route path="/decks/:deckId" element={<DeckEditorScreen />} />
               <Route path="/packs" element={<PacksScreen />} />
               <Route path="/shop" element={<ShopScreen />} />
-              <Route path="/card-backs" element={<CardBacksScreen />} />
+              <Route path="/customization" element={<CardBacksScreen />} />
+              <Route path="/card-backs" element={<Navigate to="/customization" replace />} />
               <Route path="/arena" element={<ArenaScreen />} />
               <Route path="/quests" element={<QuestsScreen />} />
               <Route path="/profile" element={<ProfileScreen />} />

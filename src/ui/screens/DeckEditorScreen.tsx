@@ -366,7 +366,7 @@ export default function DeckEditorScreen() {
               faction={draft.heroFaction}
               owned={profileForPortraits.portraits}
               value={draft.portrait === DEFAULT_PORTRAIT ? null : (draft.portrait ?? 'profile')}
-              leading={[{ value: 'profile', portrait: profileForPortraits.factionPortraits[draft.heroFaction] ?? null, label: t('Same as in Profile') }]}
+              leading={[{ value: 'profile', portrait: profileForPortraits.factionPortraits[draft.heroFaction] ?? null, label: t('Same as in Customization') }]}
               onChange={(v) => setDraft({ ...draft, portrait: v === 'profile' ? null : v === null ? DEFAULT_PORTRAIT : v })}
             />
           </details>

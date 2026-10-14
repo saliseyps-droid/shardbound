@@ -13,7 +13,6 @@ import { PLAYABLE_FACTIONS, RARITIES, type SetId } from '@/game/types';
 import { Essence, Gold, ProgressBar, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
-import { PortraitPicker } from '@/ui/components/PortraitPicker';
 import { effectivePortrait } from '@/domain/portraits';
 import { DeckBox, factionStyle } from '@/ui/components/meta/MetaWidgets';
 import { ProfileAchievements } from '@/ui/components/AchievementBadge';
@@ -274,33 +273,6 @@ export default function ProfileScreen() {
           </div>
         </section>
 
-        <section className="panel profile-portraits">
-          <div className="panel-title">
-            <span>{t('Warden portraits')}</span>
-            <Link to="/shop" className="small-link">
-              {t('More in the Shop')}
-            </Link>
-          </div>
-          <p className="faint">{t('The portrait every deck of that faction shows. A deck can still pick its own in the deck editor.')}</p>
-          <div className="profile-portrait-grid">
-          {PLAYABLE_FACTIONS.map((f) => (
-            <div key={f} className="profile-portrait-row" style={factionStyle(f)}>
-              <span className="profile-portrait-faction">
-                <Glyph name={FACTIONS[f].sigil} size={14} /> {FACTIONS[f].name}
-              </span>
-              <PortraitPicker
-                faction={f}
-                owned={p.portraits}
-                value={p.factionPortraits[f] ?? null}
-                onChange={(v) => {
-                  const res = gameService.choosePortrait(f, v);
-                  if (!res.ok) toast(res.error, 'error');
-                }}
-              />
-            </div>
-          ))}
-          </div>
-        </section>
       </div>
     </div>
   );

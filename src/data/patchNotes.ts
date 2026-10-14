@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.47.3',
+    date: '2026-10-14',
+    title: 'Customization',
+    summary: 'Portraits and card backs now live together, and Patch notes is now News.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'New Customization screen in the menu (it replaces Card Backs and sits right after Quests): pick the Warden portrait of each faction and your card back in one place. The portraits moved here from the Profile.',
+          'Patch notes is now called News.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.47.2',
     date: '2026-10-14',
     title: 'Fairy lights',

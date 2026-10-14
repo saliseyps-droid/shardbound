@@ -508,6 +508,10 @@ const d: Record<string, string> = {
 
   // Patch notes
   'Patch notes': 'Novinky',
+  News: 'Novinky',
+  'Unread news': 'Nepřečtené novinky',
+  Customization: 'Přizpůsobení',
+  'Your Warden portraits and card backs.': 'Tvoje portréty Strážců a rubové strany karet.',
   'What changed in each update of Shardbound.': 'Co se změnilo v jednotlivých aktualizacích Shardboundu.',
   New: 'Nové',
   Improved: 'Vylepšeno',

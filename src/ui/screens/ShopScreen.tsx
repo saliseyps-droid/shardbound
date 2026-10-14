@@ -126,7 +126,7 @@ function CardBackShop() {
     <section className="panel cardback-shop" aria-labelledby="cardbacks-title">
       <div className="cardback-shop-head">
         <h3 id="cardbacks-title">{t('Card Backs')}</h3>
-        <p className="muted">{t('Show off in every match: your deck on the table and the cards in your hand, as your opponent sees them, wear the back you choose. Switch between your backs under Card Backs in the menu.')}</p>
+        <p className="muted">{t('Show off in every match: your deck on the table and the cards in your hand, as your opponent sees them, wear the back you choose. Switch between your backs under Customization in the menu.')}</p>
       </div>
       <CardBackGrid mode="shop" />
     </section>

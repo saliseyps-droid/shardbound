@@ -28,7 +28,7 @@ export function PortraitShop() {
   const buy = async (p: PortraitDef) => {
     const ok = await confirmDialog({
       title: t('Buy the {name} portrait?', { name: t(p.name) }),
-      message: <p>{t('It costs {n} Gold. Choose it for {faction} in your Profile or for one deck in the deck editor.', { n: p.price, faction: FACTIONS[p.faction].name })}</p>,
+      message: <p>{t('It costs {n} Gold. Choose it for {faction} in Customization or for one deck in the deck editor.', { n: p.price, faction: FACTIONS[p.faction].name })}</p>,
       confirmLabel: t('Buy for {n} Gold', { n: p.price }),
     });
     if (!ok) return;
@@ -42,7 +42,7 @@ export function PortraitShop() {
     <section className="panel portrait-shop" aria-labelledby="portraits-title">
       <div className="cardback-shop-head">
         <h3 id="portraits-title">{t('Warden portraits')}</h3>
-        <p className="muted">{t('New faces for your Wardens. Pick one per faction in your Profile, or a different one for a single deck in the deck editor.')}</p>
+        <p className="muted">{t('New faces for your Wardens. Pick one per faction in Customization, or a different one for a single deck in the deck editor.')}</p>
       </div>
       <div className="portrait-shop-grid">
       {PLAYABLE_FACTIONS.map((f) => (

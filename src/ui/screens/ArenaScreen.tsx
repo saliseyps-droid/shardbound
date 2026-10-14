@@ -150,7 +150,7 @@ function ArenaLobby({ gold, runsPlayed, bestWins, free }: { gold: number; runsPl
   );
 }
 
-/** Your chosen portrait for a faction (Profile → Warden portraits). */
+/** Your chosen portrait for a faction (Customization → Warden portraits). */
 const useMyPortrait = (f: PlayableFaction | null) => useAccount((s) => (f ? (s.save?.profile.factionPortraits[f] ?? null) : null));
 
 function FactionPick({ run }: { run: ArenaRun }) {

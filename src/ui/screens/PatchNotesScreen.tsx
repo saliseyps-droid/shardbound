@@ -21,7 +21,7 @@ export default function PatchNotesScreen() {
     });
   return (
     <div className="screen patch-screen">
-      <ScreenHeader title={t('Patch notes')} subtitle={t('What changed in each update of Shardbound.')} />
+      <ScreenHeader title={t('News')} subtitle={t('What changed in each update of Shardbound.')} />
       <ol className="patch-list">
         {PATCH_NOTES.map((p, i) => {
           const expanded = open.has(p.version);

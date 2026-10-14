@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.47.3': {
+    title: 'Přizpůsobení',
+    summary: 'Portréty a rubové strany jsou teď pohromadě.',
+    sections: [
+      [
+        'Nová obrazovka Přizpůsobení v menu (nahrazuje Rubové strany a je hned za Úkoly): na jednom místě vybereš portrét Strážce pro každou frakci i rubovou stranu karet. Portréty se sem přesunuly z Profilu.',
+        'Patch notes se teď v angličtině jmenují News (česky dál Novinky).',
+      ],
+    ],
+  },
   '0.47.2': {
     title: 'Světla víl',
     summary: 'Nové malby na konci úvodu do světa.',

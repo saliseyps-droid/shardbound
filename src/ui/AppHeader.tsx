@@ -19,8 +19,8 @@ const NAV: { to: string; label: MessageKey; icon: string }[] = [
   { to: '/decks', label: 'nav.decks', icon: 'deck' },
   { to: '/packs', label: 'nav.packs', icon: 'pack' },
   { to: '/shop', label: 'nav.shop', icon: 'coin' },
-  { to: '/card-backs', label: 'nav.cardBacks', icon: 'cardback' },
   { to: '/quests', label: 'nav.quests', icon: 'scroll2' },
+  { to: '/customization', label: 'nav.cardBacks', icon: 'cardback' },
   { to: '/profile', label: 'nav.profile', icon: 'person' },
   { to: '/friends', label: 'nav.friends', icon: 'people' },
   { to: '/achievements', label: 'nav.achievements', icon: 'chalice' },
@@ -84,7 +84,7 @@ export function AppHeader() {
             <span>{t(n.label)}</span>
             {n.to === '/quests' && claimable > 0 && <span className="nav-dot" aria-label={tn(claimable, '{n} reward to claim', '{n} rewards to claim')} />}
             {n.to === '/packs' && packs > 0 && <span className="nav-count">{packs}</span>}
-            {n.to === '/patch-notes' && !patchSeen && <span className="nav-dot" aria-label={t('New patch notes')} />}
+            {n.to === '/patch-notes' && !patchSeen && <span className="nav-dot" aria-label={t('Unread news')} />}
           </NavLink>
         ))}
       </nav>
