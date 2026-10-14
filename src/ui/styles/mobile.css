@@ -186,7 +186,7 @@ html:not([data-input='touch']) body .match.is-targeting .hand-card.is-selected *
   body .inspector-card .card { --card-w: min(56vh, 210px) !important; }
   body .inspector-text p { font-size: var(--t-sm); }
   body .modal { max-height: 94dvh; overflow-y: auto; padding: var(--space-3) var(--space-4); }
-  body .modal.deck-stats { height: 94dvh; }
+  body .modal.deck-stats { margin-top: 0; max-height: 94dvh; }
   body .modal-backdrop { padding: var(--space-2); }
 }
 

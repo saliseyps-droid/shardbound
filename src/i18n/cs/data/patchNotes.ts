@@ -6,7 +6,7 @@ const notes: PatchNotesOverlay = {
     summary: 'Drobné opravy nových statistik balíčků.',
     sections: [
       [
-        'Statistiky balíčků: okno si při přepínání módů drží stejnou velikost i polohu (dřív poskakovalo a měnilo velikost).',
+        'Statistiky balíčků: okno při přepínání módů zůstává ukotvené ve stejné výšce, takže nadpis a záložky už neposkakují (podle obsahu se mění jen jeho spodní okraj).',
         'Dlaždice balíčků: Statistiky jsou teď tlačítko vedle Vybrat a Upravit, takže Smazat zůstává na jednom řádku s ostatními odkazy.',
       ],
     ],

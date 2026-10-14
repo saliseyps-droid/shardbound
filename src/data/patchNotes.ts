@@ -27,7 +27,7 @@ export const PATCH_NOTES: PatchNote[] = [
       {
         kind: 'fixed',
         items: [
-          'Deck statistics: the window keeps the same size and position when you switch modes (it used to jump and resize).',
+          'Deck statistics: the window stays anchored at the same height when you switch modes, so the title and tabs no longer jump (only its bottom edge follows the content).',
           'Deck tiles: Stats is now a button next to Select and Edit, so Delete stays on one line with the other links.',
         ],
       },
