@@ -293,7 +293,8 @@
 /* Deck statistics (src/ui/components/DeckStatsModal.tsx) */
 .deck-record { font-size: var(--t-xs); }
 /* Anchored at a fixed top (not centred), so switching mode tabs never moves the title or tabs; only the bottom edge follows the content. */
-.modal.deck-stats { align-self: start; margin-top: 4vh; max-height: calc(96vh - 32px); padding-block: var(--space-4); }
+/* The top sits where a full window (all modes, about 600 px) would be centred; shorter tabs keep the same top. */
+.modal.deck-stats { align-self: start; margin-top: max(2vh, calc((100vh - 32px - 600px) / 2)); max-height: calc(96vh - 32px); padding-block: var(--space-4); }
 .deck-stats .modal-head { margin-bottom: var(--space-3); }
 .deck-stats section { margin-top: var(--space-3); }
 .deck-stats h4 { margin: 0 0 6px; font-size: var(--t-sm); color: var(--parchment-dim); }
