@@ -292,6 +292,8 @@
 
 /* Deck statistics (src/ui/components/DeckStatsModal.tsx) */
 .deck-record { font-size: var(--t-xs); }
+/* A fixed size (the content scrolls inside), so switching mode tabs never resizes or moves the window. */
+.modal.deck-stats { height: min(820px, calc(100vh - 32px)); }
 .deck-stats section { margin-top: var(--space-4); }
 .deck-stats h4 { margin: 0 0 var(--space-2); font-size: var(--t-md); color: var(--parchment-dim); }
 .ds-tabs { display: flex; flex-wrap: wrap; gap: 6px; }

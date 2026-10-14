@@ -169,6 +169,9 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
         <button className="btn btn-sm" onClick={() => navigate(`/decks/${deck.id}`)}>
           {t('Edit')}
         </button>
+        <button className="btn btn-sm" onClick={() => setShowStats(true)} aria-label={t('Statistics of {name}', { name: deck.name })}>
+          {t('Stats')}
+        </button>
         <span className="deck-links">
         <button className="text-btn" onClick={onRename} aria-label={t('Rename {name}', { name: deck.name })}>
           {t('Rename')}
@@ -178,9 +181,6 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
         </button>
         <button className="text-btn" onClick={() => setSharing(true)} aria-label={t('Share {name}', { name: deck.name })}>
           {t('Share')}
-        </button>
-        <button className="text-btn" onClick={() => setShowStats(true)} aria-label={t('Statistics of {name}', { name: deck.name })}>
-          {t('Stats')}
         </button>
         <button className="text-btn danger" onClick={() => void remove()} aria-label={t('Delete {name}', { name: deck.name })}>
           {t('Delete')}

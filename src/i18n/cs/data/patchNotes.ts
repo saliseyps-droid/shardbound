@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.49.1': {
+    title: 'Klidnější statistiky',
+    summary: 'Drobné opravy nových statistik balíčků.',
+    sections: [
+      [
+        'Statistiky balíčků: okno si při přepínání módů drží stejnou velikost i polohu (dřív poskakovalo a měnilo velikost).',
+        'Dlaždice balíčků: Statistiky jsou teď tlačítko vedle Vybrat a Upravit, takže Smazat zůstává na jednom řádku s ostatními odkazy.',
+      ],
+    ],
+  },
   '0.49.0': {
     title: 'Poznej svůj balíček',
     summary: 'Každý balíček má vlastní statistiky, rozdělené podle herního módu.',

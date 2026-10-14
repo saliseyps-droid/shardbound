@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.49.1',
+    date: '2026-10-15',
+    title: 'Steadier stats',
+    summary: 'Small fixes for the new deck statistics.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          'Deck statistics: the window keeps the same size and position when you switch modes (it used to jump and resize).',
+          'Deck tiles: Stats is now a button next to Select and Edit, so Delete stays on one line with the other links.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.49.0',
     date: '2026-10-15',
     title: 'Know your deck',
