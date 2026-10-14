@@ -14,7 +14,7 @@ const notes: PatchNotesOverlay = {
   '0.47.2': {
     title: 'Světla víl',
     summary: 'Nové malby na konci úvodu do světa.',
-    sections: [['Úvod do světa: poslední dva záběry mají nové malby zářícího lesa s motýly a vílou ve světle.']],
+    sections: [['Úvod do světa: poslední dva záběry mají nové malby zářícího lesa s motýly a vílou ve světle a záběr roztříštění je ostřejší.', 'Roztříštění Aethry: úvod začíná novou malbou údolí v měsíčním světle.']],
   },
   '0.47.1': {
     title: 'Trůn ve tmě',

@@ -39,7 +39,7 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-14',
     title: 'Fairy lights',
     summary: 'New paintings for the end of the world intro.',
-    sections: [{ kind: 'improved', items: ['World intro: the last two shots use new paintings of the glowing forest, with the butterflies and a fairy in the light.'] }],
+    sections: [{ kind: 'improved', items: ['World intro: the last two shots use new paintings of the glowing forest, with the butterflies and a fairy in the light, and the shattering shot is sharper.', 'The Shattering of Aethra: the intro opens on a new painting of a moonlit valley.'] }],
     commits: [],
   },
   {

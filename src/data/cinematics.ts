@@ -74,7 +74,7 @@ export const CINEMATICS: Record<string, CinematicDef> = {
     music: { track: 'paranoid_truth', at: 17 },
     title: 'The Shattering of Aethra',
     shots: [
-      { image: 'aethra_path', motion: 'push-in', ms: 5500, focus: '50% 45%', text: 'For a thousand years the Sundered Crown hung above Aethra and held its wild places in balance.' },
+      { image: 'aethra_valley', motion: 'push-in', ms: 5500, focus: '50% 40%', text: 'For a thousand years the Sundered Crown hung above Aethra and held its wild places in balance.' },
       { image: 'aethra_fairy', motion: 'pan-right', ms: 5500, focus: '60% 40%', text: 'Then the last Sovereign vanished, and the Crown broke into ten thousand Shards.' },
       { image: 'aethra_glade', motion: 'pull-out', ms: 5500, focus: '48% 45%', text: 'They fell through the forests like stars. Wherever one lands, something old wakes up to look at it.' },
       { image: 'aethra_deep_path', motion: 'push-in', ms: 5500, focus: '50% 45%', text: 'You are a newly awakened Warden. Follow the falling Shards, before someone else gathers them.' },
