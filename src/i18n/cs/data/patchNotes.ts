@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.47.4': {
+    title: 'Ostřejší klipy',
+    summary: 'Malby ve filmových klipech ve vyšším rozlišení.',
+    sections: [['Filmové klipy: 27 maleb z úvodu do světa a ze všech kampaní (Aethra, Černé slunce, Cesta lampářů a Hostinec v Přízračném hvozdu) má teď mnohem vyšší rozlišení, takže zůstanou ostré i na velké obrazovce a při pohybu kamery.']],
+  },
   '0.47.3': {
     title: 'Přizpůsobení',
     summary: 'Portréty a rubové strany jsou teď pohromadě.',

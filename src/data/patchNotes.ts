@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.47.4',
+    date: '2026-10-14',
+    title: 'Sharper cinematics',
+    summary: 'Cinematic paintings in higher resolution.',
+    sections: [{ kind: 'improved', items: ['Cinematics: 27 paintings across the world intro and every campaign (Aethra, The Black Sun, The Lamplighters’ Road and The Wraithwood Inn) are now upscaled to a much higher resolution, so they stay sharp on big screens and during the camera moves.'] }],
+    commits: [],
+  },
+  {
     version: '0.47.3',
     date: '2026-10-14',
     title: 'Customization',
