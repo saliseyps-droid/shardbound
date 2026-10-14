@@ -1111,7 +1111,8 @@
   opacity: 0; animation: sl2-colossus 2.6s 0.6s ease-out forwards;
 }
 @keyframes sl2-colossus { from { opacity: 0; transform: scale(1.25); } 35% { opacity: 0.9; } to { opacity: 0.7; transform: scale(1); } }
-.theme-sali .legend-stage { z-index: 3; }
+/* Its own stacking context, so the screen-blended colossus below can never wash over the portrait (Safari). */
+.theme-sali .legend-stage { z-index: 3; isolation: isolate; }
 /* Stars being made, and the lines of new constellations. */
 .sl2-stars { position: absolute; inset: 0; z-index: 2; }
 .sl2-star { position: absolute; left: calc(var(--x) * 100%); top: calc(var(--s) * 100%); width: calc(2px + var(--d) * 3px); aspect-ratio: 1; border-radius: 50%; background: #fff; box-shadow: 0 0 8px 2px #b48cff; opacity: 0; animation: sl2-star 0.4s calc(0.9s + var(--r) * 1s + 0.5s) ease-out forwards; }
@@ -1127,7 +1128,8 @@
 .sl2-ring .rune { fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; }
 @keyframes sl2-ring { from { opacity: 0; transform: scale(0.3) rotate(-90deg); } to { opacity: 1; transform: none; } }
 .theme-sali .legend-portrait { background: linear-gradient(160deg, #f0e4ff, #8a4cff 40%, #14002a); filter: drop-shadow(0 0 30px rgba(170, 80, 255, 1)); animation: sl2-portrait 0.8s 1.0s cubic-bezier(0.2, 1, 0.3, 1) both; }
-@keyframes sl2-portrait { from { transform: scale(0.05); opacity: 0; filter: brightness(5); } 60% { opacity: 1; } }
+/* Both ends list the same filters: with mismatched lists Safari keeps the white-hot start (an over-bright portrait on iPhones). */
+@keyframes sl2-portrait { from { transform: scale(0.05); opacity: 0; filter: brightness(5) drop-shadow(0 0 30px rgba(170, 80, 255, 1)); } 60% { opacity: 1; } to { filter: brightness(1) drop-shadow(0 0 30px rgba(170, 80, 255, 1)); } }
 .theme-sali .legend-banner { animation-delay: 2.1s; background: linear-gradient(90deg, transparent, rgba(16, 0, 30, 0.95) 18%, rgba(16, 0, 30, 0.95) 82%, transparent); border-color: rgba(200, 140, 255, 0.85); }
 .theme-sali .legend-kicker { color: #d8b0ff; }
 .theme-sali .legend-banner strong { font-size: clamp(1.8rem, 3.4vw, 2.8rem); color: #fff; text-shadow: 0 0 18px #a050ff, 0 2px 2px #000; }

@@ -35,6 +35,8 @@ export const TOKEN_CARDS: CardDefinition[] = [
   { id: 'token_scrapbot', name: 'Scrapbot', cardType: 'UNIT', faction: 'IRON', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, set: 'CORE', collectible: false, tags: ['Construct'] },
   { id: 'token_sentry', name: 'Brass Sentry', cardType: 'UNIT', faction: 'IRON', rarity: 'COMMON', manaCost: 2, attack: 2, health: 3, keywords: ['GUARD'], set: 'CORE', collectible: false, tags: ['Construct'] },
   { id: 'token_star_fragment', name: 'Star Fragment', cardType: 'UNIT', faction: 'ASTRAL', rarity: 'COMMON', manaCost: 1, attack: 1, health: 1, keywords: ['EMPOWER'], keywordValues: { EMPOWER: 1 }, set: 'CORE', collectible: false, tags: ['Spirit'] },
+  // The Star Fragment Warden talent: the same fragment without an attack.
+  { id: 'token_star_fragment_faint', name: 'Star Fragment', cardType: 'UNIT', faction: 'ASTRAL', rarity: 'COMMON', manaCost: 1, attack: 0, health: 1, keywords: ['EMPOWER'], keywordValues: { EMPOWER: 1 }, set: 'CORE', collectible: false, tags: ['Spirit'] },
   { id: 'token_skeleton', name: 'Risen Bones', cardType: 'UNIT', faction: 'VOID', rarity: 'COMMON', manaCost: 2, attack: 2, health: 2, set: 'CORE', collectible: false, tags: ['Undead'] },
   // Hollow Summons II-III: a frailer version of Risen Bones.
   { id: 'token_skeleton_frail', name: 'Risen Bones', cardType: 'UNIT', faction: 'VOID', rarity: 'COMMON', manaCost: 2, attack: 2, health: 1, set: 'CORE', collectible: false, tags: ['Undead'] },

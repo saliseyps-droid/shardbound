@@ -1,6 +1,15 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.47.5': {
+    title: 'Slabší hvězdy',
+    summary: 'Slabší talent Hvězdný úlomek, ostřejší portréty z kampaní a oprava Saliho na telefonech.',
+    sections: [
+      ['Hvězdný úlomek (talent Strážce Lumenu): jeho Úlomky jsou teď 0/1 místo 1/1 (dál s Posílením 1). Úlomky z karet se nemění.'],
+      ['Ostřejší ilustrace hostů z Hostince v Přízračném hvozdu (portréty i karty) a Strážců Nulského hvozdu z Cesty lampářů, nově vyřezané z upscalovaných maleb.'],
+      ['Sali, Stvořitel: na některých telefonech zůstal jeho portrét na konci příchodu přesvícený.'],
+    ],
+  },
   '0.47.4': {
     title: 'Ostřejší klipy',
     summary: 'Malby ve filmových klipech ve vyšším rozlišení.',

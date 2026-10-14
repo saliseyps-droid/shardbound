@@ -164,9 +164,9 @@ const ASTRAL: TalentAbility[] = [
     { abilities: [{ trigger: 'TURN_END', condition: { kind: 'HAND_SIZE_LTE', n: 3 }, effects: [{ type: 'DRAW_CARDS', amount: 1 }] }], description: 'At the end of your turn, draw a card if you have 3 or fewer cards in hand.' },
   ], ['Works with up to 2 cards in hand.', 'Works with up to 3 cards in hand.']),
   active('ASTRAL', 'star_fragment', 'Star Fragment', [
-    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_star_fragment' }], description: 'Summon a 1/1 Star Fragment with Empower 1.' },
-    { cost: 1, effects: [{ type: 'SUMMON', cardId: 'token_star_fragment' }], description: 'Summon a 1/1 Star Fragment with Empower 1.' },
-    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_star_fragment', count: 2 }], description: 'Summon two 1/1 Star Fragments with Empower 1.' },
+    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_star_fragment_faint' }], description: 'Summon a 0/1 Star Fragment with Empower 1.' },
+    { cost: 1, effects: [{ type: 'SUMMON', cardId: 'token_star_fragment_faint' }], description: 'Summon a 0/1 Star Fragment with Empower 1.' },
+    { cost: 2, effects: [{ type: 'SUMMON', cardId: 'token_star_fragment_faint', count: 2 }], description: 'Summon two 0/1 Star Fragments with Empower 1.' },
   ], ['Cost 2 → 1.', 'Summon two Fragments (cost back to 2).']),
 ];
 

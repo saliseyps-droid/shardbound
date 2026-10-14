@@ -19,6 +19,18 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.47.5',
+    date: '2026-10-14',
+    title: 'Fainter stars',
+    summary: 'Star Fragment talent tuned down, sharper campaign portraits, a fix for Sali on phones.',
+    sections: [
+      { kind: 'balance', items: ['Star Fragment (Lumen Warden talent): its Fragments are now 0/1 instead of 1/1 (still with Empower 1). Fragments made by cards are unchanged.'] },
+      { kind: 'improved', items: ['Sharper art for the Wraithwood Inn guests (portraits and cards) and the Nulwood Wardens of The Lamplighters’ Road, rebuilt from upscaled paintings.'] },
+      { kind: 'fixed', items: ['Sali, the Creator: on some phones his portrait stayed over-bright at the end of his entrance.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.47.4',
     date: '2026-10-14',
     title: 'Sharper cinematics',

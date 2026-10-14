@@ -183,9 +183,9 @@ const talents: TalentsOverlay = {
   wt_astral_star_fragment: {
     name: 'Hvězdný úlomek',
     levels: [
-      'Vyvolej Hvězdný úlomek 1/1 (Posílení 1).',
-      'Vyvolej Hvězdný úlomek 1/1 (Posílení 1).',
-      'Vyvolej dva Hvězdné úlomky 1/1 (Posílení 1).',
+      'Vyvolej Hvězdný úlomek 0/1 (Posílení 1).',
+      'Vyvolej Hvězdný úlomek 0/1 (Posílení 1).',
+      'Vyvolej dva Hvězdné úlomky 0/1 (Posílení 1).',
     ],
     upgradeNotes: ['Cena 2 → 1.', 'Vyvolá dva Úlomky (cena zpět na 2).'],
   },

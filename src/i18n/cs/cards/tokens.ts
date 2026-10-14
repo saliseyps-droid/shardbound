@@ -24,6 +24,7 @@ const cards: CardsOverlay = {
   token_scrapbot: { name: 'Šrotobot' },
   token_sentry: { name: 'Mosazná hlídka', description: 'Stráž.' },
   token_star_fragment: { name: 'Hvězdný úlomek', description: 'Posílení 1.' },
+  token_star_fragment_faint: { name: 'Hvězdný úlomek', description: 'Posílení 1.' },
   token_skeleton: { name: 'Povstalé kosti' },
   token_skeleton_frail: { name: 'Povstalé kosti' },
   token_horror: { name: 'Prázdná hrůza' },
