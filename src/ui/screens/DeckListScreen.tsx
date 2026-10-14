@@ -13,6 +13,8 @@ import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { effectivePortrait } from '@/domain/portraits';
 import { ImportDeckModal, ShareDeckModal } from '@/ui/components/DeckCodeDialogs';
+import { DeckStatsModal } from '@/ui/components/DeckStatsModal';
+import { games, statsFor, winRate } from '@/domain/deckStats';
 import { t } from '@/i18n';
 import '@/ui/styles/decks.css';
 
@@ -87,7 +89,9 @@ function NameModal({ title, initial, confirmLabel, withFaction, onSubmit, onClos
 function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; onRename: () => void }) {
   const navigate = useNavigate();
   const [sharing, setSharing] = useState(false);
+  const [showStats, setShowStats] = useState(false);
   const collection = useAccount((s) => s.save!.collection);
+  const all = statsFor(useAccount((s) => s.save!.profile.deckStats?.[deck.id]), 'ALL');
   const profile = useAccount((s) => s.save!.profile);
   const issues = validateDeck(deck, (id) => ownedCopies(collection, id));
   const valid = issues.length === 0;
@@ -135,6 +139,7 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
           {size} / {DECK_RULES.deckSize}
         </span>
         {!valid && <span className="deck-issue">{t(issues[0].message)}</span>}
+        {games(all) > 0 && <span className="deck-record faint num">{t('{n} games · {rate}% won', { n: games(all), rate: winRate(all) ?? 0 })}</span>}
       </button>
       <button
         className={`fav-toggle ${deck.favorite ? 'on' : ''}`}
@@ -174,12 +179,16 @@ function DeckBox({ deck, selected, onRename }: { deck: Deck; selected: boolean; 
         <button className="text-btn" onClick={() => setSharing(true)} aria-label={t('Share {name}', { name: deck.name })}>
           {t('Share')}
         </button>
+        <button className="text-btn" onClick={() => setShowStats(true)} aria-label={t('Statistics of {name}', { name: deck.name })}>
+          {t('Stats')}
+        </button>
         <button className="text-btn danger" onClick={() => void remove()} aria-label={t('Delete {name}', { name: deck.name })}>
           {t('Delete')}
         </button>
         </span>
       </div>
       {sharing && <ShareDeckModal deck={deck} onClose={() => setSharing(false)} />}
+      {showStats && <DeckStatsModal deck={deck} onClose={() => setShowStats(false)} />}
     </article>
   );
 }

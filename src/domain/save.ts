@@ -8,6 +8,7 @@ import type { PlayableFaction, SetId, Variant } from '@/game/types';
 import type { Deck } from './decks';
 import type { RankedState } from './ranked';
 import type { AiRankedState } from './aiRanked';
+import type { DeckStats } from './deckStats';
 import type { BrawlState } from './brawl';
 import type { PuzzleProgress } from './puzzles';
 
@@ -69,6 +70,8 @@ export interface PlayerProfile {
   puzzle?: PuzzleProgress;
   /** Brawl matches won, all rotations (achievements); missing until the first. */
   brawlWins?: number;
+  /** Per-deck results by mode, opponent faction and card (src/domain/deckStats.ts). */
+  deckStats?: Record<string, DeckStats>;
 }
 
 export type VariantCounts = Record<Variant, number>;

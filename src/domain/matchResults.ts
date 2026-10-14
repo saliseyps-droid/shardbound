@@ -10,6 +10,7 @@ import { AI_RANKED_CONFIG, aiTierOf, applyAiRankedResult, repairAiRanked, unclai
 import { brawlPackSet, brawlProgress } from './brawl';
 import { applyQuestProgress, type QuestProgressEvent } from './quests';
 import { addCards, MATCH_HISTORY_LIMIT, pushReward, type GameSave, type MatchRecord, type Quest } from './save';
+import { recordDeckGame } from './deckStats';
 
 export interface MatchSummary {
   mode: MatchRecord['mode'];
@@ -35,6 +36,9 @@ export interface MatchSummary {
   brawlFightId?: string;
   /** Daily puzzle: its UTC day. */
   puzzleDay?: number;
+  /** Deck statistics: the opponent Warden's faction and the cards the player played. */
+  opponentFaction?: string | null;
+  cardsPlayed?: string[];
 }
 
 export interface RewardLine {
@@ -286,6 +290,11 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
     ratingChange,
   };
   s = { ...s, matchHistory: [record, ...s.matchHistory].slice(0, MATCH_HISTORY_LIMIT) };
+  // Deck statistics: only for the player's own saved decks.
+  if (s.decks.some((d) => d.id === summary.deckId)) {
+    const stats = recordDeckGame(s.profile.deckStats?.[summary.deckId], { mode: summary.mode, result: summary.result, turns: summary.turns, date: now, opponentFaction: summary.opponentFaction, cardsPlayed: summary.cardsPlayed });
+    s = { ...s, profile: { ...s.profile, deckStats: { ...(s.profile.deckStats ?? {}), [summary.deckId]: stats } } };
+  }
   if (gold || xp || essence) {
     s = pushReward(s, { source: `${summary.result === 'WIN' ? 'Victory' : summary.result === 'DRAW' ? 'Draw' : 'Defeat'} vs ${summary.opponentName}`, gold: gold || undefined, xp: xp || undefined, essence: essence || undefined }, now);
   }

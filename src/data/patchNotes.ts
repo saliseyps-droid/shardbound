@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.49.0',
+    date: '2026-10-15',
+    title: 'Know your deck',
+    summary: 'Every deck keeps its own statistics, split by game mode.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Deck statistics: open Stats on any deck to see its win rate, games, wins and losses, average game length and when you last played it, for all modes together or one mode at a time (Practice, Campaign, Ranked vs AI, online, ranked, tournaments, Brawl).',
+          'Each mode also shows how the deck does against every faction, and the cards that win the most and the least when you play them (once a card has been played in 3 games).',
+          'Deck tiles show the number of games and the win rate at a glance.',
+          'Results by mode are rebuilt from your last 100 matches; opponents and cards are counted from this version on.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.48.1',
     date: '2026-10-14',
     title: 'A table at the inn',

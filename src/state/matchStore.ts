@@ -629,6 +629,8 @@ export const useMatch = create<MatchStore>((set, get) => {
         heroHealth: state.players[HUMAN].hero.health,
         brawlFightId: cfg.mode === 'BRAWL' ? cfg.brawlFightId : undefined,
         puzzleDay: cfg.mode === 'PUZZLE' ? cfg.puzzle?.day : undefined,
+        opponentFaction: state.players[AI].hero.faction,
+        cardsPlayed: state.players[HUMAN].played ?? [],
       });
       set({ rewards });
       if (cfg.mode === 'TOURNAMENT' && cfg.tournamentMatchId) onTournamentMatchEnd?.(cfg.tournamentMatchId, result);

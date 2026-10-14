@@ -60,6 +60,7 @@ function createPlayer(id: PlayerId, side: SideSetup): PlayerState {
     mulliganDone: false,
     spellsCastThisTurn: 0,
     spellsCast: [],
+    played: [],
     cardsPlayedThisTurn: 0,
     allyDiedThisTurn: false,
     allyDeathsThisGame: 0,
@@ -301,6 +302,7 @@ function doPlayCard(ctx: EngineContext, playerId: PlayerId, cardUid: number, tar
   p.hand = p.hand.filter((c) => c.uid !== cardUid);
   p.stats.cardsPlayed++;
   p.cardsPlayedThisTurn++;
+  (p.played ??= []).push(card.cardId);
 
   // Overcharge: pay extra energy up-front for each ability that can be afforded.
   const trigger = def.cardType === 'SPELL' ? 'ON_CAST' : 'ON_DEPLOY';

@@ -130,6 +130,8 @@ export interface PlayerState {
   spellsCastThisTurn: number;
   /** Card ids of every spell cast this game, in order. Missing in older states. */
   spellsCast?: string[];
+  /** Card ids of every card played from hand this game (deck statistics). Missing in older states. */
+  played?: string[];
   cardsPlayedThisTurn: number;
   allyDiedThisTurn: boolean;
   allyDeathsThisGame: number;

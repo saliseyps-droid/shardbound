@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.49.0': {
+    title: 'Poznej svůj balíček',
+    summary: 'Každý balíček má vlastní statistiky, rozdělené podle herního módu.',
+    sections: [
+      [
+        'Statistiky balíčků: u každého balíčku otevři Statistiky a uvidíš úspěšnost, počet her, výhry a prohry, průměrnou délku hry a kdy jsi s ním hrál naposledy, pro všechny módy dohromady nebo pro každý zvlášť (trénink, kampaň, hodnocená hra proti AI, online, hodnocená hra, turnaje, brawl).',
+        'V každém módu je také vidět, jak si balíček vede proti jednotlivým frakcím, a karty, se kterými nejvíc a nejméně vyhráváš, když je zahraješ (jakmile kartu zahraješ ve 3 hrách).',
+        'Dlaždice balíčku rovnou ukazuje počet her a úspěšnost.',
+        'Výsledky podle módů se dopočítají z tvých posledních 100 zápasů; soupeři a karty se počítají od této verze.',
+      ],
+    ],
+  },
   '0.48.1': {
     title: 'Stůl v hostinci',
     summary: 'Ostřejší herní plochy a Hostinec v Přízračném hvozdu se hraje na vlastních stolech.',
