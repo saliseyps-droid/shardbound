@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.48.1': {
+    title: 'Stůl v hostinci',
+    summary: 'Ostřejší herní plochy a Hostinec v Přízračném hvozdu se hraje na vlastních stolech.',
+    sections: [
+      ['Hostinec v Přízračném hvozdu: každý souboj v kampani se teď hraje na jednom ze dvou nových hospodských stolů (korbel piva, kostky, mapy a hromádka kostí), které se střídají. Jiná plocha se tam neobjeví.'],
+      [
+        'Všech deset herních ploch se teď zobrazuje v plném rozlišení, takže jsou ostré i na velké obrazovce.',
+        'Ohnivá a ledová plocha jsou méně ztmavené, takže na stole vypadají jasněji.',
+      ],
+    ],
+  },
   '0.48.0': {
     title: 'Poznej své přátele',
     summary: 'Seznam přátel o každém příteli ukazuje mnohem víc.',

@@ -19,6 +19,26 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.48.1',
+    date: '2026-10-14',
+    title: 'A table at the inn',
+    summary: 'Sharper play-mats, and The Wraithwood Inn is played on its own tavern tables.',
+    sections: [
+      {
+        kind: 'new',
+        items: ['The Wraithwood Inn: every fight in the campaign is now played on one of two new tavern tables (a beer mug, dice, maps and a pile of bones), taking turns. No other board shows up there.'],
+      },
+      {
+        kind: 'improved',
+        items: [
+          'All ten play-mats are now shown in full resolution, so they stay sharp on big screens.',
+          'The fire and ice play-mats are less dimmed, so they look brighter on the table.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.48.0',
     date: '2026-10-14',
     title: 'Know your friends',

@@ -30,6 +30,7 @@ import { BrandLogo } from '@/ui/components/BrandLogo';
 import { Glyph } from '@/ui/components/Icons';
 import { enterGameFullscreen, fullscreenSupported, maybeAutoFullscreen, startMatchFullscreen } from './fullscreen';
 import { pickBoardBackground } from './boardBackgrounds';
+import { campaignOf } from '@/data/opponents';
 import '@/ui/styles/board.css';
 
 interface Drag {
@@ -164,8 +165,9 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const cardW = useViewportCardWidth();
   const t = useT();
   const startedAt = useMatch((s) => s.startedAt);
-  // A new random play-mat for every match (rematches included).
-  const boardBg = useMemo(() => pickBoardBackground(), [startedAt]);
+  // A new play-mat for every match (rematches included); Wraithwood Inn fights alternate its two tavern tables.
+  const innFight = !!config?.encounterId && campaignOf(config.encounterId).id === 'inn';
+  const boardBg = useMemo(() => pickBoardBackground({ inn: innFight }), [startedAt, innFight]);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [hover, setHover] = useState<{ cardId: string; uid?: number } | null>(null);
@@ -494,7 +496,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   return (
     <div
       className={`match ${myTurn ? 'my-turn' : 'their-turn'} ${selection ? 'is-targeting' : ''}`}
-      style={boardBg ? ({ '--board-bg': `url(${boardBg})` } as CSSProperties) : undefined}
+      style={boardBg ? ({ '--board-bg': `url(${boardBg.url})`, '--board-dim': boardBg.dim } as CSSProperties) : undefined}
       ref={boardRef}
       onContextMenu={(e) => {
         e.preventDefault();

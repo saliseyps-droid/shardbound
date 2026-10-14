@@ -24,14 +24,14 @@
   user-select: none;
   touch-action: none;
 }
-/* Play-mat: a random board (--board-bg, set per match) at 50% opacity, covering and centred on the play area only. */
+/* Play-mat: the match's board (--board-bg) under a dark veil (--board-dim, 0.5 unless the board is darker), covering and centred on the play area only. */
 .board-mat {
   position: absolute;
   inset: 0 var(--sidebar-w) 0 0;
   z-index: -1;
   pointer-events: none;
   background:
-    linear-gradient(rgba(23, 20, 43, 0.5), rgba(23, 20, 43, 0.5)),
+    linear-gradient(rgba(23, 20, 43, var(--board-dim, 0.5)), rgba(23, 20, 43, var(--board-dim, 0.5))),
     var(--board-bg, none) center / cover no-repeat;
 }
 .match::before {
