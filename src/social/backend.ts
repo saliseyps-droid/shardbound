@@ -42,6 +42,16 @@ export interface PublicProfile {
   /** Distinct collectible cards owned, out of cardsTotal. */
   cardsOwned?: number;
   cardsTotal?: number;
+  /** Ranked vs AI ladder index 0-15 (missing until the friend has played it). */
+  aiRank?: number;
+  /** Achievements unlocked, out of achievementsTotal. */
+  achievementsDone?: number;
+  achievementsTotal?: number;
+  /** Campaign fights won (every campaign), out of campaignTotal. */
+  campaignWon?: number;
+  campaignTotal?: number;
+  /** The faction with the most wins ('' before the first win). */
+  favFaction?: string;
 }
 
 export interface FriendRequest {
@@ -110,7 +120,7 @@ export interface SocialBackend {
 
   // Presence.
   /** `watch`: the watch room of the match being played (left out when there is none). */
-  setPresence(uid: string, inMatch: boolean, watch?: string | null): Promise<void>;
+  setPresence(uid: string, inMatch: boolean, watch?: string | null, activity?: string | null): Promise<void>;
   watchPresence(uid: string, cb: (p: Presence | null) => void): Unsubscribe;
 
   // Match invites (invites/{to}/items/{id}).

@@ -7,7 +7,7 @@ import type { GameSave } from '@/domain/save';
 import type { FriendRequest, MatchInvite, PublicProfile, SocialBackend, Unsubscribe } from '@/social/backend';
 import { PRESENCE_INTERVAL_MS, type Presence } from '@/social/friends';
 import { buildLeaderboardEntries } from '@/social/leaderboard';
-import { profileStats } from '@/social/profile';
+import { profileExtras, profileStats } from '@/social/profile';
 import { SocialService, type ProfileInfo } from '@/social/service';
 import { gameService } from './accountStore';
 
@@ -28,6 +28,12 @@ export interface FriendView {
   title?: string | null;
   cardsOwned?: number;
   cardsTotal?: number;
+  aiRank?: number;
+  achievementsDone?: number;
+  achievementsTotal?: number;
+  campaignWon?: number;
+  campaignTotal?: number;
+  favFaction?: string;
 }
 
 interface SocialStore {
@@ -46,7 +52,7 @@ interface SocialStore {
   start: (uid: string, backend: SocialBackend, mode: 'real' | 'mock') => void;
   stop: () => void;
   /** `watch`: the watch room of the match being played, so friends can spectate it. */
-  setInMatch: (inMatch: boolean, watch?: string | null) => void;
+  setInMatch: (inMatch: boolean, watch?: string | null, activity?: string | null) => void;
   /** Re-reads every friend's public profile (level, title, cards change over time). */
   refreshFriendProfiles: () => void;
 }
@@ -56,17 +62,21 @@ let friendUnsubs = new Map<string, Unsubscribe>();
 let heartbeat: ReturnType<typeof setInterval> | null = null;
 let inMatchNow = false;
 let watchNow: string | null = null;
+let activityNow: string | null = null;
 let mockBackend: SocialBackend | null = null;
 
 export function profileInfo(save: GameSave): ProfileInfo {
   const p = save.profile;
   const deck = save.decks.find((d) => d.id === p.selectedDeckId) ?? save.decks[0];
-  return { name: p.username, avatar: deck?.heroFaction ?? '', portrait: (deck && effectivePortrait(deck, p)) || '', ...profileStats(save) };
+  return { name: p.username, avatar: deck?.heroFaction ?? '', portrait: (deck && effectivePortrait(deck, p)) || '', ...profileStats(save), ...profileExtras(save) };
 }
 
 /** The parts of a friend's profile shown in the list. */
 function friendFields(p: PublicProfile): Partial<FriendView> {
-  return { name: p.name, avatar: p.avatar, portrait: p.portrait, level: p.level, title: p.title, cardsOwned: p.cardsOwned, cardsTotal: p.cardsTotal };
+  return {
+    name: p.name, avatar: p.avatar, portrait: p.portrait, level: p.level, title: p.title, cardsOwned: p.cardsOwned, cardsTotal: p.cardsTotal,
+    aiRank: p.aiRank, achievementsDone: p.achievementsDone, achievementsTotal: p.achievementsTotal, campaignWon: p.campaignWon, campaignTotal: p.campaignTotal, favFaction: p.favFaction,
+  };
 }
 
 export const useSocial = create<SocialStore>((set, get) => ({
@@ -139,7 +149,7 @@ export const useSocial = create<SocialStore>((set, get) => ({
     );
 
     const beat = () => {
-      void service.heartbeat(inMatchNow, watchNow).catch((e) => console.warn('[social] presence failed', e));
+      void service.heartbeat(inMatchNow, watchNow, activityNow).catch((e) => console.warn('[social] presence failed', e));
       get().refreshFriendProfiles();
     };
     beat();
@@ -169,12 +179,14 @@ export const useSocial = create<SocialStore>((set, get) => ({
     set({ mode: 'off', uid: null, me: null, friends: [], incoming: [], outgoing: [], invites: [], names: {}, service: null });
   },
 
-  setInMatch: (inMatch, watch = null) => {
+  setInMatch: (inMatch, watch = null, activity = null) => {
     const w = inMatch ? watch : null;
-    if (inMatch === inMatchNow && w === watchNow) return;
+    const a = inMatch ? activity : null;
+    if (inMatch === inMatchNow && w === watchNow && a === activityNow) return;
     inMatchNow = inMatch;
     watchNow = w;
-    void get().service?.heartbeat(inMatch, w).catch(() => undefined);
+    activityNow = a;
+    void get().service?.heartbeat(inMatch, w, a).catch(() => undefined);
   },
 }));
 

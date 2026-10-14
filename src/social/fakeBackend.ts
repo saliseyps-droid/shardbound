@@ -121,8 +121,8 @@ export class FakeSocialBackend implements SocialBackend {
   }
 
   // --- presence ---
-  async setPresence(uid: string, inMatch: boolean, watch?: string | null) {
-    this.presence.set(uid, { lastSeen: this.now(), inMatch, ...(watch ? { watch } : {}) });
+  async setPresence(uid: string, inMatch: boolean, watch?: string | null, activity?: string | null) {
+    this.presence.set(uid, { lastSeen: this.now(), inMatch, ...(watch ? { watch } : {}), ...(inMatch && activity ? { activity } : {}) });
     this.emit();
   }
   watchPresence(uid: string, cb: (p: Presence | null) => void) {

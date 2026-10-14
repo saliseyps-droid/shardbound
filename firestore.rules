@@ -6,11 +6,11 @@ rules_version = '2';
 // Social (src/cloud/social.ts):
 //   seasons/{YYYY-MM}/aiRanked/{uid}  { name, avatar, portrait, rank, crownPoints, score, wins, updatedAt }  public read
 //   seasons/{YYYY-MM}/ranked/{uid}    { name, avatar, portrait, rating, wins, updatedAt }                   public read
-//   profiles/{uid}                    { name, avatar, portrait, friendCode, level?, title?, cardsOwned?, cardsTotal?, updatedAt }
+//   profiles/{uid}                    { name, avatar, portrait, friendCode, level?, title?, cardsOwned?, cardsTotal?, aiRank?, achievementsDone?, achievementsTotal?, campaignWon?, campaignTotal?, favFaction?, updatedAt }
 //   friendCodes/{CODE}                { uid }
 //   friendRequests/{from}_{to}        { from, to, fromName, fromAvatar, createdAt }
 //   users/{uid}/friends/{friendUid}   { since }
-//   presence/{uid}                    { lastSeen, inMatch, watch? }
+//   presence/{uid}                    { lastSeen, inMatch, watch?, activity? }
 //   invites/{to}/items/{id}           { from, fromName, code, createdAt, status, kind?, size? }
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -68,7 +68,14 @@ service cloud.firestore {
         && (!('title' in d) || d.title == null || shortString(d.title))
         && (!('cardsOwned' in d) || (d.cardsOwned is int && d.cardsOwned >= 0 && d.cardsOwned <= 5000))
         && (!('cardsTotal' in d) || (d.cardsTotal is int && d.cardsTotal >= 0 && d.cardsTotal <= 5000))
-        && (!('cardsOwned' in d) || ('cardsTotal' in d && d.cardsOwned <= d.cardsTotal));
+        && (!('cardsOwned' in d) || ('cardsTotal' in d && d.cardsOwned <= d.cardsTotal))
+        // Ranked vs AI rank, achievements, campaign fights won and favourite faction.
+        && (!('aiRank' in d) || (d.aiRank is int && d.aiRank >= 0 && d.aiRank <= 15))
+        && (!('achievementsDone' in d) || (d.achievementsDone is int && d.achievementsDone >= 0 && 'achievementsTotal' in d && d.achievementsDone <= d.achievementsTotal))
+        && (!('achievementsTotal' in d) || (d.achievementsTotal is int && d.achievementsTotal >= 0 && d.achievementsTotal <= 1000))
+        && (!('campaignWon' in d) || (d.campaignWon is int && d.campaignWon >= 0 && 'campaignTotal' in d && d.campaignWon <= d.campaignTotal))
+        && (!('campaignTotal' in d) || (d.campaignTotal is int && d.campaignTotal >= 0 && d.campaignTotal <= 1000))
+        && (!('favFaction' in d) || d.favFaction in ['', 'EMBER', 'VERDANT', 'IRON', 'ASTRAL', 'VOID', 'TIDE']);
     }
 
     match /users/{uid} {
@@ -112,7 +119,7 @@ service cloud.firestore {
       allow read: if signedIn();
       allow delete: if isOwner(uid);
       allow create, update: if isOwner(uid)
-        && request.resource.data.keys().hasOnly(['name', 'avatar', 'portrait', 'friendCode', 'level', 'title', 'cardsOwned', 'cardsTotal', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['name', 'avatar', 'portrait', 'friendCode', 'level', 'title', 'cardsOwned', 'cardsTotal', 'aiRank', 'achievementsDone', 'achievementsTotal', 'campaignWon', 'campaignTotal', 'favFaction', 'updatedAt'])
         && validName(request.resource.data.name)
         && shortString(request.resource.data.avatar)
         && shortString(request.resource.data.portrait)
@@ -151,11 +158,13 @@ service cloud.firestore {
       allow read: if signedIn();
       allow delete: if isOwner(uid);
       allow create, update: if isOwner(uid)
-        && request.resource.data.keys().hasOnly(['lastSeen', 'inMatch', 'watch'])
+        && request.resource.data.keys().hasOnly(['lastSeen', 'inMatch', 'watch', 'activity'])
         && request.resource.data.lastSeen == request.time
         && request.resource.data.inMatch is bool
         // The watch room of the match being played (friends can spectate it).
-        && (!('watch' in request.resource.data) || (request.resource.data.watch is string && request.resource.data.watch.matches('^W[A-Z0-9-]{3,23}$')));
+        && (!('watch' in request.resource.data) || (request.resource.data.watch is string && request.resource.data.watch.matches('^W[A-Z0-9-]{3,23}$')))
+        // What kind of match is being played (src/social/friends.ts ACTIVITIES).
+        && (!('activity' in request.resource.data) || request.resource.data.activity in ['PRACTICE', 'PVE', 'TUTORIAL', 'ONLINE', 'RANKED', 'TOURNAMENT', 'ARENA', 'AI_RANKED', 'BRAWL', 'DUNGEON', 'PUZZLE', 'SPECTATE']);
     }
 
     // Match and tournament invites: only a player on the recipient's friends list can send one;

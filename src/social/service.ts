@@ -142,8 +142,8 @@ export class SocialService {
     return this.backend.deleteInvite(this.uid, id);
   }
 
-  heartbeat(inMatch: boolean, watch?: string | null) {
-    return this.backend.setPresence(this.uid, inMatch, watch);
+  heartbeat(inMatch: boolean, watch?: string | null, activity?: string | null) {
+    return this.backend.setPresence(this.uid, inMatch, watch, activity);
   }
 
   /** Queues this season's entries; only changed, valid ones are uploaded, after a short pause. */

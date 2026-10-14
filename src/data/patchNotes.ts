@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.48.0',
+    date: '2026-10-14',
+    title: 'Know your friends',
+    summary: 'The friends list shows much more about each friend.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Friends list: under level and cards you now see each friend\u2019s Ranked vs AI rank, achievements unlocked, campaign fights won (across every campaign) and favourite faction (the one with the most wins).',
+          'When a friend is in a match, you see what they are playing: Ranked vs AI, Campaign, Arena, Brawl, a tournament and so on.',
+          'Friends on an older version of the game show what their version sends; the rest appears once they update.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.47.5',
     date: '2026-10-14',
     title: 'Fainter stars',

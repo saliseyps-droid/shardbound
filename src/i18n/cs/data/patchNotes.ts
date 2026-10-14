@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.48.0': {
+    title: 'Poznej své přátele',
+    summary: 'Seznam přátel o každém příteli ukazuje mnohem víc.',
+    sections: [
+      [
+        'Seznam přátel: pod úrovní a kartami teď u každého přítele vidíš jeho úroveň v hodnocené hře proti AI, počet splněných úspěchů, vyhrané souboje v kampaních (ve všech dohromady) a oblíbenou frakci (tu, se kterou má nejvíc výher).',
+        'Když je přítel ve hře, vidíš, co právě hraje: hodnocenou hru proti AI, kampaň, arénu, brawl, turnaj a tak dále.',
+        'U přátel se starší verzí hry uvidíš to, co jejich verze posílá; zbytek se objeví, až si hru aktualizují.',
+      ],
+    ],
+  },
   '0.47.5': {
     title: 'Slabší hvězdy',
     summary: 'Slabší talent Hvězdný úlomek, ostřejší portréty z kampaní a oprava Saliho na telefonech.',

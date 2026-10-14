@@ -43,7 +43,9 @@ export default function SocialLayer({ uid, dev }: { uid: string | null; dev: boo
     };
   }, [uid, dev]);
 
-  useEffect(() => useSocial.getState().setInMatch(inMatch, watchCode), [inMatch, watchCode]);
+  // Friends see what kind of match this is (Ranked vs AI, Campaign, ...).
+  const activity = useMatch((s) => (s.phase === 'ended' ? null : (s.config?.mode ?? null)));
+  useEffect(() => useSocial.getState().setInMatch(inMatch, watchCode, activity), [inMatch, watchCode, activity]);
 
   // Invites lapse (two minutes for matches, ten for tournaments): re-check once in a while.
   const pending = invites.filter((i) => i.status === 'pending');

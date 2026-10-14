@@ -44,7 +44,26 @@ export interface Presence {
   inMatch: boolean;
   /** The watch room of the match being played, when friends can spectate it (src/net/spectate.ts). */
   watch?: string | null;
+  /** What kind of match is being played (one of ACTIVITIES), while in a match. */
+  activity?: string | null;
 }
+
+/** Match kinds a friend can be seen playing (MatchConfig.mode), with their label. Same list as firestore.rules. */
+export const ACTIVITIES: Record<string, string> = {
+  PRACTICE: 'Practice vs AI',
+  PVE: 'Campaign',
+  TUTORIAL: 'Tutorial',
+  ONLINE: 'Online match',
+  RANKED: 'Ranked',
+  TOURNAMENT: 'Tournament',
+  ARENA: 'Arena',
+  AI_RANKED: 'Ranked vs AI',
+  BRAWL: 'Brawl',
+  DUNGEON: 'Dungeon',
+  PUZZLE: 'Daily puzzle',
+  SPECTATE: 'Watching a match',
+};
+export const isActivity = (v: unknown): v is string => typeof v === 'string' && Object.prototype.hasOwnProperty.call(ACTIVITIES, v);
 
 export type PresenceStatus = 'online' | 'inMatch' | 'offline';
 

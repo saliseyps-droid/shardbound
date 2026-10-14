@@ -1,7 +1,7 @@
 import type { DocumentData, DocumentSnapshot, Firestore, QueryDocumentSnapshot } from 'firebase/firestore';
 import { isWatchCode } from '@/net/watchCode';
 import type { Board, FriendRequest, LeaderboardEntry, MatchInvite, SocialBackend } from '@/social/backend';
-import { inviteKind } from '@/social/friends';
+import { inviteKind, isActivity } from '@/social/friends';
 
 /**
  * Firestore layout for the social features (rules in firestore.rules):
@@ -95,6 +95,12 @@ export async function createSocialBackend(db: Firestore): Promise<SocialBackend>
         title: typeof d.title === 'string' ? d.title : null,
         cardsOwned: int(d.cardsOwned),
         cardsTotal: int(d.cardsTotal),
+        aiRank: int(d.aiRank),
+        achievementsDone: int(d.achievementsDone),
+        achievementsTotal: int(d.achievementsTotal),
+        campaignWon: int(d.campaignWon),
+        campaignTotal: int(d.campaignTotal),
+        favFaction: typeof d.favFaction === 'string' ? d.favFaction : undefined,
       };
     },
     async putProfile(uid, p) {
@@ -103,13 +109,21 @@ export async function createSocialBackend(db: Firestore): Promise<SocialBackend>
       if (p.level !== undefined) stats.level = p.level;
       if (p.title !== undefined) stats.title = p.title || null;
       if (p.cardsOwned !== undefined && p.cardsTotal !== undefined) Object.assign(stats, { cardsOwned: p.cardsOwned, cardsTotal: p.cardsTotal });
-      try {
-        await setDoc(doc(db, 'profiles', uid), { ...base, ...stats });
-      } catch (e) {
-        // Older published rules don't know level/title/cards yet: keep friends working without them.
-        if ((e as { code?: string }).code !== 'permission-denied' || Object.keys(stats).length === 0) throw e;
-        console.warn('[social] profile stats refused by the Firestore rules; publish the current firestore.rules');
-        await setDoc(doc(db, 'profiles', uid), base);
+      const extras: Record<string, unknown> = {};
+      if (p.aiRank !== undefined) extras.aiRank = p.aiRank;
+      if (p.achievementsDone !== undefined && p.achievementsTotal !== undefined) Object.assign(extras, { achievementsDone: p.achievementsDone, achievementsTotal: p.achievementsTotal });
+      if (p.campaignWon !== undefined && p.campaignTotal !== undefined) Object.assign(extras, { campaignWon: p.campaignWon, campaignTotal: p.campaignTotal });
+      if (p.favFaction !== undefined) extras.favFaction = p.favFaction;
+      // Older published rules may not know the newer fields: fall back step by step, so friends keep working.
+      const attempts = [{ ...base, ...stats, ...extras }, { ...base, ...stats }, base].filter((a, i, all) => i === 0 || Object.keys(a).length < Object.keys(all[i - 1]).length);
+      for (let i = 0; i < attempts.length; i++) {
+        try {
+          await setDoc(doc(db, 'profiles', uid), attempts[i]);
+          if (i > 0) console.warn('[social] some profile fields were refused by the Firestore rules; publish the current firestore.rules');
+          return;
+        } catch (e) {
+          if ((e as { code?: string }).code !== 'permission-denied' || i === attempts.length - 1) throw e;
+        }
       }
     },
     async claimFriendCode(uid, code) {
@@ -165,9 +179,18 @@ export async function createSocialBackend(db: Firestore): Promise<SocialBackend>
       await batch.commit();
     },
 
-    async setPresence(uid, inMatch, watch) {
-      // The watch room is only written while there is one, so the document stays as before otherwise.
-      await setDoc(doc(db, 'presence', uid), { lastSeen: serverTimestamp(), inMatch, ...(watch && isWatchCode(watch) ? { watch } : {}) });
+    async setPresence(uid, inMatch, watch, activity) {
+      // The watch room and the match kind are only written while there is one, so the document stays as before otherwise.
+      const base = { lastSeen: serverTimestamp(), inMatch, ...(watch && isWatchCode(watch) ? { watch } : {}) };
+      if (inMatch && isActivity(activity)) {
+        try {
+          return await setDoc(doc(db, 'presence', uid), { ...base, activity });
+        } catch (e) {
+          // Rules published before the match kind existed refuse it: keep the plain presence.
+          if ((e as { code?: string }).code !== 'permission-denied') throw e;
+        }
+      }
+      await setDoc(doc(db, 'presence', uid), base);
     },
     watchPresence(uid, cb) {
       return onSnapshot(
@@ -175,7 +198,7 @@ export async function createSocialBackend(db: Firestore): Promise<SocialBackend>
         (s) => {
           if (!s.exists()) return cb(null);
           const d = data(s);
-          cb({ lastSeen: millis(d.lastSeen), inMatch: d.inMatch === true, watch: isWatchCode(d.watch) ? d.watch : null });
+          cb({ lastSeen: millis(d.lastSeen), inMatch: d.inMatch === true, watch: isWatchCode(d.watch) ? d.watch : null, activity: isActivity(d.activity) ? d.activity : null });
         },
         warn('presence'),
       );

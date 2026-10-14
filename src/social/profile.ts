@@ -1,5 +1,9 @@
 import { collectibleCards } from '@/data/cards';
+import { ACHIEVEMENTS } from '@/data/achievements';
+import { allEncounters } from '@/data/opponents';
+import { CROWN_RANK } from '@/domain/aiRanked';
 import { ownedCopies, type GameSave } from '@/domain/save';
+import { PLAYABLE_FACTIONS } from '@/game/types';
 import { formatDate, t, tn } from '@/i18n';
 import type { PublicProfile } from './backend';
 import { NAME_MAX } from './leaderboard';
@@ -28,7 +32,41 @@ export function profileStats(save: GameSave): ProfileStats {
   return { level: clampInt(p.level, 1, PROFILE_LEVEL_MAX), title, cardsOwned: clampInt(owned, 0, cardsTotal), cardsTotal };
 }
 
-const PROFILE_KEYS = new Set(['name', 'avatar', 'portrait', 'friendCode', 'level', 'title', 'cardsOwned', 'cardsTotal']);
+export const PROFILE_COUNT_MAX = 1000;
+export type ProfileExtras = Pick<PublicProfile, 'aiRank' | 'achievementsDone' | 'achievementsTotal' | 'campaignWon' | 'campaignTotal' | 'favFaction'>;
+
+/**
+ * What friends see besides level and cards: the Ranked vs AI rank (once played), achievements,
+ * campaign fights won across every campaign and the faction with the most wins.
+ */
+export function profileExtras(save: GameSave): ProfileExtras {
+  const p = save.profile;
+  const air = p.aiRanked;
+  const played = !!air && air.wins + air.losses > 0;
+  const total = ACHIEVEMENTS.length;
+  const done = ACHIEVEMENTS.filter((a) => p.achievements?.[a.id]).length;
+  const fights = allEncounters();
+  const won = fights.filter((e) => save.pve.completed[e.id]).length;
+  let fav = '';
+  let best = 0;
+  for (const f of PLAYABLE_FACTIONS) {
+    const w = p.factionWins[f] ?? 0;
+    if (w > best) {
+      best = w;
+      fav = f;
+    }
+  }
+  return {
+    ...(played ? { aiRank: clampInt(air.rank, 0, CROWN_RANK) } : {}),
+    achievementsDone: clampInt(done, 0, PROFILE_COUNT_MAX),
+    achievementsTotal: clampInt(total, 0, PROFILE_COUNT_MAX),
+    campaignWon: clampInt(won, 0, PROFILE_COUNT_MAX),
+    campaignTotal: clampInt(fights.length, 0, PROFILE_COUNT_MAX),
+    favFaction: fav,
+  };
+}
+
+const PROFILE_KEYS = new Set(['name', 'avatar', 'portrait', 'friendCode', 'level', 'title', 'cardsOwned', 'cardsTotal', 'aiRank', 'achievementsDone', 'achievementsTotal', 'campaignWon', 'campaignTotal', 'favFaction']);
 const isInt = (v: unknown, min: number, max: number) => typeof v === 'number' && Number.isInteger(v) && v >= min && v <= max;
 const isStr = (v: unknown, min: number, max: number) => typeof v === 'string' && v.length >= min && v.length <= max;
 
@@ -42,12 +80,19 @@ export function isValidProfile(p: Partial<PublicProfile>): boolean {
   if (p.cardsOwned !== undefined && !isInt(p.cardsOwned, 0, PROFILE_CARDS_MAX)) return false;
   if (p.cardsTotal !== undefined && !isInt(p.cardsTotal, 0, PROFILE_CARDS_MAX)) return false;
   if (p.cardsOwned !== undefined && (p.cardsTotal === undefined || p.cardsOwned > p.cardsTotal)) return false;
+  if (p.aiRank !== undefined && !isInt(p.aiRank, 0, CROWN_RANK)) return false;
+  for (const [a, b] of [['achievementsDone', 'achievementsTotal'], ['campaignWon', 'campaignTotal']] as const) {
+    if (p[a] !== undefined && !isInt(p[a], 0, PROFILE_COUNT_MAX)) return false;
+    if (p[b] !== undefined && !isInt(p[b], 0, PROFILE_COUNT_MAX)) return false;
+    if (p[a] !== undefined && (p[b] === undefined || (p[a] as number) > (p[b] as number))) return false;
+  }
+  if (p.favFaction !== undefined && p.favFaction !== '' && !(PLAYABLE_FACTIONS as readonly string[]).includes(p.favFaction)) return false;
   return true;
 }
 
 /** Identity of what friends see, so an unchanged profile is not written again. */
 export function profileKey(p: PublicProfile): string {
-  return JSON.stringify([p.name, p.avatar, p.portrait, p.friendCode, p.level ?? null, p.title || null, p.cardsOwned ?? null, p.cardsTotal ?? null]);
+  return JSON.stringify([p.name, p.avatar, p.portrait, p.friendCode, p.level ?? null, p.title || null, p.cardsOwned ?? null, p.cardsTotal ?? null, p.aiRank ?? null, p.achievementsDone ?? null, p.achievementsTotal ?? null, p.campaignWon ?? null, p.campaignTotal ?? null, p.favFaction ?? null]);
 }
 
 const DAY_MS = 86_400_000;
