@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.53.1',
+    date: '2026-10-16',
+    title: 'Straight up',
+    summary: 'A card won in a fight now stands straight from the start.',
+    sections: [{ kind: 'fixed', items: ['A card won in a fight was tilted while face down and straightened only when turned over. It now stands straight from the start.'] }],
+    commits: [],
+  },
+  {
     version: '0.53.0',
     date: '2026-10-16',
     title: 'Nightmares',

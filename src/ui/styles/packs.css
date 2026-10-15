@@ -272,3 +272,4 @@ html:not([data-input='touch']) .pack-slot:not(.is-up) .flip-card:hover .flip-inn
 .card-reward { z-index: 1200; }
 .card-reward-body { display: grid; justify-items: center; gap: var(--space-4); }
 .card-reward-title { margin: 0; font: 700 var(--t-xl) var(--font-display); color: var(--gold-bright); text-shadow: 0 0 18px rgba(240, 192, 90, 0.5); animation: fade-in 0.4s ease-out; }
+.card-reward .pack-slot { transform: none; }

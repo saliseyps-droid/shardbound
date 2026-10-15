@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.53.1': {
+    title: 'Narovnáno',
+    summary: 'Karta vyhraná v boji teď stojí rovně hned od začátku.',
+    sections: [['Karta vyhraná v boji byla lícem dolů nakloněná a narovnala se až po otočení. Teď stojí rovně hned od začátku.']],
+  },
   '0.53.0': {
     title: 'Noční můry',
     summary: 'Každého poraženého bosse kampaně můžeš vyzvat znovu na Noční můru I a II, o Foil a Prismatic karty. Karty vyhrané v boji se teď otáčejí jako karty z balíčku.',
