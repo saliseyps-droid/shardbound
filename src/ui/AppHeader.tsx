@@ -24,6 +24,7 @@ const NAV: { to: string; label: MessageKey; icon: string }[] = [
   { to: '/profile', label: 'nav.profile', icon: 'person' },
   { to: '/friends', label: 'nav.friends', icon: 'people' },
   { to: '/achievements', label: 'nav.achievements', icon: 'chalice' },
+  { to: '/codex', label: 'nav.codex', icon: 'tower' },
   { to: '/patch-notes', label: 'nav.patchNotes', icon: 'scroll' },
 ];
 

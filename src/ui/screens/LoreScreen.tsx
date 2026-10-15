@@ -8,6 +8,7 @@ import { factionStyle } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
 import { t } from '@/i18n';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Cinematic } from '@/ui/components/Cinematic';
 
 const CATEGORY = { static: 'Unit abilities', trigger: 'Triggers', status: 'Statuses' } as const;
@@ -23,7 +24,10 @@ export default function LoreScreen() {
         ))}
         <button type="button" className="btn btn-ghost btn-sm" onClick={() => setIntro(true)}>
           ▶ {t('Watch the intro')}
-        </button>
+        </button>{' '}
+        <Link className="btn btn-ghost btn-sm" to="/codex">
+          {t('Open the Codex')}
+        </Link>
       </section>
       {intro && <Cinematic id="world_intro" onDone={() => setIntro(false)} />}
 

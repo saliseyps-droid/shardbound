@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.50.0',
+    date: '2026-10-15',
+    title: 'The Codex of Aethra',
+    summary: 'The whole story as a book you can leaf through, filling up as you play.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Codex (in the menu, and from Lore and keywords): an open book with turning pages that tells the story in order: the Shattering, then every campaign chapter by chapter, with the bosses and the cinematic paintings and narration.',
+          'Pages fill in as you go: cinematic pages once you have seen them, chapters once you reach them, bosses once you beat them (with their faction, when you first won and how often, and the card they gave you). Blank pages say what fills them.',
+          'The contents page jumps to each part and shows how much of it you have written. Turn pages with the arrows, the arrow keys or a swipe; any cinematic can be replayed from its page.',
+          'The cinematic before the fight with Sali now counts as seen, so its page opens too.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.49.2',
     date: '2026-10-15',
     title: 'Compact stats',

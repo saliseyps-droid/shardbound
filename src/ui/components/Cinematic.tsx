@@ -7,7 +7,8 @@ import { t } from '@/i18n';
 import '@/ui/styles/cinematic.css';
 
 const images = import.meta.glob('../../assets/cinematics/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
-const imageUrl = (id: string) => images[`../../assets/cinematics/${id}.webp`];
+export const cinematicImageUrl = (id: string) => images[`../../assets/cinematics/${id}.webp`];
+const imageUrl = cinematicImageUrl;
 const tracks = import.meta.glob('../../assets/music/*.mp3', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 const trackUrl = (id: string) => tracks[`../../assets/music/${id}.mp3`];
 

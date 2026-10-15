@@ -34,6 +34,7 @@ const KEYS = {
   'nav.patchNotes': 'News',
   'nav.achievements': 'Achievements',
   'nav.friends': 'Friends',
+  'nav.codex': 'Codex',
   'match.endTurn': 'End turn',
   'match.enemyTurn': 'Enemy turn',
   'match.thinking': 'Thinking…',

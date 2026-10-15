@@ -157,6 +157,7 @@ export default function CampaignScreen() {
           key={preFight}
           id={preFight}
           onDone={() => {
+            gameService.markCinematicSeen(preFight);
             setPreFight(null);
             startFight();
           }}

@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.50.0': {
+    title: 'Kodex Aethry',
+    summary: 'Celý příběh jako kniha, kterou můžeš listovat a která se plní, jak hraješ.',
+    sections: [
+      [
+        'Kodex (v menu a ze stránky Příběh a klíčová slova): otevřená kniha s otáčejícími se listy, která vypráví příběh po pořadí: Roztříštění a pak všechny kampaně kapitolu po kapitole, s bossy a s malbami a vyprávěním z filmových klipů.',
+        'Stránky se plní postupně: stránky klipů, když je uvidíš, kapitoly, když se k nim dostaneš, a bossové, když je porazíš (s frakcí, kdy jsi je poprvé porazil a kolikrát a jakou kartu ti dali). Prázdné stránky prozradí, co je zaplní.',
+        'Obsah přeskočí na každou část a ukáže, kolik z ní máš popsáno. Listuje se šipkami, klávesami se šipkami nebo přejetím prstem; každý klip si můžeš z jeho stránky znovu pustit.',
+        'Klip před soubojem se Salim se teď počítá jako zhlédnutý, takže se otevře i jeho stránka.',
+      ],
+    ],
+  },
   '0.49.2': {
     title: 'Kompaktní statistiky',
     summary: 'Statistiky balíčku se vejdou na jednu obrazovku.',

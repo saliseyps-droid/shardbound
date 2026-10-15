@@ -31,6 +31,7 @@ const ProfileScreen = lazyWithReload(() => import('@/ui/screens/ProfileScreen'))
 const MatchHistoryScreen = lazyWithReload(() => import('@/ui/screens/MatchHistoryScreen'));
 const SettingsScreen = lazyWithReload(() => import('@/ui/screens/SettingsScreen'));
 const LoreScreen = lazyWithReload(() => import('@/ui/screens/LoreScreen'));
+const CodexScreen = lazyWithReload(() => import('@/ui/screens/CodexScreen'));
 const OnlineScreen = lazyWithReload(() => import('@/ui/screens/OnlineScreen'));
 const JoinScreen = lazyWithReload(() => import('@/ui/screens/JoinScreen'));
 const RankedScreen = lazyWithReload(() => import('@/ui/screens/RankedScreen'));
@@ -72,6 +73,7 @@ function Shell() {
               <Route path="/history" element={<MatchHistoryScreen />} />
               <Route path="/settings" element={<SettingsScreen />} />
               <Route path="/lore" element={<LoreScreen />} />
+              <Route path="/codex" element={<CodexScreen />} />
               <Route path="/online" element={<OnlineScreen />} />
               <Route path="/join/:code" element={<JoinScreen />} />
               <Route path="/ranked" element={<RankedScreen />} />
