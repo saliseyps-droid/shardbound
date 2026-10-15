@@ -1,6 +1,14 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.50.1': {
+    title: 'Kniha na šířku',
+    summary: 'Kodex funguje i na telefonu otočeném na šířku.',
+    sections: [
+      ['Kodex: na telefonu otočeném na šířku byla kniha malinká. Teď vyplní obrazovku, šipky jsou vedle ní a Obsah v rohu.'],
+      ['Kodex: otočení stránky zní stejně jako vyložení karty.'],
+    ],
+  },
   '0.50.0': {
     title: 'Kodex Aethry',
     summary: 'Celý příběh jako kniha, kterou můžeš listovat a která se plní, jak hraješ.',

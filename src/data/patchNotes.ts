@@ -19,6 +19,17 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.50.1',
+    date: '2026-10-15',
+    title: 'A book on its side',
+    summary: 'The Codex works on phones held sideways.',
+    sections: [
+      { kind: 'fixed', items: ['Codex: on a phone held sideways the book was tiny. It now fills the screen, with the page arrows beside it and Contents in the corner.'] },
+      { kind: 'improved', items: ['Codex: turning a page plays the same sound as playing a card.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.50.0',
     date: '2026-10-15',
     title: 'The Codex of Aethra',

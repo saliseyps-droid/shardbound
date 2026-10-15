@@ -87,3 +87,22 @@
 @media (prefers-reduced-motion: reduce) {
   .cx-leaf { display: none; }
 }
+
+/* Phones on their side (short screens): no screen title, the book as large as the height allows,
+   the page arrows on either side of it and the contents button in a corner. */
+@media (max-height: 520px) and (min-width: 561px) {
+  .codex-screen { position: relative; gap: 0; padding-top: 6px !important; padding-bottom: 6px !important; }
+  .codex-screen > .screen-header { display: none; }
+  .cx-book { width: min(100% - 112px, calc((100dvh - 60px - 16px) * 1.55)); }
+  .cx-spread { padding: 8px; }
+  .cx-leaf { top: 8px; bottom: 8px; width: calc(50% - 8px); }
+  .cx-leaf-next { right: 8px; }
+  .cx-leaf-prev { left: 8px; }
+  .cx-nav { position: absolute; inset: 0; pointer-events: none; justify-content: space-between; padding: 0 4px; }
+  .cx-nav > * { pointer-events: auto; }
+  .cx-nav .btn:not(.btn-sm) { min-width: 44px; padding: 0 10px; }
+  .cx-nav .btn-sm { position: absolute; right: 6px; bottom: 6px; }
+  .cx-pageno { display: none; }
+  .cx-text { inset: 6% 7% 8%; gap: 6px; }
+  .cx-plate, .cx-blank { inset: 5% 6%; }
+}
