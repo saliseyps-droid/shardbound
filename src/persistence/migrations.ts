@@ -16,6 +16,7 @@ import { newRanked, rankedSeasonFields } from '@/domain/ranked';
 import { repairAiRanked } from '@/domain/aiRanked';
 import { repairAchievements } from '@/domain/achievements';
 import { deckStatsFromHistory, repairDeckStats } from '@/domain/deckStats';
+import { isFrameFaction } from '@/domain/frames';
 
 export interface MigrationReport {
   save: GameSave;
@@ -133,6 +134,7 @@ export function migrateSave(input: Raw): MigrationReport {
     if (!p.brawl) delete p.brawl;
   }
   p.achievements = repairAchievements(p.achievements);
+  p.wardenFrame = isFrameFaction(p.wardenFrame) ? p.wardenFrame : null;
   // Deck statistics: repaired, or rebuilt from the match history the first time.
   p.deckStats = p.deckStats === undefined ? deckStatsFromHistory(Array.isArray(raw.matchHistory) ? raw.matchHistory.filter((m: unknown) => m && typeof m === 'object' && typeof (m as { deckId?: unknown }).deckId === 'string') : []) : repairDeckStats(p.deckStats);
   for (const k of ['winStreak', 'bestWinStreak', 'tournamentsWon'] as const) p[k] = Math.floor(num(p[k], 0));

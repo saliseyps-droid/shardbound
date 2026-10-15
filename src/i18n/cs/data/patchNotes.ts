@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.51.0': {
+    title: 'Rámečky věrných',
+    summary: 'Šest animovaných rámečků Strážce, jeden pro každou frakci, za 100 výher.',
+    sections: [
+      [
+        'Rámečky Strážce: vyhraj 100 zápasů s frakcí a získáš její animovaný rámeček. Cinder Legion hoří v černěném železe pod živými plameny, Thornweald Circle obepínají větve a listí, Brass Dominion točí ozubenými koly a tlakoměry, Lumen Conclave nese měsíc, Polárku a souhvězdí, Hollow Choir pálí černé svíce na ostnatém železném plůtku a Rimetide Court vyrůstají ledové krystaly a rampouchy z ledovcového ledu.',
+        'Rámeček si vybereš v Přizpůsobení, kde u zamčených uvidíš, kolik výher ještě chybí. Ukazuje se kolem tvého Strážce v každém zápase (vidí ho i online soupeři), na úvodní obrazovce i v profilu, s jakýmkoli balíčkem.',
+        'Se zapnutým omezením pohybu se rámečky nehýbou.',
+      ],
+    ],
+  },
   '0.50.1': {
     title: 'Kniha na šířku',
     summary: 'Kodex funguje i na telefonu otočeném na šířku.',

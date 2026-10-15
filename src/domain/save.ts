@@ -72,6 +72,8 @@ export interface PlayerProfile {
   brawlWins?: number;
   /** Per-deck results by mode, opponent faction and card (src/domain/deckStats.ts). */
   deckStats?: Record<string, DeckStats>;
+  /** The chosen Warden frame (a faction, earned with 100 wins with it; src/domain/frames.ts). */
+  wardenFrame?: string | null;
 }
 
 export type VariantCounts = Record<Variant, number>;

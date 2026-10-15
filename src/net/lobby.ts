@@ -6,6 +6,7 @@ import { validateBuild } from '@/data/wardenTalents';
 import { getCardBack } from '@/data/cardBacks';
 import { getPortrait } from '@/data/portraits';
 import { PLAYABLE_FACTIONS } from '@/game/types';
+import { isFrameFaction } from '@/domain/frames';
 
 /** Display-only opponent definition for an online match. */
 export function onlineOpponent(name: string, avatar: string, faction: PlayableFaction): OpponentDef {
@@ -40,6 +41,7 @@ export function validateRemoteSide(side: SideSetup): string | null {
   if (side.heroHealth || side.bonusStartingEnergy || side.startingBoard?.length || side.startingRelics?.length || side.startingLocation) return 'Invalid match setup.';
   if (validateBuild(faction, side.talents) !== null) return 'Invalid Warden abilities.';
   if (side.cardBack != null && !getCardBack(side.cardBack)) return 'Invalid card back.';
+  if (side.frame != null && !isFrameFaction(side.frame)) return 'Invalid Warden frame.';
   if (side.portrait != null && getPortrait(side.portrait)?.faction !== faction) return 'Invalid Warden portrait.';
   if (side.faction != null && (!(PLAYABLE_FACTIONS as readonly string[]).includes(side.faction) || side.faction !== faction)) return 'Invalid Warden.';
   return null;
@@ -60,6 +62,7 @@ export function sanitizeRemoteSide(side: SideSetup): SideSetup {
     talents: Array.isArray(side.talents) ? side.talents.map((t) => ({ abilityId: t.abilityId, level: t.level })) : undefined,
     cardBack: side.cardBack ?? null,
     portrait: side.portrait ?? null,
+    frame: isFrameFaction(side.frame) ? side.frame : null,
     keepDeckOrder: false,
   };
 }

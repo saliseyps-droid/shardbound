@@ -44,6 +44,7 @@ const AchievementsScreen = lazyWithReload(() => import('@/ui/screens/Achievement
 const LeaderboardScreen = lazyWithReload(() => import('@/ui/screens/LeaderboardScreen'));
 const FriendsScreen = lazyWithReload(() => import('@/ui/screens/FriendsScreen'));
 const DebugScreen = import.meta.env.DEV ? lazyWithReload(() => import('@/ui/screens/DebugScreen')) : null;
+const FramePreview = import.meta.env.DEV ? lazyWithReload(() => import('@/ui/screens/FramePreview')) : null;
 
 function Shell() {
   const location = useLocation();
@@ -86,6 +87,7 @@ function Shell() {
               <Route path="/leaderboard" element={<LeaderboardScreen />} />
               <Route path="/friends" element={<FriendsScreen />} />
               {DebugScreen && <Route path="/debug" element={<DebugScreen />} />}
+              {FramePreview && <Route path="/frames" element={<FramePreview />} />}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>

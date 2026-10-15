@@ -96,6 +96,8 @@ export interface HeroState {
   abilities: HeroAbilityState[];
   /** Cosmetic card back (src/data/cardBacks.ts). */
   cardBack: string | null;
+  /** Cosmetic Warden frame (src/domain/frames.ts); missing in older states. */
+  frame?: string | null;
   /** Cosmetic Warden portrait (src/data/portraits.ts); null = the faction's default. */
   portrait?: string | null;
 }
@@ -236,6 +238,8 @@ export interface SideSetup {
   cardBack?: string | null;
   /** Cosmetic Warden portrait id. */
   portrait?: string | null;
+  /** Cosmetic Warden frame (a faction id, src/domain/frames.ts). */
+  frame?: string | null;
   /** Warden talent abilities (slot order). */
   talents?: { abilityId: string; level: 0 | 1 | 2 }[];
   heroHealth?: number;

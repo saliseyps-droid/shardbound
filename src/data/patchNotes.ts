@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.51.0',
+    date: '2026-10-15',
+    title: 'Frames of the faithful',
+    summary: 'Six animated Warden frames, one for each faction, earned with 100 wins.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Warden frames: win 100 matches with a faction to earn its animated frame. Cinder Legion burns in blackened iron under living fire, Thornweald Circle is wreathed in boughs and leaves, Brass Dominion turns its gears and gauges, Lumen Conclave carries a moon, a north star and its constellations, Hollow Choir burns black candles on a spiked iron railing, and Rimetide Court grows shards and icicles of glacier ice.',
+          'Pick your frame under Customization, where locked frames show how many wins you still need. It shows around your Warden in every match (your online opponents see it too), on Home and in your Profile, with any deck.',
+          'With reduced motion on, the frames stand still.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.50.1',
     date: '2026-10-15',
     title: 'A book on its side',

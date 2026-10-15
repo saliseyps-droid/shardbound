@@ -1,0 +1,119 @@
+/* Faction Warden frames (src/ui/components/WardenFrame.tsx). The SVG layers reach 18 % past the
+   portrait on the sides, 22 % above and 18 % below (viewBox -36 -50 272 319 on a 200 × 228 hexagon). */
+.warden-frame { position: relative; display: inline-block; flex: none; }
+.warden-frame .wf-portrait { position: absolute; inset: 0; z-index: 1; display: block; }
+.warden-frame .wf-portrait > * { width: 100% !important; height: 100% !important; }
+.wf-layer { position: absolute; left: -18%; top: -21.93%; width: 136%; height: 139.9%; overflow: visible; pointer-events: none; }
+.wf-back { z-index: 0; }
+.wf-front { z-index: 2; }
+
+/* A soft glow in the faction colour around everything. */
+.wf-f-ember .wf-front { filter: drop-shadow(0 0 6px rgba(255, 110, 20, 0.75)); }
+.wf-f-verdant .wf-front { filter: drop-shadow(0 0 5px rgba(110, 230, 120, 0.55)); }
+.wf-f-iron .wf-front { filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 5px rgba(255, 200, 100, 0.45)); }
+.wf-f-astral .wf-front { filter: drop-shadow(0 0 6px rgba(180, 210, 255, 0.8)); }
+.wf-f-void .wf-front { filter: drop-shadow(0 0 7px rgba(160, 80, 255, 0.85)); }
+.wf-f-tide .wf-front { filter: drop-shadow(0 0 6px rgba(130, 220, 255, 0.75)); }
+
+/* Animated parts turn and scale around their own box; plain SVG transforms keep the user origin. */
+.wf-layer [class*='wf-'] { transform-box: fill-box; }
+.wf-pulse { transform-origin: center; animation: wf-pulse 3.2s ease-in-out infinite; }
+@keyframes wf-pulse { 0%, 100% { opacity: 0.65; } 50% { opacity: 1; } }
+
+/* Cinder Legion */
+.wf-flame { transform-origin: 50% 100%; animation: wf-flame 0.9s ease-in-out infinite alternate; }
+@keyframes wf-flame { from { transform: scaleY(0.82) skewX(-4deg); opacity: 0.85; } to { transform: scaleY(1.12) skewX(4deg); opacity: 1; } }
+.wf-crack { animation: wf-crack 2.6s ease-in-out infinite; }
+@keyframes wf-crack { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+.wf-ember { animation: wf-rise 3s linear infinite; }
+@keyframes wf-rise { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-190px) translateX(10px); opacity: 0; } }
+
+/* Thornweald Circle */
+.wf-leaf { transform-origin: 0 50%; animation: wf-sway 3.6s ease-in-out infinite alternate; }
+@keyframes wf-sway { from { transform: rotate(-7deg); } to { transform: rotate(7deg); } }
+.wf-vine { stroke-dasharray: 600; animation: wf-grow 1.8s ease-out both; }
+@keyframes wf-grow { from { stroke-dashoffset: 600; } to { stroke-dashoffset: 0; } }
+.wf-firefly { animation: wf-firefly 4.5s ease-in-out infinite; }
+@keyframes wf-firefly { 0%, 100% { transform: translate(0, 0); opacity: 0; } 25% { opacity: 1; } 50% { transform: translate(10px, -14px); opacity: 0.4; } 75% { transform: translate(-8px, -6px); opacity: 1; } }
+
+/* Brass Dominion */
+.wf-spin { transform-origin: center; animation: wf-spin 12s linear infinite; }
+.wf-spin-rev { animation-direction: reverse; animation-duration: 8s; }
+.wf-spin-slow { transform-origin: center; animation: wf-spin 30s linear infinite; }
+@keyframes wf-spin { to { transform: rotate(360deg); } }
+.wf-needle { transform-origin: 50% 100%; animation: wf-needle 2.4s ease-in-out infinite; }
+@keyframes wf-needle { 0%, 100% { transform: rotate(-50deg); } 40% { transform: rotate(40deg); } 55% { transform: rotate(25deg); } 70% { transform: rotate(48deg); } }
+.wf-steam { opacity: 0; animation: wf-steam 2.4s ease-out infinite; }
+@keyframes wf-steam { 0% { transform: translateY(0) scale(0.3); opacity: 0.7; } 100% { transform: translateY(-28px) scale(1.6); opacity: 0; } }
+
+/* Lumen Conclave */
+.wf-twinkle { transform-origin: center; animation: wf-twinkle 2.2s ease-in-out infinite; }
+@keyframes wf-twinkle { 0%, 100% { opacity: 0.25; transform: scale(0.6); } 50% { opacity: 1; transform: scale(1.3); } }
+.wf-orbit { transform-box: view-box; transform-origin: 0 0; animation: wf-spin 9s linear infinite; }
+
+/* Hollow Choir */
+.wf-blink { transform-origin: center; animation: wf-blink 5s ease-in-out infinite; }
+@keyframes wf-blink { 0%, 44%, 52%, 100% { transform: scaleY(1); } 48% { transform: scaleY(0.08); } }
+.wf-tendril { transform-origin: 0 0; animation: wf-tendril 3.4s ease-in-out infinite alternate; }
+@keyframes wf-tendril { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+
+/* Rimetide Court */
+.wf-shine { animation: wf-shine 3.8s linear infinite; }
+@keyframes wf-shine { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -640; } }
+.wf-drip { transform-origin: 50% 0; animation: wf-drip 3s ease-in-out infinite; }
+@keyframes wf-drip { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.18); } }
+.wf-wave { animation: wf-bob 2.8s ease-in-out infinite alternate; }
+@keyframes wf-bob { from { transform: translateY(-3px); } to { transform: translateY(3px); } }
+.wf-snow { animation: wf-snow 5s linear infinite; }
+@keyframes wf-snow { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translate(12px, 300px); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .warden-frame * { animation: none !important; }
+}
+.reduced-motion .warden-frame * { animation: none !important; }
+
+/* Second pass: fire, sparks, seams, skull eyes, wisps and motes. */
+.wf-fire { transform-origin: 50% 100%; animation: wf-fire 1.6s ease-in-out infinite alternate; }
+@keyframes wf-fire { from { transform: scaleY(0.96); } to { transform: scaleY(1.05); } }
+.wf-spark { opacity: 0; animation: wf-spark 2s linear infinite; }
+@keyframes wf-spark { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(8px, -70px); opacity: 0; } }
+.wf-seam { animation: wf-crack 2.8s ease-in-out infinite; }
+.wf-eyes { animation: wf-eyes 3s ease-in-out infinite; }
+@keyframes wf-eyes { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+.wf-wisp { stroke-dasharray: 120; animation: wf-wisp 4.5s ease-in-out infinite; }
+@keyframes wf-wisp { 0% { stroke-dashoffset: 120; opacity: 0; } 30% { opacity: 0.9; } 100% { stroke-dashoffset: -120; opacity: 0; } }
+.wf-mote { animation: wf-rise 3.6s linear infinite; }
+
+/* Still frames (the preview's static view): no CSS motion. */
+.wf-static .warden-frame * { animation: none !important; }
+/* Without motion, drifting particles (snow, sparks, motes, pollen, steam) would hang in mid-air: hide them. */
+.wf-static .warden-frame :is(.wf-snow, .wf-spark, .wf-mote, .wf-ember, .wf-firefly, .wf-steam),
+.reduced-motion .warden-frame :is(.wf-snow, .wf-spark, .wf-mote, .wf-ember, .wf-firefly, .wf-steam) { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .warden-frame :is(.wf-snow, .wf-spark, .wf-mote, .wf-ember, .wf-firefly, .wf-steam) { display: none; }
+}
+
+/* Third pass. */
+.wf-fire-b { animation-duration: 1.1s; animation-delay: -0.4s; }
+/* Leaves: a slow breeze rippling through them rather than a wobble. */
+.wf-leaf { transform-origin: 0 50%; animation: wf-breeze 5.5s ease-in-out infinite; }
+@keyframes wf-breeze { 0%, 100% { transform: rotate(0deg); } 30% { transform: rotate(-4deg); } 60% { transform: rotate(2.5deg); } }
+.wf-fall { opacity: 0; animation: wf-fall 9s ease-in infinite; }
+@keyframes wf-fall { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 8% { opacity: 1; } 50% { transform: translate(-14px, 60px) rotate(120deg); opacity: 0.9; } 70% { transform: translate(6px, 95px) rotate(200deg); opacity: 0; } 100% { opacity: 0; } }
+.wf-shimmer { transform-origin: center; animation: wf-shimmer 3.4s ease-in-out infinite; }
+@keyframes wf-shimmer { 0%, 100% { transform: scale(1, 1); opacity: 0.9; } 50% { transform: scale(1.08, 1.15); opacity: 1; } }
+.wf-smoke { animation: wf-smoke 6s ease-in-out infinite alternate; }
+@keyframes wf-smoke { from { transform: translateX(-8px) scaleX(0.9); opacity: 0.6; } to { transform: translateX(8px) scaleX(1.15); opacity: 1; } }
+.wf-static .warden-frame .wf-fall, .reduced-motion .warden-frame .wf-fall { display: none; }
+@media (prefers-reduced-motion: reduce) { .warden-frame .wf-fall { display: none; } }
+
+/* Candles (Hollow Choir). */
+.wf-flicker { transform-origin: 50% 100%; animation: wf-flicker 0.7s ease-in-out infinite alternate; }
+@keyframes wf-flicker { 0% { transform: scale(0.94, 0.9) skewX(-3deg); } 50% { transform: scale(1.03, 1.06) skewX(2deg); } 100% { transform: scale(0.98, 1.1) skewX(-1deg); } }
+.wf-smoke-thread { stroke-dasharray: 40; opacity: 0; animation: wf-thread 4s ease-out infinite; }
+@keyframes wf-thread { 0% { stroke-dashoffset: 40; opacity: 0; } 25% { opacity: 0.7; } 100% { stroke-dashoffset: -40; opacity: 0; } }
+.wf-static .warden-frame .wf-smoke-thread, .reduced-motion .warden-frame .wf-smoke-thread { display: none; }
+
+/* A frame around an existing portrait element (FramedSlot): the child keeps its own size and look. */
+.framed-slot { position: relative; display: inline-grid; flex: none; }
+.framed-slot > :not(.wf-layer) { position: relative; z-index: 1; grid-area: 1 / 1; }

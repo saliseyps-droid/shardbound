@@ -14,6 +14,10 @@ import { PortraitPicker } from '@/ui/components/PortraitPicker';
 import { factionStyle } from '@/ui/components/meta/MetaWidgets';
 import '@/ui/styles/meta.css';
 import { t } from '@/i18n';
+import { WardenFrame } from '@/ui/components/WardenFrame';
+import { WardenPortrait } from '@/ui/components/WardenPortrait';
+import { FRAME_WINS } from '@/domain/frames';
+import type { PlayableFaction } from '@/game/types';
 
 /** Customization: the Warden portrait of each faction and the card back used in matches. */
 export default function CardBacksScreen() {
@@ -57,6 +61,45 @@ export default function CardBacksScreen() {
             />
           </div>
         ))}
+        </div>
+      </section>
+      <section className="panel" aria-labelledby="cz-frames">
+        <div className="panel-title" id="cz-frames">
+          {t('Warden frames')}
+        </div>
+        <p className="faint">{t('Win {n} matches with a faction to earn its frame. Your frame shows around your Warden in every match, on Home and in your Profile, with any deck.', { n: FRAME_WINS })}</p>
+        <div className="frame-grid">
+          {PLAYABLE_FACTIONS.map((f) => {
+            const wins = p.factionWins[f] ?? 0;
+            const earned = wins >= FRAME_WINS;
+            const chosen = p.wardenFrame === f;
+            const pick = (v: PlayableFaction | null) => {
+              const res = gameService.chooseFrame(v);
+              if (!res.ok) toast(t(res.error, { n: FRAME_WINS }), 'error');
+            };
+            return (
+              <div key={f} className={`frame-tile ${earned ? 'is-earned' : 'is-locked'} ${chosen ? 'is-chosen' : ''}`} style={factionStyle(f)}>
+                <div className="frame-preview">
+                  <WardenFrame faction={f} size={92}>
+                    <WardenPortrait faction={f} size={92} />
+                  </WardenFrame>
+                </div>
+                <strong>{FACTIONS[f].name}</strong>
+                {earned ? (
+                  <button type="button" className={`btn btn-sm ${chosen ? 'btn-primary' : ''}`} onClick={() => pick(chosen ? null : f)}>
+                    {chosen ? t('In use (click to remove)') : t('Use this frame')}
+                  </button>
+                ) : (
+                  <span className="frame-progress">
+                    <span className="frame-bar" aria-hidden>
+                      <span style={{ width: `${Math.min(100, (wins / FRAME_WINS) * 100)}%` }} />
+                    </span>
+                    <span className="faint num">{t('{n} / {max} wins', { n: wins, max: FRAME_WINS })}</span>
+                  </span>
+                )}
+              </div>
+            );
+          })}
         </div>
       </section>
       <section className="panel" aria-labelledby="cz-backs">

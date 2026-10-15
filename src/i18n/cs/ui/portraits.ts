@@ -1,6 +1,14 @@
 /** Warden portraits (0.18.0). */
 const d: Record<string, string> = {
   'Warden portraits': 'Portréty Strážců',
+  'Warden frames': 'Rámečky Strážce',
+  'Win {n} matches with a faction to earn its frame. Your frame shows around your Warden in every match, on Home and in your Profile, with any deck.': 'Vyhraj {n} zápasů s frakcí a získáš její rámeček. Rámeček se ukazuje kolem tvého Strážce v každém zápase, na úvodní obrazovce i v profilu, s jakýmkoli balíčkem.',
+  'In use (click to remove)': 'Používáš (kliknutím sundáš)',
+  'Use this frame': 'Použít rámeček',
+  '{n} / {max} wins': '{n} / {max} výher',
+  'Win {n} matches with this faction to earn its frame.': 'Vyhraj s touto frakcí {n} zápasů a získáš její rámeček.',
+  'Unknown frame.': 'Neznámý rámeček.',
+  'Invalid Warden frame.': 'Neplatný rámeček Strážce.',
   'Warden portrait': 'Portrét Strážce',
   'Default Warden': 'Výchozí Strážce',
   'Right-click or hold to enlarge': 'Pravým klikem nebo podržením zvětšíš',

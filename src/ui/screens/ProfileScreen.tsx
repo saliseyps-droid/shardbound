@@ -18,6 +18,8 @@ import { DeckBox, factionStyle } from '@/ui/components/meta/MetaWidgets';
 import { ProfileAchievements } from '@/ui/components/AchievementBadge';
 import '@/ui/styles/meta.css';
 import { formatDate, t, tn } from '@/i18n';
+import { FramedSlot } from '@/ui/components/WardenFrame';
+import { activeFrame } from '@/domain/frames';
 
 
 function rewardLabel(r: LevelReward): string {
@@ -104,9 +106,11 @@ export default function ProfileScreen() {
       <div className="profile-layout">
         <section className="panel profile-card">
           <div className="profile-id">
-            <span className="warden-sigil large" aria-hidden title={t('The Warden of the deck you play')}>
-              <WardenPortrait faction={playingFaction} portrait={playingDeck ? effectivePortrait(playingDeck, p) : null} fill />
-            </span>
+            <FramedSlot frame={activeFrame(save)}>
+              <span className="warden-sigil large" aria-hidden title={t('The Warden of the deck you play')}>
+                <WardenPortrait faction={playingFaction} portrait={playingDeck ? effectivePortrait(playingDeck, p) : null} fill />
+              </span>
+            </FramedSlot>
             <div>
               {editing ? (
                 <form

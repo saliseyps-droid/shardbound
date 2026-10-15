@@ -15,6 +15,7 @@ import { Modal } from '@/ui/components/common';
 import type { StaticKeyword } from '@/game/types';
 import { useMatch, HUMAN, type Fx } from '@/state/matchStore';
 import { t } from '@/i18n';
+import { FramedSlot } from '@/ui/components/WardenFrame';
 
 // ---------------------------------------------------------------------------
 // Floating combat numbers
@@ -216,6 +217,7 @@ export function HeroPanel({
   const fx = useFxFor(key);
   const lowHealth = p.hero.health <= 10;
   return (
+    <FramedSlot frame={p.hero.frame} className="hero-frame">
     <div
       className={`hero ${player === HUMAN ? 'hero-self' : 'hero-enemy'} ${targetable ? 'is-targetable' : ''} ${fx.some((f) => f.kind === 'damage') ? 'is-hit' : ''} ${lowHealth ? 'is-low' : ''}`}
       data-entity={key}
@@ -244,6 +246,7 @@ export function HeroPanel({
       {targetable && <span className="target-mark" aria-hidden>◎</span>}
       <FxLayer fx={fx} />
     </div>
+    </FramedSlot>
   );
 }
 

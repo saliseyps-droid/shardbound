@@ -22,6 +22,8 @@ import { brawlFightTitle, brawlTimeLeft } from '@/ui/components/meta/brawlUi';
 import '@/ui/styles/meta.css';
 import { NewsBanner } from '@/ui/components/meta/NewsBanner';
 import { t, tn } from '@/i18n';
+import { FramedSlot } from '@/ui/components/WardenFrame';
+import { activeFrame } from '@/domain/frames';
 
 export default function HomeScreen() {
   const save = useAccount((s) => s.save);
@@ -51,9 +53,11 @@ export default function HomeScreen() {
     <div className="screen home">
       <section className="home-hero" style={faction ? ({ '--f1': faction.colors.primary, '--fglow': faction.colors.glow } as React.CSSProperties) : undefined}>
         <div className="home-hero-warden">
-          <span className="warden-sigil" aria-hidden>
-            <WardenPortrait faction={deck?.heroFaction} portrait={deck ? effectivePortrait(deck, p) : null} fill />
-          </span>
+          <FramedSlot frame={save ? activeFrame(save) : null}>
+            <span className="warden-sigil" aria-hidden>
+              <WardenPortrait faction={deck?.heroFaction} portrait={deck ? effectivePortrait(deck, p) : null} fill />
+            </span>
+          </FramedSlot>
           <div>
             <h1 className="home-name">{p.username}</h1>
             <p className="muted home-title">

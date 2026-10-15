@@ -7,6 +7,7 @@ import { DIFFICULTY_POOLS, type OpponentDef } from '@/data/opponents';
 import type { MatchSetup, SideSetup } from '@/engine/types';
 import { hashString } from '@/core/rng';
 import { autoBuildDeck, deckToList, type Deck } from './decks';
+import { FRAME_WINS, isFrameFaction } from '@/domain/frames';
 
 /** Deterministic deck for an opponent definition (same opponent → same deck). */
 export function buildOpponentDeck(opponent: OpponentDef): string[] {
@@ -61,7 +62,7 @@ export function deckVariants(collection: CollectionState, deck: Pick<Deck, 'card
 }
 
 /** `collection` shows your Prismatic and Foil copies in the match (left out for borrowed decks). */
-export function playerSide(profile: Pick<PlayerProfile, 'username' | 'avatar' | 'cardBack' | 'portraits' | 'factionPortraits'>, deck: Deck, collection?: CollectionState): SideSetup {
+export function playerSide(profile: Pick<PlayerProfile, 'username' | 'avatar' | 'cardBack' | 'portraits' | 'factionPortraits'> & Partial<Pick<PlayerProfile, 'wardenFrame' | 'factionWins'>>, deck: Deck, collection?: CollectionState): SideSetup {
   return {
     name: profile.username,
     avatar: profile.avatar,
@@ -71,6 +72,7 @@ export function playerSide(profile: Pick<PlayerProfile, 'username' | 'avatar' | 
     talents: deck.talents,
     cardBack: profile.cardBack ?? null,
     portrait: effectivePortrait(deck, profile),
+    frame: isFrameFaction(profile.wardenFrame) && (profile.factionWins?.[profile.wardenFrame] ?? 0) >= FRAME_WINS ? profile.wardenFrame : null,
   };
 }
 
