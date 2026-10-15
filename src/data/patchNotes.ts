@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.53.3',
+    date: '2026-10-16',
+    title: 'Honest surplus',
+    summary: 'Recycle surplus no longer counts campaign cards.',
+    sections: [{ kind: 'fixed', items: ['Recycle surplus counted the Foil and Prismatic copies of campaign cards won on Nightmare, so it promised Essence it could not pay: campaign cards cannot be recycled. They no longer count as surplus, and their card page no longer marks them as surplus.'] }],
+    commits: [],
+  },
+  {
     version: '0.53.2',
     date: '2026-10-16',
     title: 'Straight up',

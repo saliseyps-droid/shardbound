@@ -120,12 +120,15 @@ export function recycleCard(save: GameSave, cardId: string, variant: Variant, co
   return ok({ save: { ...next, decks }, essence });
 }
 
-/** Copies beyond the maximum playable count, per variant (prismatic kept first, normal recycled first). */
+/**
+ * Copies beyond the maximum playable count, per variant (prismatic kept first, normal recycled first).
+ * Campaign reward cards cannot be recycled, so their extra variants (Nightmare wins) are never surplus.
+ */
 export function surplusCopies(save: GameSave, cardId: string): Record<Variant, number> {
   const card = getCard(cardId);
   const counts = save.collection.cards[cardId] ?? emptyVariants();
   const out: Record<Variant, number> = emptyVariants();
-  if (!card) return out;
+  if (!card || card.rewardOnly) return out;
   let keep = maxCopiesFor(card);
   for (const v of [...VARIANTS].reverse()) {
     const kept = Math.min(keep, counts[v]);

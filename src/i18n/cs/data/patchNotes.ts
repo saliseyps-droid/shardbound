@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.53.3': {
+    title: 'Poctivý přebytek',
+    summary: 'Recyklace přebytků už nepočítá karty z kampaně.',
+    sections: [['Recyklace přebytků započítávala Foil a Prismatic kopie karet z kampaně vyhraných na Noční můru, a slibovala tak esenci, kterou nemohla dát: karty z kampaně recyklovat nejde. Do přebytků se už nepočítají a ani na jejich stránce už nejsou označené jako přebytek.']],
+  },
   '0.53.2': {
     title: 'Narovnáno',
     summary: 'Samotná karta lícem dolů teď stojí rovně a v Balíčcích jsou vidět všechny balíčky.',

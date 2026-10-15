@@ -8,6 +8,7 @@ import { createNewSave } from '@/domain/newAccount';
 import { buildMatchSetup, opponentSide, playerSide } from '@/domain/matchSetup';
 import { createGame } from '@/engine/game';
 import { GAME_RULES } from '@/config/gameRules';
+import { recycleAllSurplus, totalSurplusValue } from '@/domain/economy';
 
 const boss = (id: string) => findEncounter(id)!.encounter;
 const stats = { damageDealt: 10, heroDamageDealt: 10, cardsPlayed: 5, unitsPlayed: 3, spellsPlayed: 2, unitsDestroyed: 1, healingDone: 0, cardsDrawn: 6 };
@@ -81,6 +82,9 @@ describe('Nightmare', () => {
     // The reward is paid once.
     r = applyMatchResult(s, win(nightmareId('w1_boss', 2)), 40);
     expect(r.save.collection.cards[card].PRISMATIC).toBe(1);
+    // Normal, Foil and Prismatic of a campaign card: nothing to recycle (they cannot be recycled).
+    expect(totalSurplusValue(r.save)).toEqual({ cards: 0, essence: 0 });
+    expect(recycleAllSurplus(r.save).cards).toBe(0);
 
     // No card: 1 pack on I, 3 on II.
     expect(nightmareOpponent(boss('c1_boss'), 1).firstWinReward?.packs).toEqual({ setId: 'CORE', amount: 1 });

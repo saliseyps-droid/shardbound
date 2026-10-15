@@ -118,7 +118,7 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
         <strong className="num">
           {owned} / {max}
         </strong>
-        {owned > max && <span className="chip surplus-chip">{t('{n} surplus', { n: owned - max })}</span>}
+        {owned > max && !card.rewardOnly && <span className="chip surplus-chip">{t('{n} surplus', { n: owned - max })}</span>}
       </div>
       {usedIn.length > 0 && <p className="faint small">{t('In decks:')} {usedIn.map((d) => `${d.name} ×${d.cards[cardId]}`).join(', ')}</p>}
 
