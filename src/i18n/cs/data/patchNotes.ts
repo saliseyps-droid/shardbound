@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.52.0': {
+    title: 'Čerstvý inkoust',
+    summary: 'Kodex dá vědět, když přibude nová stránka, a čtyři nové úspěchy za Kodex a rámečky Strážce.',
+    sections: [
+      [
+        'Když klip nebo poražený boss zapíše do Kodexu novou stránku, objeví se zpráva, o kterou jde. Kliknutím na ni otevřeš knihu. Po zápase zpráva počká, až zápas opustíš.',
+        'Tečka u Kodexu v menu ukazuje, že máš nepřečtené stránky. V knize jsou nové stránky označené a obsah ukazuje, kolik nových je v každé části.',
+        'Nové úspěchy: Listování (zaplň 25 stránek Kodexu), Celý příběh (zaplň všechny stránky, s titulem Znalec dějin), Trojí rámeček (získej tři rámečky Strážce) a Galerie Strážců (získej všech šest, s titulem Strážce šesti rámečků).',
+      ],
+    ],
+  },
   '0.51.0': {
     title: 'Rámečky věrných',
     summary: 'Šest animovaných rámečků Strážce, jeden pro každou frakci, za 100 výher.',

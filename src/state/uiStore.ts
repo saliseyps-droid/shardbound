@@ -6,12 +6,14 @@ export interface Toast {
   id: number;
   message: string;
   kind: 'info' | 'success' | 'error' | 'reward';
+  /** A route the toast opens when clicked. */
+  to?: string;
 }
 
 interface UiStore {
   toasts: Toast[];
   inspect: { cardId: string; variant?: Variant; silenced?: boolean } | null;
-  pushToast: (message: string, kind?: Toast['kind']) => void;
+  pushToast: (message: string, kind?: Toast['kind'], to?: string) => void;
   dismissToast: (id: number) => void;
   inspectCard: (cardId: string | null, variant?: Variant, opts?: { silenced?: boolean }) => void;
 }
@@ -21,10 +23,10 @@ let toastId = 1;
 export const useUi = create<UiStore>((set) => ({
   toasts: [],
   inspect: null,
-  pushToast: (message, kind = 'info') => {
+  pushToast: (message, kind = 'info', to) => {
     const id = toastId++;
-    set((s) => ({ toasts: [...s.toasts.slice(-4), { id, message, kind }] }));
-    setTimeout(() => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })), kind === 'error' ? 6000 : 3500);
+    set((s) => ({ toasts: [...s.toasts.slice(-4), { id, message, kind, to }] }));
+    setTimeout(() => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })), kind === 'error' ? 6000 : to ? 6000 : 3500);
   },
   dismissToast: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
   inspectCard: (cardId, variant, opts) => set({ inspect: cardId ? { cardId, variant, silenced: opts?.silenced } : null }),

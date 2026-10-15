@@ -29,6 +29,10 @@
 /* Right page: text set like a book. */
 .cx-text { position: absolute; inset: 8% 9% 9%; display: flex; flex-direction: column; gap: 10px; overflow: hidden; font-family: var(--font-body); }
 .cx-kicker { font: 600 clamp(0.62rem, 1cqw, 0.8rem) var(--font-body); letter-spacing: 0.14em; text-transform: uppercase; color: #8a5a22; }
+.cx-new { display: inline-block; margin-left: 8px; padding: 1px 7px; border-radius: 999px; background: #9a2d10; color: #fbeed2; font: 700 0.62rem var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; vertical-align: middle; animation: cx-new-glow 2.4s ease-in-out infinite; }
+@keyframes cx-new-glow { 50% { box-shadow: 0 0 8px rgba(214, 90, 30, 0.7); } }
+@media (prefers-reduced-motion: reduce) { .cx-new { animation: none; } }
+.reduced-motion .cx-new { animation: none; }
 .cx-title { margin: 0; font: 700 clamp(0.95rem, 2.6cqw, 2rem) / 1.1 var(--font-display); color: #3a2410; }
 .cx-title:empty { display: none; }
 .cx-subtitle { margin-top: -4px; font-style: italic; color: #6d4a22; }
@@ -57,6 +61,8 @@
 .cx-progress { margin-top: 8px; padding: 4px 14px; font-size: clamp(0.7rem, 1.2cqw, 0.95rem); border: 1px solid #b8924a; color: #6d4a22; font-weight: 600; }
 .cx-contents ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .cx-contents button { display: flex; align-items: baseline; gap: 8px; width: 100%; padding: 4px 2px; background: none; border: 0; color: #3a2410; font: 600 clamp(0.75rem, 1.5cqw, 1.05rem) var(--font-display); cursor: pointer; text-align: left; }
+.cx-contents .num { white-space: nowrap; }
+.cx-contents .cx-new { margin-left: 6px; padding: 0 6px; font-size: 0.56rem; }
 .cx-contents button:hover span:first-child { color: #9a2d10; text-decoration: underline; }
 .cx-dots { flex: 1; border-bottom: 2px dotted rgba(90, 63, 23, 0.4); transform: translateY(-4px); }
 .cx-tip { margin: auto 0 0; font-size: clamp(0.65rem, 1.1cqw, 0.85rem); font-style: italic; color: #7a5a32; }

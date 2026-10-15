@@ -1,5 +1,5 @@
 import { BrandLogo } from '@/ui/components/BrandLogo';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { xpToNext } from '@/domain/progression';
@@ -9,6 +9,8 @@ import { Glyph } from './components/Icons';
 import { audio } from '@/audio/audioService';
 import { tn, useT, type MessageKey } from '@/i18n';
 import { usePatchNotesSeen } from './patchNotesSeen';
+import { openCodexIds } from './codex/codexEntries';
+import { unreadCodex, useCodexSeen } from './codex/codexSeen';
 
 const NAV: { to: string; label: MessageKey; icon: string }[] = [
   { to: '/', label: 'nav.home', icon: 'home' },
@@ -34,6 +36,9 @@ export function AppHeader() {
   const claimable = useAccount((s) => (s.save ? [...s.save.quests.active, ...s.save.quests.weekly].filter((q) => q.completed && !q.claimed).length : 0));
   const t = useT();
   const patchSeen = usePatchNotesSeen((s) => s.seen);
+  const save = useAccount((s) => s.save);
+  const codexSeen = useCodexSeen((s) => (s.account ? s.seen : null));
+  const codexNew = useMemo(() => (save && codexSeen ? unreadCodex(openCodexIds(save), codexSeen).length : 0), [save, codexSeen]);
   // Phones: the menu lives in a drawer behind a menu button.
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
@@ -61,7 +66,7 @@ export function AppHeader() {
     ro.observe(nav);
     document.fonts?.ready.then(measure).catch(() => {});
     return () => ro.disconnect();
-  }, [t, profile?.username, claimable > 0, packs > 0, patchSeen]);
+  }, [t, profile?.username, claimable > 0, packs > 0, patchSeen, codexNew > 0]);
   if (!profile) return null;
   const need = xpToNext(profile.level);
   return (
@@ -85,6 +90,7 @@ export function AppHeader() {
             <span>{t(n.label)}</span>
             {n.to === '/quests' && claimable > 0 && <span className="nav-dot" aria-label={tn(claimable, '{n} reward to claim', '{n} rewards to claim')} />}
             {n.to === '/packs' && packs > 0 && <span className="nav-count">{packs}</span>}
+            {n.to === '/codex' && codexNew > 0 && <span className="nav-dot" aria-label={tn(codexNew, '{n} new page in the Codex', '{n} new pages in the Codex')} />}
             {n.to === '/patch-notes' && !patchSeen && <span className="nav-dot" aria-label={t('Unread news')} />}
           </NavLink>
         ))}

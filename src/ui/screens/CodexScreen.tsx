@@ -11,6 +11,7 @@ import { Glyph } from '@/ui/components/Icons';
 import { portraitUrl } from '@/ui/components/WardenPortrait';
 import { BrandLogo } from '@/ui/components/BrandLogo';
 import { codexEntries, codexParts, type CodexEntry, type CodexPart } from '@/ui/codex/codexEntries';
+import { markCodexSeen, unreadCodex, useCodexSeen } from '@/ui/codex/codexSeen';
 import { formatDate, t, tn } from '@/i18n';
 import '@/ui/styles/codex.css';
 
@@ -34,11 +35,14 @@ function EntryImage({ e }: { e: CodexEntry }) {
   );
 }
 
-function EntryText({ e, page, onWatch }: { e: CodexEntry; page: number; onWatch: (id: string) => void }) {
+function EntryText({ e, page, fresh, onWatch }: { e: CodexEntry; page: number; fresh: boolean; onWatch: (id: string) => void }) {
   const card = e.rewardCard ? getCard(e.rewardCard) : undefined;
   return (
     <div className="cx-text">
-      <div className="cx-kicker">{t(e.kicker)}</div>
+      <div className="cx-kicker">
+        {t(e.kicker)}
+        {fresh && <span className="cx-new">{t('New page')}</span>}
+      </div>
       {e.unlocked ? (
         <>
           <h2 className="cx-title">{e.kind === 'shot' ? null : t(e.title)}</h2>
@@ -103,7 +107,7 @@ function Cover({ open, total }: { open: number; total: number }) {
   );
 }
 
-function Contents({ parts, onJump }: { parts: CodexPart[]; onJump: (spread: number) => void }) {
+function Contents({ parts, fresh, onJump }: { parts: CodexPart[]; fresh: Record<string, number>; onJump: (spread: number) => void }) {
   return (
     <div className="cx-text cx-contents">
       <div className="cx-kicker">{t('Contents')}</div>
@@ -111,7 +115,10 @@ function Contents({ parts, onJump }: { parts: CodexPart[]; onJump: (spread: numb
         {parts.map((p) => (
           <li key={p.id}>
             <button type="button" onClick={() => onJump(p.first)}>
-              <span>{t(p.title)}</span>
+              <span>
+                {t(p.title)}
+                {fresh[p.id] ? <span className="cx-new">{t('{n} new', { n: fresh[p.id] })}</span> : null}
+              </span>
               <span className="cx-dots" aria-hidden />
               <span className="num">
                 {p.open} / {p.count}
@@ -139,6 +146,14 @@ export default function CodexScreen() {
   const [turn, setTurn] = useState<Turn | null>(null);
   const [watching, setWatching] = useState<string | null>(null);
   const timer = useRef<number | null>(null);
+  // Pages written since the last visit stay marked "New" during this visit; the menu dot clears at once.
+  const [fresh] = useState(() => new Set(unreadCodex(entries.filter((e) => e.unlocked).map((e) => e.id), useCodexSeen.getState().seen)));
+  useEffect(() => markCodexSeen(entries.filter((e) => e.unlocked).map((e) => e.id)), [entries]);
+  const freshByPart = useMemo(() => {
+    const out: Record<string, number> = {};
+    for (const e of entries) if (fresh.has(e.id)) out[e.part] = (out[e.part] ?? 0) + 1;
+    return out;
+  }, [entries, fresh]);
 
   const go = useCallback(
     (to: number) => {
@@ -169,7 +184,7 @@ export default function CodexScreen() {
   const swipe = useRef<number | null>(null);
 
   const left = (i: number): ReactNode => (i === 0 ? <Cover open={open} total={last} /> : <EntryImage e={entries[i - 1]} />);
-  const right = (i: number): ReactNode => (i === 0 ? <Contents parts={parts} onJump={go} /> : <EntryText e={entries[i - 1]} page={i} onWatch={setWatching} />);
+  const right = (i: number): ReactNode => (i === 0 ? <Contents parts={parts} fresh={freshByPart} onJump={go} /> : <EntryText e={entries[i - 1]} page={i} fresh={fresh.has(entries[i - 1].id)} onWatch={setWatching} />);
 
   if (!save) return null;
   // While a page turns, the pages underneath already show where it lands.

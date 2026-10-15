@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { create } from 'zustand';
 import { useUi } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
@@ -117,11 +118,20 @@ export function ConfirmHost() {
 export function ToastHost() {
   const toasts = useUi((s) => s.toasts);
   const dismiss = useUi((s) => s.dismissToast);
+  const navigate = useNavigate();
   return (
     <div className="toast-host" role="status" aria-live="polite">
       {toasts.map((t) => (
-        <button key={t.id} className={`toast toast-${t.kind}`} onClick={() => dismiss(t.id)}>
+        <button
+          key={t.id}
+          className={`toast toast-${t.kind} ${t.to ? 'toast-link' : ''}`}
+          onClick={() => {
+            dismiss(t.id);
+            if (t.to) navigate(t.to);
+          }}
+        >
           {t.message}
+          {t.to && <span className="toast-go" aria-hidden> ›</span>}
         </button>
       ))}
     </div>

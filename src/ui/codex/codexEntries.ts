@@ -129,3 +129,16 @@ export function codexParts(entries: CodexEntry[]): CodexPart[] {
   });
   return parts;
 }
+
+/** Ids of the pages written so far. */
+export function openCodexIds(save: GameSave): string[] {
+  return codexEntries(save)
+    .filter((e) => e.unlocked)
+    .map((e) => e.id);
+}
+
+/** How many pages are written, out of all of them (for achievements). */
+export function codexProgress(save: GameSave): { open: number; total: number } {
+  const entries = codexEntries(save);
+  return { open: entries.filter((e) => e.unlocked).length, total: entries.length };
+}

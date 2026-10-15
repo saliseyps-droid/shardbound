@@ -153,6 +153,7 @@
 .toast-success { border-left-color: var(--heal); }
 .toast-error { border-left-color: var(--damage); }
 .toast-reward { border-left-color: var(--gold); }
+.toast-go { color: var(--gold-bright); font-weight: 700; }
 @keyframes toast-in { from { opacity: 0; transform: translateX(20px); } }
 
 /* Spinner */

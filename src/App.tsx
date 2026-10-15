@@ -13,6 +13,7 @@ import { PortraitInspector } from '@/ui/components/PortraitInspector';
 import { CloudDialogs } from '@/ui/components/CloudAccount';
 import { SocialHost } from '@/ui/components/SocialHost';
 import { WorldIntroHost } from '@/ui/components/WorldIntroHost';
+import { CodexWatcher } from '@/ui/components/CodexWatcher';
 import { BootScreen, CorruptedSaveScreen, OutdatedScreen, WelcomeScreen } from '@/ui/screens/BootScreens';
 
 const HomeScreen = lazyWithReload(() => import('@/ui/screens/HomeScreen'));
@@ -53,6 +54,7 @@ function Shell() {
     <div className={`app-shell ${inMatch ? 'in-match' : ''}`}>
       {!inMatch && <AppHeader />}
       <WorldIntroHost />
+      <CodexWatcher />
       <main className="app-main" id="main">
         <ErrorBoundary resetKey={location.pathname}>
           <Suspense fallback={<div className="screen-loading"><Spinner /></div>}>

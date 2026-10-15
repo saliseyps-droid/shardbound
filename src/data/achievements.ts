@@ -9,6 +9,8 @@ import type { MatchSummary } from '@/domain/matchResults';
 import { PLAYABLE_FACTIONS, type SetId } from '@/game/types';
 import { PORTRAITS } from './portraits';
 import { findBrawlFight } from '@/domain/brawl';
+import { FRAME_WINS } from '@/domain/frames';
+import { codexProgress } from '@/ui/codex/codexEntries';
 
 /**
  * Achievements: one-time goals computed from the save (and, for a few feats, the match just played).
@@ -112,6 +114,7 @@ export const CAT_LEGENDS = ['emb_artemis_qinnys_bane', 'vod_simba_ultimate_preda
 /** The three Lamplighter legends and the twelve guests of the Wraithwood Inn (campaign-only cards). */
 export const LAMP_LEGENDS = ['neu_nyx_lantern_of_nul', 'neu_vael_the_void_knell', 'neu_oblivia_keeper_of_the_last_page'];
 export const innGuestCards = () => INN_CAMPAIGN.flatMap((ch) => ch.encounters.map((e) => e.firstWinReward?.cardId ?? '')).filter(Boolean);
+const framesEarned = (save: GameSave) => PLAYABLE_FACTIONS.filter((f) => (save.profile.factionWins[f] ?? 0) >= FRAME_WINS).length;
 const ownedIds = (save: GameSave, ids: string[]) => ids.filter((id) => ownedCopies(save.collection, id) > 0).length;
 const innCleared = (save: GameSave) => INN_CAMPAIGN.flatMap((ch) => ch.encounters).filter((e) => cleared(save, e.id)).length;
 /** Brawl fights won in the saved (latest) rotation. */
@@ -163,6 +166,14 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'inn_first', name: 'A Seat at the Table', description: 'Win your first game at The Wraithwood Inn.', category: 'CAMPAIGN', tier: 'BRONZE', icon: 'chalice', rewards: [gold(100)], progress: (s) => count(innCleared(s), 1) },
   { id: 'inn_ch2', name: 'Last Orders Served', description: 'Clear Chapter II of The Wraithwood Inn.', category: 'CAMPAIGN', tier: 'SILVER', icon: 'chalice', rewards: [gold(200), essence(100)], check: (s) => chapterCleared(s, 'wi2') },
   { id: 'inn_host', name: 'Closing Time', description: 'Defeat the Hollow Host at the end of The Wraithwood Inn.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'skull', rewards: [title('Regular of the Wraithwood'), pack('ABYSS', 2)], check: (s) => cleared(s, 'w4_boss') },
+  { id: 'codex_25', name: 'Turning Pages', description: 'Fill 25 pages of the Codex.', category: 'CAMPAIGN', tier: 'BRONZE', icon: 'scroll', rewards: [gold(150)], progress: (s) => count(codexProgress(s).open, 25) },
+  {
+    id: 'codex_all', name: 'The Whole Story', description: 'Fill every page of the Codex.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'tower', rewards: [title('Loremaster'), essence(400)],
+    progress: (s) => {
+      const p = codexProgress(s);
+      return count(p.open, p.total);
+    },
+  },
   {
     id: 'camp_all', name: 'Cartographer of Shards', description: 'Clear every encounter of the campaign.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'compass', rewards: [cardBack, essence(300)],
     progress: (s) => {
@@ -269,6 +280,15 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: 'faction_100', name: 'Champion of a Faction', description: 'Win 100 matches with a single faction.', category: 'FACTIONS', tier: 'GOLD', icon: 'tower', rewards: [title('Banner-Sworn'), pack('ABYSS', 2)],
     progress: (s) => count(Math.max(0, ...PLAYABLE_FACTIONS.map((f) => s.profile.factionWins[f] ?? 0)), 100),
+  },
+
+  {
+    id: 'frames_3', name: 'Thrice Framed', description: 'Earn three Warden frames.', category: 'FACTIONS', tier: 'SILVER', icon: 'shield', rewards: [essence(300)],
+    progress: (s) => count(framesEarned(s), 3),
+  },
+  {
+    id: 'frames_all', name: 'Gallery of Wardens', description: 'Earn all six Warden frames.', category: 'FACTIONS', tier: 'GOLD', icon: 'crown', rewards: [title('Warden of Six Frames'), essence(500)],
+    progress: (s) => count(framesEarned(s), PLAYABLE_FACTIONS.length),
   },
 
   // Online ------------------------------------------------------------------

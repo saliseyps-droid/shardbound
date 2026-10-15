@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.52.0',
+    date: '2026-10-15',
+    title: 'Fresh ink',
+    summary: 'The Codex tells you when a new page is written, and four new achievements for the Codex and the Warden frames.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'When a cinematic or a beaten boss writes a new page in the Codex, a message tells you which one. Click it to open the book. After a match, the message waits until you leave the match.',
+          'A dot on the Codex menu item shows there are pages you have not read yet. In the book, new pages are marked New, and the contents show how many are new in each part.',
+          'New achievements: Turning Pages (fill 25 pages of the Codex), The Whole Story (fill every page, with the title Loremaster), Thrice Framed (earn three Warden frames) and Gallery of Wardens (earn all six, with the title Warden of Six Frames).',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.51.0',
     date: '2026-10-15',
     title: 'Frames of the faithful',
