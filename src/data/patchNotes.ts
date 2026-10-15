@@ -25,7 +25,7 @@ export const PATCH_NOTES: PatchNote[] = [
     summary: 'The Codex works on phones held sideways.',
     sections: [
       { kind: 'fixed', items: ['Codex: on a phone held sideways the book was tiny. It now fills the screen, with the page arrows beside it and Contents in the corner.'] },
-      { kind: 'improved', items: ['Codex: turning a page plays the same sound as playing a card.'] },
+      { kind: 'improved', items: ['Codex: turning a page plays the same sound as playing a card.', 'Codex: the page of Sali’s throne is open for everyone who has already beaten Sali.'] },
     ],
     commits: [],
   },

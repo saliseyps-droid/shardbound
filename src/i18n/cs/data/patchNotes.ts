@@ -6,7 +6,7 @@ const notes: PatchNotesOverlay = {
     summary: 'Kodex funguje i na telefonu otočeném na šířku.',
     sections: [
       ['Kodex: na telefonu otočeném na šířku byla kniha malinká. Teď vyplní obrazovku, šipky jsou vedle ní a Obsah v rohu.'],
-      ['Kodex: otočení stránky zní stejně jako vyložení karty.'],
+      ['Kodex: otočení stránky zní stejně jako vyložení karty.', 'Kodex: stránka se Saliho trůnem je otevřená všem, kdo už Saliho porazili.'],
     ],
   },
   '0.50.0': {

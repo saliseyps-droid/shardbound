@@ -104,7 +104,8 @@ export function codexEntries(save: GameSave): CodexEntry[] {
       });
       for (const e of ch.encounters) {
         if (!e.boss) continue;
-        if (e.preCinematic) out.push(...shotEntries(e.preCinematic, camp.id, seen.has(e.preCinematic), { key: 'Face {name} to fill this page.', name: e.name }));
+        // Also open for players who beat the boss before its cinematic existed.
+        if (e.preCinematic) out.push(...shotEntries(e.preCinematic, camp.id, seen.has(e.preCinematic) || !!save.pve.completed[e.id], { key: 'Face {name} to fill this page.', name: e.name }));
         out.push(bossEntry(save, camp, ch.name, e));
       }
     }

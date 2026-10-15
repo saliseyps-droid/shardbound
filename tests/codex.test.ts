@@ -26,6 +26,10 @@ describe('Codex', () => {
     expect(open(save, 'world_intro:4')).toBe(true);
     const boss = codexEntries(save).find((e) => e.id === 'c1_boss')!;
     expect(boss.unlocked && boss.beaten).toEqual({ at: 5, wins: 2 });
+    // Sali's throne page opens for anyone who already beat him.
+    expect(open(save, 'sali_throne:0')).toBe(false);
+    save.pve.completed.v3_final = { firstClearAt: 9, wins: 1 };
+    expect(open(save, 'sali_throne:0')).toBe(true);
     // Paid chapters stay blank until bought or reached.
     expect(open(save, 'lr1')).toBe(false);
   });
