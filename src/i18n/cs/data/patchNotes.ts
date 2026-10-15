@@ -1,10 +1,13 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
-  '0.53.1': {
+  '0.53.2': {
     title: 'Narovnáno',
-    summary: 'Karta vyhraná v boji teď stojí rovně hned od začátku.',
-    sections: [['Karta vyhraná v boji byla lícem dolů nakloněná a narovnala se až po otočení. Teď stojí rovně hned od začátku.']],
+    summary: 'Samotná karta lícem dolů teď stojí rovně a v Balíčcích jsou vidět všechny balíčky.',
+    sections: [
+      ['Karta vyhraná v boji a karta z balíčku Divine Ascension byly lícem dolů nakloněné a narovnaly se až po otočení. Teď stojí rovně hned od začátku.'],
+      ['Divine Ascension a Gears of Invention jsou teď v Balíčcích vidět, i když žádný nemáš, s odkazem do obchodu jako u ostatních balíčků.'],
+    ],
   },
   '0.53.0': {
     title: 'Noční můry',

@@ -45,7 +45,6 @@ export default function PacksScreen() {
         {SETS.map((setId) => {
           const count = packs[setId] ?? 0;
           // The Prismatic packs show only while you have some.
-          if ((setId === 'PRISMATIC' || setId === 'PRISMATIC_LEGEND') && count === 0) return null;
           const p = pity[setId] ?? { EPIC: 0, LEGENDARY: 0 };
           const epicIn = Math.max(1, (PACK_CONFIG.pity.EPIC ?? 10) - p.EPIC);
           const legIn = Math.max(1, (setId === 'PRISMATIC' ? PRISMATIC_PACK.pityLegendary : PACK_CONFIG.pity.LEGENDARY ?? 30) - p.LEGENDARY);
