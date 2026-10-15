@@ -3,7 +3,7 @@ import { PUZZLE_REWARD, solvePuzzle } from './puzzles';
 import { dayKey } from '@/core/utils';
 import type { MatchStats } from '@/engine/types';
 import type { OpponentReward } from '@/data/opponents';
-import type { PlayableFaction, SetId } from '@/game/types';
+import type { PlayableFaction, SetId, Variant } from '@/game/types';
 import { grantXp, type LevelUp } from './progression';
 import { applyRanked } from './ranked';
 import { AI_RANKED_CONFIG, aiTierOf, applyAiRankedResult, repairAiRanked, unclaimedTierRewards, type AiTierName } from './aiRanked';
@@ -48,6 +48,7 @@ export interface RewardLine {
   essence?: number;
   packs?: { setId: SetId; amount: number };
   cardId?: string;
+  variant?: Variant;
 }
 
 export interface MatchRewards {
@@ -163,11 +164,11 @@ export function applyMatchResult(save: GameSave, summary: MatchSummary, now: num
       gold += g;
       xp += x;
       essence += r.essence ?? 0;
-      lines.push({ label: 'First clear', gold: g || undefined, xp: x, essence: r.essence, packs: r.packs, cardId: r.cardId });
+      lines.push({ label: 'First clear', gold: g || undefined, xp: x, essence: r.essence, packs: r.packs, cardId: r.cardId, variant: r.cardId ? (r.variant ?? 'NORMAL') : undefined });
       if (r.packs) {
         s = { ...s, economy: { ...s.economy, packs: { ...s.economy.packs, [r.packs.setId]: (s.economy.packs[r.packs.setId] ?? 0) + r.packs.amount } } };
       }
-      if (r.cardId) s = { ...s, collection: addCards(s.collection, [{ cardId: r.cardId, variant: 'NORMAL' }]) };
+      if (r.cardId) s = { ...s, collection: addCards(s.collection, [{ cardId: r.cardId, variant: r.variant ?? 'NORMAL' }]) };
     }
     s = {
       ...s,

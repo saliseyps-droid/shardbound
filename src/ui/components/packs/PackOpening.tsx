@@ -34,7 +34,7 @@ function useCardWidth(): number {
 }
 
 /** Deterministic particle layout for the legendary burst. */
-const PARTICLES = Array.from({ length: 28 }, (_, i) => {
+export const PARTICLES = Array.from({ length: 28 }, (_, i) => {
   const angle = (i / 28) * Math.PI * 2 + (i % 3) * 0.2;
   const dist = 180 + ((i * 37) % 160);
   return { dx: Math.cos(angle) * dist, dy: Math.sin(angle) * dist, delay: (i % 7) * 40, size: 4 + (i % 4) * 2 };

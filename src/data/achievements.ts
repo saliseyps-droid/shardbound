@@ -11,6 +11,7 @@ import { PORTRAITS } from './portraits';
 import { findBrawlFight } from '@/domain/brawl';
 import { FRAME_WINS } from '@/domain/frames';
 import { codexProgress } from '@/ui/codex/codexEntries';
+import { nightmareBosses, nightmareCleared } from './nightmare';
 
 /**
  * Achievements: one-time goals computed from the save (and, for a few feats, the match just played).
@@ -166,6 +167,14 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'inn_first', name: 'A Seat at the Table', description: 'Win your first game at The Wraithwood Inn.', category: 'CAMPAIGN', tier: 'BRONZE', icon: 'chalice', rewards: [gold(100)], progress: (s) => count(innCleared(s), 1) },
   { id: 'inn_ch2', name: 'Last Orders Served', description: 'Clear Chapter II of The Wraithwood Inn.', category: 'CAMPAIGN', tier: 'SILVER', icon: 'chalice', rewards: [gold(200), essence(100)], check: (s) => chapterCleared(s, 'wi2') },
   { id: 'inn_host', name: 'Closing Time', description: 'Defeat the Hollow Host at the end of The Wraithwood Inn.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'skull', rewards: [title('Regular of the Wraithwood'), pack('ABYSS', 2)], check: (s) => cleared(s, 'w4_boss') },
+  {
+    id: 'nm_first', name: 'Bad Dreams', description: 'Defeat a campaign boss on Nightmare I.', category: 'CAMPAIGN', tier: 'SILVER', icon: 'skull', rewards: [gold(200), essence(100)],
+    progress: (s) => count(Math.min(1, nightmareBosses().filter((b) => nightmareCleared(s, b.id, 1)).length), 1),
+  },
+  {
+    id: 'nm_all', name: 'Lord of Nightmares', description: 'Defeat every campaign boss on Nightmare II.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'skull', rewards: [title('Lord of Nightmares'), essence(600)],
+    progress: (s) => count(nightmareBosses().filter((b) => nightmareCleared(s, b.id, 2)).length, nightmareBosses().length),
+  },
   { id: 'codex_25', name: 'Turning Pages', description: 'Fill 25 pages of the Codex.', category: 'CAMPAIGN', tier: 'BRONZE', icon: 'scroll', rewards: [gold(150)], progress: (s) => count(codexProgress(s).open, 25) },
   {
     id: 'codex_all', name: 'The Whole Story', description: 'Fill every page of the Codex.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'tower', rewards: [title('Loremaster'), essence(400)],

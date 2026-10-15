@@ -22,6 +22,8 @@ import { GAME_RULES } from '@/config/gameRules';
 import { CROWN_RANK, TIER_COLORS, aiTierOf } from '@/domain/aiRanked';
 import { AiRankEmblem, aiRankLabel } from '@/ui/components/meta/aiRankedUi';
 import { MatchAchievements } from '@/ui/components/AchievementBadge';
+import { CardRewardReveal } from '@/ui/components/packs/CardRewardReveal';
+import { parseNightmare } from '@/data/nightmare';
 import { t, tn } from '@/i18n';
 import '@/ui/styles/aiRanked.css';
 
@@ -436,6 +438,10 @@ export function ResultsOverlay({ game }: { game: GameState }) {
   const quests = useAccount((s) => s.save?.quests.active ?? []);
   const navigate = useNavigate();
   const [endedAt] = useState(Date.now());
+  // A card won here is turned over like a card from a pack before the results.
+  const wonCard = rewards?.lines.find((l) => l.cardId);
+  const [cardSeen, setCardSeen] = useState(false);
+  const nightmare = config?.mode === 'PVE' ? parseNightmare(config.encounterId) : null;
   const win = game.winner === HUMAN;
   const draw = game.winner === 'DRAW';
   const stats = game.players[HUMAN].stats;
@@ -449,9 +455,10 @@ export function ResultsOverlay({ game }: { game: GameState }) {
   const exit = (path: string) => navigate(path);
   return (
     <div className={`match-overlay results ${win ? 'is-win' : draw ? 'is-draw' : 'is-loss'}`} role="dialog" aria-label={win ? t('Victory') : draw ? t('Draw') : t('Defeat')}>
+      {wonCard?.cardId && !cardSeen && createPortal(<CardRewardReveal cardId={wonCard.cardId} variant={wonCard.variant ?? 'NORMAL'} onDone={() => setCardSeen(true)} />, document.body)}
       <ResultsTitle text={config?.mode === 'PUZZLE' ? (win ? t('Puzzle solved!') : t('Not solved')) : win ? t('Victory') : draw ? t('Draw') : t('Defeat')} outcome={win ? 'win' : draw ? 'draw' : 'loss'} />
       <p className="muted">
-        {config?.mode === 'PUZZLE' ? t('Daily puzzle: {name}', { name: t(findPuzzle(config.puzzle?.id ?? '')?.name ?? '') }) : config?.mode === 'ARENA' ? t('Arena match against {name}', { name: config.opponent.name }) : config?.mode === 'DUNGEON' ? t('Dungeon match against {name}', { name: config.opponent.name }) : config?.mode === 'TOURNAMENT' ? t('Tournament match against {name}', { name: config.opponent.name }) : config?.mode === 'RANKED' ? t('Ranked match against {name}', { name: config.opponent.name }) : config?.mode === 'AI_RANKED' ? t('Ranked match against the AI {name}', { name: config.opponent.name }) : config?.online ? t('Online match against {name}', { name: config.opponent.name }) : t(`Against {name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`, { name: String(config?.opponent.name) })}
+        {config?.mode === 'PUZZLE' ? t('Daily puzzle: {name}', { name: t(findPuzzle(config.puzzle?.id ?? '')?.name ?? '') }) : config?.mode === 'ARENA' ? t('Arena match against {name}', { name: config.opponent.name }) : config?.mode === 'DUNGEON' ? t('Dungeon match against {name}', { name: config.opponent.name }) : config?.mode === 'TOURNAMENT' ? t('Tournament match against {name}', { name: config.opponent.name }) : config?.mode === 'RANKED' ? t('Ranked match against {name}', { name: config.opponent.name }) : config?.mode === 'AI_RANKED' ? t('Ranked match against the AI {name}', { name: config.opponent.name }) : config?.online ? t('Online match against {name}', { name: config.opponent.name }) : nightmare ? t(nightmare.tier === 2 ? 'Against {name} on Nightmare II' : 'Against {name} on Nightmare I', { name: String(config?.opponent.name) }) : t(`Against {name} on ${config?.opponent.difficulty.toLowerCase()} difficulty`, { name: String(config?.opponent.name) })}
         {config?.mode === 'PUZZLE' ? '' : game.endReason === 'CONCEDE' ? t(', by concession') : game.endReason === 'DISCONNECT' ? t(', connection lost') : ''}
       </p>
       <div className="results-grid">
@@ -488,6 +495,12 @@ export function ResultsOverlay({ game }: { game: GameState }) {
                 {l.essence ? <Essence amount={l.essence} /> : null}
                 {l.xp ? <span className="num xp-text">{t('+{n} XP', { n: l.xp })}</span> : null}
                 {l.packs ? <span className="chip">{tn(l.packs.amount, '+{n} pack', '+{n} packs')}</span> : null}
+                {l.cardId ? (
+                  <button type="button" className="chip chip-card" onClick={() => useUi.getState().inspectCard(l.cardId!, l.variant)}>
+                    {l.variant === 'FOIL' ? `${t('Foil')} ` : l.variant === 'PRISMATIC' ? `${t('Prismatic')} ` : ''}
+                    {getCardSafe(l.cardId).name}
+                  </button>
+                ) : null}
               </span>
             </div>
           ))}

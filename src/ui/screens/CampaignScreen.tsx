@@ -16,6 +16,7 @@ import { gameService } from '@/state/accountStore';
 import { toast } from '@/state/uiStore';
 import { canBuyChapter, isChapterBought } from '@/domain/campaignUnlock';
 import { Cinematic } from '@/ui/components/Cinematic';
+import { hasNightmare, nightmareBest, nightmareCleared, nightmareLines, nightmareOpen, nightmareOpponent, NIGHTMARE_TIERS, type NightmareTier } from '@/data/nightmare';
 import '@/ui/styles/meta.css';
 import { t } from '@/i18n';
 
@@ -46,7 +47,12 @@ function RewardList({ r, claimed }: { r: OpponentReward; claimed?: boolean }) {
           <PackIcon size={15} /> {r.packs.amount} {SET_INFO[r.packs.setId].name}
         </span>
       ) : null}
-      {r.cardId ? <span className="chip">{getCardSafe(r.cardId).name}</span> : null}
+      {r.cardId ? (
+        <span className={`chip ${r.variant && r.variant !== 'NORMAL' ? `chip-${r.variant.toLowerCase()}` : ''}`}>
+          {r.variant === 'FOIL' ? `${t('Foil')} ` : r.variant === 'PRISMATIC' ? `${t('Prismatic')} ` : ''}
+          {getCardSafe(r.cardId).name}
+        </span>
+      ) : null}
       {claimed && <span className="chip">{t('Claimed')}</span>}
     </span>
   );
@@ -63,6 +69,9 @@ export default function CampaignScreen() {
   const [deckId, setDeckId] = useState<string | null>(() => (save ? firstValidDeck(save, save.profile.selectedDeckId) : null));
   const [tab, setTab] = useState(() => tabOf(camp.chapters, selectedId));
   const [cinematic, setCinematic] = useState<string | null>(null);
+  // A beaten boss can be fought again on Nightmare I or II (0 = the normal fight).
+  const [tier, setTier] = useState<0 | NightmareTier>(0);
+  useEffect(() => setTier(0), [selectedId]);
   // A campaign's intro plays the first time it is opened, its outro once every fight is won.
   const seen = save?.pve.seenCinematics ?? [];
   const allCleared = !!save && camp.chapters.every((ch) => ch.encounters.every((e) => !!save.pve.completed[e.id]));
@@ -86,6 +95,10 @@ export default function CampaignScreen() {
   const unlocked = enc ? isUnlocked(save, enc.id) : false;
   const cleared = enc ? isCleared(save, enc.id) : false;
   const validDeck = deckId && firstValidDeck(save, deckId) === deckId;
+  const nightmares = !!enc && hasNightmare(enc) && cleared;
+  const nm = nightmares && tier > 0 && nightmareOpen(save, enc!.id, tier as NightmareTier) ? (tier as NightmareTier) : 0;
+  const foe = enc && nm ? nightmareOpponent(enc, nm) : enc;
+  const foeCleared = !!foe && !!save.pve.completed[foe.id];
 
   const buyChapter = (chapterId: string) => {
     const res = gameService.buyChapter(chapterId);
@@ -102,12 +115,12 @@ export default function CampaignScreen() {
   // Some bosses (Sali) get a short cinematic right before the fight.
   const [preFight, setPreFight] = useState<string | null>(null);
   const startFight = () => {
-    if (!enc) return;
-    launchMatch({ mode: 'PVE', deckId, opponent: enc, encounterId: enc.id }, navigate);
+    if (!foe) return;
+    launchMatch({ mode: 'PVE', deckId, opponent: foe, encounterId: foe.id }, navigate);
   };
   const fight = () => {
-    if (!enc || !unlocked || !validDeck) return;
-    if (enc.preCinematic) setPreFight(enc.preCinematic);
+    if (!foe || !unlocked || !validDeck) return;
+    if (foe.preCinematic) setPreFight(foe.preCinematic);
     else startFight();
   };
 
@@ -214,6 +227,7 @@ export default function CampaignScreen() {
                     const done = isCleared(save, e.id);
                     const open = isUnlocked(save, e.id);
                     const state = done ? 'done' : open ? 'open' : 'locked';
+                    const best = e.boss ? nightmareBest(save, e.id) : 0;
                     return (
                       <li key={e.id} className="enc-step">
                         {i > 0 && <span className={`enc-link ${isCleared(save, ch.encounters[i - 1].id) ? 'lit' : ''}`} aria-hidden />}
@@ -230,6 +244,11 @@ export default function CampaignScreen() {
                           </button>
                           {/* Outside the hexagon: the portrait fills the node and its clip would hide the mark. */}
                           {done && <span className="enc-check" aria-hidden>✓</span>}
+                          {best > 0 && (
+                            <span className="enc-nm" title={best === 2 ? t('Nightmare II beaten') : t('Nightmare I beaten')}>
+                              {best === 2 ? 'II' : 'I'}
+                            </span>
+                          )}
                         </span>
                         <span className="enc-name">{e.name}</span>
                       </li>
@@ -243,7 +262,7 @@ export default function CampaignScreen() {
         </div>
 
         {enc && (
-          <aside className={`panel enc-detail ${enc.boss ? 'boss' : ''}`} style={factionStyle(enc.faction)} aria-live="polite">
+          <aside className={`panel enc-detail ${enc.boss ? 'boss' : ''} ${nm ? 'is-nightmare' : ''}`} style={factionStyle(enc.faction)} aria-live="polite">
             <div className="enc-detail-head">
               <span className="enc-portrait" aria-hidden>
                 <WardenPortrait faction={enc.faction} portrait={enc.portrait} fill />
@@ -260,27 +279,58 @@ export default function CampaignScreen() {
               </div>
             </div>
             <blockquote>“{enc.intro}”</blockquote>
+            {nightmares && (
+              <div className="nm-tiers" role="radiogroup" aria-label={t('Difficulty')}>
+                {([0, ...NIGHTMARE_TIERS] as const).map((k) => {
+                  const open = k === 0 || nightmareOpen(save, enc.id, k);
+                  return (
+                    <button
+                      key={k}
+                      type="button"
+                      role="radio"
+                      aria-checked={nm === k}
+                      className={`nm-tier ${k ? 'is-nm' : ''} ${nm === k ? 'is-active' : ''}`}
+                      disabled={!open}
+                      title={open ? undefined : t('Beat Nightmare I to open Nightmare II.')}
+                      onClick={() => (audio.play('click'), setTier(k))}
+                    >
+                      {k === 0 ? t('Normal') : k === 1 ? t('Nightmare I') : t('Nightmare II')}
+                      {k > 0 && nightmareCleared(save, enc.id, k as NightmareTier) && <span aria-label={t('cleared')}> ✓</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
             <dl className="info-grid">
               <dt>{t('Difficulty')}</dt>
-              <dd>{t(DIFFICULTY_INFO[enc.difficulty].label)}</dd>
+              <dd>{nm === 1 ? t('Nightmare I') : nm === 2 ? t('Nightmare II') : t(DIFFICULTY_INFO[enc.difficulty].label)}</dd>
               <dt>{t('Strategy')}</dt>
               <dd>{enc.archetype ? t(enc.archetype) : FACTIONS[enc.faction].archetypes[0].name}</dd>
-              {enc.firstWinReward && (
+              {foe?.firstWinReward && (
                 <>
                   <dt>{t('First clear')}</dt>
                   <dd>
-                    <RewardList r={enc.firstWinReward} claimed={cleared} />
+                    <RewardList r={foe.firstWinReward} claimed={foeCleared} />
                   </dd>
                 </>
               )}
-              {cleared && (
+              {foeCleared && (
                 <>
                   <dt>{t('Wins')}</dt>
-                  <dd className="num">{save.pve.completed[enc.id].wins}</dd>
+                  <dd className="num">{save.pve.completed[foe!.id].wins}</dd>
                 </>
               )}
             </dl>
-            {enc.special && (
+            {nm ? (
+              <div className="special-rules nm-rules">
+                <strong>{nm === 2 ? t('Nightmare II: the boss is stronger and cursed') : t('Nightmare I: the boss is stronger')}</strong>
+                <ul>
+                  {nightmareLines(enc, nm).map((l) => (
+                    <li key={l.key}>{t(l.key, { ...l.params, cards: (l.card ?? []).map((id) => getCardSafe(id).name).join(', ') })}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : enc.special && (
               <div className="special-rules">
                 <strong>{t('Special rules')}</strong>
                 <ul>
@@ -310,7 +360,7 @@ export default function CampaignScreen() {
                 </div>
                 <DeckPicker save={save} value={deckId} onChange={setDeckId} />
                 <button className="btn btn-primary btn-lg enc-fight" disabled={!validDeck} onClick={fight}>
-                  {cleared ? t('Fight again') : t('Fight')}
+                  {nm ? (foeCleared ? t('Face the Nightmare again') : t('Face the Nightmare')) : cleared ? t('Fight again') : t('Fight')}
                 </button>
               </>
             ) : (

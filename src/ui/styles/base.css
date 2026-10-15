@@ -207,3 +207,4 @@ input[type='checkbox'] { accent-color: var(--gold); width: 18px; height: 18px; }
 .performance-mode * { backdrop-filter: none !important; }
 .performance-mode .card-shine { display: none; }
 .performance-mode .card-prism-frame { animation: none !important; }
+.chip-card { cursor: pointer; color: var(--gold-bright); font: inherit; font-size: var(--t-sm); }

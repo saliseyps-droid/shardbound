@@ -19,6 +19,29 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.53.0',
+    date: '2026-10-16',
+    title: 'Nightmares',
+    summary: 'Every campaign boss you have beaten can be fought again on Nightmare I and II, for Foil and Prismatic cards. Cards won in fights are now turned over like cards from a pack.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Nightmare: once you beat a campaign boss, pick Nightmare I next to the fight. The boss plays at Expert level with the full card pool, with half again as much Health and 1 more Energy.',
+          'Beat Nightmare I to open Nightmare II, where the boss also carries its own curse. For example, Grom starts behind armor and Siege Walls, the Maw of the Deep freezes your units, Vulkara keeps drawing Dragons and the Hollow Host makes your cards cost 1 more. The fight panel lists everything that changes.',
+          'First wins pay the boss’s card in Foil (Nightmare I) or Prismatic (Nightmare II). Bosses that give no card pay 1 extra pack on Nightmare I and 3 on Nightmare II, plus Gold and XP.',
+          'Bosses beaten on a Nightmare show a red I or II on the campaign map.',
+          'New achievements: Bad Dreams (beat a boss on Nightmare I) and Lord of Nightmares (beat every boss on Nightmare II, with the title Lord of Nightmares).',
+        ],
+      },
+      {
+        kind: 'improved',
+        items: ['A card won in a fight now waits face down after the match. Turn it over to reveal it with the same sounds and effects as a card from a pack, Legendary entrance included. The card also shows in the rewards, where you can open it.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.52.0',
     date: '2026-10-15',
     title: 'Fresh ink',

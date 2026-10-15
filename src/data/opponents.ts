@@ -1,5 +1,5 @@
 import type { Difficulty } from '@/config/progression';
-import type { Faction, PlayableFaction, Rarity, SetId } from '@/game/types';
+import type { Faction, PlayableFaction, Rarity, SetId, Variant } from '@/game/types';
 import type { AiPersonality } from '@/ai/config';
 import type { TalentPick } from './wardenTalents';
 
@@ -9,6 +9,8 @@ export interface OpponentReward {
   packs?: { setId: SetId; amount: number };
   xp?: number;
   cardId?: string;
+  /** The card's variant (Nightmare wins give Foil or Prismatic); NORMAL when missing. */
+  variant?: Variant;
 }
 
 export interface SpecialRules {
@@ -837,7 +839,13 @@ export function rewardCampaign(cardId: string): CampaignDef | undefined {
   return CAMPAIGNS.find((c) => c.chapters.some((ch) => ch.encounters.some((e) => e.firstWinReward?.cardId === cardId)));
 }
 
+/** The boss behind a Nightmare fight id (`c1_boss_n2` → `c1_boss`); other ids stay as they are. */
+export function nightmareBase<T extends string | null | undefined>(id: T): T {
+  return (typeof id === 'string' ? id.replace(/_n[12]$/, '') : id) as T;
+}
+
 /** The campaign an encounter belongs to (the main one when unknown). */
 export function campaignOf(encounterId: string | null | undefined): CampaignDef {
+  encounterId = nightmareBase(encounterId);
   return CAMPAIGNS.find((c) => c.chapters.some((ch) => ch.encounters.some((e) => e.id === encounterId))) ?? CAMPAIGNS[0];
 }

@@ -1,6 +1,22 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.53.0': {
+    title: 'Noční můry',
+    summary: 'Každého poraženého bosse kampaně můžeš vyzvat znovu na Noční můru I a II, o Foil a Prismatic karty. Karty vyhrané v boji se teď otáčejí jako karty z balíčku.',
+    sections: [
+      [
+        'Noční můra: když porazíš bosse kampaně, vyber si u boje Noční můru I. Boss hraje na úrovni Expert s plným výběrem karet, má o polovinu víc životů a 1 energii navíc.',
+        'Porazíš-li Noční můru I, otevře se Noční můra II, kde má boss navíc vlastní prokletí. Grom třeba začíná za brněním a obléhacími zdmi, Maw of the Deep ti mrazí jednotky, Vulkara si stále bere draky a Hollow Host zdražuje tvé karty o 1. V panelu boje je vypsané všechno, co se mění.',
+        'První výhry dávají kartu bosse ve verzi Foil (Noční můra I) nebo Prismatic (Noční můra II). Bossové, kteří kartu nedávají, dají 1 balíček navíc na Noční můru I a 3 na Noční můru II, k tomu zlato a zkušenosti.',
+        'Bossové poražení na Noční můru mají na mapě kampaně rudé I nebo II.',
+        'Nové úspěchy: Zlé sny (poraz bosse na Noční můru I) a Pán nočních můr (poraz všechny bosse na Noční můru II, s titulem Pán nočních můr).',
+      ],
+      [
+        'Karta vyhraná v boji teď po zápase čeká lícem dolů. Otoč ji a odkryj se stejnými zvuky a efekty jako kartu z balíčku, legendární příchod nevyjímaje. Karta je také vidět v odměnách, kde si ji můžeš otevřít.',
+      ],
+    ],
+  },
   '0.52.0': {
     title: 'Čerstvý inkoust',
     summary: 'Kodex dá vědět, když přibude nová stránka, a čtyři nové úspěchy za Kodex a rámečky Strážce.',
