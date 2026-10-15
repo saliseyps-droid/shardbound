@@ -67,9 +67,9 @@ export const RECKONING_CARDS: CardDefinition[] = [
   },
   {
     ...spell, id: 'vod_feed_the_void', name: 'Feed the Void', faction: 'VOID', rarity: 'RARE',
-    manaCost: 2, target: { kind: 'ALLY_UNIT' }, archetypes: ['Offering'],
-    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DESTROY', target: 'TARGET' }, { type: 'DRAW_CARDS', amount: 2 }] }],
-    description: 'Destroy a friendly unit. Draw 2 cards.',
+    manaCost: 0, target: { kind: 'ALLY_UNIT' }, archetypes: ['Offering'],
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DESTROY', target: 'TARGET' }, { type: 'DRAW_CARDS', amount: 1 }] }],
+    description: 'Destroy a friendly unit. Draw a card.',
     flavorText: 'The Void gives back. Never what you gave it.',
   },
   {

@@ -10,7 +10,7 @@ const cards: CardsOverlay = {
   vod_black_sun_chanter: { name: 'Zpěvák černého slunce', description: 'Při nasazení: Rozlož náhodnou nepřátelskou jednotku.', flavorText: 'Sbor se každé ráno obracel k východu. Teď se obrací vzhůru.' },
   vod_gaping_maw: { name: 'Zející chřtán', description: 'Stráž. Při nasazení: Pohlť jinou spřátelenou jednotku.', flavorText: 'Cokoli spolkne, to ho drží v cestě.' },
   vod_reckoning_bell: { name: 'Zvon zúčtování', description: 'Na začátku tvého tahu: Způsob 2 poškození všem rozloženým nepřátelským jednotkám.', flavorText: 'Nezvoní pro živé.' },
-  vod_feed_the_void: { name: 'Nasyť Prázdnotu', description: 'Znič spřátelenou jednotku. Lízni si 2 karty.', flavorText: 'Prázdnota vrací. Nikdy to, co jsi jí dal.' },
+  vod_feed_the_void: { name: 'Nasyť Prázdnotu', description: 'Znič spřátelenou jednotku. Lízni si kartu.', flavorText: 'Prázdnota vrací. Nikdy to, co jsi jí dal.' },
   vod_hungering_shade: { name: 'Hladový stín', description: 'Kdykoli jiná spřátelená jednotka zemře, získá +1/+1.', flavorText: 'Roste ze žalu.' },
   vod_star_eater: { name: 'Požírač hvězd', description: 'Vysátí. Kdykoli nepřátelská jednotka zemře, získá +1/+0.', flavorText: 'Dřív bývalo víc hvězd.' },
   vod_eclipse_rite: { name: 'Rituál zatmění', description: 'Rozlož všechny nepřátelské jednotky.', flavorText: 'Na jeden nádech slunce zčerná. Všechno pod ním si to pamatuje.' },

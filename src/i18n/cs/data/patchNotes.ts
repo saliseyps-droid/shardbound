@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.53.4': {
+    title: 'Levnější oběť',
+    summary: 'Nasyť Prázdnotu teď stojí 0 a lízne kartu.',
+    sections: [['Nasyť Prázdnotu: stojí 0 (dřív 2) a lízne 1 kartu (dřív 2). Znič spřátelenou jednotku. Lízni si kartu.']],
+  },
   '0.53.3': {
     title: 'Poctivý přebytek',
     summary: 'Recyklace přebytků už nepočítá karty z kampaně.',

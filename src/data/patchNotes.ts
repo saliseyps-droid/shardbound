@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.53.4',
+    date: '2026-10-16',
+    title: 'A cheaper offering',
+    summary: 'Feed the Void now costs 0 and draws a card.',
+    sections: [{ kind: 'balance', items: ['Feed the Void: costs 0 (was 2) and draws 1 card (was 2). Destroy a friendly unit. Draw a card.'] }],
+    commits: [],
+  },
+  {
     version: '0.53.3',
     date: '2026-10-16',
     title: 'Honest surplus',
