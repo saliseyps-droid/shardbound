@@ -143,7 +143,7 @@ export default function CodexScreen() {
   const go = useCallback(
     (to: number) => {
       if (turn || to === spread || to < 0 || to > last) return;
-      audio.play('draw');
+      audio.play('play');
       const t2: Turn = { dir: to > spread ? 'next' : 'prev', from: spread, to };
       setTurn(t2);
       timer.current = window.setTimeout(() => {
