@@ -542,7 +542,8 @@ label.toggle-row { cursor: pointer; }
 /* News: the newest campaign, over one of its cinematic paintings. */
 .campaign-news {
   grid-template-columns: minmax(0, 1fr) auto;
-  min-height: 230px;
+  /* As tall as the set banner below it (set by its 150 px pack). */
+  min-height: 306px;
   background:
     linear-gradient(90deg, rgba(14, 4, 2, 0.94) 0%, rgba(20, 5, 2, 0.82) 42%, rgba(20, 5, 2, 0.35) 75%, rgba(20, 5, 2, 0.15)),
     var(--cn-bg) center 55% / cover no-repeat,
@@ -555,7 +556,7 @@ label.toggle-row { cursor: pointer; }
 .campaign-news .news-facts li { background: rgba(255, 110, 40, 0.18); border-color: rgba(255, 140, 70, 0.5); color: #ffe4d0; }
 .campaign-news .news-card { filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 10px rgba(255, 90, 20, 0.35)); }
 @media (max-width: 1100px) { .campaign-news { grid-template-columns: minmax(0, 1fr); } }
-@media (max-width: 640px) { .campaign-news { text-align: center; justify-items: center; background: linear-gradient(180deg, rgba(20, 5, 2, 0.6), rgba(14, 4, 2, 0.94)), var(--cn-bg) center / cover no-repeat, #1a0602; } }
+@media (max-width: 640px) { .campaign-news { min-height: 0; text-align: center; justify-items: center; background: linear-gradient(180deg, rgba(20, 5, 2, 0.6), rgba(14, 4, 2, 0.94)), var(--cn-bg) center / cover no-repeat, #1a0602; } }
 
 /* The set banner over one of its cinematic paintings. */
 .news-banner.has-art {

@@ -6,7 +6,7 @@ const notes: PatchNotesOverlay = {
     summary: 'Obrázky z Pekelné hlubiny už nejsou přepálené a upoutávka na Void Reckoning na úvodní obrazovce má obrázek v pozadí.',
     sections: [
       ['Pekelná hlubina: zesvětlené záběry z klipů a karty démonů byly přeexponované (červené se přepalovaly). Teď si drží temnou atmosféru a jen mírně otevírají stíny, v klipech i v Kodexu.'],
-      ['Úvodní obrazovka: upoutávka na Void Reckoning má teď v pozadí obrázek z klipu Černého slunce, stejně jako upoutávka na Pekelnou hlubinu.'],
+      ['Úvodní obrazovka: upoutávka na Void Reckoning má teď v pozadí obrázek z klipu Černého slunce, stejně jako upoutávka na Pekelnou hlubinu, a obě upoutávky jsou stejně vysoké.'],
     ],
   },
   '0.55.2': {
