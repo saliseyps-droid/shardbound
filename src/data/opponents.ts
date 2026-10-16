@@ -774,8 +774,121 @@ export const INN_CAMPAIGN: Chapter[] = [
   },
 ];
 
+/**
+ * The Underflame: the fire beneath Aethra, where the heaviest Shard fell and Azgaroth, the Ninth
+ * Sovereign, set it in his crown. Four chapters down the burning root to his throne; every demon on
+ * the way plays for its own card (src/data/cards/inferno.ts), and the four lords of the deep are
+ * Legendary.
+ */
+export const INFERNO_CAMPAIGN: Chapter[] = [
+  {
+    id: 'uf1',
+    name: 'Chapter I — The Burning Root',
+    price: 1000,
+    description: 'In the Caldera a burning tree has split the earth open. Its root runs all the way down into the Underflame, and the first things that climb it are not friendly.',
+    encounters: [
+      {
+        id: 'u1_e1', name: 'The Hollow Rider', title: 'Outrider of the Burning Root', avatar: 'flame', faction: 'EMBER', archetype: 'Blitz', difficulty: 'NORMAL', personality: 'AGGRESSIVE', rarities: NORMAL_POOL,
+        intro: 'Up and down the root I ride, and every rider I meet goes down with me.',
+        special: { extraCards: ['emb_the_hollow_rider'], description: ['His deck holds the Hollow Rider himself. Beat him and the card is yours.'] },
+        firstWinReward: { gold: 150, xp: 150, cardId: 'emb_the_hollow_rider' },
+      },
+      {
+        id: 'u1_e2', name: 'Mother Blight', title: 'The Rot at the Root', avatar: 'leaf', faction: 'VERDANT', secondFaction: 'VOID', archetype: 'Overgrowth', difficulty: 'NORMAL', personality: 'BALANCED', rarities: NORMAL_POOL,
+        intro: 'Come closer, little Warden. Everything that falls down here grows again in me.',
+        special: { extraCards: ['ver_mother_blight'], description: ['Her deck holds Mother Blight herself. Beat her and the card is yours.'] },
+        firstWinReward: { gold: 180, xp: 180, cardId: 'ver_mother_blight' },
+      },
+      {
+        id: 'u1_boss', name: 'Vhessa', title: 'The Ash Serpent, Keeper of the First Gate', avatar: 'eye', faction: 'VOID', archetype: 'Offering', difficulty: 'HARD', personality: 'CONTROL', rarities: NORMAL_POOL, boss: true,
+        intro: 'The first gate of the deep is mine. Turn back, and you may keep your name. Go on, and you will forget it.',
+        special: { heroHealth: 35, talents: [{ abilityId: 'wt_boss_black_sun', level: 0 }, { abilityId: 'wt_void_soul_harvest', level: 1 }], extraCards: ['vod_vhessa_the_ash_serpent', 'vod_rift_cultist'], description: ['Starts with 35 Health.', 'Warden abilities: Black Sun, Soul Harvest II.', 'Her deck holds Vhessa herself. Beat her and she joins you.'] },
+        firstWinReward: { gold: 300, xp: 300, cardId: 'vod_vhessa_the_ash_serpent' },
+      },
+    ],
+  },
+  {
+    id: 'uf2',
+    name: 'Chapter II — The Iron Muster',
+    price: 1000,
+    description: 'On the ash plains the Sovereign’s legions are being armed for the climb to Aethra. The forges never cool, and the smiths do not like visitors.',
+    encounters: [
+      {
+        id: 'u2_e1', name: 'The Brass Locust', title: 'First of the Forge Swarm', avatar: 'gear', faction: 'IRON', archetype: 'Assembly Line', difficulty: 'HARD', personality: 'SWARM', rarities: NORMAL_POOL,
+        intro: 'One of us you can crush. The forge made a thousand more tonight.',
+        special: { extraCards: ['irn_the_brass_locust'], description: ['Its deck holds the Brass Locust itself. Beat it and the card is yours.'] },
+        firstWinReward: { gold: 200, xp: 200, cardId: 'irn_the_brass_locust' },
+      },
+      {
+        id: 'u2_e2', name: 'Brineclaw', title: 'Hunter of the Boiling Brine', avatar: 'wave', faction: 'TIDE', archetype: 'Deep Freeze', difficulty: 'HARD', personality: 'CONTROL', rarities: HARD_POOL,
+        intro: 'The forges drink from my pool. You will not be the first thing I drag into it.',
+        special: { extraCards: ['tid_brineclaw'], description: ['Its deck holds Brineclaw itself. Beat it and the card is yours.'] },
+        firstWinReward: { gold: 220, xp: 220, cardId: 'tid_brineclaw' },
+      },
+      {
+        id: 'u2_boss', name: 'Ghul', title: 'The Forgemaster of the Legions', avatar: 'gear', faction: 'IRON', secondFaction: 'EMBER', archetype: 'Assembly Line', difficulty: 'HARD', personality: 'SWARM', rarities: HARD_POOL, boss: true,
+        intro: 'Every blade that will cut Aethra was beaten on my anvil. Lie down on it, Warden. I have room for one more.',
+        special: { heroHealth: 40, startingArmor: 5, talents: [{ abilityId: 'wt_boss_stoke_furnace', level: 0 }, { abilityId: 'wt_iron_reinforced_hull', level: 1 }], extraCards: ['irn_ghul_the_forgemaster', 'irn_the_brass_locust'], description: ['Starts with 40 Health and 5 Armor.', 'Warden abilities: Stoke the Furnace, Reinforced Hull II.', 'His deck holds Ghul himself. Beat him and he joins you.'] },
+        firstWinReward: { gold: 400, xp: 350, essence: 150, cardId: 'irn_ghul_the_forgemaster' },
+      },
+    ],
+  },
+  {
+    id: 'uf3',
+    name: 'Chapter III — The Frozen Lake',
+    price: 1000,
+    description: 'At the very bottom of the fire there is ice: a lake of black glass where Azgaroth keeps everyone who ever defied him. Its lord keeps them well.',
+    encounters: [
+      {
+        id: 'u3_e1', name: 'The Thousand-Eyed', title: 'Warden of the Prisoners', avatar: 'eye', faction: 'VOID', archetype: 'Requiem', difficulty: 'HARD', personality: 'CONTROL', rarities: HARD_POOL,
+        intro: 'I have watched every prisoner in this ice for ten thousand years. I am watching you now.',
+        special: { extraCards: ['vod_the_thousand_eyed'], description: ['Its deck holds the Thousand-Eyed itself. Beat it and the card is yours.'] },
+        firstWinReward: { gold: 250, xp: 250, cardId: 'vod_the_thousand_eyed' },
+      },
+      {
+        id: 'u3_e2', name: 'The Sunfallen Seraph', title: 'The Light That Fell', avatar: 'star', faction: 'ASTRAL', archetype: 'Starlit Control', difficulty: 'EXPERT', personality: 'BALANCED', rarities: HARD_POOL,
+        intro: 'I once lit the Lumen sky. I fell so far that my light turned to embers. Let me show you how far.',
+        special: { extraCards: ['ast_the_sunfallen_seraph'], description: ['Her deck holds the Sunfallen Seraph herself. Beat her and the card is yours.'] },
+        firstWinReward: { gold: 280, xp: 280, cardId: 'ast_the_sunfallen_seraph' },
+      },
+      {
+        id: 'u3_boss', name: 'Rimegrave', title: 'Lord of the Frozen Lake', avatar: 'wave', faction: 'TIDE', secondFaction: 'VOID', archetype: 'Deep Freeze', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL, boss: true,
+        intro: 'Fire burns out. Ice waits. Everyone the Sovereign ever beat is still waiting in my lake, and so will you.',
+        special: { heroHealth: 45, talents: [{ abilityId: 'wt_boss_frozen_hymn', level: 0 }, { abilityId: 'wt_tide_cold_snap', level: 1 }], extraCards: ['tid_rimegrave_lord_of_the_frozen_lake', 'tid_brineclaw'], description: ['Starts with 45 Health.', 'Warden abilities: Frozen Hymn, Cold Snap II.', 'His deck holds Rimegrave himself. Beat him and he joins you.'] },
+        firstWinReward: { gold: 500, xp: 450, essence: 250, cardId: 'tid_rimegrave_lord_of_the_frozen_lake' },
+      },
+    ],
+  },
+  {
+    id: 'uf4',
+    name: 'Chapter IV — Pyrethrone',
+    price: 1000,
+    description: 'The citadel of the Ninth Sovereign, raised around the fallen Shard. Two of his court still stand between you and the Burning Throne.',
+    encounters: [
+      {
+        id: 'u4_e1', name: 'The Lantern of Rot', title: 'Lamp-Bearer of the Burning Court', avatar: 'leaf', faction: 'VERDANT', secondFaction: 'VOID', archetype: 'Wellspring', difficulty: 'EXPERT', personality: 'BALANCED', rarities: HARD_POOL,
+        intro: 'Follow my light to the throne, Warden. Everyone does. Nobody follows it back.',
+        special: { extraCards: ['ver_the_lantern_of_rot'], description: ['Its deck holds the Lantern of Rot itself. Beat it and the card is yours.'] },
+        firstWinReward: { gold: 300, xp: 300, cardId: 'ver_the_lantern_of_rot' },
+      },
+      {
+        id: 'u4_e2', name: 'The Pale Herald', title: 'Voice of the Burning Throne', avatar: 'star', faction: 'ASTRAL', archetype: 'Starlit Control', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL,
+        intro: 'I announce every guest of the Sovereign. Tell me your name, so I can say it once.',
+        special: { extraCards: ['ast_the_pale_herald'], description: ['Its deck holds the Pale Herald itself. Beat it and the card is yours.'] },
+        firstWinReward: { gold: 320, xp: 320, cardId: 'ast_the_pale_herald' },
+      },
+      {
+        id: 'u4_boss', name: 'Azgaroth', title: 'The Ninth Sovereign, Lord of the Underflame', avatar: 'flame', faction: 'EMBER', secondFaction: 'VOID', archetype: 'Pyromancy', difficulty: 'EXPERT', personality: 'AGGRESSIVE', rarities: ALL, boss: true, preCinematic: 'inferno_throne',
+        intro: 'Ten thousand years I have waited on this throne for someone worth burning. Kneel, Warden, or burn standing.',
+        special: { heroHealth: 55, bonusStartingEnergy: 1, talents: [{ abilityId: 'wt_boss_caldera_eruption', level: 0 }, { abilityId: 'wt_boss_soul_pyre', level: 0 }], extraCards: ['emb_azgaroth_the_ninth_sovereign', 'emb_the_hollow_rider', 'emb_wildfire_charge'], description: ['Starts with 55 Health and 1 extra Energy.', 'Warden abilities: Caldera Eruption, Soul Pyre.', 'His deck holds Azgaroth himself. Beat him and he joins you.'] },
+        firstWinReward: { gold: 1000, xp: 800, essence: 500, cardId: 'emb_azgaroth_the_ninth_sovereign' },
+      },
+    ],
+  },
+];
+
 export interface CampaignDef {
-  id: 'main' | 'void' | 'lamp' | 'inn';
+  id: 'main' | 'void' | 'lamp' | 'inn' | 'inferno';
   name: string;
   chapters: Chapter[];
   /** Cinematics (src/data/cinematics.ts): before the first fight and after the last one. */
@@ -789,6 +902,7 @@ export const CAMPAIGNS: CampaignDef[] = [
   { id: 'void', name: 'The Black Sun', chapters: VOID_CAMPAIGN, intro: 'void_intro', outro: 'void_outro' },
   { id: 'lamp', name: 'The Lamplighters’ Road', chapters: LAMP_CAMPAIGN, intro: 'lamp_intro', outro: 'lamp_outro' },
   { id: 'inn', name: 'The Wraithwood Inn', chapters: INN_CAMPAIGN, intro: 'inn_intro', outro: 'inn_outro' },
+  { id: 'inferno', name: 'The Underflame', chapters: INFERNO_CAMPAIGN, intro: 'inferno_intro', outro: 'inferno_outro' },
 ];
 
 /**
@@ -818,6 +932,11 @@ const CAMPAIGN_PORTRAITS: Record<string, string | null> = {
   w2_e1: 'inn_doctor_corvin', w2_e2: 'inn_crimson_hood', w2_boss: 'inn_bramhorn',
   w3_e1: 'inn_drowned_guest', w3_e2: 'inn_hartwrath', w3_boss: 'inn_widow_in_white',
   w4_e1: 'inn_quiet_patron', w4_e2: 'inn_old_marrow', w4_boss: 'inn_hollow_host',
+  // The Underflame: every demon on the road down, the same painting as its card.
+  u1_e1: 'inf_hollow_rider', u1_e2: 'inf_mother_blight', u1_boss: 'inf_vhessa',
+  u2_e1: 'inf_brass_locust', u2_e2: 'inf_brineclaw', u2_boss: 'inf_ghul',
+  u3_e1: 'inf_thousand_eyed', u3_e2: 'inf_sunfallen_seraph', u3_boss: 'inf_rimegrave',
+  u4_e1: 'inf_lantern_of_rot', u4_e2: 'inf_pale_herald', u4_boss: 'inf_azgaroth',
 };
 for (const ch of CAMPAIGNS.flatMap((c) => c.chapters)) for (const e of ch.encounters) if (e.id in CAMPAIGN_PORTRAITS) e.portrait = CAMPAIGN_PORTRAITS[e.id];
 

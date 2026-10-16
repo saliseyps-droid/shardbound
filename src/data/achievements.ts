@@ -1,7 +1,7 @@
 import type { LevelReward } from '@/config/progression';
 import { MAX_LEVEL } from '@/config/progression';
 import { ARENA } from '@/config/arena';
-import { CAMPAIGN, CAMPAIGNS, INN_CAMPAIGN } from './opponents';
+import { CAMPAIGN, CAMPAIGNS, INFERNO_CAMPAIGN, INN_CAMPAIGN } from './opponents';
 import { collectibleCards, poolCards } from './cards';
 import { AI_TIERS, aiTierIndex, type AiTierName } from '@/domain/aiRanked';
 import { ownedCopies, type GameSave, type MatchRecord } from '@/domain/save';
@@ -117,6 +117,8 @@ export const LAMP_LEGENDS = ['neu_nyx_lantern_of_nul', 'neu_vael_the_void_knell'
 export const innGuestCards = () => INN_CAMPAIGN.flatMap((ch) => ch.encounters.map((e) => e.firstWinReward?.cardId ?? '')).filter(Boolean);
 const framesEarned = (save: GameSave) => PLAYABLE_FACTIONS.filter((f) => (save.profile.factionWins[f] ?? 0) >= FRAME_WINS).length;
 const ownedIds = (save: GameSave, ids: string[]) => ids.filter((id) => ownedCopies(save.collection, id) > 0).length;
+export const infernoCourtCards = () => INFERNO_CAMPAIGN.flatMap((ch) => ch.encounters.map((e) => e.firstWinReward?.cardId ?? '')).filter(Boolean);
+const infernoCleared = (save: GameSave) => INFERNO_CAMPAIGN.flatMap((ch) => ch.encounters).filter((e) => cleared(save, e.id)).length;
 const innCleared = (save: GameSave) => INN_CAMPAIGN.flatMap((ch) => ch.encounters).filter((e) => cleared(save, e.id)).length;
 /** Brawl fights won in the saved (latest) rotation. */
 const brawlFightsWon = (save: GameSave) => save.profile.brawl?.won.length ?? 0;
@@ -175,6 +177,9 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'nm_all', name: 'Lord of Nightmares', description: 'Defeat every campaign boss on Nightmare II.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'skull', rewards: [title('Lord of Nightmares'), essence(600)],
     progress: (s) => count(nightmareBosses().filter((b) => nightmareCleared(s, b.id, 2)).length, nightmareBosses().length),
   },
+  { id: 'inf_first', name: 'Into the Fire', description: 'Win your first fight in The Underflame.', category: 'CAMPAIGN', tier: 'BRONZE', icon: 'flame', rewards: [gold(100)], progress: (s) => count(Math.min(1, infernoCleared(s)), 1) },
+  { id: 'inf_ch2', name: 'The Forges Fall Silent', description: 'Clear Chapter II of The Underflame.', category: 'CAMPAIGN', tier: 'SILVER', icon: 'hammer', rewards: [gold(200), essence(100)], check: (s) => chapterCleared(s, 'uf2') },
+  { id: 'inf_sovereign', name: 'Kingslayer', description: 'Defeat Azgaroth, the Ninth Sovereign, at the bottom of The Underflame.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'crown', rewards: [title('Bane of the Underflame'), pack('ABYSS', 2)], check: (s) => cleared(s, 'u4_boss') },
   { id: 'codex_25', name: 'Turning Pages', description: 'Fill 25 pages of the Codex.', category: 'CAMPAIGN', tier: 'BRONZE', icon: 'scroll', rewards: [gold(150)], progress: (s) => count(codexProgress(s).open, 25) },
   {
     id: 'codex_all', name: 'The Whole Story', description: 'Fill every page of the Codex.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'tower', rewards: [title('Loremaster'), essence(400)],
@@ -254,6 +259,10 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: 'inn_guests', name: 'Full House', description: 'Own all twelve cards of The Wraithwood Inn.', category: 'COLLECTION', tier: 'GOLD', icon: 'people', rewards: [title('Innkeeper'), essence(300)],
     progress: (s) => count(ownedIds(s, innGuestCards()), innGuestCards().length),
+  },
+  {
+    id: 'inf_court', name: 'The Burning Court', description: 'Own all twelve cards of The Underflame.', category: 'COLLECTION', tier: 'GOLD', icon: 'flame', rewards: [title('Lord of the Burning Court'), essence(300)],
+    progress: (s) => count(ownedIds(s, infernoCourtCards()), infernoCourtCards().length),
   },
   {
     id: 'legend_10', name: 'Legend Collector', description: 'Own 10 different Legendary cards.', category: 'COLLECTION', tier: 'SILVER', icon: 'crystal', rewards: [essence(200)],

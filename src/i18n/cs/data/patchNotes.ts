@@ -1,6 +1,20 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.55.0': {
+    title: 'Pekelná hlubina',
+    summary: 'Pátá kampaň: sestup do ohně pod Aethrou a postav se Azgarothovi, Devátému vládci, o dvanáct démonických karet.',
+    sections: [
+      [
+        'Nová kampaň Pekelná hlubina. Když se Koruna roztříštila, její nejtěžší Střep se propadl světem do ohně pod ním a Azgaroth, Devátý vládce, si ho vsadil do koruny. Teď se jeho legie chystají vylézt do Aethry a hořící kořen v Kaldeře vede až k jeho trůnu.',
+        'Čtyři kapitoly po třech soubojích za 1000 zlata: Hořící kořen, Zbrojení legií, Zamrzlé jezero a Pyrethron, vládcova pevnost.',
+        'Každý démon hraje o svou vlastní kartu a po porážce ti ji dá: dvanáct nových karet z kampaně, dvě pro každou frakci. Vhessa, Popelná zmije, Ghul, mistr výhně, Rimegrave ze Zamrzlého jezera a sám Azgaroth jsou legendární.',
+        'Tři nové klipy: sestup do hlubiny na začátku, Hořící trůn těsně před posledním soubojem a konec Devátého vládce.',
+        'Čtyři páni hlubiny mají po porážce i Noční můru I a II.',
+        'Nové úspěchy: Do ohně, Výhně utichly, Královrah (s titulem Metla Pekelné hlubiny) a Hořící dvůr za všech dvanáct karet (s titulem Pán Hořícího dvora).',
+      ],
+    ],
+  },
   '0.54.1': {
     title: 'Ceny v řadě',
     summary: 'Ceny rámečků v Obchodě jsou zase srovnané.',

@@ -19,6 +19,26 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.55.0',
+    date: '2026-10-16',
+    title: 'The Underflame',
+    summary: 'A fifth campaign: go down into the fire beneath Aethra and face Azgaroth, the Ninth Sovereign, for twelve demon cards.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'New campaign, The Underflame. When the Crown shattered, its heaviest Shard fell through the world into the fire beneath it, and Azgaroth, the Ninth Sovereign, set it in his crown. Now his legions muster to climb into Aethra, and a burning root in the Caldera leads all the way down to his throne.',
+          'Four chapters of three fights, 1000 Gold each: The Burning Root, The Iron Muster, The Frozen Lake and Pyrethrone, the Sovereign’s citadel.',
+          'Every demon plays for its own card and gives it up when beaten: twelve new campaign cards, two per faction. Vhessa the Ash Serpent, Ghul the Forgemaster, Rimegrave of the Frozen Lake and Azgaroth himself are Legendary.',
+          'Three new cinematics: the way down at the start, the Burning Throne right before the last fight, and the end of the Ninth Sovereign.',
+          'The four lords also have a Nightmare I and II once you beat them.',
+          'New achievements: Into the Fire, The Forges Fall Silent, Kingslayer (with the title Bane of the Underflame) and The Burning Court for owning all twelve cards (with the title Lord of the Burning Court).',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.54.1',
     date: '2026-10-16',
     title: 'Level prices',

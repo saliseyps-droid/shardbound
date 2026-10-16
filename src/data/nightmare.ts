@@ -57,6 +57,11 @@ export const NIGHTMARE_CURSES: Record<string, NightmareCurse> = {
   w2_boss: { rules: ['brawl_rule_blood_arena'] },
   w3_boss: { rules: ['brawl_rule_long_winter'] },
   w4_boss: { rules: ['nm_curse_toll'] },
+  // The Underflame
+  u1_boss: { rules: ['nm_curse_hymn'] },
+  u2_boss: { rules: ['nm_curse_assembly'], startingArmor: 10 },
+  u3_boss: { rules: ['brawl_rule_long_winter'] },
+  u4_boss: { rules: ['nm_curse_crown_fire'], startingArmor: 10 },
 };
 
 /** Each curse rule as the player reads it (the rule cards are written from the boss's side). */
@@ -106,7 +111,7 @@ export function nightmareBest(save: GameSave, bossId: string): 0 | NightmareTier
   return nightmareCleared(save, bossId, 2) ? 2 : nightmareCleared(save, bossId, 1) ? 1 : 0;
 }
 
-const DEFAULT_PACKS: Record<string, SetId> = { main: 'CORE', void: 'RECKONING', lamp: 'RECKONING', inn: 'RECKONING' };
+const DEFAULT_PACKS: Record<string, SetId> = { main: 'CORE', void: 'RECKONING', lamp: 'RECKONING', inn: 'RECKONING', inferno: 'RECKONING' };
 
 /** First-win reward: the boss's card in Foil / Prismatic, or 1 / 3 packs when it gives no card. */
 export function nightmareReward(boss: OpponentDef, tier: NightmareTier): OpponentReward {

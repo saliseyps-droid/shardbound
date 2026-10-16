@@ -581,6 +581,79 @@ const v: OpponentsOverlay = {
       intro: 'Každý host u mého stolu si kdysi myslel, že mě porazí. Posaď se, Strážce. Tvoje židle tu čeká už hodně dlouho.',
       special: ['Začíná se 45 životy a 1 energií navíc.', 'Schopnosti Strážce: Stínový nábor, Zesílený trup II.', 'Jeho balíček obsahuje samotného Dutého hostitele. Poraz ho a přidá se k tobě.'],
     },
+    // The Underflame
+    u1_e1: {
+      name: 'Dutý jezdec',
+      title: 'Zvěd hořícího kořene',
+      intro: 'Po kořeni jezdím nahoru a dolů a každý jezdec, kterého potkám, jede se mnou dolů.',
+      special: ['Jeho balíček obsahuje samotného Dutého jezdce. Poraz ho a karta je tvoje.'],
+    },
+    u1_e2: {
+      name: 'Matka Plíseň',
+      title: 'Hniloba u kořene',
+      intro: 'Pojď blíž, malý Strážce. Všechno, co sem spadne, ve mně znovu vyroste.',
+      special: ['Její balíček obsahuje samotnou Matku Plíseň. Poraz ji a karta je tvoje.'],
+    },
+    u1_boss: {
+      name: 'Vhessa',
+      title: 'Popelná zmije, strážkyně první brány',
+      intro: 'První brána hlubiny je moje. Vrať se a smíš si nechat své jméno. Jdi dál a zapomeneš ho.',
+      special: ['Začíná se 35 životy.', 'Schopnosti Strážce: Černé slunce, Žeň duší II.', 'Její balíček obsahuje samotnou Vhessu. Poraz ji a přidá se k tobě.'],
+    },
+    u2_e1: {
+      name: 'Mosazná kobylka',
+      title: 'První z roje výhní',
+      intro: 'Jednu z nás rozdrtíš. Výheň jich dnes v noci udělala tisíc dalších.',
+      special: ['Její balíček obsahuje samotnou Mosaznou kobylku. Poraz ji a karta je tvoje.'],
+    },
+    u2_e2: {
+      name: 'Solný spár',
+      title: 'Lovec vroucího solného jezírka',
+      intro: 'Výhně pijí z mého jezírka. Nebudeš první, koho do něj stáhnu.',
+      special: ['Jeho balíček obsahuje samotný Solný spár. Poraz ho a karta je tvoje.'],
+    },
+    u2_boss: {
+      name: 'Ghul',
+      title: 'Mistr výhně legií',
+      intro: 'Každá čepel, která rozetne Aethru, byla vykována na mé kovadlině. Lehni si na ni, Strážce. Ještě pro jednoho tu místo mám.',
+      special: ['Začíná se 40 životy a 5 brněním.', 'Schopnosti Strážce: Přiložit pod kotel, Zesílený trup II.', 'Jeho balíček obsahuje samotného Ghula. Poraz ho a přidá se k tobě.'],
+    },
+    u3_e1: {
+      name: 'Tisícioký',
+      title: 'Strážce vězňů',
+      intro: 'Deset tisíc let hlídám každého vězně v tomhle ledu. Teď hlídám tebe.',
+      special: ['Jeho balíček obsahuje samotného Tisíciokého. Poraz ho a karta je tvoje.'],
+    },
+    u3_e2: {
+      name: 'Padlá sluneční serafína',
+      title: 'Světlo, které spadlo',
+      intro: 'Kdysi jsem svítila na obloze Lumenu. Spadla jsem tak hluboko, že se mé světlo změnilo v uhlíky. Ukážu ti, jak hluboko.',
+      special: ['Její balíček obsahuje samotnou Padlou sluneční serafínu. Poraz ji a karta je tvoje.'],
+    },
+    u3_boss: {
+      name: 'Rimegrave',
+      title: 'Pán Zamrzlého jezera',
+      intro: 'Oheň dohoří. Led čeká. Každý, koho kdy vládce porazil, pořád čeká v mém jezeře, a ty budeš taky.',
+      special: ['Začíná se 45 životy.', 'Schopnosti Strážce: Zamrzlá hymna, Náhlý mráz II.', 'Jeho balíček obsahuje samotného Rimegrava. Poraz ho a přidá se k tobě.'],
+    },
+    u4_e1: {
+      name: 'Lucerna hniloby',
+      title: 'Nosič lampy Hořícího dvora',
+      intro: 'Jdi za mým světlem k trůnu, Strážce. Jde za ním každý. Zpátky za ním nejde nikdo.',
+      special: ['Její balíček obsahuje samotnou Lucernu hniloby. Poraz ji a karta je tvoje.'],
+    },
+    u4_e2: {
+      name: 'Bledý hlasatel',
+      title: 'Hlas Hořícího trůnu',
+      intro: 'Ohlašuji každého hosta vládce. Řekni mi své jméno, ať ho můžu jednou vyslovit.',
+      special: ['Jeho balíček obsahuje samotného Bledého hlasatele. Poraz ho a karta je tvoje.'],
+    },
+    u4_boss: {
+      name: 'Azgaroth',
+      title: 'Devátý vládce, pán Pekelné hlubiny',
+      intro: 'Deset tisíc let čekám na tomhle trůnu na někoho, koho by stálo za to spálit. Klekni, Strážce, nebo hoř vestoje.',
+      special: ['Začíná se 55 životy a 1 energií navíc.', 'Schopnosti Strážce: Erupce kaldery, Hranice duší.', 'Jeho balíček obsahuje samotného Azgarotha. Poraz ho a přidá se k tobě.'],
+    },
   },
   chapters: {
     ch1: {
@@ -658,6 +731,22 @@ const v: OpponentsOverlay = {
     wi4: {
       name: 'Kapitola IV – Stůl hostitele',
       description: 'V čele hostince stojí jeden dlouhý stůl. Každý host, kterého porazíš, si k němu sedne, a na druhém konci čeká hostitel.',
+    },
+    uf1: {
+      name: 'Kapitola I – Hořící kořen',
+      description: 'V Kaldeře rozťal zemi obrovský hořící strom. Jeho kořen vede až dolů do Pekelné hlubiny a první, co po něm leze nahoru, nemá přátelské úmysly.',
+    },
+    uf2: {
+      name: 'Kapitola II – Zbrojení legií',
+      description: 'Na popelavých pláních se vládcovy legie zbrojí na výstup do Aethry. Výhně nikdy nevychladnou a kováři nemají rádi návštěvy.',
+    },
+    uf3: {
+      name: 'Kapitola III – Zamrzlé jezero',
+      description: 'Na samém dně ohně je led: jezero černého skla, kde Azgaroth drží každého, kdo se mu kdy postavil. Jeho pán se o ně dobře stará.',
+    },
+    uf4: {
+      name: 'Kapitola IV – Pyrethron',
+      description: 'Pevnost Devátého vládce postavená kolem padlého Střepu. Mezi tebou a Hořícím trůnem stojí ještě dva z jeho dvora.',
     },
   },
 };
