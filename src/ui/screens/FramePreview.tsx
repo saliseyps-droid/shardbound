@@ -4,7 +4,11 @@ import { PLAYABLE_FACTIONS } from '@/game/types';
 import { WardenFrame } from '@/ui/components/WardenFrame';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 
-/** DEV ONLY (#/frames): the six faction Warden frames, animated or still, at two sizes. */
+import { SHOP_FRAMES } from '@/data/shopFrames';
+
+const SHOP: [string, string, string][] = SHOP_FRAMES.map((f) => [f.id, f.name, f.animated ? 'animated' : 'still']);
+
+/** DEV ONLY (#/frames): the faction and shop Warden frames, animated or still, at two sizes. */
 export default function FramePreview() {
   const [still, setStill] = useState(false);
   const root = useRef<HTMLDivElement>(null);
@@ -30,6 +34,19 @@ export default function FramePreview() {
               <WardenPortrait faction={f} size={240} />
             </WardenFrame>
             <strong style={{ color: FACTIONS[f].colors.primary }}>{FACTIONS[f].name}</strong>
+          </div>
+        ))}
+      </div>
+      <h2 style={{ margin: 0 }}>Shop frames — any faction</h2>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 150, rowGap: 160, justifyContent: 'center', padding: '70px 0 30px' }}>
+        {SHOP.map(([id, name, kind], i) => (
+          <div key={id} data-frame={id} style={{ display: 'grid', justifyItems: 'center', gap: 60 }}>
+            <WardenFrame faction={id} size={240}>
+              <WardenPortrait faction={PLAYABLE_FACTIONS[i % 6]} size={240} />
+            </WardenFrame>
+            <strong>
+              {name} <span className="faint">({kind})</span>
+            </strong>
           </div>
         ))}
       </div>

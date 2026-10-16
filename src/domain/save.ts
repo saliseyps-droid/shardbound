@@ -74,6 +74,8 @@ export interface PlayerProfile {
   deckStats?: Record<string, DeckStats>;
   /** The chosen Warden frame (a faction, earned with 100 wins with it; src/domain/frames.ts). */
   wardenFrame?: string | null;
+  /** Warden frames bought in the Shop (src/data/shopFrames.ts). */
+  ownedFrames?: string[];
 }
 
 export type VariantCounts = Record<Variant, number>;

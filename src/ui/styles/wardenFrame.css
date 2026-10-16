@@ -117,3 +117,46 @@
 /* A frame around an existing portrait element (FramedSlot): the child keeps its own size and look. */
 .framed-slot { position: relative; display: inline-grid; flex: none; }
 .framed-slot > :not(.wf-layer) { position: relative; z-index: 1; grid-area: 1 / 1; }
+
+/* Shop frames (src/ui/components/frames/ShopFrames.tsx). */
+.wf-f-laurel .wf-front { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 5px rgba(255, 210, 90, 0.5)); }
+.wf-f-obsidian .wf-front { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 4px rgba(210, 225, 255, 0.45)); }
+.wf-f-royal .wf-front { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 5px rgba(190, 110, 255, 0.5)); }
+.wf-f-stone .wf-front { filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.7)); }
+.wf-f-aurora .wf-front { filter: drop-shadow(0 0 6px rgba(90, 255, 190, 0.7)); }
+.wf-f-storm .wf-front { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 6px rgba(130, 210, 255, 0.6)); }
+.wf-f-prism .wf-front { filter: drop-shadow(0 0 6px rgba(220, 200, 255, 0.85)); }
+.wf-f-wings .wf-front { filter: drop-shadow(0 0 7px rgba(150, 90, 255, 0.8)); }
+.wf-f-dragon .wf-front { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 6px rgba(255, 170, 40, 0.75)); }
+
+.wf-drift { animation: wf-drift 9s ease-in-out infinite alternate; }
+@keyframes wf-drift { from { transform: translateX(-5px); } to { transform: translateX(5px); } }
+.wf-ray { transform-origin: 50% 100%; animation: wf-ray 3.6s ease-in-out infinite; }
+@keyframes wf-ray { 0%, 100% { transform: scaleY(0.7); opacity: 0.15; } 50% { transform: scaleY(1.15); opacity: 0.75; } }
+.wf-rain { animation: wf-rain 1.4s linear infinite; }
+@keyframes wf-rain { 0% { transform: translate(0, 0); opacity: 0; } 20% { opacity: 0.6; } 100% { transform: translate(-10px, 40px); opacity: 0; } }
+.wf-bolt { opacity: 0; animation: wf-bolt 5s linear infinite; }
+@keyframes wf-bolt { 0%, 86%, 100% { opacity: 0; } 87% { opacity: 1; } 89% { opacity: 0.15; } 90% { opacity: 0.95; } 94% { opacity: 0; } }
+.wf-crawl { animation: wf-crawl 2.2s linear infinite; }
+@keyframes wf-crawl { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -52; } }
+.wf-float { transform-origin: center; animation: wf-float 4.2s ease-in-out infinite alternate; }
+@keyframes wf-float { from { transform: translateY(-4px) rotate(-8deg); } to { transform: translateY(4px) rotate(10deg); } }
+.wf-layer .wf-flap { transform-box: view-box; animation: wf-flap 4.6s ease-in-out infinite; }
+@keyframes wf-flap { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(9deg); } }
+.wf-shine-long { animation: wf-shine-long 6s linear infinite; }
+@keyframes wf-shine-long { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -934; } }
+.wf-whisker { transform-origin: 100% 0; animation: wf-tendril 3s ease-in-out infinite alternate; }
+.wf-breath { transform-origin: 0% 50%; opacity: 0; animation: wf-breath 6s ease-out infinite; }
+@keyframes wf-breath { 0%, 70%, 100% { transform: scale(0.1, 0.4); opacity: 0; } 74% { transform: scale(0.8, 0.9); opacity: 1; } 82% { transform: scale(1.15, 1.1); opacity: 0.85; } 90% { transform: scale(1.3, 1.2); opacity: 0; } }
+.wf-puff { animation: wf-puff 6s ease-out infinite; }
+@keyframes wf-puff { 0%, 82% { transform: translate(0, 0) scale(0.4); opacity: 0; } 86% { opacity: 0.55; } 100% { transform: translate(14px, -22px) scale(1.8); opacity: 0; } }
+.wf-static .warden-frame :is(.wf-rain, .wf-puff, .wf-breath, .wf-bolt), .reduced-motion .warden-frame :is(.wf-rain, .wf-puff, .wf-breath) { display: none; }
+@media (prefers-reduced-motion: reduce) { .warden-frame :is(.wf-rain, .wf-puff, .wf-breath) { display: none; } }
+.wf-turn { transform-box: view-box; animation: wf-spin 40s linear infinite; }
+.wf-orbit-slow { transform-box: view-box; animation: wf-spin 60s linear infinite; }
+.wf-wingbeat { transform-box: view-box; animation: wf-wingbeat 5s ease-in-out infinite; }
+.wf-wingbeat-b { animation-delay: -0.4s; }
+@keyframes wf-wingbeat { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-6deg); } }
+.wf-layer .wf-turn, .wf-layer .wf-orbit-slow, .wf-layer .wf-wingbeat { transform-box: view-box; }
+.wf-glimmer { opacity: 0; animation: wf-glimmer 4.5s ease-in-out infinite; }
+@keyframes wf-glimmer { 0%, 100% { opacity: 0; } 50% { opacity: 0.55; } }

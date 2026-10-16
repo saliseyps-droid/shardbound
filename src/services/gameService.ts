@@ -30,7 +30,7 @@ import { migrateSave } from '@/persistence/migrations';
 import { acknowledgeSeasonReward, applySeasonRollover } from '@/domain/season';
 import { SaveGateway } from '@/persistence/repositories';
 import { IndexedDbStore, MemoryStore, type KeyValueStore } from '@/persistence/storage';
-import { chooseFrame } from '@/domain/frames';
+import { buyFrame, chooseFrame } from '@/domain/frames';
 
 export type InitStatus =
   | { kind: 'NEW' }
@@ -358,8 +358,14 @@ export class GameService {
     return res;
   }
 
-  chooseFrame(f: PlayableFaction | null): Result<GameSave> {
+  chooseFrame(f: string | null): Result<GameSave> {
     const res = chooseFrame(this.require(), f);
+    if (res.ok) this.commit(res.value);
+    return res;
+  }
+
+  buyFrame(id: string): Result<GameSave> {
+    const res = buyFrame(this.require(), id, this.now());
     if (res.ok) this.commit(res.value);
     return res;
   }

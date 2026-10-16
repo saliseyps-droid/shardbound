@@ -17,7 +17,9 @@ import { t } from '@/i18n';
 import { WardenFrame } from '@/ui/components/WardenFrame';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { FRAME_WINS } from '@/domain/frames';
-import type { PlayableFaction } from '@/game/types';
+import { SHOP_FRAMES } from '@/data/shopFrames';
+import { FramedWarden } from '@/ui/components/FrameShop';
+import { GoldIcon } from '@/ui/components/Icons';
 
 /** Customization: the Warden portrait of each faction and the card back used in matches. */
 export default function CardBacksScreen() {
@@ -67,13 +69,13 @@ export default function CardBacksScreen() {
         <div className="panel-title" id="cz-frames">
           {t('Warden frames')}
         </div>
-        <p className="faint">{t('Win {n} matches with a faction to earn its frame. Your frame shows around your Warden in every match, on Home and in your Profile, with any deck.', { n: FRAME_WINS })}</p>
+        <p className="faint">{t('Win {n} matches with a faction to earn its frame, or buy a frame for every faction in the Shop. Your frame shows around your Warden in every match, on Home and in your Profile, with any deck.', { n: FRAME_WINS })}</p>
         <div className="frame-grid">
           {PLAYABLE_FACTIONS.map((f) => {
             const wins = p.factionWins[f] ?? 0;
             const earned = wins >= FRAME_WINS;
             const chosen = p.wardenFrame === f;
-            const pick = (v: PlayableFaction | null) => {
+            const pick = (v: string | null) => {
               const res = gameService.chooseFrame(v);
               if (!res.ok) toast(t(res.error, { n: FRAME_WINS }), 'error');
             };
@@ -96,6 +98,32 @@ export default function CardBacksScreen() {
                     </span>
                     <span className="faint num">{t('{n} / {max} wins', { n: wins, max: FRAME_WINS })}</span>
                   </span>
+                )}
+              </div>
+            );
+          })}
+          {/* Frames from the Shop: any faction, any deck. */}
+          {SHOP_FRAMES.map((f) => {
+            const have = !!p.ownedFrames?.includes(f.id);
+            const chosen = p.wardenFrame === f.id;
+            const pick = (v: string | null) => {
+              const res = gameService.chooseFrame(v);
+              if (!res.ok) toast(res.error, 'error');
+            };
+            return (
+              <div key={f.id} className={`frame-tile frame-tile-shop ${have ? 'is-earned' : 'is-locked'} ${chosen ? 'is-chosen' : ''}`}>
+                <div className="frame-preview">
+                  <FramedWarden frame={f.id} size={92} />
+                </div>
+                <strong>{t(f.name)}</strong>
+                {have ? (
+                  <button type="button" className={`btn btn-sm ${chosen ? 'btn-primary' : ''}`} onClick={() => pick(chosen ? null : f.id)}>
+                    {chosen ? t('In use (click to remove)') : t('Use this frame')}
+                  </button>
+                ) : (
+                  <button type="button" className="btn btn-sm" onClick={() => navigate('/shop')}>
+                    <GoldIcon size={13} /> <span className="num">{f.price.toLocaleString()}</span> · {t('In the Shop')}
+                  </button>
                 )}
               </div>
             );

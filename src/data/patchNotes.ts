@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.54.0',
+    date: '2026-10-16',
+    title: 'Frames for every Warden',
+    summary: 'Four new Warden frames in the Shop that go with any faction: two still ones for 2500 Gold and two animated ones for 5000.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Shop: Warden frames for every faction. Silver Obsidian (polished black stone, silver filigree and engraved runes) and Royal Purple (velvet and gold, a jewelled crown and two banners) cost 2500 Gold. Aurora (the northern lights rippling over a moonlit band) and Shadow Wings (dark wings slowly beating behind your Warden) are animated and cost 5000 Gold.',
+          'Each frame is previewed around your own Warden and goes on as soon as you buy it. It shows in every match (your online opponents see it too), on Home and in your Profile, whatever deck you play.',
+          'Customization: bought frames sit next to the faction frames, so you can switch between them any time.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.53.8',
     date: '2026-10-16',
     title: 'Fifteen hands',

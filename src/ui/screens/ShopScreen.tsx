@@ -11,6 +11,7 @@ import { GoldIcon } from '@/ui/components/Icons';
 import { BoosterPack } from '@/ui/components/packs/BoosterPack';
 import { CardBackGrid } from '@/ui/components/CardBackGrid';
 import { PortraitShop } from '@/ui/components/PortraitShop';
+import { FrameShop } from '@/ui/components/FrameShop';
 import { BundleOffer } from '@/ui/components/BundleOffer';
 import { t, tn } from '@/i18n';
 import '@/ui/styles/shop.css';
@@ -176,7 +177,7 @@ export default function ShopScreen() {
     <div className="screen shop-screen">
       <ScreenHeader
         title={t('Shop')}
-        subtitle={t('Trade Gold for booster packs, bundles, card backs and Warden portraits. Every pack holds five cards.')}
+        subtitle={t('Trade Gold for booster packs, bundles, Warden frames, card backs and Warden portraits. Every pack holds five cards.')}
         actions={
           <>
             <span className="shop-wallet">
@@ -232,6 +233,7 @@ export default function ShopScreen() {
         <BundleOffer key={b.id} bundle={b} />
       ))}
       <OddsTable />
+      <FrameShop />
       <CardBackShop />
       <PortraitShop />
       {gold < 100 && <p className="muted shop-hint">{t('Earn Gold by winning matches, completing quests and claiming daily rewards.')}</p>}

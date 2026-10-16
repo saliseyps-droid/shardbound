@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.54.0': {
+    title: 'Rámečky pro každého Strážce',
+    summary: 'Čtyři nové rámečky Strážce v Obchodě pro jakoukoli frakci: dva statické za 2500 zlata a dva animované za 5000.',
+    sections: [
+      [
+        'Obchod: rámečky Strážce pro všechny frakce. Stříbrný obsidián (leštěný černý kámen, stříbrná filigránová výzdoba a vyryté runy) a Královský purpur (samet a zlato, koruna s drahokamy a dvě korouhve) stojí 2500 zlata. Polární záře (vlnící se světlo nad pásem s měsícem) a Stínová křídla (tmavá křídla, která se za tvým Strážcem pomalu zvedají) jsou animované a stojí 5000 zlata.',
+        'Každý rámeček si prohlédneš kolem vlastního Strážce a po koupi ho hned máš nasazený. Je vidět v každém zápase (i online soupeřům), na úvodní obrazovce a v profilu, ať hraješ s jakýmkoli balíčkem.',
+        'Přizpůsobení: koupené rámečky jsou vedle frakčních, takže mezi nimi můžeš kdykoli přepínat.',
+      ],
+    ],
+  },
   '0.53.8': {
     title: 'Patnáct rukopisů',
     summary: 'Kresby v Kodexu mají patnáct podob, které se střídají, a portréty Strážců jsou ostřejší.',
