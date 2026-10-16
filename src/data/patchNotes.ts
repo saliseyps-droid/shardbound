@@ -23,7 +23,7 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-16',
     title: 'A new face for the Sovereign',
     summary: 'Azgaroth has new art, and his entrance rises over his cathedral of fire.',
-    sections: [{ kind: 'improved', items: ['Azgaroth, the Ninth Sovereign: new card art and portrait, molten and glowing on his throne. His entrance now towers over the burning cathedral of Pyrethrone.'] }],
+    sections: [{ kind: 'improved', items: ['Azgaroth, the Ninth Sovereign: new card art and portrait, molten and glowing on his throne in the dark. His entrance now towers over the burning cathedral of Pyrethrone.'] }],
     commits: [],
   },
   {
