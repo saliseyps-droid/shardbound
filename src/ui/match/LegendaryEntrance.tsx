@@ -11,7 +11,7 @@ import { anim } from '@/state/settingsStore';
 import { t } from '@/i18n';
 import '@/ui/styles/legendary.css';
 import saliThrone from '@/assets/cinematics/sali_throne.webp';
-import azgarothThrone from '@/assets/cinematics/inf_throne.webp';
+import azgarothThrone from '@/assets/cinematics/inf_throne_room.webp';
 import paranoidTruth from '@/assets/music/paranoid_truth.mp3';
 
 /** Stable pseudo-random 0..1 per particle, so every entrance looks the same. */

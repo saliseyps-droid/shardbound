@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.55.2': {
+    title: 'Nová tvář vládce',
+    summary: 'Azgaroth má nový obrázek a jeho příchod se tyčí nad jeho ohnivou katedrálou.',
+    sections: [['Azgaroth, Devátý vládce: nový obrázek karty i portrét, rozžhavený a zářící na svém trůnu. Jeho příchod se teď tyčí nad hořící katedrálou Pyrethronu.']],
+  },
   '0.55.1': {
     title: 'Páni přicházejí',
     summary: 'Čtyři páni Pekelné hlubiny mají vlastní příchody, kampaň vlastní pekelné stoly a úvodní obrazovka její upoutávku.',
