@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.54.1': {
+    title: 'Ceny v řadě',
+    summary: 'Ceny rámečků v Obchodě jsou zase srovnané.',
+    sections: [['Obchod: tlačítka s cenou pod rámečky Strážce jsou ve stejné výšce, ať je popis nad nimi jakkoli dlouhý.']],
+  },
   '0.54.0': {
     title: 'Rámečky pro každého Strážce',
     summary: 'Čtyři nové rámečky Strážce v Obchodě pro jakoukoli frakci: dva statické za 2500 zlata a dva animované za 5000.',

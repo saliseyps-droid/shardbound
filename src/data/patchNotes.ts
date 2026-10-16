@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.54.1',
+    date: '2026-10-16',
+    title: 'Level prices',
+    summary: 'The frame prices in the Shop line up again.',
+    sections: [{ kind: 'fixed', items: ['Shop: the price buttons under the Warden frames sit at the same height, however long the description above them.'] }],
+    commits: [],
+  },
+  {
     version: '0.54.0',
     date: '2026-10-16',
     title: 'Frames for every Warden',

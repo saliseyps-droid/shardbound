@@ -116,8 +116,10 @@
 /* Warden frames (FrameShop). */
 .frame-shop { display: grid; gap: var(--space-4); margin-top: var(--space-5); }
 .frame-shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-4); }
-.frame-shop-tile { display: grid; justify-items: center; align-content: start; gap: var(--space-2); padding: var(--space-4) var(--space-3); background: rgba(0, 0, 0, 0.22); border-top: 2px solid var(--gold-deep); text-align: center; }
+.frame-shop-tile { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); padding: var(--space-4) var(--space-3); background: rgba(0, 0, 0, 0.22); border-top: 2px solid var(--gold-deep); text-align: center; }
 .frame-shop-tile.is-owned { border-top-color: var(--gold); }
 .frame-shop-tile p { margin: 0; max-width: 240px; }
+/* The price (or Use button) sits at the bottom of every tile, level across the row. */
+.frame-shop-tile > .btn { margin-top: auto; }
 .frame-shop-art { padding: 34px 30px 22px; }
 .chip-animated { border-color: var(--cyan); color: var(--cyan); }
