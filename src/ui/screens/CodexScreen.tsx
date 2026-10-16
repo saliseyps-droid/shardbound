@@ -12,6 +12,7 @@ import { portraitUrl } from '@/ui/components/WardenPortrait';
 import { BrandLogo } from '@/ui/components/BrandLogo';
 import { codexEntries, codexParts, type CodexEntry, type CodexPart } from '@/ui/codex/codexEntries';
 import { markCodexSeen, unreadCodex, useCodexSeen } from '@/ui/codex/codexSeen';
+import { CodexMarks } from '@/ui/codex/CodexMarks';
 import { formatDate, t, tn } from '@/i18n';
 import '@/ui/styles/codex.css';
 
@@ -183,8 +184,19 @@ export default function CodexScreen() {
   // A swipe turns the page too.
   const swipe = useRef<number | null>(null);
 
-  const left = (i: number): ReactNode => (i === 0 ? <Cover open={open} total={last} /> : <EntryImage e={entries[i - 1]} />);
-  const right = (i: number): ReactNode => (i === 0 ? <Contents parts={parts} fresh={freshByPart} onJump={go} /> : <EntryText e={entries[i - 1]} page={i} fresh={fresh.has(entries[i - 1].id)} onWatch={setWatching} />);
+  // Faint ink marks behind every page, two different styles on each spread.
+  const left = (i: number): ReactNode => (
+    <>
+      <CodexMarks spread={i} side="left" />
+      {i === 0 ? <Cover open={open} total={last} /> : <EntryImage e={entries[i - 1]} />}
+    </>
+  );
+  const right = (i: number): ReactNode => (
+    <>
+      <CodexMarks spread={i} side="right" />
+      {i === 0 ? <Contents parts={parts} fresh={freshByPart} onJump={go} /> : <EntryText e={entries[i - 1]} page={i} fresh={fresh.has(entries[i - 1].id)} onWatch={setWatching} />}
+    </>
+  );
 
   if (!save) return null;
   // While a page turns, the pages underneath already show where it lands.

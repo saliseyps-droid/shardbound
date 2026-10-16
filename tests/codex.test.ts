@@ -34,3 +34,19 @@ describe('Codex', () => {
     expect(open(save, 'lr1')).toBe(false);
   });
 });
+
+describe('Codex page marks', () => {
+  it('never repeats a style or a rune across the two pages of a spread', async () => {
+    const { spreadMarks, RUNES } = await import('@/ui/codex/CodexMarks');
+    const styles = new Set<string>();
+    for (let i = 0; i < 200; i++) {
+      const m = spreadMarks(i);
+      expect(m.left.style).not.toBe(m.right.style);
+      expect(m.left.pool.filter((r) => m.right.pool.includes(r))).toEqual([]);
+      expect(m.left.pool.length + m.right.pool.length).toBe(RUNES.length);
+      styles.add(`${m.left.style}|${m.right.style}`);
+    }
+    // Every pairing of two different styles turns up.
+    expect(styles.size).toBe(6);
+  });
+});

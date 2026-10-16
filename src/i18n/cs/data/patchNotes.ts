@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.53.7': {
+    title: 'Inkoust na okrajích',
+    summary: 'Stránky Kodexu teď zdobí jemně vepsané runy, kresba jako tetování a magické sigily.',
+    sections: [['Kodex: za každou stránkou jsou jemné inkoustové kresby: runové nápisy s pečetí v rohu, trnitá kresba jako tetování nebo velký magický sigil. Dvě stránky jedné dvoustrany se vždy liší, až po jednotlivé runy, a každá dvoustrana je jiná.']],
+  },
   '0.53.6': {
     title: 'Konec dvojčat',
     summary: 'Sedm karet, které kopírovaly jinou kartu nebo dělaly totéž hůř, má teď vlastní efekt.',

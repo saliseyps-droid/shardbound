@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.53.7',
+    date: '2026-10-16',
+    title: 'Ink in the margins',
+    summary: 'The Codex pages now carry faint inked runes, tattoo-like linework and arcane sigils.',
+    sections: [{ kind: 'improved', items: ['Codex: every page has faint ink marks behind it: rune inscriptions with a corner seal, thorned tattoo linework, or a great arcane sigil. The two pages of a spread always differ, down to the runes, and every spread has its own.'] }],
+    commits: [],
+  },
+  {
     version: '0.53.6',
     date: '2026-10-16',
     title: 'No more twins',
