@@ -36,17 +36,24 @@ describe('Codex', () => {
 });
 
 describe('Codex page marks', () => {
-  it('never repeats a style or a rune across the two pages of a spread', async () => {
-    const { spreadMarks, RUNES } = await import('@/ui/codex/CodexMarks');
-    const styles = new Set<string>();
+  it('never repeats a style, a version or a rune where it would show', async () => {
+    const { spreadMarks, RUNES, MARK_VERSIONS } = await import('@/ui/codex/CodexMarks');
+    const pages = Array.from({ length: 200 }, (_, i) => spreadMarks(i)).flatMap((m) => [m.left, m.right]);
+    const lastOf: Record<string, number> = {};
+    const seen = new Set<string>();
+    pages.forEach((p, i) => {
+      // Neighbouring pages (the two of a spread, or across a page turn) never share a style.
+      if (i > 0) expect(p.style).not.toBe(pages[i - 1].style);
+      // The next page of a style always takes another version.
+      if (lastOf[p.style] !== undefined) expect(p.version).not.toBe(lastOf[p.style]);
+      lastOf[p.style] = p.version;
+      seen.add(`${p.style}:${p.version}`);
+    });
+    expect(seen.size).toBe(3 * MARK_VERSIONS);
     for (let i = 0; i < 200; i++) {
       const m = spreadMarks(i);
-      expect(m.left.style).not.toBe(m.right.style);
       expect(m.left.pool.filter((r) => m.right.pool.includes(r))).toEqual([]);
       expect(m.left.pool.length + m.right.pool.length).toBe(RUNES.length);
-      styles.add(`${m.left.style}|${m.right.style}`);
     }
-    // Every pairing of two different styles turns up.
-    expect(styles.size).toBe(6);
   });
 });

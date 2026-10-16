@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.53.8': {
+    title: 'Patnáct rukopisů',
+    summary: 'Kresby v Kodexu mají patnáct podob, které se střídají, a portréty Strážců jsou ostřejší.',
+    sections: [
+      [
+        'Kodex: inkoustové kresby mají teď po pěti podobách runy, kresba jako tetování i sigily (hexagram, pentagram, osmicípá hvězda s okem, fáze měsíce a slunce). Sousední stránky nikdy nemají stejný styl a stejná podoba se nikdy neobjeví dvakrát po sobě.',
+        'Kodex: runové nápisy už nenarážejí do pečeti v rohu.',
+        'Portréty Strážců a bossů mají dvojnásobné rozlišení, takže jsou ostré i na velkých stránkách Kodexu, a obrázek z klipu hostince Wraithwood, který byl menší, teď odpovídá ostatním.',
+      ],
+    ],
+  },
   '0.53.7': {
     title: 'Inkoust na okrajích',
     summary: 'Stránky Kodexu teď zdobí jemně vepsané runy, kresba jako tetování a magické sigily.',

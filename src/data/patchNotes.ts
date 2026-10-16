@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.53.8',
+    date: '2026-10-16',
+    title: 'Fifteen hands',
+    summary: 'The Codex marks come in fifteen designs that take turns, and Warden portraits are sharper.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Codex: the ink marks now come in five designs each for runes, tattoo linework and sigils (a hexagram, a pentagram, an octagram with an eye, the moon\u2019s phases and a sun). Neighbouring pages never share a style, and a design never comes twice in a row.',
+          'Codex: the rune inscriptions no longer run into the corner seal.',
+          'Warden and boss portraits now have twice the resolution, so they stay sharp on the large Codex pages, and the Wraithwood Inn cinematic shot that was still smaller now matches the others.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.53.7',
     date: '2026-10-16',
     title: 'Ink in the margins',
