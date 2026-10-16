@@ -4,7 +4,7 @@ import type { CardsOverlay } from '../../overlayTypes';
 const cards: CardsOverlay = {
   // Void
   vod_rift_cultist: { name: 'Kultista trhliny', description: 'Poslední dech: Rozlož náhodnou nepřátelskou jednotku.', flavorText: 'Vešel do trhliny se zpěvem. Píseň pokračovala i poté, co přestal.' },
-  vod_umbral_acolyte: { name: 'Stínová akolytka', description: 'Kdykoli jiná spřátelená jednotka zemře, získá +1/+0.', flavorText: 'Každá ztráta je lekce. Naučila se už velmi mnoho.' },
+  vod_umbral_acolyte: { name: 'Stínová akolytka', description: 'Kdykoli jiná spřátelená jednotka zemře, obnov svému Strážci 2 životy.', flavorText: 'Každá ztráta je lekce. Naučila se už velmi mnoho.' },
   vod_sunless_hymn: { name: 'Hymnus bez slunce', description: 'Rozlož nepřátelskou jednotku.', flavorText: 'Zpívá se jednou, potmě, něčemu, co odpovídá.' },
   vod_hollow_glutton: { name: 'Prázdný žrout', description: 'Při nasazení: Pohlť jinou spřátelenou jednotku.', flavorText: 'Nikdy není sytý. Jen si dává pauzu.' },
   vod_black_sun_chanter: { name: 'Zpěvák černého slunce', description: 'Při nasazení: Rozlož náhodnou nepřátelskou jednotku.', flavorText: 'Sbor se každé ráno obracel k východu. Teď se obrací vzhůru.' },
@@ -24,7 +24,7 @@ const cards: CardsOverlay = {
   emb_duskblade_legionnaire: { name: 'Legionář soumračné čepele', description: 'Výpad.', flavorText: 'Legie vytáhla za soumraku. Soumrak už neskončil.' },
   emb_kindle_the_dark: { name: 'Zapal tmu', description: 'Způsob 3 poškození nepřátelské jednotce a uděl jí Hoření 2.', flavorText: 'Zapal ve tmě oheň a uvidíš, co před ním uteče.' },
   emb_lantern_bearer: { name: 'Nositelka lucerny', description: 'Kdykoli nepřátelská jednotka zemře, způsob 1 poškození nepřátelskému Strážci.', flavorText: 'Nese poslední plamen starého slunce. Stačí, aby bylo vidět.' },
-  emb_scorched_dawn: { name: 'Spálené svítání', description: 'Způsob 2 poškození všem nepřátelským jednotkám a uděl jim Hoření 1.', flavorText: 'Když slunce nevyjde, Legie rozsvítí nebe sama.' },
+  emb_scorched_dawn: { name: 'Spálené svítání', description: 'Uděl všem nepřátelským jednotkám Hoření 2. Způsob nepřátelskému Strážci 2 poškození.', flavorText: 'Když slunce nevyjde, Legie rozsvítí nebe sama.' },
   emb_flamebound_inquisitor: { name: 'Plamenná inkvizitorka', description: 'Při nasazení: Znič rozloženou nepřátelskou jednotku.', flavorText: 'Klade jedinou otázku. Nikdo, koho se dotkla Prázdnota, na ni ještě neodpověděl.' },
   emb_sunbreaker_titan: { name: 'Titán lámač slunce', description: 'Při nasazení: Způsob 3 poškození všem rozloženým nepřátelským jednotkám a 2 poškození nepřátelskému Strážci.', flavorText: 'Vyrobený ze slupky mrtvé hvězdy a pořádně kvůli tomu naštvaný.' },
   emb_ashen_warden_kael: { name: 'Popelavý strážce Kael', description: 'Na konci tvého tahu: Způsob 1 poškození všem nepřátelským jednotkám a rozloženým o 2 víc.', flavorText: 'Přísahal držet bránu, dokud se slunce nevrátí. Pořád ji drží.' },
@@ -81,7 +81,7 @@ const cards: CardsOverlay = {
   neu_rift_bruiser: { name: 'Rváč z trhliny', flavorText: 'Nikdo neví, čím byl před trhlinou. On si to taky nepamatuje.' },
   neu_reckoning_herald: { name: 'Posel zúčtování', description: 'Při nasazení: Rozlož nepřátelskou jednotku.', flavorText: 'Čte jména z černého svitku. Každé jméno zešedne, když ho vysloví.' },
   neu_voidglass_golem: { name: 'Golem z prázdnotového skla', description: 'Stráž. Bariéra.', flavorText: 'Sklo z okraje trhliny. Světlo dovnitř jde. Ven nic.' },
-  neu_second_dawn: { name: 'Druhé svítání', description: 'Očisti spřátelenou jednotku a dej jí +1/+2.', flavorText: 'Někde se na chvíli vrátilo slunce.' },
+  neu_second_dawn: { name: 'Druhé svítání', description: 'Očisti všechny spřátelené jednotky a dej jim +0/+2.', flavorText: 'Někde se na chvíli vrátilo slunce.' },
   neu_ravenous_abomination: { name: 'Nenasytná ohavnost', description: 'Při nasazení: Pohlť 2 náhodné jiné spřátelené jednotky.', flavorText: 'Dvě tlamy. Ani jedna nikdy nepřestane.' },
   neu_null_field: { name: 'Nulové pole', description: 'Umlč všechny jednotky.', flavorText: 'Na okamžik není nic nikde ničím.' },
   neu_void_knight: { name: 'Rytíř Prázdnoty', description: 'Spěch. Při nasazení: Pohlť jinou spřátelenou jednotku.', flavorText: 'Jede na koni, kterým se stal poslední rytíř, co řekl ne.' },

@@ -19,6 +19,27 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.53.6',
+    date: '2026-10-16',
+    title: 'No more twins',
+    summary: 'Seven cards that copied another card, or did the same thing worse, now have their own effect.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'Scorched Dawn (was the same as Wildfire Charge): Apply Burn 2 to all enemy units. Deal 2 damage to the enemy Warden.',
+          'Umbral Acolyte (was the same as Choir Novice): Whenever another friendly unit dies, restore 2 Health to your Warden.',
+          'Gravecloak Knight (was a weaker Dirgebound Knight): Last Breath: Deal 2 damage to all enemy units.',
+          'Abyssal Pyre (was a costlier Starfall): Deal 3 damage to an enemy unit and the units next to it. Apply Burn 2 to them.',
+          'Second Dawn (was a weaker Refit): now costs 3. Cleanse all friendly units and give them +0/+2.',
+          'Dune Cutpurse (was a weaker Tidecaller Eel): Ambush. Whenever this attacks, draw a card.',
+          'Redscarf Lancer (was a weaker Duskblade Legionnaire): Rush. On Deploy: Give a friendly Knight +1/+1.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.53.5',
     date: '2026-10-16',
     title: 'Sharper cards',

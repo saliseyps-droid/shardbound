@@ -1,6 +1,21 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.53.6': {
+    title: 'Konec dvojčat',
+    summary: 'Sedm karet, které kopírovaly jinou kartu nebo dělaly totéž hůř, má teď vlastní efekt.',
+    sections: [
+      [
+        'Spálené svítání (bylo stejné jako Útok divokého ohně): Uděl všem nepřátelským jednotkám Hoření 2. Způsob nepřátelskému Strážci 2 poškození.',
+        'Stínová akolytka (byla stejná jako Novicka chóru): Kdykoli jiná spřátelená jednotka zemře, obnov svému Strážci 2 životy.',
+        'Rytíř v hrobovém plášti (byl slabší Rytíř spjatý žalozpěvem): Poslední dech: Způsob 2 poškození všem nepřátelským jednotkám.',
+        'Hranice Propasti (byla dražší Pád hvězd): Způsob 3 poškození nepřátelské jednotce a jednotkám vedle ní. Uděl jim Hoření 2.',
+        'Druhé svítání (bylo slabší Přestavba): teď stojí 3. Očisti všechny spřátelené jednotky a dej jim +0/+2.',
+        'Pouštní kapsář (byl slabší Úhoř volající příliv): Léčka. Kdykoli zaútočí, lízni si kartu.',
+        'Kopiník s rudou šálou (byl slabší Legionář soumračné čepele): Výpad. Při nasazení: Dej spřátelenému Rytíři +1/+1.',
+      ],
+    ],
+  },
   '0.53.5': {
     title: 'Ostřejší karty',
     summary: 'Všechny obrázky karet jsou teď dvakrát ostřejší.',

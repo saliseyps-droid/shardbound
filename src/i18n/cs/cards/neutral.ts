@@ -11,7 +11,7 @@ const cards: CardsOverlay = {
   neu_stonehide_ox: { name: 'Kamenokožý vůl', flavorText: 'Táhne karavanu. A když se chytnou, táhne i bandity.' },
   neu_crag_colossus: { name: 'Skalní kolos', description: 'Stráž.', flavorText: 'Hora se probudila. Hora je naštvaná.' },
   neu_bog_toadcaller: { name: 'Bažinný svolavač ropuch', description: 'Poslední dech: Vyvolej 2 Bažinné ropuchy (0/1).', flavorText: 'Nikdo neví, odkud se ty ropuchy berou. Nikdo se nechce ptát.' },
-  neu_dune_cutpurse: { name: 'Pouštní kapsář', description: 'Léčka.', flavorText: 'Že ti chybí měšec, si všimneš zhruba ve stejnou chvíli jako nože.' },
+  neu_dune_cutpurse: { name: 'Pouštní kapsář', description: 'Léčka. Kdykoli zaútočí, lízni si kartu.', flavorText: 'Že ti chybí měšec, si všimneš zhruba ve stejnou chvíli jako nože.' },
   neu_roving_herbalist: { name: 'Potulný bylinkář', description: 'Při nasazení: Obnov 3 životy spřátelené postavě.', flavorText: 'Obklad z bahnokořene na rány. Čaj z ohnivého mechu na všechno ostatní.' },
   neu_ironwood_sellsword: { name: 'Železnodřevý žoldnéř', description: 'Výpad.', flavorText: 'Účtuje si za hodinu. Do útoku se ale žene zadarmo.' },
   neu_shardstone_behemoth: { name: 'Střepokamenný behemot', flavorText: 'Do lomu spadl Střep. Lom se postavil na nohy.' },

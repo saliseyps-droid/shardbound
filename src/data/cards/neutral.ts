@@ -62,6 +62,8 @@ export const NEUTRAL_CARDS: CardDefinition[] = [
   {
     ...base, id: 'neu_dune_cutpurse', name: 'Dune Cutpurse', cardType: 'UNIT', rarity: 'COMMON', set: 'DEEP',
     manaCost: 2, attack: 3, health: 1, keywords: ['AMBUSH'],
+    abilities: [{ trigger: 'ON_ATTACK', effects: [{ type: 'DRAW_CARDS', amount: 1 }] }],
+    description: 'Ambush. Whenever this attacks, draw a card.',
     flavorText: 'You will notice your purse is missing around the same time you notice the knife.',
   },
   {

@@ -26,8 +26,8 @@ export const RECKONING_CARDS: CardDefinition[] = [
   {
     ...unit, id: 'vod_umbral_acolyte', name: 'Umbral Acolyte', faction: 'VOID', rarity: 'COMMON',
     manaCost: 2, attack: 2, health: 3, tags: ['Cultist'], archetypes: ['Offering'],
-    abilities: [{ trigger: 'ALLY_DIED', effects: [{ type: 'BUFF', attack: 1, target: 'SELF' }] }],
-    description: 'Whenever another friendly unit dies, gain +1 Attack.',
+    abilities: [{ trigger: 'ALLY_DIED', effects: [{ type: 'HEAL', amount: 2, target: 'ALLY_HERO' }] }],
+    description: 'Whenever another friendly unit dies, restore 2 Health to your Warden.',
     flavorText: 'Every loss is a lesson. She has learned a great deal.',
   },
   {
@@ -153,8 +153,8 @@ export const RECKONING_CARDS: CardDefinition[] = [
   {
     ...spell, id: 'emb_scorched_dawn', name: 'Scorched Dawn', faction: 'EMBER', rarity: 'RARE',
     manaCost: 4, archetypes: ['Pyromancy'],
-    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ALL_ENEMY_UNITS' }, { type: 'APPLY_STATUS', status: 'BURN', amount: 1, target: 'ALL_ENEMY_UNITS' }] }],
-    description: 'Deal 2 damage to all enemy units and apply Burn 1 to them.',
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'APPLY_STATUS', status: 'BURN', amount: 2, target: 'ALL_ENEMY_UNITS' }, { type: 'DEAL_DAMAGE', amount: 2, target: 'ENEMY_HERO' }] }],
+    description: 'Apply Burn 2 to all enemy units. Deal 2 damage to the enemy Warden.',
     flavorText: 'If the sun will not rise, the Legion will light the sky itself.',
   },
   {
@@ -482,9 +482,9 @@ export const RECKONING_CARDS: CardDefinition[] = [
   },
   {
     ...spell, id: 'neu_second_dawn', name: 'Second Dawn', faction: 'NEUTRAL', rarity: 'RARE',
-    manaCost: 2, target: { kind: 'ALLY_UNIT' },
-    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'CLEANSE', target: 'TARGET' }, { type: 'BUFF', attack: 1, health: 2, target: 'TARGET' }] }],
-    description: 'Cleanse a friendly unit and give it +1/+2.',
+    manaCost: 3,
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'CLEANSE', target: 'ALL_ALLY_UNITS' }, { type: 'BUFF', health: 2, target: 'ALL_ALLY_UNITS' }] }],
+    description: 'Cleanse all friendly units and give them +0/+2.',
     flavorText: 'Somewhere, for a moment, the sun came back.',
   },
   {

@@ -52,7 +52,7 @@ export const ABYSS_CARDS: CardDefinition[] = [
   {
     ...knight, id: 'vod_gravecloak_knight', name: 'Gravecloak Knight', faction: 'VOID', rarity: 'RARE',
     manaCost: 4, attack: 4, health: 3,
-    abilities: [{ trigger: 'LAST_BREATH', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'RANDOM_ENEMY' }] }],
+    abilities: [{ trigger: 'LAST_BREATH', effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ALL_ENEMY_UNITS' }] }],
     flavorText: 'He was buried with his blade. It was a mistake to bury him at all.',
   },
   {
@@ -224,6 +224,9 @@ export const ABYSS_CARDS: CardDefinition[] = [
   {
     ...knight, id: 'neu_redscarf_lancer', name: 'Redscarf Lancer', faction: 'NEUTRAL', rarity: 'COMMON',
     manaCost: 3, attack: 3, health: 2, keywords: ['RUSH'],
+    target: { kind: 'ALLY_UNIT', optional: true, filter: { tag: 'Knight' } },
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'BUFF', attack: 1, health: 1, target: 'TARGET' }] }],
+    description: 'Rush. On Deploy: Give a friendly Knight +1/+1.',
     flavorText: 'The red scarf is so the others know where the charge begins.',
   },
   {
@@ -394,8 +397,8 @@ export const ABYSS_CARDS: CardDefinition[] = [
   {
     ...spell, id: 'neu_abyssal_pyre', name: 'Abyssal Pyre', faction: 'NEUTRAL', rarity: 'EPIC',
     manaCost: 4, target: { kind: 'ENEMY_UNIT' },
-    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'TARGET_AND_ADJACENT' }] }],
-    description: 'Deal 3 damage to an enemy unit and the units next to it.',
+    abilities: [{ trigger: 'ON_CAST', effects: [{ type: 'DEAL_DAMAGE', amount: 3, target: 'TARGET_AND_ADJACENT' }, { type: 'APPLY_STATUS', status: 'BURN', amount: 2, target: 'TARGET_AND_ADJACENT' }] }],
+    description: 'Deal 3 damage to an enemy unit and the units next to it. Apply Burn 2 to them.',
     flavorText: 'Light one pyre in the Abyss and the ones beside it catch as well.',
   },
   // ----- Legendaries -----
