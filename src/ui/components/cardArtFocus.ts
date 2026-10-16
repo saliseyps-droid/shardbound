@@ -1,5 +1,16 @@
 /** Generated: vertical focus (object-position Y %) of each card's painted art in the landscape card frame. */
 export const CARD_ART_FOCUS: Record<string, number> = {
+  // The Underflame: full-figure demons, framed a little higher so heads and horns stay in view.
+  emb_the_hollow_rider: 24,
+  ver_mother_blight: 26,
+  vod_vhessa_the_ash_serpent: 28,
+  irn_the_brass_locust: 30,
+  irn_ghul_the_forgemaster: 26,
+  ast_the_sunfallen_seraph: 26,
+  tid_rimegrave_lord_of_the_frozen_lake: 26,
+  ver_the_lantern_of_rot: 26,
+  ast_the_pale_herald: 26,
+  emb_azgaroth_the_ninth_sovereign: 24,
   ast_archive_unbound: 50,
   ast_astrolabe_of_seers: 50,
   ast_azure_maelstrom: 42,

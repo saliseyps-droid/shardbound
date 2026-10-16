@@ -448,6 +448,12 @@ const d: Record<string, string> = {
   'The Wraithwood Inn': 'Hostinec v Přízračném hvozdu',
   // The Underflame (campaign and cinematics)
   'The Underflame': 'Pekelná hlubina',
+  'New campaign': 'Nová kampaň',
+  'Go down into the fire beneath Aethra and take the stolen Shard back from Azgaroth, the Ninth Sovereign.': 'Sestup do ohně pod Aethrou a vezmi ukradený Střep zpátky Azgarothovi, Devátému vládci.',
+  '{n} chapters': 'Kapitoly: {n}',
+  '{n} demons to beat': 'Démonů k poražení: {n}',
+  '{n} campaign cards, {m} Legendary': 'Karet z kampaně: {n}, z toho legendárních: {m}',
+  Descend: 'Sestoupit',
   'The Burning Throne': 'Hořící trůn',
   'The Last Fire': 'Poslední oheň',
   'Beneath Aethra, deeper than any root or mine, lies the Underflame: a world of fire that was burning long before the first dawn.': 'Pod Aethrou, hlouběji než jakýkoli kořen nebo důl, leží Pekelná hlubina: svět ohně, který hořel dávno před prvním svítáním.',

@@ -1,7 +1,7 @@
 import { getCard } from '@/data/cards';
 import type { GameEvent, PlayerId } from '@/engine/types';
 
-export type LegendTheme = 'gold' | 'meowchick' | 'liu' | 'abandoneer' | 'rendoslav' | 'qvido' | 'qinny' | 'tallys' | 'elinda' | 'skolky' | 'r3d3' | 'dragon' | 'artemis' | 'scar' | 'elinka' | 'simba' | 'gorn' | 'nereth' | 'sali';
+export type LegendTheme = 'gold' | 'meowchick' | 'liu' | 'abandoneer' | 'rendoslav' | 'qvido' | 'qinny' | 'tallys' | 'elinda' | 'skolky' | 'r3d3' | 'dragon' | 'artemis' | 'scar' | 'elinka' | 'simba' | 'gorn' | 'nereth' | 'sali' | 'vhessa' | 'ghul' | 'rimegrave' | 'azgaroth';
 
 /** Legendaries with their own entrance; every other Legendary gets the golden one. */
 const THEMES: Record<string, LegendTheme> = {
@@ -22,6 +22,11 @@ const THEMES: Record<string, LegendTheme> = {
   irn_steelmaker_gorn: 'gorn',
   tid_nereth_heart_of_the_maelstrom: 'nereth',
   neu_sali_the_creator: 'sali',
+  // The Underflame's four lords.
+  vod_vhessa_the_ash_serpent: 'vhessa',
+  irn_ghul_the_forgemaster: 'ghul',
+  tid_rimegrave_lord_of_the_frozen_lake: 'rimegrave',
+  emb_azgaroth_the_ninth_sovereign: 'azgaroth',
 };
 
 /**
@@ -34,9 +39,10 @@ export const ENTRANCE_PORTRAITS: Record<string, string> = {
   neu_oblivia_keeper_of_the_last_page: 'nul_ring_of_thorns',
 };
 
-/** How long an entrance plays (ms, before reduced-motion scaling): Sali's is the longest. */
+/** How long an entrance plays (ms, before reduced-motion scaling): Sali's and Azgaroth's are the longest. */
 export function legendDuration(cardId: string): number {
-  return legendTheme(cardId) === 'sali' ? 3400 : 2150;
+  const t = legendTheme(cardId);
+  return t === 'sali' || t === 'azgaroth' ? 3400 : 2150;
 }
 
 /** Sali (or another card) took the Warden's place in this transition: its ascension plays. */

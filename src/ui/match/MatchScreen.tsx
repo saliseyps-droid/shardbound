@@ -166,8 +166,9 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const t = useT();
   const startedAt = useMatch((s) => s.startedAt);
   // A new play-mat for every match (rematches included); Wraithwood Inn fights alternate its two tavern tables.
-  const innFight = !!config?.encounterId && campaignOf(config.encounterId).id === 'inn';
-  const boardBg = useMemo(() => pickBoardBackground({ inn: innFight }), [startedAt, innFight]);
+  // Campaign fights pick from that campaign's mats (src/ui/match/boardBackgrounds.ts).
+  const boardCampaign = config?.mode === 'PVE' && config.encounterId ? campaignOf(config.encounterId).id : null;
+  const boardBg = useMemo(() => pickBoardBackground({ campaign: boardCampaign }), [startedAt, boardCampaign]);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [hover, setHover] = useState<{ cardId: string; uid?: number } | null>(null);

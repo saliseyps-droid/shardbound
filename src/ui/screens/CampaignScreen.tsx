@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
 import { CAMPAIGNS, findEncounter, type CampaignDef, type Chapter, type OpponentReward } from '@/data/opponents';
@@ -61,7 +61,13 @@ function RewardList({ r, claimed }: { r: OpponentReward; claimed?: boolean }) {
 export default function CampaignScreen() {
   const save = useAccount((s) => s.save);
   const navigate = useNavigate();
-  const [campId, setCampId] = useState(lastCampaign);
+  // A link can open a given campaign (?c=inferno, from the Home banner).
+  const [params] = useSearchParams();
+  const [campId, setCampId] = useState(() => {
+    const asked = params.get('c');
+    if (asked && CAMPAIGNS.some((c) => c.id === asked)) lastCampaign = asked as CampaignDef['id'];
+    return lastCampaign;
+  });
   const camp = CAMPAIGNS.find((c) => c.id === campId) ?? CAMPAIGNS[0];
   const TABS = tabsOf(camp.chapters);
   const firstOpen = (c: CampaignDef) => (save ? nextEncounter(save, c.chapters)?.encounter.id : undefined) ?? c.chapters[0].encounters[0].id;

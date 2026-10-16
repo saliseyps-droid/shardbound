@@ -11,6 +11,7 @@ import { anim } from '@/state/settingsStore';
 import { t } from '@/i18n';
 import '@/ui/styles/legendary.css';
 import saliThrone from '@/assets/cinematics/sali_throne.webp';
+import azgarothThrone from '@/assets/cinematics/inf_throne.webp';
 import paranoidTruth from '@/assets/music/paranoid_truth.mp3';
 
 /** Stable pseudo-random 0..1 per particle, so every entrance looks the same. */
@@ -652,6 +653,100 @@ const EXTRAS: Partial<Record<LegendTheme, { back?: () => ReactNode; stage?: () =
       </>
     ),
   },
+  vhessa: {
+    back: () => (
+      <>
+        <div className="vh-ash" />
+        <div className="vh-ash v2" />
+      </>
+    ),
+    stage: () => (
+      <div className="vh-coil">
+        <svg viewBox="-100 -100 200 200" aria-hidden>
+          <defs>
+            <linearGradient id="vh-scale" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#e8a0ff" />
+              <stop offset="0.5" stopColor="#7a1a5a" />
+              <stop offset="1" stopColor="#1a0414" />
+            </linearGradient>
+          </defs>
+          <ellipse className="vh-body" rx="92" ry="34" transform="rotate(-18)" />
+          <ellipse className="vh-scales" rx="92" ry="34" transform="rotate(-18)" />
+          <ellipse className="vh-body b2" rx="82" ry="26" transform="rotate(14)" />
+          <ellipse className="vh-scales b2" rx="82" ry="26" transform="rotate(14)" />
+        </svg>
+      </div>
+    ),
+    front: () => (
+      <>
+        <div className="vh-wave" />
+        <div className="vh-ashfall">{particles(36, 'vh-flake')}</div>
+      </>
+    ),
+  },
+  ghul: {
+    back: () => (
+      <>
+        <div className="gh-furnace" />
+        <div className="gh-heat" />
+      </>
+    ),
+    stage: () => (
+      <>
+        <div className="gh-ring" />
+        <div className="gh-drips">{particles(10, 'gh-drip')}</div>
+      </>
+    ),
+    front: () => (
+      <>
+        <div className="gh-strike" />
+        <div className="gh-strike s2" />
+        <div className="gh-fountain">{particles(44, 'gh-spark')}</div>
+      </>
+    ),
+  },
+  rimegrave: {
+    back: () => (
+      <>
+        <div className="rg-lake" />
+        <div className="rg-cracks">
+          <Cracks />
+        </div>
+      </>
+    ),
+    stage: () => <div className="rg-crown">{particles(14, 'rg-icicle')}</div>,
+    front: () => (
+      <>
+        <div className="rg-flash" />
+        <div className="rg-frost" />
+        <div className="rg-snow">{particles(40, 'rg-flake')}</div>
+      </>
+    ),
+  },
+  azgaroth: {
+    back: () => (
+      <>
+        <div className="az-lava" />
+        <div className="az-pillars">{particles(7, 'az-pillar')}</div>
+      </>
+    ),
+    stage: () => (
+      <div className="az-crowns">
+        {[0, 1].map((i) => (
+          <div key={i} className="az-ring" style={{ '--i': i } as CSSProperties}>
+            <RuneCircle />
+          </div>
+        ))}
+      </div>
+    ),
+    front: () => (
+      <>
+        <div className="az-shock" />
+        <div className="az-flash" />
+        <div className="az-embers">{particles(70, 'az-ember')}</div>
+      </>
+    ),
+  },
   tallys: {
     back: () => (
       <div className="tl-cracks">
@@ -668,11 +763,16 @@ export const LEGEND_MS = 2150;
 /** A short full-screen entrance when a Legendary unit is played, before it lands on the board. */
 /** Sali's entrance plays the loudest stretch of Paranoid Truth (the cinematic score) under it. */
 const SALI_MUSIC = { url: paranoidTruth, at: 105 };
+/** Azgaroth rises to the Burning Throne's stretch of the score. */
+const AZGAROTH_MUSIC = { url: paranoidTruth, at: 196 };
+const THEME_MUSIC: Partial<Record<LegendTheme, { url: string; at: number }>> = { sali: SALI_MUSIC, azgaroth: AZGAROTH_MUSIC };
+/** The two colossal entrances: the throne behind, the Legendary towering over it. */
+const THRONES: Partial<Record<LegendTheme, string>> = { sali: saliThrone, azgaroth: azgarothThrone };
 
 export function LegendaryEntrance() {
   const legend = useMatch((s) => s.legend);
   // A deck with Sali in it: have his music decoded before he is played.
-  const saliInMatch = useMatch((s) => !!s.game?.players.some((p) => [...p.deck, ...p.hand].some((c) => c.cardId === 'neu_sali_the_creator')));
+  const saliInMatch = useMatch((s) => !!s.game?.players.some((p) => [...p.deck, ...p.hand].some((c) => c.cardId === 'neu_sali_the_creator' || c.cardId === 'emb_azgaroth_the_ninth_sovereign')));
   useEffect(() => {
     if (saliInMatch) audio.preloadTrack(SALI_MUSIC.url);
   }, [saliInMatch]);
@@ -703,8 +803,9 @@ export function LegendaryEntranceView({ cardId, enemy }: { cardId: string; enemy
   const card = getCardSafe(cardId);
   const theme = legendTheme(cardId);
   useEffect(() => {
-    if (theme !== 'sali') return;
-    const stop = audio.playTrack(SALI_MUSIC.url, SALI_MUSIC.at, { fadeIn: 0.3, gain: 1.6 });
+    const music = THEME_MUSIC[theme];
+    if (!music) return;
+    const stop = audio.playTrack(music.url, music.at, { fadeIn: 0.3, gain: 1.6 });
     const id = window.setTimeout(stop, Math.max(600, anim(legendDuration(cardId)) - 900));
     return () => {
       window.clearTimeout(id);
@@ -724,8 +825,8 @@ export function LegendaryEntranceView({ cardId, enemy }: { cardId: string; enemy
       <div className="legend-backdrop" />
       <div className="legend-sunrays" />
       {extras.back?.()}
-      {theme === 'sali' && <div className="sl2-throne" style={{ backgroundImage: `url(${saliThrone})` }} aria-hidden />}
-      {theme === 'sali' && <img className="sl2-colossus" src={cardArtUri(card)} alt="" draggable={false} />}
+      {THRONES[theme] && <div className={theme === 'sali' ? 'sl2-throne' : 'az-throne'} style={{ backgroundImage: `url(${THRONES[theme]})` }} aria-hidden />}
+      {THRONES[theme] && <img className={theme === 'sali' ? 'sl2-colossus' : 'az-colossus'} src={cardArtUri(card)} alt="" draggable={false} />}
       <div className="legend-stage">
         <div className="legend-portrait">
           <img src={art} alt="" draggable={false} />

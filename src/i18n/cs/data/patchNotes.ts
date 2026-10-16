@@ -1,6 +1,20 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.55.1': {
+    title: 'Páni přicházejí',
+    summary: 'Čtyři páni Pekelné hlubiny mají vlastní příchody, kampaň vlastní pekelné stoly a úvodní obrazovka její upoutávku.',
+    sections: [
+      [
+        'Legendární příchody pro čtyři pány Pekelné hlubiny. Vhessa se obtočí ve víru popela s vlnou hniloby, Ghul dvakrát udeří do kovadliny v prstenci roztaveného kovu a fontáně jisker a Rimegrave zmrazí jezero do ledové koruny. Azgaroth má ze všech nejvelkolepější: za ním Hořící trůn, jeho obří stín, sloupy ohně, otřes země a vlastní úsek hudby.',
+        'Dva pekelné herní stoly. Každý souboj v Pekelné hlubině se hraje na nich, střídavě; jiné kampaně je nikdy nepoužijí (stejně jako stoly z hostince v Přízračném hvozdu), ostatní zápasy můžou padnout na jakýkoli stůl.',
+        'Úvodní obrazovka: upoutávka na novou kampaň s obrázkem z jejího klipu, jejími legendárkami a odkazem rovnou dovnitř.',
+      ],
+      [
+        'Pekelná hlubina: nejtmavší karty démonů a záběry z klipů jsou světlejší, Azgaroth nejvíc, a karty démonů jsou oříznuté výš, aby jim byla vidět hlava.',
+      ],
+    ],
+  },
   '0.55.0': {
     title: 'Pekelná hlubina',
     summary: 'Pátá kampaň: sestup do ohně pod Aethrou a postav se Azgarothovi, Devátému vládci, o dvanáct démonických karet.',

@@ -19,6 +19,27 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.55.1',
+    date: '2026-10-16',
+    title: 'The lords arrive',
+    summary: 'The four lords of the Underflame get their own entrances, the campaign its own hellish tables, and Home a banner for it.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Legendary entrances for the four lords of the Underflame. Vhessa coils round herself in a swirl of ash and a wave of rot, Ghul strikes his anvil twice in a ring of molten metal and a fountain of sparks, and Rimegrave freezes the lake into a crown of ice. Azgaroth gets the grandest of all: his Burning Throne behind him, his colossal shadow, pillars of fire, a quake and his own stretch of the score.',
+          'Two hellish game tables. Every Underflame fight is played on them, taking turns; other campaigns never use them (nor the Wraithwood Inn’s tavern tables), and any other match can land on any table.',
+          'Home: a banner for the new campaign over one of its cinematic paintings, with its Legendaries and a way straight in.',
+        ],
+      },
+      {
+        kind: 'improved',
+        items: ['The Underflame: the darkest demon cards and cinematic shots are brighter, Azgaroth most of all, and the demon cards are framed higher so their heads stay in view.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.55.0',
     date: '2026-10-16',
     title: 'The Underflame',

@@ -21,6 +21,7 @@ import { trustedNow } from '@/domain/clock';
 import { brawlFightTitle, brawlTimeLeft } from '@/ui/components/meta/brawlUi';
 import '@/ui/styles/meta.css';
 import { NewsBanner } from '@/ui/components/meta/NewsBanner';
+import { CampaignNewsBanner } from '@/ui/components/meta/CampaignNewsBanner';
 import { t, tn } from '@/i18n';
 import { FramedSlot } from '@/ui/components/WardenFrame';
 import { activeFrame } from '@/domain/frames';
@@ -88,6 +89,7 @@ export default function HomeScreen() {
         </div>
       </section>
 
+      {p.tutorialCompleted && <CampaignNewsBanner />}
       {p.tutorialCompleted && <NewsBanner />}
 
       {!p.tutorialCompleted && (
