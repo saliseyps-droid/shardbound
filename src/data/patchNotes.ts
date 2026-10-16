@@ -19,6 +19,17 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.55.3',
+    date: '2026-10-16',
+    title: 'Embers, not floodlights',
+    summary: 'The Underflame pictures are no longer washed out, and the Void Reckoning banner on Home gets a painting behind it.',
+    sections: [
+      { kind: 'fixed', items: ['The Underflame: the brightened cinematic shots and demon cards were overexposed (the reds burned out). They now keep their dark mood and only open up the shadows a little, in the cinematics and in the Codex alike.'] },
+      { kind: 'improved', items: ['Home: the Void Reckoning banner now has a Black Sun cinematic painting behind it, like the Underflame banner.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.55.2',
     date: '2026-10-16',
     title: 'A new face for the Sovereign',

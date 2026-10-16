@@ -556,3 +556,12 @@ label.toggle-row { cursor: pointer; }
 .campaign-news .news-card { filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 10px rgba(255, 90, 20, 0.35)); }
 @media (max-width: 1100px) { .campaign-news { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 640px) { .campaign-news { text-align: center; justify-items: center; background: linear-gradient(180deg, rgba(20, 5, 2, 0.6), rgba(14, 4, 2, 0.94)), var(--cn-bg) center / cover no-repeat, #1a0602; } }
+
+/* The set banner over one of its cinematic paintings. */
+.news-banner.has-art {
+  background:
+    linear-gradient(90deg, rgba(14, 6, 28, 0.55) 0%, rgba(18, 8, 36, 0.86) 22%, rgba(18, 8, 36, 0.7) 55%, rgba(14, 6, 28, 0.3) 85%, rgba(14, 6, 28, 0.15)),
+    var(--nb-bg) center 45% / cover no-repeat,
+    #140a26;
+}
+.news-banner.has-art .news-tagline { text-shadow: 0 1px 3px #000; }

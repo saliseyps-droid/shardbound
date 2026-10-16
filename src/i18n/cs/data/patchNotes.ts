@@ -1,6 +1,14 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.55.3': {
+    title: 'Uhlíky, ne reflektory',
+    summary: 'Obrázky z Pekelné hlubiny už nejsou přepálené a upoutávka na Void Reckoning na úvodní obrazovce má obrázek v pozadí.',
+    sections: [
+      ['Pekelná hlubina: zesvětlené záběry z klipů a karty démonů byly přeexponované (červené se přepalovaly). Teď si drží temnou atmosféru a jen mírně otevírají stíny, v klipech i v Kodexu.'],
+      ['Úvodní obrazovka: upoutávka na Void Reckoning má teď v pozadí obrázek z klipu Černého slunce, stejně jako upoutávka na Pekelnou hlubinu.'],
+    ],
+  },
   '0.55.2': {
     title: 'Nová tvář vládce',
     summary: 'Azgaroth má nový obrázek a jeho příchod se tyčí nad jeho ohnivou katedrálou.',

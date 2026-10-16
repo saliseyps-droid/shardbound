@@ -5,6 +5,7 @@ import { NEWS } from '@/config/news';
 import { poolCards } from '@/data/cards';
 import { BoosterPack } from '@/ui/components/packs/BoosterPack';
 import { CardView } from '@/ui/components/CardView';
+import { cinematicImageUrl } from '@/ui/components/Cinematic';
 import { t } from '@/i18n';
 import '@/ui/styles/shop.css';
 
@@ -13,8 +14,10 @@ export function NewsBanner() {
   const set = SET_INFO[NEWS.setId];
   const cards = poolCards().filter((c) => c.set === NEWS.setId);
   const legends = cards.filter((c) => c.rarity === 'LEGENDARY').length;
+  // One of the set's cinematic paintings behind the banner (the Black Sun for Void Reckoning).
+  const bg = NEWS.image ? cinematicImageUrl(NEWS.image) : undefined;
   return (
-    <section className="news-banner panel" aria-labelledby="news-title">
+    <section className={`news-banner panel ${bg ? 'has-art' : ''}`} aria-labelledby="news-title" style={bg ? ({ '--nb-bg': `url(${bg})` } as CSSProperties) : undefined}>
       <div className="news-pack">
         <BoosterPack setId={NEWS.setId} width={150} />
       </div>
