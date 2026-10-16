@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.53.5': {
+    title: 'Ostřejší karty',
+    summary: 'Všechny obrázky karet jsou teď dvakrát ostřejší.',
+    sections: [['Každý obrázek karty má teď dvojnásobné rozlišení, čistší hrany a žádné kostičky z komprese. Nejvíc je to vidět na velkých kartách, v detailu karty a při příchodech legendárních karet.']],
+  },
   '0.53.4': {
     title: 'Levnější oběť',
     summary: 'Nasyť Prázdnotu teď stojí 0 a lízne kartu.',

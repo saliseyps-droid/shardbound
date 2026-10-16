@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.53.5',
+    date: '2026-10-16',
+    title: 'Sharper cards',
+    summary: 'All card art is now twice as sharp.',
+    sections: [{ kind: 'improved', items: ['Every card picture was upscaled to twice the resolution, with cleaner edges and no blocky compression. The difference shows most on large cards, in the card details and the Legendary entrances.'] }],
+    commits: [],
+  },
+  {
     version: '0.53.4',
     date: '2026-10-16',
     title: 'A cheaper offering',
