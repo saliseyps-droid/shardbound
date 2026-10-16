@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { allEncounters, campaignOf, findEncounter } from '@/data/opponents';
 import { getCard } from '@/data/cards';
-import { CURSE_TEXT, NIGHTMARE_CURSES, nightmareBosses, nightmareId, nightmareLines, nightmareOpen, nightmareOpponent, parseNightmare } from '@/data/nightmare';
+import { CURSE_TEXT, FACTION_CURSES, NIGHTMARE_CURSES, hasNightmare, nightmareBosses, nightmareId, nightmareLines, nightmareOpen, nightmareOpponent, parseNightmare } from '@/data/nightmare';
 import { applyMatchResult, type MatchSummary } from '@/domain/matchResults';
 import { evaluateAchievements } from '@/domain/achievements';
 import { createNewSave } from '@/domain/newAccount';
@@ -90,5 +90,21 @@ describe('Nightmare', () => {
     expect(nightmareOpponent(boss('c1_boss'), 1).firstWinReward?.packs).toEqual({ setId: 'CORE', amount: 1 });
     expect(nightmareOpponent(boss('v3_final'), 2).firstWinReward?.packs).toEqual({ setId: 'RECKONING', amount: 3 });
     expect(nightmareOpponent(boss('c3_b1'), 2).firstWinReward?.cardId).toBeUndefined();
+  });
+
+  it('also covers every fight that pays its own card, so a second (Foil) copy can be won', () => {
+    const save = createNewSave('A', 'flame', 1, 'p');
+    const guest = boss('w1_e1');
+    expect(guest.boss).toBeFalsy();
+    expect(hasNightmare(guest)).toBe(true);
+    expect(hasNightmare(boss('c1_e1'))).toBe(false);
+    for (const c of Object.values(FACTION_CURSES)) for (const r of c.rules ?? []) expect(CURSE_TEXT[r], r).toBeDefined();
+    const n2 = nightmareOpponent(guest, 2);
+    expect(n2.special?.rules).toEqual(FACTION_CURSES[guest.faction].rules);
+    expect(n2.firstWinReward).toMatchObject({ cardId: guest.firstWinReward!.cardId, variant: 'PRISMATIC', gold: 400 });
+    let s = applyMatchResult(save, win('w1_e1'), 10).save;
+    s = applyMatchResult(s, win(nightmareId('w1_e1', 1)), 20).save;
+    const id = guest.firstWinReward!.cardId!;
+    expect(s.collection.cards[id]).toMatchObject({ NORMAL: 1, FOIL: 1 });
   });
 });

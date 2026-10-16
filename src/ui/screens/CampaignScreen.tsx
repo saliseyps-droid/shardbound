@@ -233,7 +233,7 @@ export default function CampaignScreen() {
                     const done = isCleared(save, e.id);
                     const open = isUnlocked(save, e.id);
                     const state = done ? 'done' : open ? 'open' : 'locked';
-                    const best = e.boss ? nightmareBest(save, e.id) : 0;
+                    const best = hasNightmare(e) ? nightmareBest(save, e.id) : 0;
                     return (
                       <li key={e.id} className="enc-step">
                         {i > 0 && <span className={`enc-link ${isCleared(save, ch.encounters[i - 1].id) ? 'lit' : ''}`} aria-hidden />}

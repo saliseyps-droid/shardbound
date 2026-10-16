@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.56.0': {
+    title: 'Noční můry pro každého hosta',
+    summary: 'Každý souboj v kampani, který dává kartu, má teď také Noční můru, takže můžeš získat její Foil a Prismatic kopie a mít ji v balíčku dvakrát.',
+    sections: [
+      [
+        'Noční můra I a II se teď otevírá u každého souboje v kampani, který dává vlastní kartu, nejen u bossů: u všech hostů hostince v Přízračném hvozdu a démonů Pekelné hlubiny. Dávají kartu ve verzi Foil (Noční můra I) a Prismatic (Noční můra II) a k tomu polovinu zlata a zkušeností co boss.',
+        'Každá kopie se počítá, takže nelegendární kartu z kampaně můžeš mít v balíčku dvakrát.',
+        'Na Noční můru II mají tyto souboje prokletí své frakce.',
+      ],
+      ['Karta vyhraná v boji: nápis „Přidáno do tvé sbírky“ má jemný tmavý stín, aby byl dobře čitelný na jakémkoli pozadí.'],
+    ],
+  },
   '0.55.3': {
     title: 'Uhlíky, ne reflektory',
     summary: 'Obrázky z Pekelné hlubiny už nejsou přepálené a upoutávka na Void Reckoning na úvodní obrazovce má obrázek v pozadí.',

@@ -22,6 +22,16 @@ export interface NightmareCurse {
   extraCards?: string[];
 }
 
+/** The curse of a card-giving fight that is not a boss, by its faction. */
+export const FACTION_CURSES: Record<string, NightmareCurse> = {
+  EMBER: { rules: ['nm_curse_crown_fire'] },
+  VERDANT: { rules: ['nm_curse_wellspring'] },
+  IRON: { rules: ['nm_curse_assembly'] },
+  ASTRAL: { rules: ['nm_curse_starfall'] },
+  VOID: { rules: ['nm_curse_hymn'] },
+  TIDE: { rules: ['brawl_rule_long_winter'] },
+};
+
 export const NIGHTMARE_CURSES: Record<string, NightmareCurse> = {
   // The Shattering of Aethra
   c1_boss: { startingArmor: 10, startingBoard: ['token_brawl_wall', 'token_brawl_wall'] },
@@ -94,8 +104,15 @@ export function parseNightmare(id: string | null | undefined): { bossId: string;
   return { bossId: base, tier: id.endsWith('_n2') ? 2 : 1 };
 }
 
-/** Campaign bosses that have a Nightmare. */
-export const hasNightmare = (e: OpponentDef) => !!e.boss && e.id in NIGHTMARE_CURSES;
+/** A fight that gives no card of its own and is no boss has no Nightmare; the others do. */
+const curseOf = (e: OpponentDef): NightmareCurse | undefined => NIGHTMARE_CURSES[e.id] ?? (e.firstWinReward?.cardId ? FACTION_CURSES[e.faction] : undefined);
+
+/**
+ * Campaign fights that have a Nightmare: every boss, and every other fight that pays its own card
+ * (the Wraithwood Inn's guests, the Underflame's demons), so its Foil and Prismatic copies can be won.
+ * Those use their faction's curse on Nightmare II.
+ */
+export const hasNightmare = (e: OpponentDef) => (!!e.boss && e.id in NIGHTMARE_CURSES) || !!e.firstWinReward?.cardId;
 
 export function nightmareCleared(save: GameSave, bossId: string, tier: NightmareTier): boolean {
   return !!save.pve.completed[nightmareId(bossId, tier)];
@@ -115,7 +132,9 @@ const DEFAULT_PACKS: Record<string, SetId> = { main: 'CORE', void: 'RECKONING', 
 
 /** First-win reward: the boss's card in Foil / Prismatic, or 1 / 3 packs when it gives no card. */
 export function nightmareReward(boss: OpponentDef, tier: NightmareTier): OpponentReward {
-  const base = { gold: tier === 1 ? 400 : 800, xp: tier === 1 ? 300 : 600 };
+  // Bosses pay twice the Gold and XP of the other card-giving fights.
+  const k = boss.boss ? 1 : 0.5;
+  const base = { gold: (tier === 1 ? 400 : 800) * k, xp: (tier === 1 ? 300 : 600) * k };
   const card = boss.firstWinReward?.cardId;
   if (card) return { ...base, cardId: card, variant: tier === 1 ? 'FOIL' : 'PRISMATIC' };
   const setId = boss.firstWinReward?.packs?.setId ?? DEFAULT_PACKS[campaignOf(boss.id).id] ?? 'CORE';
@@ -125,7 +144,7 @@ export function nightmareReward(boss: OpponentDef, tier: NightmareTier): Opponen
 /** The boss as it is fought on this Nightmare tier. */
 export function nightmareOpponent(boss: OpponentDef, tier: NightmareTier): OpponentDef {
   const s = boss.special;
-  const curse = tier === 2 ? NIGHTMARE_CURSES[boss.id] : undefined;
+  const curse = tier === 2 ? curseOf(boss) : undefined;
   const list = (a?: string[], b?: string[]) => (a?.length || b?.length ? [...(a ?? []), ...(b ?? [])] : undefined);
   const armor = (s?.startingArmor ?? 0) + (curse?.startingArmor ?? 0);
   return {
@@ -157,7 +176,7 @@ export function nightmareLines(boss: OpponentDef, tier: NightmareTier): { key: s
     { key: 'Starts with {hp} Health and +{n} Energy.', params: { hp: nightmareHealth(boss), n: (boss.special?.bonusStartingEnergy ?? 0) + 1 } },
   ];
   if (tier === 2) {
-    const c = NIGHTMARE_CURSES[boss.id] ?? {};
+    const c = curseOf(boss) ?? {};
     for (const r of c.rules ?? []) out.push({ key: CURSE_TEXT[r] ?? r });
     if (c.startingArmor) out.push({ key: 'The boss starts with {n} more Armor.', params: { n: c.startingArmor } });
     if (c.startingBoard?.length) out.push({ key: 'The boss starts with units on the board: {cards}.', card: c.startingBoard });

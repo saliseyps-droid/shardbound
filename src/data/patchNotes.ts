@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.56.0',
+    date: '2026-10-16',
+    title: 'Nightmares for every guest',
+    summary: 'Every campaign fight that gives a card now has a Nightmare too, so you can win its Foil and Prismatic copies and play two in a deck.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Nightmare I and II now open for every campaign fight that pays its own card, not just the bosses: all the guests of the Wraithwood Inn and the demons of the Underflame. They pay the card in Foil (Nightmare I) and Prismatic (Nightmare II), plus half a boss’s Gold and XP.',
+          'Each copy counts, so a campaign card that is not Legendary can now go into a deck twice.',
+          'On Nightmare II these fights carry a curse of their faction.',
+        ],
+      },
+      { kind: 'improved', items: ['A card won in a fight: the “Added to your collection” title has a soft dark shadow, so it reads well on any background.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.55.3',
     date: '2026-10-16',
     title: 'Embers, not floodlights',
