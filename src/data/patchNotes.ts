@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.58.1',
+    date: '2026-10-17',
+    title: 'Shoulder to shoulder',
+    summary: 'In 2 v 1 co-op your teammate’s battlefield is centred like yours and the boss’s.',
+    sections: [{ kind: 'fixed', items: ['2 v 1 co-op: your teammate’s row of units sat off-centre, pushed right by their Warden. It now lines up with the boss’s row and yours, with their Warden at the left edge.'] }],
+    commits: [],
+  },
+  {
     version: '0.58.0',
     date: '2026-10-17',
     title: 'Two against one, with a friend',

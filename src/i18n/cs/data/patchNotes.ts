@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.58.1': {
+    title: 'Bok po boku',
+    summary: 'V kooperaci 2 na 1 je bojiště spoluhráče vycentrované stejně jako tvoje a bossovo.',
+    sections: [['Kooperace 2 na 1: řada jednotek spoluhráče byla posunutá doprava kvůli jeho Strážci. Teď je v ose s řadou bosse i tvou a jeho Strážce je u levého okraje.']],
+  },
   '0.58.0': {
     title: 'Dva proti jednomu, s přítelem',
     summary: 'Kooperace 2 na 1 teď funguje i online: přítel se k tobě může přidat jako spoluhráč proti bossovi.',
