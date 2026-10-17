@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.59.4': {
+    title: 'Světlo a stín',
+    summary: 'Příchody Arbitra, Halcyona a Azrafela jsou přepracované.',
+    sections: [
+      [
+        'Příchod Arbitra je teď celý černobílý, včetně Tribunálu za ním.',
+        'Příchod Halcyona: za ním se ze tmy vynoří zářící Perlová brána, nad hlavou se mu usadí svatozář a vzhůru stoupá zlatý prach.',
+        'Příchod Azrafela: už žádné seky přes obrazovku; černé peří a rudé jiskry padají hned od prvního okamžiku.',
+      ],
+      ['Příchod Artemis od minulé aktualizace přišel o jiskry. Jsou zpátky.'],
+    ],
+  },
   '0.59.3': {
     title: 'Příchod Zástupu',
     summary: 'Halcyon, Azrafel a Arbitr mají vlastní příchody, Dvojí přísaha vlastní herní desku a delší úvod a souboj s Arbitrem je těžší.',

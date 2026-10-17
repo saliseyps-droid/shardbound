@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.59.4',
+    date: '2026-10-18',
+    title: 'Light and shadow',
+    summary: 'The entrances of the Arbiter, Halcyon and Azrafel are reworked.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'The Arbiter’s entrance is now all in black and white, the Tribunal behind him included.',
+          'Halcyon’s entrance: the shining Pearl Gate rises out of the dark behind him, his halo settles over his head and golden dust drifts up.',
+          'Azrafel’s entrance: no more cuts across the screen; black feathers and red embers fall from the very first moment.',
+        ],
+      },
+      { kind: 'fixed', items: ['Artemis’s entrance had lost its sparks since the last update. They are back.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.59.3',
     date: '2026-10-18',
     title: 'Enter the Host',

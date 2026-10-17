@@ -13,6 +13,7 @@ import '@/ui/styles/legendary.css';
 import saliThrone from '@/assets/cinematics/sali_throne.webp';
 import azgarothThrone from '@/assets/cinematics/inf_throne_room.webp';
 import tribunalHall from '@/assets/cinematics/hv_rainbow_halls.webp';
+import pearlGate from '@/assets/cinematics/hv_radiant_door.webp';
 import paranoidTruth from '@/assets/music/paranoid_truth.mp3';
 
 /** Stable pseudo-random 0..1 per particle, so every entrance looks the same. */
@@ -752,34 +753,25 @@ const EXTRAS: Partial<Record<LegendTheme, { back?: () => ReactNode; stage?: () =
   halcyon: {
     back: () => (
       <>
-        <div className="hc-light" />
-        <div className="hc-door l" />
-        <div className="hc-door r" />
+        <div className="hc-glow" />
+        <div className="hc-dust">{particles(46, 'hc-mote')}</div>
       </>
     ),
     stage: () => <div className="hc-halo" />,
-    front: () => (
-      <>
-        <div className="hc-shield" />
-        <div className="hc-feathers">{particles(26, 'hc-feather')}</div>
-      </>
-    ),
+    front: () => <div className="hc-bloom" />,
   },
   azrafel: {
     back: () => (
       <>
-        <div className="ar-moon" />
-        <div className="ar-mist" />
+        <div className="rz-moon" />
+        <div className="rz-mist" />
       </>
     ),
-    stage: () => <div className="ar-ring" />,
+    stage: () => <div className="rz-ring" />,
     front: () => (
       <>
-        <div className="ar-slash" />
-        <div className="ar-slash s2" />
-        <div className="ar-flash" />
-        <div className="ar-feathers">{particles(22, 'ar-feather')}</div>
-        <div className="ar-sparks">{particles(30, 'ar-spark')}</div>
+        <div className="rz-feathers">{particles(34, 'rz-feather')}</div>
+        <div className="rz-embers">{particles(40, 'rz-ember')}</div>
       </>
     ),
   },
@@ -854,8 +846,9 @@ const AZGAROTH_MUSIC = { url: paranoidTruth, at: 196 };
 const ARBITER_MUSIC = { url: paranoidTruth, at: 150 };
 const THEME_MUSIC: Partial<Record<LegendTheme, { url: string; at: number }>> = { sali: SALI_MUSIC, azgaroth: AZGAROTH_MUSIC, arbiter: ARBITER_MUSIC };
 /** The colossal entrances: the throne (or the Tribunal) behind, the Legendary towering over it. */
-const THRONES: Partial<Record<LegendTheme, string>> = { sali: saliThrone, azgaroth: azgarothThrone, arbiter: tribunalHall };
-const THRONE_CLASS: Partial<Record<LegendTheme, [string, string]>> = { sali: ['sl2-throne', 'sl2-colossus'], azgaroth: ['az-throne', 'az-colossus'], arbiter: ['jd-hall', 'jd-colossus'] };
+const THRONES: Partial<Record<LegendTheme, string>> = { sali: saliThrone, azgaroth: azgarothThrone, arbiter: tribunalHall, halcyon: pearlGate };
+/** The painting's class, and the towering figure's (none: just the painting behind, as for Halcyon's Pearl Gate). */
+const THRONE_CLASS: Partial<Record<LegendTheme, [string, string | null]>> = { sali: ['sl2-throne', 'sl2-colossus'], azgaroth: ['az-throne', 'az-colossus'], arbiter: ['jd-hall', 'jd-colossus'], halcyon: ['hc-gate', null] };
 
 export function LegendaryEntrance() {
   const legend = useMatch((s) => s.legend);
@@ -914,7 +907,7 @@ export function LegendaryEntranceView({ cardId, enemy }: { cardId: string; enemy
       <div className="legend-sunrays" />
       {extras.back?.()}
       {THRONES[theme] && <div className={THRONE_CLASS[theme]![0]} style={{ backgroundImage: `url(${THRONES[theme]})` }} aria-hidden />}
-      {THRONES[theme] && <img className={THRONE_CLASS[theme]![1]} src={cardArtUri(card)} alt="" draggable={false} />}
+      {THRONES[theme] && THRONE_CLASS[theme]![1] && <img className={THRONE_CLASS[theme]![1]!} src={cardArtUri(card)} alt="" draggable={false} />}
       <div className="legend-stage">
         <div className="legend-portrait">
           <img src={art} alt="" draggable={false} />
