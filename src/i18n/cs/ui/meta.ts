@@ -302,6 +302,7 @@ const d: Record<string, string> = {
   'Fight {name}': 'Bojovat: {name}',
   'Two against one: you and an AI teammate against a boss with {n} Health and an extra Energy.': 'Dva proti jednomu: ty a spoluhráč s umělou inteligencí proti bossovi s {n} životy a energií navíc.',
   'Match type': 'Typ zápasu',
+  'Every turn the boss also draws a card, gains 2 Energy and deals 1 damage to each of your units.': 'Každý tah si boss navíc lízne kartu, získá 2 energie a způsobí 1 poškození každé vaší jednotce.',
   '1 v 1': '1 na 1',
   '2 v 1 co-op': '2 na 1 kooperace',
   'Your teammate (AI)': 'Tvůj spoluhráč (AI)',

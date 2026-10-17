@@ -102,7 +102,9 @@ export default function OnlineScreen() {
               {!coop && <p className="muted">{t('Online matches give the same Gold, XP and quest progress as normal matches. Both players need an internet connection.')}</p>}
               {coop && (
                 <>
-                  <p className="muted">{t('Your friend joins as your teammate. Together you face a boss with {n} Health and an extra Energy, played by the AI. Rewards are those of a practice match.', { n: COOP_BOSS_HEALTH })}</p>
+                  <p className="muted">
+                    {t('Your friend joins as your teammate. Together you face a boss with {n} Health and an extra Energy, played by the AI. Rewards are those of a practice match.', { n: COOP_BOSS_HEALTH })} {t('Every turn the boss also draws a card, gains 2 Energy and deals 1 damage to each of your units.')}
+                  </p>
                   <div className="panel-title">{t('Boss')}</div>
                   <div className="opponent-grid coop-boss-grid" role="radiogroup" aria-label={t('Boss')}>
                     {PLAYABLE_FACTIONS.map((f) => {

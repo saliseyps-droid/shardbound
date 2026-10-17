@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.58.3': {
+    title: 'Boss, jak má být',
+    summary: 'Boss v kooperaci 2 na 1 už není snadná kořist: dostal tři schopnosti, které vyrovnávají boj proti dvěma Strážcům.',
+    sections: [
+      [
+        'Kooperace 2 na 1: osamělý boss hraje jeden tah na každé dva vaše a čelí dvěma bojištím, takže skoro nikdy nevyhrál. Teď si každý tah navíc lízne kartu (Tyranův vhled), získá 2 energie (Tyranův příval) a způsobí 1 poškození každé vaší jednotce (Tyranovo zemětřesení). 50 životů a energie navíc mu zůstávají.',
+        'V testovacích soubojích proti dvěma Strážcům s těžkou AI teď boss vyhrává zhruba v polovině případů, takže dobrý tým má navrch.',
+      ],
+    ],
+  },
   '0.58.2': {
     title: 'Víc místa',
     summary: 'Rámečky Strážce na úvodní obrazovce už nezasahují do jména a výběr bosse v kooperaci je přehlednější.',

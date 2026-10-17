@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.58.3',
+    date: '2026-10-17',
+    title: 'A boss worth the name',
+    summary: 'The 2 v 1 co-op boss is no longer a pushover: it gets three powers to make up for facing two Wardens.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          '2 v 1 co-op: the lone boss plays one turn for every two of yours and faces two battlefields, so it almost never won. Every turn it now also draws a card (Tyrant’s Insight), gains 2 Energy (Tyrant’s Surge) and deals 1 damage to each of your units (Tyrant’s Quake). Its 50 Health and extra Energy stay.',
+          'In test fights against two Hard AI Wardens the boss now wins about half the time, so a good team has the edge.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.58.2',
     date: '2026-10-17',
     title: 'Room to breathe',
