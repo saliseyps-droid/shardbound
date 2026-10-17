@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.59.3',
+    date: '2026-10-18',
+    title: 'Enter the Host',
+    summary: 'Halcyon, Azrafel and the Arbiter get their own entrances, The Twin Oath gets its own table and a longer intro, and the Arbiter’s fight is harder.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Entrances: the Pearl Gate swings open for Halcyon; the Red Moon rises and two crimson cuts cross the screen for Azrafel; and the Arbiter gets the grandest entrance of all: the Tribunal behind him, beams of judgment, his golden scales tipping and settling, then the verdict in a flash of white and a rain of gold.',
+          'The Twin Oath: every fight is now played on its own starry table of the Host. In other modes it can come up like any other mat.',
+          'The Twin Oath intro is longer: the celestial city and the shining Pearl Gate at the top of the Rainbow Stair. The ending shows the knights of the Host lowering their swords.',
+        ],
+      },
+      { kind: 'balance', items: ['The Arbiter’s fight: the Scales now deal 3 damage to a random unit of yours, then 2 damage to another, every turn (was 3 to one).'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.59.2',
     date: '2026-10-18',
     title: 'No one is spared',

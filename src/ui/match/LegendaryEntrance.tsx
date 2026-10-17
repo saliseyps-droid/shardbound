@@ -12,6 +12,7 @@ import { t } from '@/i18n';
 import '@/ui/styles/legendary.css';
 import saliThrone from '@/assets/cinematics/sali_throne.webp';
 import azgarothThrone from '@/assets/cinematics/inf_throne_room.webp';
+import tribunalHall from '@/assets/cinematics/hv_rainbow_halls.webp';
 import paranoidTruth from '@/assets/music/paranoid_truth.mp3';
 
 /** Stable pseudo-random 0..1 per particle, so every entrance looks the same. */
@@ -747,6 +748,69 @@ const EXTRAS: Partial<Record<LegendTheme, { back?: () => ReactNode; stage?: () =
       </>
     ),
   },
+  // ---- The Twin Oath ----
+  halcyon: {
+    back: () => (
+      <>
+        <div className="hc-light" />
+        <div className="hc-door l" />
+        <div className="hc-door r" />
+      </>
+    ),
+    stage: () => <div className="hc-halo" />,
+    front: () => (
+      <>
+        <div className="hc-shield" />
+        <div className="hc-feathers">{particles(26, 'hc-feather')}</div>
+      </>
+    ),
+  },
+  azrafel: {
+    back: () => (
+      <>
+        <div className="ar-moon" />
+        <div className="ar-mist" />
+      </>
+    ),
+    stage: () => <div className="ar-ring" />,
+    front: () => (
+      <>
+        <div className="ar-slash" />
+        <div className="ar-slash s2" />
+        <div className="ar-flash" />
+        <div className="ar-feathers">{particles(22, 'ar-feather')}</div>
+        <div className="ar-sparks">{particles(30, 'ar-spark')}</div>
+      </>
+    ),
+  },
+  arbiter: {
+    back: () => (
+      <>
+        <div className="jd-beams">{particles(9, 'jd-beam')}</div>
+        <div className="jd-scales">
+          <Scales />
+        </div>
+      </>
+    ),
+    stage: () => (
+      <div className="jd-halos">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="jd-halo" style={{ '--i': i } as CSSProperties}>
+            <RuneCircle />
+          </div>
+        ))}
+      </div>
+    ),
+    front: () => (
+      <>
+        <div className="jd-verdict" />
+        <div className="jd-shock" />
+        <div className="jd-shock s2" />
+        <div className="jd-flash" />
+        <div className="jd-rain">{particles(80, 'jd-mote')}</div>
+      </>
+    ),
+  },
   tallys: {
     back: () => (
       <div className="tl-cracks">
@@ -757,6 +821,27 @@ const EXTRAS: Partial<Record<LegendTheme, { back?: () => ReactNode; stage?: () =
   },
 };
 
+/** The Arbiter's scales: a pillar, a beam that tips and settles, two pans on chains. */
+function Scales() {
+  return (
+    <svg viewBox="-120 -20 240 200" aria-hidden>
+      <path className="jd-pillar" d="M -4 10 L 4 10 L 7 168 L 26 172 L 26 180 L -26 180 L -26 172 L -7 168 Z" />
+      <circle className="jd-knob" cx="0" cy="6" r="7" />
+      <g className="jd-beam-arm">
+        <path className="jd-bar" d="M -100 14 L 100 14" />
+        <g className="jd-pan l">
+          <path className="jd-chain" d="M -100 14 L -122 84 M -100 14 L -78 84" />
+          <path className="jd-dish" d="M -128 84 Q -100 108 -72 84 Z" />
+        </g>
+        <g className="jd-pan r">
+          <path className="jd-chain" d="M 100 14 L 78 84 M 100 14 L 122 84" />
+          <path className="jd-dish" d="M 72 84 Q 100 108 128 84 Z" />
+        </g>
+      </g>
+    </svg>
+  );
+}
+
 /** How long an entrance plays (ms, before reduced-motion scaling). */
 export const LEGEND_MS = 2150;
 
@@ -765,14 +850,17 @@ export const LEGEND_MS = 2150;
 const SALI_MUSIC = { url: paranoidTruth, at: 105 };
 /** Azgaroth rises to the Burning Throne's stretch of the score. */
 const AZGAROTH_MUSIC = { url: paranoidTruth, at: 196 };
-const THEME_MUSIC: Partial<Record<LegendTheme, { url: string; at: number }>> = { sali: SALI_MUSIC, azgaroth: AZGAROTH_MUSIC };
-/** The two colossal entrances: the throne behind, the Legendary towering over it. */
-const THRONES: Partial<Record<LegendTheme, string>> = { sali: saliThrone, azgaroth: azgarothThrone };
+/** The Arbiter passes judgment to the Tribunal's stretch of the score. */
+const ARBITER_MUSIC = { url: paranoidTruth, at: 150 };
+const THEME_MUSIC: Partial<Record<LegendTheme, { url: string; at: number }>> = { sali: SALI_MUSIC, azgaroth: AZGAROTH_MUSIC, arbiter: ARBITER_MUSIC };
+/** The colossal entrances: the throne (or the Tribunal) behind, the Legendary towering over it. */
+const THRONES: Partial<Record<LegendTheme, string>> = { sali: saliThrone, azgaroth: azgarothThrone, arbiter: tribunalHall };
+const THRONE_CLASS: Partial<Record<LegendTheme, [string, string]>> = { sali: ['sl2-throne', 'sl2-colossus'], azgaroth: ['az-throne', 'az-colossus'], arbiter: ['jd-hall', 'jd-colossus'] };
 
 export function LegendaryEntrance() {
   const legend = useMatch((s) => s.legend);
   // A deck with Sali in it: have his music decoded before he is played.
-  const saliInMatch = useMatch((s) => !!s.game?.players.some((p) => [...p.deck, ...p.hand].some((c) => c.cardId === 'neu_sali_the_creator' || c.cardId === 'emb_azgaroth_the_ninth_sovereign')));
+  const saliInMatch = useMatch((s) => !!s.game?.players.some((p) => [...p.deck, ...p.hand].some((c) => c.cardId === 'neu_sali_the_creator' || c.cardId === 'emb_azgaroth_the_ninth_sovereign' || c.cardId === 'neu_the_arbiter')));
   useEffect(() => {
     if (saliInMatch) audio.preloadTrack(SALI_MUSIC.url);
   }, [saliInMatch]);
@@ -825,8 +913,8 @@ export function LegendaryEntranceView({ cardId, enemy }: { cardId: string; enemy
       <div className="legend-backdrop" />
       <div className="legend-sunrays" />
       {extras.back?.()}
-      {THRONES[theme] && <div className={theme === 'sali' ? 'sl2-throne' : 'az-throne'} style={{ backgroundImage: `url(${THRONES[theme]})` }} aria-hidden />}
-      {THRONES[theme] && <img className={theme === 'sali' ? 'sl2-colossus' : 'az-colossus'} src={cardArtUri(card)} alt="" draggable={false} />}
+      {THRONES[theme] && <div className={THRONE_CLASS[theme]![0]} style={{ backgroundImage: `url(${THRONES[theme]})` }} aria-hidden />}
+      {THRONES[theme] && <img className={THRONE_CLASS[theme]![1]} src={cardArtUri(card)} alt="" draggable={false} />}
       <div className="legend-stage">
         <div className="legend-portrait">
           <img src={art} alt="" draggable={false} />

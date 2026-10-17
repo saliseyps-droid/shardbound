@@ -1418,3 +1418,111 @@
 
 /* A short jolt (an anvil or a hammer landing): used by Scar, Gorn and Ghul. */
 @keyframes rd-shake { 20% { translate: -7px 3px; } 45% { translate: 6px -3px; } 70% { translate: -3px 2px; } 100% { translate: 0 0; } }
+
+
+/* ---- Halcyon, Captain of the Pearl Gate: the pearl doors swing open on a flood of gold, a halo,
+   feathers drift down and a Barrier shimmers out over everything ---- */
+.theme-halcyon .legend-backdrop { background: radial-gradient(ellipse at 50% 45%, rgba(255, 248, 225, 0.55), rgba(30, 26, 44, 0.96) 70%); }
+.theme-halcyon .legend-sunrays { background: repeating-conic-gradient(from 0deg, rgba(255, 240, 190, 0.28) 0deg 3deg, transparent 3deg 12deg); }
+.theme-halcyon .legend-portrait { background: linear-gradient(160deg, #ffffff, #ffe7a6 40%, #6b5420); filter: drop-shadow(0 0 30px rgba(255, 236, 170, 1)); }
+.theme-halcyon .legend-kicker { color: #fff1c4; }
+.theme-halcyon .legend-banner { border-color: rgba(255, 236, 170, 0.9); }
+.hc-light { position: absolute; left: 50%; top: 50%; width: 46vmin; height: 100vh; translate: -50% -50%; background: radial-gradient(ellipse 50% 60% at 50% 50%, #fff, rgba(255, 235, 170, 0.75) 40%, transparent 75%); filter: blur(6px); opacity: 0; animation: hc-light 1s 0.25s ease-out forwards; }
+@keyframes hc-light { from { opacity: 0; transform: scaleX(0.1); } to { opacity: 1; transform: scaleX(2.2); } }
+.hc-door { position: absolute; top: 0; bottom: 0; width: 50%; background: radial-gradient(ellipse 60% 40% at 50% 18%, rgba(255, 246, 214, 0.9), transparent 70%), repeating-linear-gradient(90deg, transparent 0 7.5%, #c89a48 7.5%, #fff0c0 8.3%, #c89a48 9.1%, transparent 9.1% 12.5%), linear-gradient(0deg, transparent 27%, #e2be6e 27%, #fff0c0 28.2%, #c89a48 29.6%, transparent 29.6%, transparent 72%, #e2be6e 72%, #fff0c0 73.2%, #c89a48 74.6%, transparent 74.6%), linear-gradient(115deg, #f3eee6, #fffaf0 30%, #e6f0ff 48%, #fdf2ff 62%, #efe6d8); box-shadow: inset 0 0 0 8px rgba(214, 176, 92, 0.95), inset 0 0 0 14px rgba(255, 240, 200, 0.6), inset 0 0 60px rgba(150, 120, 70, 0.45); animation: hc-door 0.9s 0.15s cubic-bezier(0.6, 0, 0.3, 1) forwards; }
+.hc-door::after { content: ''; position: absolute; top: 0; bottom: 0; width: 18px; background: linear-gradient(90deg, rgba(255, 250, 230, 0), #fff, rgba(255, 250, 230, 0)); filter: blur(4px); box-shadow: 0 0 40px #fff2c0; }
+.hc-door.l::after { right: -9px; }
+.hc-door.r::after { left: -9px; }
+.hc-door.l { left: 0; transform-origin: 0 50%; }
+.hc-door.r { right: 0; transform-origin: 100% 50%; animation-name: hc-door-r; }
+@keyframes hc-door { to { transform: perspective(900px) rotateY(80deg); opacity: 0; } }
+@keyframes hc-door-r { to { transform: perspective(900px) rotateY(-80deg); opacity: 0; } }
+.hc-halo { position: absolute; left: 50%; top: calc(var(--pw) * 0.05); width: calc(var(--pw) * 0.9); height: calc(var(--pw) * 0.22); translate: -50% -50%; z-index: -1; border-radius: 50%; border: 4px solid #ffe9a8; box-shadow: 0 0 20px #ffd76a, 0 0 46px rgba(255, 220, 120, 0.8), inset 0 0 16px #ffd76a; opacity: 0; animation: hc-halo 0.5s 0.7s cubic-bezier(0.2, 1.5, 0.4, 1) forwards; }
+@keyframes hc-halo { from { opacity: 0; transform: translateY(-6vh) scale(0.3); } to { opacity: 1; transform: none; } }
+.hc-shield { position: absolute; left: 50%; top: 46%; width: 30vmin; aspect-ratio: 1; translate: -50% -50%; clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%); background: radial-gradient(circle, rgba(255, 255, 255, 0) 45%, rgba(190, 230, 255, 0.55) 75%, rgba(255, 255, 255, 0.85)), repeating-linear-gradient(60deg, rgba(255, 255, 255, 0.25) 0 2px, transparent 2px 18px); opacity: 0; animation: hc-shield 1s 1.05s ease-out forwards; }
+@keyframes hc-shield { 0% { opacity: 0; transform: scale(0.4); } 30% { opacity: 0.95; } 100% { opacity: 0; transform: scale(4.5); } }
+.hc-feathers, .ar-feathers { position: absolute; inset: 0; }
+.hc-feather { position: absolute; left: calc(var(--x) * 100%); top: -6%; width: calc(8px + var(--s) * 10px); height: calc(20px + var(--s) * 18px); border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%; background: linear-gradient(90deg, #fffdf6 48%, #e8dfc8 52%); box-shadow: 0 0 8px rgba(255, 240, 200, 0.8); opacity: 0; animation: hc-feather calc(1.6s + var(--s) * 0.8s) calc(0.5s + var(--d) * 0.9s) ease-in forwards; }
+@keyframes hc-feather { 0% { opacity: 0; transform: translate(0, 0) rotate(0deg); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(var(--r) * 30vmin), 110vh) rotate(calc(var(--r) * 540deg)); } }
+
+/* ---- Azrafel, Angel of the Red Moon (2.5s): the Red Moon rises out of a crimson mist, a ring of blood light,
+   two executioner's cuts cross the screen, black feathers and sparks ---- */
+.theme-azrafel.legend-entrance { animation-duration: 2.5s; }
+.theme-azrafel .legend-stage { animation-duration: 2.5s; }
+.theme-azrafel .legend-backdrop { background: radial-gradient(ellipse at 50% 40%, rgba(70, 4, 8, 0.88), rgba(6, 0, 2, 0.98) 70%); }
+.theme-azrafel .legend-sunrays { display: none; }
+.theme-azrafel .legend-portrait { background: linear-gradient(160deg, #ffd8d0, #c0142a 40%, #2a0206); filter: drop-shadow(0 0 30px rgba(230, 20, 40, 0.95)); }
+.theme-azrafel .legend-kicker { color: #ff9a9a; }
+.theme-azrafel .legend-banner { animation-delay: 1.3s; border-color: rgba(255, 90, 90, 0.85); }
+.ar-moon { position: absolute; left: 50%; top: 42%; width: 78vmin; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle at 42% 38%, #ff9a7a, #d01a1a 35%, #6a0208 70%, #2a0004); box-shadow: 0 0 80px rgba(255, 30, 30, 0.7), 0 0 200px rgba(200, 0, 0, 0.45); opacity: 0; animation: ar-moon 1.3s 0.05s cubic-bezier(0.2, 0.8, 0.3, 1) forwards; }
+@keyframes ar-moon { from { opacity: 0; transform: translateY(40vh) scale(0.8); } to { opacity: 0.95; transform: none; } }
+.ar-mist { position: absolute; left: 0; right: 0; bottom: 0; height: 45%; background: linear-gradient(0deg, rgba(120, 0, 10, 0.75), transparent); filter: blur(10px); animation: legend-fade-in 0.6s both; }
+.ar-ring { position: absolute; left: 50%; top: calc(var(--pw) * 0.61); width: calc(var(--pw) * 1.7); aspect-ratio: 1; translate: -50% -50%; z-index: -1; border-radius: 50%; border: 3px solid #ff4a4a; box-shadow: 0 0 22px #ff2020, 0 0 50px rgba(255, 0, 0, 0.6), inset 0 0 22px #ff2020; opacity: 0; animation: gh-ring 0.5s 0.6s cubic-bezier(0.2, 1.4, 0.4, 1) forwards; }
+.ar-slash { position: absolute; left: 50%; top: 50%; width: 150vmax; height: 10px; translate: -50% -50%; rotate: -32deg; background: linear-gradient(90deg, transparent, #ffd0c8 45%, #fff 50%, #ffd0c8 55%, transparent); box-shadow: 0 0 22px #ff2a2a, 0 0 60px rgba(255, 0, 0, 0.8); transform-origin: 50% 50%; opacity: 0; animation: ar-slash 0.45s 0.95s cubic-bezier(0.2, 0.9, 0.2, 1) forwards; }
+.ar-slash.s2 { rotate: 32deg; animation-delay: 1.15s; }
+@keyframes ar-slash { 0% { opacity: 1; transform: scaleX(0); } 50% { opacity: 1; transform: scaleX(1); } 100% { opacity: 0; transform: scaleX(1) scaleY(0.2); } }
+.ar-flash { position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(255, 220, 220, 0.9), rgba(255, 40, 40, 0.45) 35%, transparent 70%); opacity: 0; animation: lk-flash 0.5s 1.15s ease-out forwards; }
+.ar-feather { position: absolute; left: calc(var(--x) * 100%); top: -6%; width: calc(8px + var(--s) * 10px); height: calc(22px + var(--s) * 18px); border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%; background: linear-gradient(90deg, #1a0a0e 48%, #3a1218 52%); box-shadow: 0 0 6px rgba(255, 40, 40, 0.6); opacity: 0; animation: hc-feather calc(1.5s + var(--s) * 0.7s) calc(0.9s + var(--d) * 0.8s) ease-in forwards; }
+.ar-sparks { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }
+.ar-spark { position: absolute; width: 3px; height: 16px; border-radius: 2px; background: linear-gradient(#fff, #ff3a3a); box-shadow: 0 0 8px #ff2020; opacity: 0; animation: ar-spark 0.8s calc(1.1s + var(--d) * 0.3s) ease-out forwards; }
+@keyframes ar-spark { 0% { opacity: 1; transform: rotate(calc(var(--i) * 12deg)) translateY(0); } 100% { opacity: 0; transform: rotate(calc(var(--i) * 12deg)) translateY(calc(-30vmin - var(--s) * 30vmin)); } }
+
+/* ---- The Arbiter (3.8s, the longest of all): the Tribunal glows out of the dark and the Arbiter towers over
+   it, beams of judgment strike down one by one, his golden scales rise and tip and settle level, three
+   halos of runes, then the verdict: a column of light, a double shockwave, a white flash and a rain of gold ---- */
+.theme-arbiter.legend-entrance { animation: legend-out 3.8s ease-in forwards, sl-quake 0.8s 2.15s ease-out; }
+.theme-arbiter .legend-stage { animation-duration: 3.8s; z-index: 3; isolation: isolate; }
+.theme-arbiter .legend-backdrop { background: #04050c; animation: none; }
+.theme-arbiter .legend-sunrays { display: none; }
+.jd-hall {
+  position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: 50% 45%;
+  -webkit-mask: radial-gradient(ellipse 80% 85% at 50% 50%, #000 45%, transparent 100%); mask: radial-gradient(ellipse 80% 85% at 50% 50%, #000 45%, transparent 100%);
+  opacity: 0; transform-origin: 50% 40%;
+  animation: sl2-throne-in 0.9s 0.1s ease-out forwards, sl2-throne-push 3.8s linear forwards, jd-hall-flare 1.6s 2.15s ease-out;
+}
+.jd-hall::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, rgba(20, 30, 70, 0.15), rgba(4, 6, 20, 0.75)); }
+@keyframes jd-hall-flare { 0% { filter: brightness(1); } 12% { filter: brightness(2.4) saturate(0.6); } 100% { filter: brightness(0.8); } }
+.jd-colossus {
+  position: absolute; left: 50%; top: 46%; width: min(120vmin, 1000px); aspect-ratio: 0.8; translate: -50% -50%; z-index: 1;
+  object-fit: cover; object-position: 50% 20%;
+  filter: brightness(0.7) contrast(1.25) drop-shadow(0 0 40px rgba(255, 230, 160, 0.7));
+  -webkit-mask: radial-gradient(ellipse 50% 55% at 50% 42%, #000 40%, transparent 72%); mask: radial-gradient(ellipse 50% 55% at 50% 42%, #000 40%, transparent 72%);
+  mix-blend-mode: screen;
+  opacity: 0; animation: jd-colossus 3.2s 0.35s ease-out forwards;
+}
+@keyframes jd-colossus { from { opacity: 0; transform: translateY(-12vh) scale(1.35); } 40% { opacity: 0.95; } to { opacity: 0.7; transform: none; } }
+.jd-beams { position: absolute; inset: 0; z-index: 1; }
+.jd-beam { position: absolute; top: -5%; left: calc(4% + var(--i) * 11% + var(--r) * 4%); width: calc(2vmin + var(--s) * 4vmin); height: 110%; background: linear-gradient(180deg, #fff, rgba(255, 240, 190, 0.85) 30%, rgba(255, 220, 140, 0.15) 85%, transparent); filter: blur(3px) drop-shadow(0 0 18px #ffe7a0); mix-blend-mode: screen; transform-origin: 50% 0; opacity: 0; animation: jd-beam 0.9s calc(0.5s + var(--i) * 0.14s) cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
+@keyframes jd-beam { 0% { opacity: 0; transform: scaleY(0); } 25% { opacity: 1; transform: scaleY(1); } 100% { opacity: 0; transform: scaleY(1) scaleX(2.5); } }
+.jd-scales { position: absolute; left: 50%; top: 52%; width: min(110vmin, 900px); translate: -50% -50%; z-index: 2; filter: drop-shadow(0 0 14px rgba(255, 210, 110, 0.9)); opacity: 0; animation: jd-scales-in 0.8s 0.9s cubic-bezier(0.2, 1, 0.3, 1) forwards; }
+.jd-scales svg { width: 100%; display: block; overflow: visible; }
+@keyframes jd-scales-in { from { opacity: 0; transform: translateY(18vh) scale(0.7); } to { opacity: 0.9; transform: none; } }
+.jd-pillar, .jd-knob { fill: rgba(255, 214, 120, 0.38); stroke: #fff2c8; stroke-width: 1.5; }
+.jd-bar { stroke: #ffe6a0; stroke-width: 6; stroke-linecap: round; }
+.jd-chain { stroke: rgba(255, 236, 190, 0.9); stroke-width: 1.6; fill: none; }
+.jd-dish { fill: rgba(255, 210, 110, 0.45); stroke: #fff2c8; stroke-width: 1.5; }
+/* The beam tips one way, then the other, then settles level as the verdict falls; the pans hang straight down. */
+.jd-beam-arm { transform-box: view-box; transform-origin: 0 14px; animation: jd-tip 1.6s 1.2s cubic-bezier(0.4, 0, 0.3, 1) both; }
+.jd-pan { transform-box: view-box; animation: jd-tip-pan 1.6s 1.2s cubic-bezier(0.4, 0, 0.3, 1) both; }
+.jd-pan.l { transform-origin: -100px 14px; }
+.jd-pan.r { transform-origin: 100px 14px; }
+@keyframes jd-tip { 0% { rotate: 0deg; } 25% { rotate: -14deg; } 55% { rotate: 10deg; } 80% { rotate: -3deg; } 100% { rotate: 0deg; } }
+@keyframes jd-tip-pan { 0% { rotate: 0deg; } 25% { rotate: 14deg; } 55% { rotate: -10deg; } 80% { rotate: 3deg; } 100% { rotate: 0deg; } }
+.jd-halos { position: absolute; left: 50%; top: calc(var(--pw) * 0.61); width: 0; height: 0; z-index: -1; }
+.jd-halo { position: absolute; width: calc(var(--pw) * (1.5 + var(--i) * 0.55)); aspect-ratio: 1; left: 50%; top: 50%; translate: -50% -50%; filter: drop-shadow(0 0 8px #ffe08a); opacity: 0; animation: sl2-ring 0.6s calc(1.55s + var(--i) * 0.15s) ease-out forwards; }
+.jd-halo svg { width: 100%; display: block; overflow: visible; animation: legend-spin calc(6s + var(--i) * 3s) linear infinite; }
+.jd-halo:nth-child(2) svg { animation-direction: reverse; }
+.jd-halo circle, .jd-halo polygon { fill: none; stroke: #ffe6a0; stroke-width: 1; }
+.jd-halo .rune { fill: none; stroke: #fffaf0; stroke-width: 2.5; stroke-linecap: round; }
+.theme-arbiter .legend-portrait { background: linear-gradient(160deg, #ffffff, #ffe08a 40%, #3a3020); filter: drop-shadow(0 0 36px rgba(255, 230, 150, 1)); animation: jd-portrait 0.8s 1.35s cubic-bezier(0.2, 1, 0.3, 1) both; }
+@keyframes jd-portrait { from { transform: scale(0.05) translateY(-30vh); opacity: 0; filter: brightness(5) drop-shadow(0 0 36px rgba(255, 230, 150, 1)); } 60% { opacity: 1; } to { filter: brightness(1) drop-shadow(0 0 36px rgba(255, 230, 150, 1)); } }
+.theme-arbiter .legend-banner { animation-delay: 2.45s; background: linear-gradient(90deg, transparent, rgba(8, 10, 24, 0.95) 18%, rgba(8, 10, 24, 0.95) 82%, transparent); border-color: rgba(255, 230, 160, 0.95); }
+.theme-arbiter .legend-kicker { color: #ffe6a0; letter-spacing: 0.4em; }
+.theme-arbiter .legend-banner strong { font-size: clamp(2rem, 3.8vw, 3.1rem); color: #fff; text-shadow: 0 0 18px #ffd76a, 0 0 46px rgba(255, 220, 120, 0.8), 0 2px 2px #000; }
+.jd-verdict { position: absolute; left: 50%; top: -5%; bottom: -5%; width: 22vmin; translate: -50% 0; background: linear-gradient(90deg, transparent, rgba(255, 250, 230, 0.95) 35%, #fff 50%, rgba(255, 250, 230, 0.95) 65%, transparent); filter: blur(4px); opacity: 0; animation: jd-verdict 1s 2.05s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
+@keyframes jd-verdict { 0% { opacity: 0; transform: scaleX(0.05) scaleY(0); transform-origin: 50% 0; } 25% { opacity: 1; transform: scaleX(0.3) scaleY(1); } 100% { opacity: 0; transform: scaleX(3) scaleY(1); } }
+.jd-shock { position: absolute; left: 50%; top: 52%; width: 30vmin; height: 12vmin; margin: -6vmin 0 0 -15vmin; border-radius: 50%; border: 4px solid rgba(255, 245, 210, 0.95); box-shadow: 0 0 40px #ffe08a, inset 0 0 30px #ffe08a; opacity: 0; animation: az-shock 1s 2.15s ease-out forwards; }
+.jd-shock.s2 { animation-delay: 2.4s; border-width: 2px; }
+.jd-flash { position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, #fff, rgba(255, 245, 215, 0.9) 35%, rgba(255, 220, 140, 0.35) 65%, transparent); opacity: 0; animation: lk-flash 0.8s 2.15s ease-out forwards; }
+.jd-rain { position: absolute; inset: 0; }
+.jd-mote { position: absolute; left: calc(var(--x) * 100%); top: -3%; width: calc(2px + var(--s) * 5px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #fff, #ffd76a 60%, transparent); box-shadow: 0 0 8px #ffd76a; opacity: 0; animation: vh-fall calc(1.4s + var(--s) * 0.8s) calc(2.15s + var(--d) * 1.2s) linear forwards; }

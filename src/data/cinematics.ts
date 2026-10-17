@@ -162,9 +162,11 @@ export const CINEMATICS: Record<string, CinematicDef> = {
     music: { track: 'paranoid_truth', at: 30 },
     title: 'The Twin Oath',
     shots: [
-      { image: 'hv_sky_isles', motion: 'push-in', ms: 6500, focus: '50% 45%', text: 'Above the clouds of Aethra lies the Empyrean, home of the Host, who forged the Crown at the dawn of the world and kept the sky open for a thousand years.' },
-      { image: 'hv_host_rising', motion: 'push-in', ms: 6000, focus: '50% 35%', text: 'When the Crown shattered, the Arbiter weighed the world below and found it wanting. The sky was sealed, and the Host stopped singing.' },
-      { image: 'hv_war_banners', motion: 'pull-out', ms: 6000, focus: '50% 40%', text: 'Now its legions gather on the clouds to end Aethra. Heaven’s law hears no lone voice, so two Wardens swear one oath and climb to stand trial together.' },
+      { image: 'hv_sky_isles', motion: 'push-in', ms: 7000, focus: '50% 45%', text: 'Above the clouds of Aethra lies the Empyrean, home of the Host, who forged the Crown at the dawn of the world.' },
+      { image: 'hv_celestial_city', motion: 'pan-right', ms: 7000, focus: '55% 40%', text: 'For a thousand years the Host kept the Crown whole and the sky open. Its rivers ran down to Aethra, and Aethra prayed upward.' },
+      { image: 'hv_host_rising', motion: 'push-in', ms: 7000, focus: '50% 35%', text: 'When the Crown shattered, the Arbiter weighed the world below and found it wanting. The sky was sealed, and the Host stopped singing.' },
+      { image: 'hv_war_banners', motion: 'pull-out', ms: 7000, focus: '50% 40%', text: 'Now its legions gather on the clouds. When they come down, they will not come to save Aethra. They will come to end it.' },
+      { image: 'hv_radiant_door', motion: 'push-in', ms: 8000, focus: '50% 45%', text: 'Only the Pearl Gate still shines, at the top of the Rainbow Stair. Heaven’s law hears no lone voice, so two Wardens swear one oath and climb toward it together.' },
     ],
   },
   heaven_tribunal: {
@@ -182,8 +184,8 @@ export const CINEMATICS: Record<string, CinematicDef> = {
     title: 'The Open Sky',
     shots: [
       { image: 'hv_gates_open', motion: 'push-in', ms: 6500, focus: '50% 40%', text: 'The scales break, and the Arbiter falls silent for ever. For the first time since the Crown shattered, the gates of heaven swing open.' },
-      { image: 'hv_radiant_door', motion: 'pull-out', ms: 6000, focus: '50% 45%', text: 'Light pours down the Rainbow Stair, and the Host lowers its swords.' },
-      { image: 'hv_celestial_city', motion: 'pan-right', ms: 7000, focus: '55% 40%', text: 'The rivers of the Empyrean flow down to Aethra again, and somewhere above, the choirs begin to sing. Two voices were enough.' },
+      { image: 'hv_kneel', motion: 'push-in', ms: 6500, focus: '50% 35%', text: 'Light pours down the Rainbow Stair, and one by one the knights of the Host lower their swords.' },
+      { image: 'hv_hymn', motion: 'pull-out', ms: 7500, focus: '50% 35%', text: 'Somewhere above, the choirs begin to sing again, and the rivers of the Empyrean flow down to Aethra once more. Two voices were enough.' },
     ],
   },
   inferno_outro: {

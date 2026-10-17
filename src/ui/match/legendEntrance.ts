@@ -1,7 +1,7 @@
 import { getCard } from '@/data/cards';
 import type { GameEvent, PlayerId } from '@/engine/types';
 
-export type LegendTheme = 'gold' | 'meowchick' | 'liu' | 'abandoneer' | 'rendoslav' | 'qvido' | 'qinny' | 'tallys' | 'elinda' | 'skolky' | 'r3d3' | 'dragon' | 'artemis' | 'scar' | 'elinka' | 'simba' | 'gorn' | 'nereth' | 'sali' | 'vhessa' | 'ghul' | 'rimegrave' | 'azgaroth';
+export type LegendTheme = 'gold' | 'meowchick' | 'liu' | 'abandoneer' | 'rendoslav' | 'qvido' | 'qinny' | 'tallys' | 'elinda' | 'skolky' | 'r3d3' | 'dragon' | 'artemis' | 'scar' | 'elinka' | 'simba' | 'gorn' | 'nereth' | 'sali' | 'vhessa' | 'ghul' | 'rimegrave' | 'azgaroth' | 'halcyon' | 'azrafel' | 'arbiter';
 
 /** Legendaries with their own entrance; every other Legendary gets the golden one. */
 const THEMES: Record<string, LegendTheme> = {
@@ -27,6 +27,10 @@ const THEMES: Record<string, LegendTheme> = {
   irn_ghul_the_forgemaster: 'ghul',
   tid_rimegrave_lord_of_the_frozen_lake: 'rimegrave',
   emb_azgaroth_the_ninth_sovereign: 'azgaroth',
+  // The Twin Oath's three Legendaries.
+  ast_halcyon_captain_of_the_pearl_gate: 'halcyon',
+  emb_azrafel_angel_of_the_red_moon: 'azrafel',
+  neu_the_arbiter: 'arbiter',
 };
 
 /**
@@ -39,10 +43,10 @@ export const ENTRANCE_PORTRAITS: Record<string, string> = {
   neu_oblivia_keeper_of_the_last_page: 'nul_ring_of_thorns',
 };
 
-/** How long an entrance plays (ms, before reduced-motion scaling): Sali's and Azgaroth's are the longest. */
+/** How long an entrance plays (ms, before reduced-motion scaling): the Arbiter's is the longest, then Sali's and Azgaroth's. */
 export function legendDuration(cardId: string): number {
   const t = legendTheme(cardId);
-  return t === 'sali' || t === 'azgaroth' ? 3400 : 2150;
+  return t === 'arbiter' ? 3800 : t === 'sali' || t === 'azgaroth' ? 3400 : t === 'azrafel' ? 2500 : 2150;
 }
 
 /** Sali (or another card) took the Warden's place in this transition: its ascension plays. */

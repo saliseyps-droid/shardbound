@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.59.3': {
+    title: 'Příchod Zástupu',
+    summary: 'Halcyon, Azrafel a Arbitr mají vlastní příchody, Dvojí přísaha vlastní herní desku a delší úvod a souboj s Arbitrem je těžší.',
+    sections: [
+      [
+        'Příchody: pro Halcyona se otevře Perlová brána; pro Azrafela vyjde Rudý měsíc a přes obrazovku se zkříží dva karmínové seky; a Arbitr má ze všech nejvelkolepější příchod: za ním Tribunál, paprsky soudu, jeho zlaté váhy se zhoupnou a ustálí a pak rozsudek v bílém záblesku a zlatém dešti.',
+        'Dvojí přísaha: každý souboj se teď hraje na vlastní hvězdné desce Zástupu. V ostatních režimech může padnout jako kterákoli jiná deska.',
+        'Úvod Dvojí přísahy je delší: nebeské město a zářící Perlová brána na vrcholu Duhového schodiště. Konec ukazuje rytíře Zástupu, jak sklánějí meče.',
+      ],
+      ['Souboj s Arbitrem: Váhy teď každý tah způsobí 3 poškození náhodné vaší jednotce a pak 2 poškození další (dřív 3 jedné).'],
+    ],
+  },
   '0.59.2': {
     title: 'Nikdo není ušetřen',
     summary: 'Arbitr teď soudí všechny ostatní jednotky, i ty na své straně, a jeho souboj je těžší.',

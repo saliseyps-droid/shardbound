@@ -19,7 +19,7 @@ const cards: CardsOverlay = {
   nm_curse_starfall: { name: 'Padání hvězd', description: 'Když sešleš kouzlo, způsob náhodnému nepříteli 1 poškození.' },
   coop_rule_pearl_gate: { name: 'Perlová brána', description: 'Na začátku tvého tahu dej náhodné spřátelené jednotce Bariéru.' },
   coop_rule_red_moon: { name: 'Rudý měsíc', description: 'Kdykoli zemře nepřátelská jednotka, způsob 1 poškození nepřátelskému Strážci.' },
-  coop_rule_scales: { name: 'Váhy', description: 'Na začátku tvého tahu způsob 3 poškození náhodné nepřátelské jednotce.' },
+  coop_rule_scales: { name: 'Váhy', description: 'Na začátku tvého tahu způsob 3 poškození náhodné nepřátelské jednotce, pak 2 poškození náhodné nepřátelské jednotce.' },
   coop_rule_draw: { name: 'Tyranův vhled', description: 'Na začátku tvého tahu si lízni kartu.' },
   coop_rule_energy: { name: 'Tyranův příval', description: 'Na začátku tvého tahu získej v tomto tahu 2 energie.' },
   coop_rule_quake: { name: 'Tyranův hněv', description: 'Na začátku tvého tahu dvakrát způsob 1 poškození náhodnému nepříteli.' },
