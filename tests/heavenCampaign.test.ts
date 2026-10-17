@@ -6,7 +6,7 @@ import { opponentSide } from '@/domain/matchSetup';
 import { craftCost } from '@/domain/economy';
 import { isCoopEncounter, readCoopMeta } from '@/domain/coop';
 import { applyAction, createGame } from '@/engine';
-import { validTargets } from '@/engine/queries';
+import { currentHealth, unitAttack, validTargets } from '@/engine/queries';
 import { CINEMATICS } from '@/data/cinematics';
 import cs from '@/i18n/cs/data/opponents';
 import csCards from '@/i18n/cs/cards/heaven';
@@ -86,13 +86,31 @@ describe('The Twin Oath (co-op campaign)', () => {
     expect(r.state.players[2].board[0].keywords).toContain('BARRIER');
   });
 
-  it('the Arbiter passes judgment on arrival', () => {
-    let s = newGame({ board1: ['neu_stonehide_ox'] });
+  it('the Arbiter passes judgment on the whole enemy board and grows with it', () => {
+    let s = newGame({ board1: ['neu_stonehide_ox', 'token_recruit', 'token_recruit'] });
     setEnergy(s, 0, 10);
-    s.players[0].hero.health = 20;
-    const target = { type: 'unit' as const, uid: s.players[1].board[0].uid };
-    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'neu_the_arbiter'), target });
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'neu_the_arbiter') });
     expect(s.players[1].board).toHaveLength(0);
-    expect(s.players[0].hero.health).toBe(25);
+    const arbiter = s.players[0].board.find((u) => u.cardId === 'neu_the_arbiter')!;
+    expect([unitAttack(s, arbiter), currentHealth(arbiter)]).toEqual([6, 6]);
+  });
+
+  it('Halcyon shields everyone behind him, and everyone who comes after', () => {
+    let s = newGame({ board0: ['token_recruit'] });
+    setEnergy(s, 0, 10);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'ast_halcyon_captain_of_the_pearl_gate') });
+    expect(s.players[0].board.every((u) => u.keywords.includes('BARRIER'))).toBe(true);
+    setEnergy(s, 0, 10);
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'neu_stonehide_ox') });
+    expect(s.players[0].board.find((u) => u.cardId === 'neu_stonehide_ox')!.keywords).toContain('BARRIER');
+  });
+
+  it('Solenne makes the enemy kneel and reads their faces', () => {
+    let s = newGame({ board1: ['neu_stonehide_ox', 'token_recruit'] });
+    setEnergy(s, 0, 10);
+    const hand = s.players[0].hand.length;
+    s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'ast_solenne_voice_of_the_throne') });
+    expect(s.players[1].board.every((u) => u.frozen)).toBe(true);
+    expect(s.players[0].hand.length).toBe(hand + 2);
   });
 });

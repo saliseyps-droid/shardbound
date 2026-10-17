@@ -960,7 +960,7 @@ export const HEAVEN_CAMPAIGN: Chapter[] = [
         firstWinReward: { gold: 300, xp: 300, cardId: 'irn_the_chainbearer' },
       },
       {
-        id: 'hv3_e2', name: 'Solenne', title: 'Voice of the Throne', avatar: 'star', faction: 'ASTRAL', archetype: 'Spellweave', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL,
+        id: 'hv3_e2', name: 'Solenne', title: 'Voice of the Throne', avatar: 'gear', faction: 'IRON', archetype: 'Bulwark', difficulty: 'HARD', personality: 'CONTROL', rarities: ALL,
         intro: 'The Throne says nothing, so I speak for it. Today it says: kneel.',
         special: { heroHealth: 70, startingArmor: 10, bonusStartingEnergy: 1, rules: [...COOP_BOSS_RULES], extraCards: ['ast_solenne_voice_of_the_throne'], description: ['Starts with 70 Health, 10 Armor and 1 extra Energy.', 'Every turn: draws an extra card, gains 2 Energy and deals 1 damage to a random enemy twice.', 'Her deck holds Solenne herself. Beat her and the card is yours.'] },
         firstWinReward: { gold: 320, xp: 320, cardId: 'ast_solenne_voice_of_the_throne' },
@@ -968,7 +968,7 @@ export const HEAVEN_CAMPAIGN: Chapter[] = [
       {
         id: 'hv3_final', name: 'The Arbiter', title: 'Who Weighs All Things', avatar: 'crown', faction: 'ASTRAL', secondFaction: 'NEUTRAL', archetype: 'Starlit Control', difficulty: 'HARD', personality: 'CONTROL', rarities: ALL, boss: true, preCinematic: 'heaven_tribunal',
         intro: 'I weighed the Crown and found it light. I weighed Aethra and found it wanting. Step onto the scales, both of you.',
-        special: { heroHealth: 70, startingArmor: 10, bonusStartingEnergy: 1, rules: [...COOP_BOSS_RULES, 'coop_rule_scales'], extraCards: ['neu_the_arbiter'], description: ['Starts with 70 Health, 10 Armor and 1 extra Energy.', 'Every turn: draws an extra card, gains 2 Energy and deals 1 damage to a random enemy twice.', 'The Scales: at the start of each of his turns, he deals 3 damage to a random unit of yours.', 'His deck holds the Arbiter himself. Beat him and he joins you.'] },
+        special: { heroHealth: 80, startingArmor: 15, bonusStartingEnergy: 1, rules: ['coop_rule_draw', 'coop_rule_energy', 'coop_rule_scales'], extraCards: ['neu_the_arbiter'], description: ['Starts with 80 Health, 15 Armor and 1 extra Energy.', 'Every turn: draws an extra card and gains 2 Energy.', 'The Scales: at the start of each of his turns, he deals 3 damage to a random unit of yours.', 'His deck holds the Arbiter himself. Beat him and he joins you.'] },
         firstWinReward: { gold: 600, xp: 600, cardId: 'neu_the_arbiter' },
       },
     ],

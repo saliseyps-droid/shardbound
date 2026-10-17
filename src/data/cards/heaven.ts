@@ -4,7 +4,7 @@ import type { CardDefinition } from '@/game/types';
  * THE TWIN OATH — the knights of the Host on the Rainbow Stair, in the Seven Skies and at the
  * Tribunal. Each one is won by beating it in that co-op campaign (src/data/opponents.ts
  * HEAVEN_CAMPAIGN); the three chapter bosses are Legendary. Not in any pack, never crafted,
- * recycled or generated. Their "friendly unit" targets reach a co-op teammate's units too.
+ * recycled or generated.
  */
 const base = { cardType: 'UNIT' as const, set: 'CORE' as const, collectible: true, rewardOnly: true, archetypes: ['Utility'], tags: ['Angel'] };
 
@@ -28,8 +28,11 @@ export const HEAVEN_CARDS: CardDefinition[] = [
   {
     ...base, id: 'ast_halcyon_captain_of_the_pearl_gate', name: 'Halcyon, Captain of the Pearl Gate', faction: 'ASTRAL', rarity: 'LEGENDARY',
     manaCost: 6, attack: 5, health: 6, keywords: ['GUARD', 'BARRIER'],
-    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'GRANT_KEYWORD', keyword: 'BARRIER', target: 'OTHER_ALLY_UNITS' }] }],
-    description: 'Guard. Barrier. On Deploy: Give your other units Barrier.',
+    abilities: [
+      { trigger: 'ON_DEPLOY', effects: [{ type: 'GRANT_KEYWORD', keyword: 'BARRIER', target: 'OTHER_ALLY_UNITS' }] },
+      { trigger: 'ALLY_SUMMONED', effects: [{ type: 'GRANT_KEYWORD', keyword: 'BARRIER', target: 'TRIGGER_UNIT' }] },
+    ],
+    description: 'Guard. Barrier. On Deploy: Give your other units Barrier. Whenever you summon another unit, give it Barrier.',
     flavorText: 'The Pearl Gate has never fallen. Halcyon would like you to know it is not going to start with you.',
   },
   // Chapter II — The Seven Skies
@@ -65,18 +68,25 @@ export const HEAVEN_CARDS: CardDefinition[] = [
     flavorText: 'Every chain he carries was forged for one prisoner. He has never had to forge a second one.',
   },
   {
-    ...base, id: 'ast_solenne_voice_of_the_throne', name: 'Solenne, Voice of the Throne', faction: 'ASTRAL', rarity: 'EPIC',
-    manaCost: 5, attack: 4, health: 5,
-    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DRAW_CARDS', amount: 2, target: 'ALLY_HERO' }] }],
-    description: 'On Deploy: Draw 2 cards.',
+    ...base, id: 'ast_solenne_voice_of_the_throne', name: 'Solenne, Voice of the Throne', faction: 'IRON', rarity: 'EPIC',
+    manaCost: 5, attack: 3, health: 5,
+    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'APPLY_STATUS', status: 'FROZEN', target: 'ALL_ENEMY_UNITS' }, { type: 'DRAW_CARDS', amount: { kind: 'FROZEN_ENEMY_COUNT', max: 3 }, target: 'ALLY_HERO' }] }],
+    description: 'On Deploy: Freeze all enemy units. Draw a card for each Frozen enemy unit (up to 3).',
     flavorText: 'The Throne has not spoken in an age, so Solenne speaks for it. She has never been told she was wrong.',
   },
   {
     ...base, id: 'neu_the_arbiter', name: 'The Arbiter', faction: 'NEUTRAL', rarity: 'LEGENDARY',
-    manaCost: 8, attack: 7, health: 7,
-    target: { kind: 'ENEMY_UNIT', optional: true },
-    abilities: [{ trigger: 'ON_DEPLOY', effects: [{ type: 'DESTROY', target: 'TARGET' }, { type: 'HEAL', amount: 5, target: 'ALLY_HERO' }] }],
-    description: 'On Deploy: Destroy an enemy unit. Restore 5 Health to your Warden.',
+    manaCost: 8, attack: 3, health: 3,
+    abilities: [
+      {
+        trigger: 'ON_DEPLOY',
+        effects: [
+          { type: 'BUFF', attack: { kind: 'ENEMY_UNIT_COUNT' }, health: { kind: 'ENEMY_UNIT_COUNT' }, target: 'SELF' },
+          { type: 'DESTROY', target: 'ALL_ENEMY_UNITS' },
+        ],
+      },
+    ],
+    description: 'On Deploy: Pass judgment: destroy all enemy units and gain +1/+1 for each one.',
     flavorText: 'He weighed the Crown when it was whole and found it light. He has weighed Aethra since, and found it wanting.',
   },
 ];

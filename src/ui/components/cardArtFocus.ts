@@ -11,6 +11,8 @@ export const CARD_ART_FOCUS: Record<string, number> = {
   ver_the_lantern_of_rot: 26,
   ast_the_pale_herald: 26,
   emb_azgaroth_the_ninth_sovereign: 24,
+  // The Twin Oath: Halcyon's crown sits at the very top of his painting.
+  ast_halcyon_captain_of_the_pearl_gate: 14,
   ast_archive_unbound: 50,
   ast_astrolabe_of_seers: 50,
   ast_azure_maelstrom: 42,

@@ -19,6 +19,25 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.59.1',
+    date: '2026-10-18',
+    title: 'Judgment Day',
+    summary: 'Three knights of The Twin Oath get new powers: the Arbiter, Solenne and Halcyon.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          'The Arbiter (8 Energy, now 3/3): On Deploy he passes judgment, destroying all enemy units and gaining +1/+1 for each one. (Was 7/7: destroy an enemy unit and restore 5 Health.)',
+          'Solenne, Voice of the Throne now belongs to the Brass Dominion (5 Energy, now 3/5): On Deploy she freezes all enemy units and draws a card for each Frozen enemy unit, up to 3. (Was an Astral 4/5 that drew 2 cards.) Her fight in the Tribunal is now a Brass Dominion boss.',
+          'Halcyon, Captain of the Pearl Gate: besides giving your other units Barrier when he arrives, he now gives Barrier to every unit you summon after him.',
+          'The Arbiter’s fight: he starts with 80 Health and 15 Armor and no longer deals two random hits each turn, so his new judgment does not make the last fight unwinnable.',
+        ],
+      },
+      { kind: 'fixed', items: ['Halcyon’s card shows his crown instead of cutting it off at the top.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.59.0',
     date: '2026-10-17',
     title: 'The Twin Oath',

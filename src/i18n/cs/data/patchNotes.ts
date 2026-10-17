@@ -1,6 +1,19 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.59.1': {
+    title: 'Soudný den',
+    summary: 'Tři rytíři Dvojí přísahy mají nové schopnosti: Arbitr, Solenne a Halcyon.',
+    sections: [
+      [
+        'Arbitr (8 energie, teď 3/3): Při nasazení vynese rozsudek, zničí všechny nepřátelské jednotky a za každou získá +1/+1. (Dřív 7/7: zničil nepřátelskou jednotku a obnovil 5 životů.)',
+        'Solenne, hlas Trůnu teď patří k Mosaznému dominiu (5 energie, teď 3/5): Při nasazení zmrazí všechny nepřátelské jednotky a lízne si kartu za každou zmrazenou, nejvýš 3. (Dřív astrální 4/5, která si lízla 2 karty.) Její souboj v Tribunálu je teď boss Mosazného dominia.',
+        'Halcyon, kapitán Perlové brány: kromě Bariéry pro tvé ostatní jednotky při nasazení teď dá Bariéru i každé jednotce, kterou po něm vyvoláš.',
+        'Souboj s Arbitrem: začíná s 80 životy a 15 brnění a už každý tah nerozdává dva náhodné zásahy, aby kvůli jeho novému rozsudku nebyl poslední souboj nevyhratelný.',
+      ],
+      ['Karta Halcyona ukazuje jeho korunu, místo aby ji nahoře uřízla.'],
+    ],
+  },
   '0.59.0': {
     title: 'Dvojí přísaha',
     summary: 'Nová kooperační kampaň: dva Strážci vystoupají k Zástupu nad Aethrou a postaví se před soud Arbitra, se spoluhráčem s umělou inteligencí nebo s přítelem.',
