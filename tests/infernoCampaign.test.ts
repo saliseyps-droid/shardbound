@@ -16,7 +16,7 @@ const rewards = flat.map((e) => e.firstWinReward?.cardId ?? '');
 
 describe('The Underflame', () => {
   it('is four chapters of three fights for 1000 Gold each, with an intro, an ending and a cinematic before Azgaroth', () => {
-    expect(CAMPAIGNS.at(-1)!.id).toBe('inferno');
+    expect(CAMPAIGNS.find((c) => c.id === 'inferno')).toBeTruthy();
     expect(INFERNO_CAMPAIGN).toHaveLength(4);
     for (const ch of INFERNO_CAMPAIGN) {
       expect(ch.encounters).toHaveLength(3);

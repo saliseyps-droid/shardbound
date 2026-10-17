@@ -1,4 +1,4 @@
-import { DIFFICULTY_POOLS, PRACTICE_OPPONENTS, type OpponentDef } from '@/data/opponents';
+import { COOP_BOSS_RULES, DIFFICULTY_POOLS, PRACTICE_OPPONENTS, campaignOf, findEncounter, type OpponentDef } from '@/data/opponents';
 import { DIFFICULTIES, type Difficulty } from '@/config/progression';
 import { PLAYABLE_FACTIONS, type PlayableFaction } from '@/game/types';
 
@@ -17,7 +17,7 @@ export const COOP_BOSS_ARMOR = 10;
  * won a simulated fight; with them (and 60 Health, 10 Armor) it wins about half against two Hard AIs
  * (tuned 2026-10-17). Not damage to every unit: that would shut out whole Warden builds of 1-Health units.
  */
-export const COOP_BOSS_RULES = ['coop_rule_draw', 'coop_rule_energy', 'coop_rule_quake'];
+export { COOP_BOSS_RULES };
 
 /** The practice rival of `faction` as the co-op boss. */
 export function coopBoss(faction: PlayableFaction, difficulty: Difficulty): OpponentDef {
@@ -31,16 +31,19 @@ export function coopAlly(faction: PlayableFaction): OpponentDef {
   return { ...a, id: `ally_${a.id}`, difficulty: 'HARD', rarities: DIFFICULTY_POOLS.HARD };
 }
 
-/** What an online co-op host tells the guest in its welcome (`meta.coop`). */
-export interface CoopMeta {
-  boss: PlayableFaction;
-  difficulty: Difficulty;
+/** What an online co-op host tells the guest in its welcome (`meta.coop`): a practice boss, or a co-op campaign fight. */
+export type CoopMeta = { boss: PlayableFaction; difficulty: Difficulty } | { encounter: string };
+
+/** A fight of a co-op campaign (src/data/opponents.ts CampaignDef.coop). */
+export function isCoopEncounter(id: string | null | undefined): boolean {
+  return !!id && !!findEncounter(id) && !!campaignOf(id).coop;
 }
 
 /** Reads `meta.coop` from the host's welcome; null when the room is a normal 1 v 1 match. */
 export function readCoopMeta(meta: Record<string, unknown>): CoopMeta | null {
-  const c = meta.coop as Partial<CoopMeta> | undefined;
+  const c = meta.coop as Record<string, unknown> | undefined;
   if (!c || typeof c !== 'object') return null;
+  if (typeof c.encounter === 'string') return isCoopEncounter(c.encounter) ? { encounter: c.encounter } : null;
   if (!(PLAYABLE_FACTIONS as readonly string[]).includes(c.boss as string) || !(DIFFICULTIES as readonly string[]).includes(c.difficulty as string)) return null;
   return { boss: c.boss as PlayableFaction, difficulty: c.difficulty as Difficulty };
 }

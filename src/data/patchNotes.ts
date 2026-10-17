@@ -19,6 +19,25 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.59.0',
+    date: '2026-10-17',
+    title: 'The Twin Oath',
+    summary: 'A new co-op campaign: two Wardens climb to the Host above Aethra and stand trial before the Arbiter, with an AI teammate or a friend.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Campaign: The Twin Oath, a 2 v 1 co-op campaign in three chapters (the Rainbow Stair, the Seven Skies and the Tribunal). When the Crown broke, the Arbiter of the Host judged Aethra and sealed the sky. Heaven’s law hears no lone voice, so two Wardens swear an oath and climb together.',
+          'Every fight is played with a teammate: pick an AI teammate’s faction, or choose “Play with a friend instead” to open an online room for that fight. The fight counts for your friend too if it is open in their own campaign; otherwise they play it for practice rewards.',
+          'Nine knights of the Host to beat, each a boss with the co-op powers, and every one pays its own Angel card: six Epics and three Legendaries (Halcyon, Captain of the Pearl Gate; Azrafel, Angel of the Red Moon; and the Arbiter). The chapter bosses add a rule of their own: the Pearl Gate, the Red Moon and the Scales.',
+          'Their “friendly unit” cards reach your teammate’s units too, so Ostiarius can shield your friend’s best unit.',
+          'Nightmare I and II for every fight, four achievements (with the titles Witness of the Tribunal and Knight of the Host) and a Home banner for the new campaign.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.58.5',
     date: '2026-10-17',
     title: 'Three rows in your pocket',

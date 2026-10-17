@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
 import { toast } from '@/state/uiStore';
@@ -9,7 +9,9 @@ import { factionOfList } from '@/domain/decks';
 import { ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
-import { COOP_BOSS_ARMOR, COOP_BOSS_HEALTH, coopBoss, type CoopMeta } from '@/domain/coop';
+import { COOP_BOSS_ARMOR, COOP_BOSS_HEALTH, coopBoss, isCoopEncounter, type CoopMeta } from '@/domain/coop';
+import { findEncounter } from '@/data/opponents';
+import { isUnlocked } from '@/ui/components/meta/campaign';
 import { PLAYABLE_FACTIONS } from '@/game/types';
 import { DIFFICULTIES } from '@/config/progression';
 import { PRACTICE_OPPONENTS } from '@/data/opponents';
@@ -29,8 +31,12 @@ export default function OnlineScreen() {
   const [status, setStatus] = useState(netSession.status);
   const [error, setError] = useState<string | null>(null);
   const [joinCode, setJoinCode] = useState('');
-  // 2 v 1 co-op: the friend joins as your teammate against a boss played by your AI.
-  const [coop, setCoop] = useState<CoopMeta | null>(null);
+  // 2 v 1 co-op: the friend joins as your teammate against a boss played by your AI. Opened from a
+  // co-op campaign (?coop=<fight>), the boss is that fight.
+  const [params] = useSearchParams();
+  const asked = params.get('coop');
+  const campaignFight = save && asked && isCoopEncounter(asked) && isUnlocked(save, asked) ? findEncounter(asked)! : null;
+  const [coop, setCoop] = useState<CoopMeta | null>(() => (campaignFight ? { encounter: campaignFight.encounter.id } : null));
 
   useEffect(() => netSession.onStatus(() => setStatus(netSession.status)), []);
 
@@ -40,7 +46,10 @@ export default function OnlineScreen() {
     audio.play('turn');
     const faction = factionOfList(netSession.remoteSide.deck);
     const friend = onlineOpponent(netSession.remoteName, netSession.remoteAvatar, faction);
-    if (coop) launchMatch({ mode: 'PRACTICE', online: 'host', deckId, opponent: coopBoss(coop.boss, coop.difficulty), coop: { ally: friend } }, navigate);
+    if (coop && 'encounter' in coop) {
+      const fight = findEncounter(coop.encounter)!;
+      launchMatch({ mode: 'PVE', online: 'host', deckId, opponent: fight.encounter, encounterId: fight.encounter.id, coop: { ally: friend } }, navigate);
+    } else if (coop) launchMatch({ mode: 'PRACTICE', online: 'host', deckId, opponent: coopBoss(coop.boss, coop.difficulty), coop: { ally: friend } }, navigate);
     else launchMatch({ mode: 'ONLINE', online: 'host', deckId, opponent: friend }, navigate);
   }, [status, deckId, navigate, coop]);
 
@@ -91,6 +100,17 @@ export default function OnlineScreen() {
           {!waiting && (
             <>
               <div className="panel-title">{t('Create a match')}</div>
+              {campaignFight && coop && 'encounter' in coop && (
+                <>
+                  <p className="coop-campaign-fight">
+                    <strong>{t('Campaign fight: {name}', { name: campaignFight.encounter.name })}</strong>
+                    <span className="faint">{campaignFight.chapter.name}</span>
+                  </p>
+                  <p className="muted">{t('Your friend joins as your teammate for this fight. If it is open in their campaign too, it counts for them as well; otherwise they get practice rewards.')}</p>
+                </>
+              )}
+              {!(coop && 'encounter' in coop) && (
+              <>
               <div className="practice-mode" role="radiogroup" aria-label={t('Match type')}>
                 <button type="button" role="radio" aria-checked={!coop} className={`btn btn-sm ${!coop ? 'btn-primary' : ''}`} onClick={() => (audio.play('click'), setCoop(null))}>
                   {t('1 v 1')}
@@ -100,7 +120,7 @@ export default function OnlineScreen() {
                 </button>
               </div>
               {!coop && <p className="muted">{t('Online matches give the same Gold, XP and quest progress as normal matches. Both players need an internet connection.')}</p>}
-              {coop && (
+              {coop && 'boss' in coop && (
                 <>
                   <p className="muted">
                     {t('Your friend joins as your teammate. Together you face a boss with {n} Health, {a} Armor and an extra Energy, played by the AI. Rewards are those of a practice match.', { n: COOP_BOSS_HEALTH, a: COOP_BOSS_ARMOR })} {t('Every turn the boss also draws a card, gains 2 Energy and deals 1 damage to a random enemy twice.')}
@@ -128,6 +148,8 @@ export default function OnlineScreen() {
                     ))}
                   </div>
                 </>
+              )}
+              </>
               )}
               <button className="btn btn-primary btn-lg" disabled={!valid || status === 'opening'} onClick={() => void create()}>
                 {status === 'opening' ? t('Creating…') : t('Create match')}

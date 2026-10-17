@@ -654,6 +654,61 @@ const v: OpponentsOverlay = {
       intro: 'Deset tisíc let čekám na tomhle trůnu na někoho, koho by stálo za to spálit. Klekni, Strážce, nebo hoř vestoje.',
       special: ['Začíná se 55 životy a 1 energií navíc.', 'Schopnosti Strážce: Erupce kaldery, Hranice duší.', 'Jeho balíček obsahuje samotného Azgarotha. Poraz ho a přidá se k tobě.'],
     },
+    // The Twin Oath
+    hv1_e1: {
+      name: 'Ostiarius',
+      title: 'Strážce Duhového schodiště',
+      intro: 'Jeden hlas na mém schodišti je žebrák. Dva hlasy jsou svědectví. Tak tedy stoupejte a budete vyslyšeni.',
+      special: ['Začíná se 60 životy a 1 energií navíc.', 'Každý tah: lízne si kartu navíc a získá 2 energie.', 'Jeho balíček obsahuje samotného Ostiaria. Poraz ho a karta je tvoje.'],
+    },
+    hv1_e2: {
+      name: 'Bratr Thurifer',
+      title: 'Kouř pokání',
+      intro: 'Dýchejte zhluboka, poutníci. Kouř jen ukáže, co jste si po schodišti přinesli s sebou.',
+      special: ['Začíná se 50 životy a 1 energií navíc.', 'Každý tah: lízne si kartu navíc a získá 2 energie.', 'Jeho balíček obsahuje samotného bratra Thurifera. Poraz ho a karta je tvoje.'],
+    },
+    hv1_boss: {
+      name: 'Halcyon',
+      title: 'Kapitán Perlové brány',
+      intro: 'Perlová brána je zavřená od chvíle, kdy se Koruna roztříštila. Vy dva ji neotevřete.',
+      special: ['Začíná se 60 životy, 10 brnění a 1 energií navíc.', 'Každý tah: lízne si kartu navíc, získá 2 energie a dvakrát způsobí 1 poškození náhodnému nepříteli.', 'Perlová brána: na začátku každého jeho tahu získá náhodná jeho jednotka Bariéru.', 'Jeho balíček obsahuje samotného Halcyona. Poraz ho a přidá se k tobě.'],
+    },
+    hv2_e1: {
+      name: 'Nimbriel',
+      title: 'Strážkyně Zamrzlého nebe',
+      intro: 'V mém nebi sníh nepadá. Čeká. A vy budete čekat s ním, navždy.',
+      special: ['Začíná se 70 životy, 10 brnění a 1 energií navíc.', 'Každý tah: lízne si kartu navíc, získá 2 energie a dvakrát způsobí 1 poškození náhodnému nepříteli.', 'Její balíček obsahuje samotnou Nimbriel. Poraz ji a karta je tvoje.'],
+    },
+    hv2_e2: {
+      name: 'Ysandre',
+      title: 'Matka Padajících vod',
+      intro: 'Všechny řeky Aethry pramení u mých nohou. Jediným slovem bych je zastavila. Dejte mi důvod, proč to neudělat.',
+      special: ['Začíná se 55 životy a 1 energií navíc.', 'Každý tah: lízne si kartu navíc, získá 2 energie a dvakrát způsobí 1 poškození náhodnému nepříteli.', 'Její balíček obsahuje samotnou Ysandre. Poraz ji a karta je tvoje.'],
+    },
+    hv2_boss: {
+      name: 'Azrafel',
+      title: 'Anděl Rudého měsíce',
+      intro: 'Zástup zpívá. Já ne. Když vyjde Rudý měsíc, posílá mě Arbitr tam, kde zpěv selhal.',
+      special: ['Začíná se 55 životy a 1 energií navíc.', 'Každý tah: lízne si kartu navíc a získá 2 energie.', 'Rudý měsíc: kdykoli zemře vaše jednotka, způsobí 1 poškození jednomu z vašich Strážců.', 'Jeho balíček obsahuje samotného Azrafela. Poraz ho a přidá se k tobě.'],
+    },
+    hv3_e1: {
+      name: 'Řetězník',
+      title: 'Žalářník Tribunálu',
+      intro: 'Nesu řetěz pro každého z vás. Ukovali je dřív, než se kdokoli z vás narodil.',
+      special: ['Začíná se 60 životy, 10 brnění a 1 energií navíc.', 'Každý tah: lízne si kartu navíc, získá 2 energie a dvakrát způsobí 1 poškození náhodnému nepříteli.', 'Jeho balíček obsahuje samotného Řetězníka. Poraz ho a karta je tvoje.'],
+    },
+    hv3_e2: {
+      name: 'Solenne',
+      title: 'Hlas Trůnu',
+      intro: 'Trůn mlčí, a tak mluvím za něj. Dnes říká: klekněte.',
+      special: ['Začíná se 70 životy, 10 brnění a 1 energií navíc.', 'Každý tah: lízne si kartu navíc, získá 2 energie a dvakrát způsobí 1 poškození náhodnému nepříteli.', 'Její balíček obsahuje samotnou Solenne. Poraz ji a karta je tvoje.'],
+    },
+    hv3_final: {
+      name: 'Arbitr',
+      title: 'Ten, který váží vše',
+      intro: 'Zvážil jsem Korunu a shledal ji lehkou. Zvážil jsem Aethru a shledal ji nedostatečnou. Vstupte na váhy, oba dva.',
+      special: ['Začíná se 70 životy, 10 brnění a 1 energií navíc.', 'Každý tah: lízne si kartu navíc, získá 2 energie a dvakrát způsobí 1 poškození náhodnému nepříteli.', 'Váhy: na začátku každého jeho tahu způsobí 3 poškození náhodné vaší jednotce.', 'Jeho balíček obsahuje samotného Arbitra. Poraz ho a přidá se k tobě.'],
+    },
   },
   chapters: {
     ch1: {
@@ -727,6 +782,18 @@ const v: OpponentsOverlay = {
     wi3: {
       name: 'Kapitola III – Schody do sklepa',
       description: 'Pod hostincem vedou schody hlouběji, než je dům vysoký. Hosté tam dole vylezli z vody.',
+    },
+    tw1: {
+      name: 'Kapitola I – Duhové schodiště',
+      description: 'Z okraje světa vede k Perlové bráně schodiště ze světla. Jeho strážci nikoho nepustí nahoru samotného, a od chvíle, kdy se Koruna roztříštila, vůbec nikoho.',
+    },
+    tw2: {
+      name: 'Kapitola II – Sedm nebes',
+      description: 'Za Branou leží sedm nebes, jedno nad druhým, a v každém z nich chór Zástupu, který přestal zpívat.',
+    },
+    tw3: {
+      name: 'Kapitola III – Tribunál',
+      description: 'Nad posledním nebem sedí Arbitr se svými vahami. Aethru už zvážil. Teď zváží vás dva.',
     },
     wi4: {
       name: 'Kapitola IV – Stůl hostitele',

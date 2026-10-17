@@ -887,13 +887,103 @@ export const INFERNO_CAMPAIGN: Chapter[] = [
   },
 ];
 
+/**
+ * THE TWIN OATH — a 2 v 1 co-op campaign (src/domain/coop.ts): two Wardens, with an AI teammate or a
+ * friend online, climb to the Host above Aethra. Every fight is a boss with the co-op rules and pays
+ * its own knight of the Host (src/data/cards/heaven.ts); the chapter bosses add a rule of their own.
+ */
+/** The rules every co-op boss plays with (src/domain/coop.ts); kept here so campaign data can use them. */
+export const COOP_BOSS_RULES = ['coop_rule_draw', 'coop_rule_energy', 'coop_rule_quake'];
+export const HEAVEN_CAMPAIGN: Chapter[] = [
+  {
+    id: 'tw1',
+    name: 'Chapter I — The Rainbow Stair',
+    price: 1000,
+    description: 'A stair of light runs up from the edge of the world to the Pearl Gate. Its keepers let no one climb alone, and no one climb at all since the Crown broke.',
+    encounters: [
+      {
+        id: 'hv1_e1', name: 'Ostiarius', title: 'Keeper of the Rainbow Stair', avatar: 'star', faction: 'ASTRAL', archetype: 'Starlit Control', difficulty: 'NORMAL', personality: 'BALANCED', rarities: NORMAL_POOL,
+        intro: 'One voice on my stair is a beggar. Two voices are a testimony. Climb, then, and be heard.',
+        special: { heroHealth: 60, bonusStartingEnergy: 1, rules: ['coop_rule_draw', 'coop_rule_energy'], extraCards: ['ast_ostiarius_keeper_of_the_stair'], description: ['Starts with 60 Health and 1 extra Energy.', 'Every turn: draws an extra card and gains 2 Energy.', 'His deck holds Ostiarius himself. Beat him and the card is yours.'] },
+        firstWinReward: { gold: 200, xp: 200, cardId: 'ast_ostiarius_keeper_of_the_stair' },
+      },
+      {
+        id: 'hv1_e2', name: 'Brother Thurifer', title: 'Smoke of Penance', avatar: 'eye', faction: 'VOID', archetype: 'Requiem', difficulty: 'NORMAL', personality: 'BALANCED', rarities: NORMAL_POOL,
+        intro: 'Breathe deep, pilgrims. The smoke only shows what you brought up the stair with you.',
+        special: { heroHealth: 50, bonusStartingEnergy: 1, rules: ['coop_rule_draw', 'coop_rule_energy'], extraCards: ['vod_brother_thurifer'], description: ['Starts with 50 Health and 1 extra Energy.', 'Every turn: draws an extra card and gains 2 Energy.', 'His deck holds Brother Thurifer himself. Beat him and the card is yours.'] },
+        firstWinReward: { gold: 220, xp: 220, cardId: 'vod_brother_thurifer' },
+      },
+      {
+        id: 'hv1_boss', name: 'Halcyon', title: 'Captain of the Pearl Gate', avatar: 'star', faction: 'ASTRAL', archetype: 'Starlit Control', difficulty: 'HARD', personality: 'CONTROL', rarities: HARD_POOL, boss: true,
+        intro: 'The Pearl Gate has stood shut since the Crown broke. It will not be the two of you who open it.',
+        special: { heroHealth: 60, startingArmor: 10, bonusStartingEnergy: 1, rules: [...COOP_BOSS_RULES, 'coop_rule_pearl_gate'], extraCards: ['ast_halcyon_captain_of_the_pearl_gate'], description: ['Starts with 60 Health, 10 Armor and 1 extra Energy.', 'Every turn: draws an extra card, gains 2 Energy and deals 1 damage to a random enemy twice.', 'The Pearl Gate: at the start of each of his turns, a random unit of his gains Barrier.', 'His deck holds Halcyon himself. Beat him and he joins you.'] },
+        firstWinReward: { gold: 350, xp: 350, cardId: 'ast_halcyon_captain_of_the_pearl_gate' },
+      },
+    ],
+  },
+  {
+    id: 'tw2',
+    name: 'Chapter II — The Seven Skies',
+    price: 1000,
+    description: 'Beyond the Gate lie seven skies, one above the other, and in each of them a choir of the Host that has stopped singing.',
+    encounters: [
+      {
+        id: 'hv2_e1', name: 'Nimbriel', title: 'Warden of the Frozen Sky', avatar: 'wave', faction: 'TIDE', archetype: 'Deep Freeze', difficulty: 'EXPERT', personality: 'AGGRESSIVE', rarities: HARD_POOL,
+        intro: 'Snow does not fall in my sky. It waits. You will wait with it, for ever.',
+        special: { heroHealth: 70, startingArmor: 10, bonusStartingEnergy: 1, rules: [...COOP_BOSS_RULES], extraCards: ['tid_nimbriel_of_the_frozen_sky'], description: ['Starts with 70 Health, 10 Armor and 1 extra Energy.', 'Every turn: draws an extra card, gains 2 Energy and deals 1 damage to a random enemy twice.', 'Her deck holds Nimbriel herself. Beat her and the card is yours.'] },
+        firstWinReward: { gold: 260, xp: 260, cardId: 'tid_nimbriel_of_the_frozen_sky' },
+      },
+      {
+        id: 'hv2_e2', name: 'Ysandre', title: 'Mother of the Falling Waters', avatar: 'leaf', faction: 'VERDANT', archetype: 'Wellspring', difficulty: 'NORMAL', personality: 'BALANCED', rarities: HARD_POOL,
+        intro: 'Every river of Aethra begins at my feet. I could stop them all with one word. Give me a reason not to.',
+        special: { heroHealth: 55, bonusStartingEnergy: 1, rules: [...COOP_BOSS_RULES], extraCards: ['ver_ysandre_of_the_falling_waters'], description: ['Starts with 55 Health and 1 extra Energy.', 'Every turn: draws an extra card, gains 2 Energy and deals 1 damage to a random enemy twice.', 'Her deck holds Ysandre herself. Beat her and the card is yours.'] },
+        firstWinReward: { gold: 280, xp: 280, cardId: 'ver_ysandre_of_the_falling_waters' },
+      },
+      {
+        id: 'hv2_boss', name: 'Azrafel', title: 'Angel of the Red Moon', avatar: 'flame', faction: 'EMBER', archetype: 'Blitz', difficulty: 'NORMAL', personality: 'AGGRESSIVE', rarities: ALL, boss: true,
+        intro: 'The Host sings. I do not. When the Red Moon rises, the Arbiter sends me where the singing has failed.',
+        special: { heroHealth: 55, bonusStartingEnergy: 1, rules: ['coop_rule_draw', 'coop_rule_energy', 'coop_rule_red_moon'], extraCards: ['emb_azrafel_angel_of_the_red_moon'], description: ['Starts with 55 Health and 1 extra Energy.', 'Every turn: draws an extra card and gains 2 Energy.', 'The Red Moon: whenever one of your units dies, he deals 1 damage to one of your Wardens.', 'His deck holds Azrafel himself. Beat him and he joins you.'] },
+        firstWinReward: { gold: 420, xp: 420, cardId: 'emb_azrafel_angel_of_the_red_moon' },
+      },
+    ],
+  },
+  {
+    id: 'tw3',
+    name: 'Chapter III — The Tribunal',
+    price: 1000,
+    description: 'Above the last sky the Arbiter sits with his scales. He has already weighed Aethra. Now he will weigh the two of you.',
+    encounters: [
+      {
+        id: 'hv3_e1', name: 'The Chainbearer', title: 'Jailer of the Tribunal', avatar: 'gear', faction: 'IRON', archetype: 'Bulwark', difficulty: 'HARD', personality: 'CONTROL', rarities: ALL,
+        intro: 'I carry a chain for each of you. They were forged before either of you was born.',
+        special: { heroHealth: 60, startingArmor: 10, bonusStartingEnergy: 1, rules: [...COOP_BOSS_RULES], extraCards: ['irn_the_chainbearer'], description: ['Starts with 60 Health, 10 Armor and 1 extra Energy.', 'Every turn: draws an extra card, gains 2 Energy and deals 1 damage to a random enemy twice.', 'His deck holds the Chainbearer himself. Beat him and the card is yours.'] },
+        firstWinReward: { gold: 300, xp: 300, cardId: 'irn_the_chainbearer' },
+      },
+      {
+        id: 'hv3_e2', name: 'Solenne', title: 'Voice of the Throne', avatar: 'star', faction: 'ASTRAL', archetype: 'Spellweave', difficulty: 'EXPERT', personality: 'CONTROL', rarities: ALL,
+        intro: 'The Throne says nothing, so I speak for it. Today it says: kneel.',
+        special: { heroHealth: 70, startingArmor: 10, bonusStartingEnergy: 1, rules: [...COOP_BOSS_RULES], extraCards: ['ast_solenne_voice_of_the_throne'], description: ['Starts with 70 Health, 10 Armor and 1 extra Energy.', 'Every turn: draws an extra card, gains 2 Energy and deals 1 damage to a random enemy twice.', 'Her deck holds Solenne herself. Beat her and the card is yours.'] },
+        firstWinReward: { gold: 320, xp: 320, cardId: 'ast_solenne_voice_of_the_throne' },
+      },
+      {
+        id: 'hv3_final', name: 'The Arbiter', title: 'Who Weighs All Things', avatar: 'crown', faction: 'ASTRAL', secondFaction: 'NEUTRAL', archetype: 'Starlit Control', difficulty: 'HARD', personality: 'CONTROL', rarities: ALL, boss: true,
+        intro: 'I weighed the Crown and found it light. I weighed Aethra and found it wanting. Step onto the scales, both of you.',
+        special: { heroHealth: 70, startingArmor: 10, bonusStartingEnergy: 1, rules: [...COOP_BOSS_RULES, 'coop_rule_scales'], extraCards: ['neu_the_arbiter'], description: ['Starts with 70 Health, 10 Armor and 1 extra Energy.', 'Every turn: draws an extra card, gains 2 Energy and deals 1 damage to a random enemy twice.', 'The Scales: at the start of each of his turns, he deals 3 damage to a random unit of yours.', 'His deck holds the Arbiter himself. Beat him and he joins you.'] },
+        firstWinReward: { gold: 600, xp: 600, cardId: 'neu_the_arbiter' },
+      },
+    ],
+  },
+];
+
 export interface CampaignDef {
-  id: 'main' | 'void' | 'lamp' | 'inn' | 'inferno';
+  id: 'main' | 'void' | 'lamp' | 'inn' | 'inferno' | 'heaven';
   name: string;
   chapters: Chapter[];
   /** Cinematics (src/data/cinematics.ts): before the first fight and after the last one. */
   intro?: string;
   outro?: string;
+  /** 2 v 1 co-op: every fight is played with a teammate (the AI or a friend online). */
+  coop?: boolean;
 }
 
 /** Every campaign, each with its own chapters and progress; the main one comes first. */
@@ -903,6 +993,7 @@ export const CAMPAIGNS: CampaignDef[] = [
   { id: 'lamp', name: 'The Lamplighters’ Road', chapters: LAMP_CAMPAIGN, intro: 'lamp_intro', outro: 'lamp_outro' },
   { id: 'inn', name: 'The Wraithwood Inn', chapters: INN_CAMPAIGN, intro: 'inn_intro', outro: 'inn_outro' },
   { id: 'inferno', name: 'The Underflame', chapters: INFERNO_CAMPAIGN, intro: 'inferno_intro', outro: 'inferno_outro' },
+  { id: 'heaven', name: 'The Twin Oath', chapters: HEAVEN_CAMPAIGN, coop: true },
 ];
 
 /**
@@ -937,6 +1028,10 @@ const CAMPAIGN_PORTRAITS: Record<string, string | null> = {
   u2_e1: 'inf_brass_locust', u2_e2: 'inf_brineclaw', u2_boss: 'inf_ghul',
   u3_e1: 'inf_thousand_eyed', u3_e2: 'inf_sunfallen_seraph', u3_boss: 'inf_rimegrave',
   u4_e1: 'inf_lantern_of_rot', u4_e2: 'inf_pale_herald', u4_boss: 'inf_azgaroth',
+  // The Twin Oath: every knight of the Host, the same painting as its card.
+  hv1_e1: 'hv_ostiarius', hv1_e2: 'hv_thurifer', hv1_boss: 'hv_halcyon',
+  hv2_e1: 'hv_nimbriel', hv2_e2: 'hv_ysandre', hv2_boss: 'hv_azrafel',
+  hv3_e1: 'hv_chainbearer', hv3_e2: 'hv_solenne', hv3_final: 'hv_arbiter',
 };
 for (const ch of CAMPAIGNS.flatMap((c) => c.chapters)) for (const e of ch.encounters) if (e.id in CAMPAIGN_PORTRAITS) e.portrait = CAMPAIGN_PORTRAITS[e.id];
 

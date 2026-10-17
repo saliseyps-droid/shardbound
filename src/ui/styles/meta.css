@@ -575,3 +575,24 @@ label.toggle-row { cursor: pointer; }
 
 /* Practice: 1 v 1 or 2 v 1 co-op. */
 .practice-mode { display: inline-flex; gap: 6px; margin-top: var(--space-2); }
+
+/* Co-op campaign fights: the AI teammate's faction, or a friend online. */
+.coop-mate { display: grid; gap: 6px; justify-items: start; margin-top: var(--space-3); }
+.coop-mate-pick { display: flex; flex-wrap: wrap; gap: 6px; }
+.coop-mate-tile { display: grid; place-items: center; padding: 4px; border: 0; border-radius: 10px; cursor: pointer; background: color-mix(in srgb, var(--f1) 18%, var(--ink-2)); box-shadow: inset 0 0 0 1px var(--line); }
+.coop-mate-tile.selected { box-shadow: inset 0 0 0 2px var(--f1); }
+.coop-mate-tile:hover { filter: brightness(1.15); }
+
+/* The Twin Oath on Home: the halls of the Host, night-blue and gold. */
+.campaign-news-heaven {
+  background:
+    linear-gradient(90deg, rgba(6, 10, 30, 0.94) 0%, rgba(10, 16, 44, 0.82) 42%, rgba(10, 16, 44, 0.3) 75%, rgba(10, 16, 44, 0.1)),
+    var(--cn-bg) center 40% / cover no-repeat,
+    #0a1030;
+  box-shadow: inset 0 0 0 1px rgba(255, 220, 140, 0.5), 0 0 30px rgba(255, 220, 140, 0.15), var(--shadow-lift);
+}
+.campaign-news-heaven .news-kicker { color: #ffe3a0; }
+.campaign-news-heaven .news-body h2 { background: linear-gradient(180deg, #ffffff, #ffe9b0 55%, #e8b04b); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 12px rgba(255, 230, 160, 0.45)); }
+.campaign-news-heaven .news-facts li { background: rgba(255, 230, 160, 0.16); border-color: rgba(255, 230, 160, 0.5); color: #fff4d8; }
+.campaign-news-heaven .news-card { filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 10px rgba(255, 230, 160, 0.35)); }
+@media (max-width: 640px) { .campaign-news-heaven { background: linear-gradient(180deg, rgba(10, 16, 44, 0.6), rgba(6, 10, 30, 0.94)), var(--cn-bg) center / cover no-repeat, #0a1030; } }

@@ -15,6 +15,7 @@ import { RECKONING_CARDS } from './reckoning';
 import { LAMPLIGHT_CARDS } from './lamplight';
 import { WRAITHWOOD_CARDS } from './wraithwood';
 import { INFERNO_CARDS } from './inferno';
+import { HEAVEN_CARDS } from './heaven';
 
 const RAW: CardDefinition[] = [
   ...TOKEN_CARDS,
@@ -31,6 +32,7 @@ const RAW: CardDefinition[] = [
   ...LAMPLIGHT_CARDS,
   ...WRAITHWOOD_CARDS,
   ...INFERNO_CARDS,
+  ...HEAVEN_CARDS,
 ];
 
 export const CARD_LOAD_ERRORS: string[] = [];

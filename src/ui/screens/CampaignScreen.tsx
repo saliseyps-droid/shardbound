@@ -17,6 +17,8 @@ import { toast } from '@/state/uiStore';
 import { canBuyChapter, isChapterBought } from '@/domain/campaignUnlock';
 import { Cinematic } from '@/ui/components/Cinematic';
 import { hasNightmare, nightmareBest, nightmareCleared, nightmareLines, nightmareOpen, nightmareOpponent, NIGHTMARE_TIERS, type NightmareTier } from '@/data/nightmare';
+import { coopAlly } from '@/domain/coop';
+import { PLAYABLE_FACTIONS, type PlayableFaction } from '@/game/types';
 import '@/ui/styles/meta.css';
 import { t } from '@/i18n';
 
@@ -77,6 +79,8 @@ export default function CampaignScreen() {
   const [cinematic, setCinematic] = useState<string | null>(null);
   // A beaten boss can be fought again on Nightmare I or II (0 = the normal fight).
   const [tier, setTier] = useState<0 | NightmareTier>(0);
+  // Co-op campaigns: the AI teammate's faction (a friend joins through the online room instead).
+  const [allyFaction, setAllyFaction] = useState<PlayableFaction>('ASTRAL');
   useEffect(() => setTier(0), [selectedId]);
   // A campaign's intro plays the first time it is opened, its outro once every fight is won.
   const seen = save?.pve.seenCinematics ?? [];
@@ -122,7 +126,7 @@ export default function CampaignScreen() {
   const [preFight, setPreFight] = useState<string | null>(null);
   const startFight = () => {
     if (!foe) return;
-    launchMatch({ mode: 'PVE', deckId, opponent: foe, encounterId: foe.id }, navigate);
+    launchMatch({ mode: 'PVE', deckId, opponent: foe, encounterId: foe.id, ...(camp.coop ? { coop: { ally: coopAlly(allyFaction) } } : {}) }, navigate);
   };
   const fight = () => {
     if (!foe || !unlocked || !validDeck) return;
@@ -365,6 +369,32 @@ export default function CampaignScreen() {
                   {t('Your deck')}
                 </div>
                 <DeckPicker save={save} value={deckId} onChange={setDeckId} />
+                {camp.coop && (
+                  <div className="coop-mate">
+                    <div className="faint">{t('Your teammate (AI)')}</div>
+                    <div className="coop-mate-pick" role="radiogroup" aria-label={t('Teammate faction')}>
+                      {PLAYABLE_FACTIONS.map((f) => (
+                        <button
+                          key={f}
+                          type="button"
+                          role="radio"
+                          aria-checked={f === allyFaction}
+                          className={`coop-mate-tile ${f === allyFaction ? 'selected' : ''}`}
+                          style={factionStyle(f)}
+                          title={FACTIONS[f].name}
+                          onClick={() => (audio.play('click'), setAllyFaction(f))}
+                        >
+                          <WardenPortrait faction={f} size={34} />
+                        </button>
+                      ))}
+                    </div>
+                    {!nm && (
+                      <button type="button" className="btn btn-ghost btn-sm" disabled={!validDeck} onClick={() => (audio.play('click'), navigate(`/online?coop=${enc.id}`))}>
+                        {t('Play with a friend instead')}
+                      </button>
+                    )}
+                  </div>
+                )}
                 <button className="btn btn-primary btn-lg enc-fight" disabled={!validDeck} onClick={fight}>
                   {nm ? (foeCleared ? t('Face the Nightmare again') : t('Face the Nightmare')) : cleared ? t('Fight again') : t('Fight')}
                 </button>

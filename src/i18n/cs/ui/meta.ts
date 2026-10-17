@@ -302,6 +302,7 @@ const d: Record<string, string> = {
   'Fight {name}': 'Bojovat: {name}',
   'Two against one: you and an AI teammate against a boss with {n} Health, {a} Armor and an extra Energy.': 'Dva proti jednomu: ty a spoluhráč s umělou inteligencí proti bossovi s {n} životy, {a} brnění a energií navíc.',
   'Match type': 'Typ zápasu',
+  'Play with a friend instead': 'Hrát místo toho s přítelem',
   'Every turn the boss also draws a card, gains 2 Energy and deals 1 damage to a random enemy twice.': 'Každý tah si boss navíc lízne kartu, získá 2 energie a dvakrát způsobí 1 poškození náhodnému nepříteli.',
   '1 v 1': '1 na 1',
   '2 v 1 co-op': '2 na 1 kooperace',
@@ -456,6 +457,10 @@ const d: Record<string, string> = {
   'The Wraithwood Inn': 'Hostinec v Přízračném hvozdu',
   // The Underflame (campaign and cinematics)
   'The Underflame': 'Pekelná hlubina',
+  'The Twin Oath': 'Dvojí přísaha',
+  'Two Wardens, one oath: climb the Rainbow Stair to the Host above Aethra and stand trial before the Arbiter, with an AI teammate or a friend.': 'Dva Strážci, jedna přísaha: vystupte po Duhovém schodišti k Zástupu nad Aethrou a postavte se před soud Arbitra, se spoluhráčem s umělou inteligencí nebo s přítelem.',
+  '{n} knights of the Host': '{n} rytířů Zástupu',
+  'Ascend': 'Vystoupat',
   'New campaign': 'Nová kampaň',
   'Go down into the fire beneath Aethra and take the stolen Shard back from Azgaroth, the Ninth Sovereign.': 'Sestup do ohně pod Aethrou a vezmi ukradený Střep zpátky Azgarothovi, Devátému vládci.',
   '{n} chapters': 'Kapitoly: {n}',

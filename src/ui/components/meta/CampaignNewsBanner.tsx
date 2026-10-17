@@ -7,7 +7,14 @@ import { cinematicImageUrl } from '@/ui/components/Cinematic';
 import { t } from '@/i18n';
 
 /** The newest campaign, as shown on Home above the newest set. */
-const NEW_CAMPAIGN = { id: 'inferno', image: 'inf_descent', highlights: ['vod_vhessa_the_ash_serpent', 'emb_azgaroth_the_ninth_sovereign', 'tid_rimegrave_lord_of_the_frozen_lake'] };
+const NEW_CAMPAIGN = {
+  id: 'heaven',
+  image: 'hv_rainbow_halls',
+  highlights: ['ast_halcyon_captain_of_the_pearl_gate', 'neu_the_arbiter', 'emb_azrafel_angel_of_the_red_moon'],
+  tagline: 'Two Wardens, one oath: climb the Rainbow Stair to the Host above Aethra and stand trial before the Arbiter, with an AI teammate or a friend.',
+  foes: '{n} knights of the Host',
+  cta: 'Ascend',
+};
 
 /** Home: the newest campaign over one of its cinematic paintings, with its Legendaries and a way in. */
 export function CampaignNewsBanner() {
@@ -18,19 +25,20 @@ export function CampaignNewsBanner() {
   const legends = cards.filter((id) => getCard(id)!.rarity === 'LEGENDARY').length;
   const bg = cinematicImageUrl(NEW_CAMPAIGN.image);
   return (
-    <section className="news-banner campaign-news panel" aria-labelledby="campaign-news-title" style={bg ? ({ '--cn-bg': `url(${bg})` } as CSSProperties) : undefined}>
+    <section className={`news-banner campaign-news campaign-news-${camp.id} panel`} aria-labelledby="campaign-news-title" style={bg ? ({ '--cn-bg': `url(${bg})` } as CSSProperties) : undefined}>
       <div className="news-body">
         <span className="news-kicker">{t('New campaign')}</span>
         <h2 id="campaign-news-title">{t(camp.name)}</h2>
-        <p className="news-tagline">{t('Go down into the fire beneath Aethra and take the stolen Shard back from Azgaroth, the Ninth Sovereign.')}</p>
+        <p className="news-tagline">{t(NEW_CAMPAIGN.tagline)}</p>
         <ul className="news-facts">
           <li>{t('{n} chapters', { n: camp.chapters.length })}</li>
-          <li>{t('{n} demons to beat', { n: fights.length })}</li>
+          <li>{t(NEW_CAMPAIGN.foes, { n: fights.length })}</li>
+          {camp.coop && <li>{t('2 v 1 co-op')}</li>}
           <li>{t('{n} campaign cards, {m} Legendary', { n: cards.length, m: legends })}</li>
         </ul>
         <div className="news-actions">
           <Link to={`/campaign?c=${camp.id}`} className="btn btn-primary">
-            {t('Descend')}
+            {t(NEW_CAMPAIGN.cta)}
           </Link>
           <Link to="/patch-notes" className="btn btn-ghost">
             {t("What's new")}

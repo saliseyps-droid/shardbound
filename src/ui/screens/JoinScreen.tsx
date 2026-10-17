@@ -5,6 +5,9 @@ import { launchMatch } from '@/state/matchLaunch';
 import { netSession } from '@/net/session';
 import { onlineOpponent } from '@/net/lobby';
 import { coopBoss, readCoopMeta } from '@/domain/coop';
+import { findEncounter } from '@/data/opponents';
+import { isUnlocked } from '@/ui/components/meta/campaign';
+import { toast } from '@/state/uiStore';
 import { playerSide } from '@/domain/matchSetup';
 import { ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
@@ -35,7 +38,12 @@ export default function JoinScreen() {
       const host = onlineOpponent(netSession.remoteName, netSession.remoteAvatar, 'EMBER');
       const coop = readCoopMeta(netSession.remoteMeta);
       // 2 v 1 co-op: we join the host as their teammate against the host's AI boss.
-      if (coop) launchMatch({ mode: 'PRACTICE', online: 'guest', deckId: deck.id, opponent: coopBoss(coop.boss, coop.difficulty), coop: { ally: host } }, navigate);
+      if (coop && 'encounter' in coop) {
+        const fight = findEncounter(coop.encounter)!;
+        const open = isUnlocked(save, fight.encounter.id);
+        if (!open) toast(t('This fight is not open in your campaign yet, so you play it for practice rewards.'), 'info');
+        launchMatch({ mode: open ? 'PVE' : 'PRACTICE', online: 'guest', deckId: deck.id, opponent: fight.encounter, encounterId: open ? fight.encounter.id : undefined, coop: { ally: host } }, navigate);
+      } else if (coop) launchMatch({ mode: 'PRACTICE', online: 'guest', deckId: deck.id, opponent: coopBoss(coop.boss, coop.difficulty), coop: { ally: host } }, navigate);
       else launchMatch({ mode: 'ONLINE', online: 'guest', deckId: deck.id, opponent: host }, navigate);
     } catch (e) {
       setError((e as Error).message);

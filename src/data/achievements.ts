@@ -1,7 +1,7 @@
 import type { LevelReward } from '@/config/progression';
 import { MAX_LEVEL } from '@/config/progression';
 import { ARENA } from '@/config/arena';
-import { CAMPAIGN, CAMPAIGNS, INFERNO_CAMPAIGN, INN_CAMPAIGN } from './opponents';
+import { CAMPAIGN, CAMPAIGNS, HEAVEN_CAMPAIGN, INFERNO_CAMPAIGN, INN_CAMPAIGN } from './opponents';
 import { collectibleCards, poolCards } from './cards';
 import { AI_TIERS, aiTierIndex, type AiTierName } from '@/domain/aiRanked';
 import { ownedCopies, type GameSave, type MatchRecord } from '@/domain/save';
@@ -119,6 +119,8 @@ const framesEarned = (save: GameSave) => PLAYABLE_FACTIONS.filter((f) => (save.p
 const ownedIds = (save: GameSave, ids: string[]) => ids.filter((id) => ownedCopies(save.collection, id) > 0).length;
 export const infernoCourtCards = () => INFERNO_CAMPAIGN.flatMap((ch) => ch.encounters.map((e) => e.firstWinReward?.cardId ?? '')).filter(Boolean);
 const infernoCleared = (save: GameSave) => INFERNO_CAMPAIGN.flatMap((ch) => ch.encounters).filter((e) => cleared(save, e.id)).length;
+export const heavenHostCards = () => HEAVEN_CAMPAIGN.flatMap((ch) => ch.encounters.map((e) => e.firstWinReward?.cardId ?? '')).filter(Boolean);
+const heavenCleared = (save: GameSave) => HEAVEN_CAMPAIGN.flatMap((ch) => ch.encounters).filter((e) => cleared(save, e.id)).length;
 const innCleared = (save: GameSave) => INN_CAMPAIGN.flatMap((ch) => ch.encounters).filter((e) => cleared(save, e.id)).length;
 /** Brawl fights won in the saved (latest) rotation. */
 const brawlFightsWon = (save: GameSave) => save.profile.brawl?.won.length ?? 0;
@@ -180,6 +182,9 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'inf_first', name: 'Into the Fire', description: 'Win your first fight in The Underflame.', category: 'CAMPAIGN', tier: 'BRONZE', icon: 'flame', rewards: [gold(100)], progress: (s) => count(Math.min(1, infernoCleared(s)), 1) },
   { id: 'inf_ch2', name: 'The Forges Fall Silent', description: 'Clear Chapter II of The Underflame.', category: 'CAMPAIGN', tier: 'SILVER', icon: 'hammer', rewards: [gold(200), essence(100)], check: (s) => chapterCleared(s, 'uf2') },
   { id: 'inf_sovereign', name: 'Kingslayer', description: 'Defeat Azgaroth, the Ninth Sovereign, at the bottom of The Underflame.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'crown', rewards: [title('Bane of the Underflame'), pack('ABYSS', 2)], check: (s) => cleared(s, 'u4_boss') },
+  { id: 'hv_first', name: 'Two Voices', description: 'Win your first fight in The Twin Oath.', category: 'CAMPAIGN', tier: 'BRONZE', icon: 'wing', rewards: [gold(100)], progress: (s) => count(Math.min(1, heavenCleared(s)), 1) },
+  { id: 'hv_ch2', name: 'Seven Skies Fall Quiet', description: 'Clear Chapter II of The Twin Oath.', category: 'CAMPAIGN', tier: 'SILVER', icon: 'star', rewards: [gold(200), essence(100)], check: (s) => chapterCleared(s, 'tw2') },
+  { id: 'hv_arbiter', name: 'Found Worthy', description: 'Defeat the Arbiter at the top of The Twin Oath.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'crown', rewards: [title('Witness of the Tribunal'), pack('RECKONING', 2)], check: (s) => cleared(s, 'hv3_final') },
   { id: 'codex_25', name: 'Turning Pages', description: 'Fill 25 pages of the Codex.', category: 'CAMPAIGN', tier: 'BRONZE', icon: 'scroll', rewards: [gold(150)], progress: (s) => count(codexProgress(s).open, 25) },
   {
     id: 'codex_all', name: 'The Whole Story', description: 'Fill every page of the Codex.', category: 'CAMPAIGN', tier: 'GOLD', icon: 'tower', rewards: [title('Loremaster'), essence(400)],
@@ -263,6 +268,10 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: 'inf_court', name: 'The Burning Court', description: 'Own all twelve cards of The Underflame.', category: 'COLLECTION', tier: 'GOLD', icon: 'flame', rewards: [title('Lord of the Burning Court'), essence(300)],
     progress: (s) => count(ownedIds(s, infernoCourtCards()), infernoCourtCards().length),
+  },
+  {
+    id: 'hv_host', name: 'The Heavenly Host', description: 'Own all nine knights of The Twin Oath.', category: 'COLLECTION', tier: 'GOLD', icon: 'wing', rewards: [title('Knight of the Host'), essence(300)],
+    progress: (s) => count(ownedIds(s, heavenHostCards()), heavenHostCards().length),
   },
   {
     id: 'legend_10', name: 'Legend Collector', description: 'Own 10 different Legendary cards.', category: 'COLLECTION', tier: 'SILVER', icon: 'crystal', rewards: [essence(200)],

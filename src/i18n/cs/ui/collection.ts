@@ -428,6 +428,7 @@ const d: Record<string, string> = {
   Undead: 'Nemrtvý',
   Wraith: 'Přízrak',
   Demon: 'Démon',
+  Angel: 'Anděl',
 
   // Card archetypes (same names as the faction archetypes)
   Blitz: 'Bleskový útok',

@@ -1,6 +1,19 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.59.0': {
+    title: 'Dvojí přísaha',
+    summary: 'Nová kooperační kampaň: dva Strážci vystoupají k Zástupu nad Aethrou a postaví se před soud Arbitra, se spoluhráčem s umělou inteligencí nebo s přítelem.',
+    sections: [
+      [
+        'Kampaň: Dvojí přísaha, kooperační kampaň 2 na 1 ve třech kapitolách (Duhové schodiště, Sedm nebes a Tribunál). Když se Koruna roztříštila, Arbitr Zástupu Aethru odsoudil a zapečetil nebe. Nebeský zákon neslyší osamělý hlas, a tak dva Strážci složí přísahu a stoupají spolu.',
+        'Každý souboj se hraje se spoluhráčem: vyber frakci spoluhráče s umělou inteligencí, nebo zvol „Hrát místo toho s přítelem“ a otevři pro ten souboj online místnost. Příteli se souboj započítá, pokud ho má otevřený i ve své kampani; jinak ho hraje za odměny jako za cvičný zápas.',
+        'Devět rytířů Zástupu, každý z nich boss s kooperačními schopnostmi, a každý dává vlastní kartu Anděla: šest epických a tři legendární (Halcyon, kapitán Perlové brány; Azrafel, anděl Rudého měsíce; a Arbitr). Bossové kapitol mají i vlastní pravidlo: Perlovou bránu, Rudý měsíc a Váhy.',
+        'Jejich karty „spřátelená jednotka“ zasáhnou i jednotky spoluhráče, takže Ostiarius může ochránit nejlepší jednotku tvého přítele.',
+        'Noční můra I a II u každého souboje, čtyři achievementy (s tituly Svědek Tribunálu a Rytíř Zástupu) a upoutávka na novou kampaň na úvodní obrazovce.',
+      ],
+    ],
+  },
   '0.58.5': {
     title: 'Tři řady do kapsy',
     summary: 'Kooperace 2 na 1 se vejde na telefon otočený na šířku.',
