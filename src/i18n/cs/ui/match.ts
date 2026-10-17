@@ -19,6 +19,8 @@ const d: Record<string, string> = {
   'This counts as a loss.': 'Počítá se to jako prohra.',
   'Wait for your turn.': 'Počkej, až budeš na tahu.',
   'Your battlefield': 'Tvoje bojiště',
+  'Your teammate’s battlefield': 'Bojiště tvého spoluhráče',
+  'Your teammate': 'Tvůj spoluhráč',
   'Enemy battlefield': 'Nepřátelské bojiště',
   Opponent: 'Soupeř',
   'Opponent has {n} cards': 'Soupeř má v ruce {n} kartu|Soupeř má v ruce {n} karty|Soupeř má v ruce {n} karet',

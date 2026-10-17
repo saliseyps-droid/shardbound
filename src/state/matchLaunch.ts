@@ -26,6 +26,11 @@ export interface MatchConfig {
   aiTuning?: AiTuning;
   /** Debug: force a seed. */
   seed?: number;
+  /**
+   * Co-op (2 v 1): you and a teammate (seat 2) against `opponent` as the boss. `ally` is the AI
+   * teammate's definition (its deck is built like an opponent's).
+   */
+  coop?: { ally: OpponentDef };
 }
 
 interface LaunchStore {

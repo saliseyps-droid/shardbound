@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.57.0': {
+    title: 'Dva proti jednomu',
+    summary: 'Cvičné zápasy mají nový režim 2 na 1: ty a spoluhráč s umělou inteligencí společně proti bossovi.',
+    sections: [
+      [
+        'Hrát → Cvičný zápas: přepni na „2 na 1 kooperace“ a postav se vybranému soupeři jako bossovi s 50 životy a energií navíc, bok po boku se spoluhráčem s umělou inteligencí za frakci, kterou vybereš.',
+        'Hraješ první, pak tvůj spoluhráč, pak boss. Boss útočí a cílí na kohokoli z vás; tvá kouzla pro spojence pomáhají i Strážci a jednotkám tvého spoluhráče.',
+        'Strážce, který padne, opouští stůl a druhý bojuje dál. Boss vyhraje, až když padnete oba.',
+        'Strážce tvého spoluhráče, jeho energie, počet karet v ruce a bojiště jsou mezi tvým a bossovým.',
+      ],
+    ],
+  },
   '0.56.1': {
     title: 'Čísla navrchu',
     summary: 'Rámečky Strážce už v zápase nezakrývají životy a brnění a tlačítka rámečků v Přizpůsobení se vejdou do dlaždic.',

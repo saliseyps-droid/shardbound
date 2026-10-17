@@ -569,3 +569,6 @@ label.toggle-row { cursor: pointer; }
 /* Long button labels ("In use (click to remove)") wrap inside the frame tile. */
 .frame-tile .btn { max-width: 100%; white-space: normal; line-height: 1.2; text-align: center; height: auto; padding-top: 6px; padding-bottom: 6px; }
 .frame-tile { min-width: 0; }
+
+/* Practice: 1 v 1 or 2 v 1 co-op. */
+.practice-mode { display: inline-flex; gap: 6px; margin-top: var(--space-2); }

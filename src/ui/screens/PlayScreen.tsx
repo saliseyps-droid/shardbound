@@ -153,12 +153,18 @@ function PuzzleStrip({ save }: { save: GameSave }) {
   );
 }
 
+/** The co-op practice boss's Health (two Wardens share the fight). */
+const COOP_BOSS_HEALTH = 50;
+
 export default function PlayScreen() {
   const save = useAccount((s) => s.save);
   const navigate = useNavigate();
   const [faction, setFaction] = useState<PlayableFaction>('VERDANT');
   const [difficulty, setDifficulty] = useState<Difficulty>('NORMAL');
   const [deckId, setDeckId] = useState<string | null>(() => (save ? firstValidDeck(save, save.profile.selectedDeckId) : null));
+  // Co-op practice (2 v 1): the chosen rival becomes a boss, faced together with an AI teammate.
+  const [coop, setCoop] = useState(false);
+  const [allyFaction, setAllyFaction] = useState<PlayableFaction>('EMBER');
   if (!save) return null;
   const opp = PRACTICE_OPPONENTS[faction];
   const validDeck = deckId && firstValidDeck(save, deckId) === deckId;
@@ -167,6 +173,13 @@ export default function PlayScreen() {
 
   const start = () => {
     if (!validDeck) return;
+    if (coop) {
+      const boss = { ...opp, id: `coop_${opp.id}`, difficulty, rarities: DIFFICULTY_POOLS[difficulty], special: { heroHealth: COOP_BOSS_HEALTH, bonusStartingEnergy: 1, description: [] } };
+      const a = PRACTICE_OPPONENTS[allyFaction];
+      const ally = { ...a, id: `ally_${a.id}`, difficulty: 'HARD' as Difficulty, rarities: DIFFICULTY_POOLS.HARD };
+      launchMatch({ mode: 'PRACTICE', deckId, opponent: boss, coop: { ally } }, navigate);
+      return;
+    }
     launchMatch({ mode: 'PRACTICE', deckId, opponent: { ...opp, difficulty, rarities: DIFFICULTY_POOLS[difficulty] } }, navigate);
   };
 
@@ -202,12 +215,20 @@ export default function PlayScreen() {
       </div>
       <div className="practice-head">
         <h2>{t('Practice match')}</h2>
-        <p className="muted">{t('Pick a rival Warden, set their skill, and bring your deck.')}</p>
+        <p className="muted">{coop ? t('Two against one: you and an AI teammate against a boss with {n} Health and an extra Energy.', { n: COOP_BOSS_HEALTH }) : t('Pick a rival Warden, set their skill, and bring your deck.')}</p>
+        <div className="practice-mode" role="radiogroup" aria-label={t('Match type')}>
+          <button type="button" role="radio" aria-checked={!coop} className={`btn btn-sm ${!coop ? 'btn-primary' : ''}`} onClick={() => (audio.play('click'), setCoop(false))}>
+            {t('1 v 1')}
+          </button>
+          <button type="button" role="radio" aria-checked={coop} className={`btn btn-sm ${coop ? 'btn-primary' : ''}`} onClick={() => (audio.play('click'), setCoop(true))}>
+            {t('2 v 1 co-op')}
+          </button>
+        </div>
       </div>
       <div className="play-layout">
         <section className="panel" aria-labelledby="opp-title">
           <div className="panel-title" id="opp-title">
-            {t('Opponent')}
+            {coop ? t('Boss') : t('Opponent')}
           </div>
           <div className="opponent-grid" role="radiogroup" aria-label={t('Opponent faction')}>
             {PLAYABLE_FACTIONS.map((f) => {
@@ -248,6 +269,28 @@ export default function PlayScreen() {
               </button>
             ))}
           </div>
+          {coop && (
+            <>
+              <div className="panel-title" style={{ marginTop: 'var(--space-5)' }}>
+                {t('Your teammate (AI)')}
+              </div>
+              <div className="opponent-grid ally-grid" role="radiogroup" aria-label={t('Teammate faction')}>
+                {PLAYABLE_FACTIONS.map((f) => {
+                  const o = PRACTICE_OPPONENTS[f];
+                  const sel = f === allyFaction;
+                  return (
+                    <button key={f} type="button" role="radio" aria-checked={sel} className={`opponent-tile ${sel ? 'selected' : ''}`} style={factionStyle(f)} onClick={() => (audio.play('click'), setAllyFaction(f))}>
+                      <span className="opp-sigil" aria-hidden>
+                        <WardenPortrait faction={f} size={48} />
+                      </span>
+                      <strong>{o.name}</strong>
+                      <span className="faint">{FACTIONS[f].name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </section>
 
         <section className="panel play-side" aria-labelledby="deck-title">
@@ -260,7 +303,7 @@ export default function PlayScreen() {
             {t('Victory pays')} <strong className="gold-text">{t('{n} Gold', { n: winGold })}</strong> {t('and')} <strong>{winXp} XP</strong>{t(', plus a first-win-of-the-day bonus.')}
           </div>
           <button className="btn btn-primary btn-xl play-start" disabled={!validDeck} onClick={start}>
-            {t('Fight {name}', { name: opp.name.split(' ').slice(-1)[0] })}
+            {coop ? t('Fight {name} together', { name: opp.name.split(' ').slice(-1)[0] }) : t('Fight {name}', { name: opp.name.split(' ').slice(-1)[0] })}
           </button>
           {!validDeck && <p className="deckbox-issue">{t('Choose a valid 30-card deck to play.')}</p>}
 

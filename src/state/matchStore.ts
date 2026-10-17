@@ -5,7 +5,7 @@ import { applyBrawlMods, brawlPlayerMods, findBrawlFight } from '@/domain/brawl'
 import { create } from 'zustand';
 import { randomSeed } from '@/core/rng';
 import { applyAction, createGame } from '@/engine/game';
-import type { GameAction, GameEvent, GameState, PlayerId, TargetRef, UnitInstance } from '@/engine/types';
+import type { GameAction, GameEvent, GameState, PlayerId, SideSetup, TargetRef, UnitInstance } from '@/engine/types';
 import { activeLevelOf, attackTargets, canAttack, canPlayCard, canUseHeroPower, findUnit, validTargets } from '@/engine/queries';
 import { getCard } from '@/data/cards';
 import { aiClient } from '@/ai/aiClient';
@@ -13,6 +13,7 @@ import { audio, type SoundEvent } from '@/audio/audioService';
 import { GAME_RULES } from '@/config/gameRules';
 import type { MatchRewards } from '@/domain/matchResults';
 import { opponentSide, playerSide } from '@/domain/matchSetup';
+import { wonBy } from '@/engine/teams';
 import { ownedCopies } from '@/domain/save';
 import type { ActiveMatch } from '@/domain/activeMatch';
 import { sanitizeRating } from '@/domain/ranked';
@@ -43,6 +44,8 @@ export const DISCONNECT_TIMING = {
 
 export const HUMAN: PlayerId = 0;
 export const AI: PlayerId = 1;
+/** Co-op: your teammate's seat. */
+export const ALLY: PlayerId = 2;
 
 export type EntityKey = string; // 'u:12' | 'h:0'
 export const entityKey = (t: TargetRef): EntityKey => (t.type === 'unit' ? `u:${t.uid}` : `h:${t.player}`);
@@ -320,8 +323,8 @@ export const useMatch = create<MatchStore>((set, get) => {
         set({ spellFx: { ...spell, id: fxSeq++ } });
         await sleep(anim(spell.rarity === 'LEGENDARY' ? 1500 : 1050));
         set({ spellFx: null });
-      } else if (played && played.type === 'CARD_PLAYED' && played.player === AI) {
-        set({ cast: { cardId: played.cardId, player: AI, id: fxSeq++ } });
+      } else if (played && played.type === 'CARD_PLAYED' && played.player !== HUMAN) {
+        set({ cast: { cardId: played.cardId, player: played.player, id: fxSeq++ } });
         await sleep(anim(1100));
       } else if (played && played.type === 'CARD_PLAYED' && getCard(played.cardId)?.cardType === 'SPELL') {
         set({ cast: { cardId: played.cardId, player: HUMAN, id: fxSeq++ } });
@@ -527,34 +530,36 @@ export const useMatch = create<MatchStore>((set, get) => {
       set({ banner: { text: t('match.theirTurn', { name: get().game?.players[player].hero.name ?? '' }), id: bannerSeq++ }, turnDeadline: null });
       return;
     }
-    set({ banner: { text: player === HUMAN ? t('match.yourTurn') : t('match.theirTurn', { name: get().game?.players[AI].hero.name ?? '' }), id: bannerSeq++ } });
+    set({ banner: { text: player === HUMAN ? t('match.yourTurn') : t('match.theirTurn', { name: get().game?.players[player]?.hero.name ?? '' }), id: bannerSeq++ } });
     if (player === HUMAN) {
       // No chime here: the draw at the start of the turn already makes a sound.
       const timer = useSettings.getState().turnTimer && cfg?.mode !== 'TUTORIAL' && GAME_RULES.turnTimerSeconds > 0;
       set({ turnDeadline: timer ? Date.now() + GAME_RULES.turnTimerSeconds * 1000 : null });
     } else {
       set({ turnDeadline: null });
-      if (!cfg?.online) void runAiTurn();
+      if (!cfg?.online) void runAiTurn(player);
     }
   }
 
-  async function runAiTurn() {
+  /** The AI plays seat `seat`: the opponent (or co-op boss), or the co-op AI teammate. */
+  async function runAiTurn(seat: PlayerId = AI) {
     const token = ++aiLoopToken;
     const cfg = get().config;
     if (!cfg) return;
+    const def = seat === ALLY && cfg.coop ? cfg.coop.ally : cfg.opponent;
     let actions = 0;
     // Wait for the human's end-turn animation to finish.
     while (get().busy) await sleep(30);
     await sleep(anim(700));
     while (token === aiLoopToken) {
       const game = get().game;
-      if (!game || game.phase !== 'MAIN' || game.activePlayer !== AI) break;
+      if (!game || game.phase !== 'MAIN' || game.activePlayer !== seat) break;
       set({ aiThinking: true });
       const started = performance.now();
       let action: GameAction;
       if (cfg.mode === 'TUTORIAL') action = tutorialOpponentAction(game);
       else {
-        action = await aiClient.chooseAction(game, AI, cfg.opponent.difficulty, cfg.opponent.personality, randomSeed(), actions, cfg.aiTuning);
+        action = await aiClient.chooseAction(game, seat, def.difficulty, def.personality, randomSeed(), actions, seat === AI ? cfg.aiTuning : undefined);
       }
       // Human-like pacing: at least a short pause between actions.
       const elapsed = performance.now() - started;
@@ -564,12 +569,12 @@ export const useMatch = create<MatchStore>((set, get) => {
       const ok = await dispatch(action);
       actions++;
       if (!ok) {
-        await dispatch({ type: 'END_TURN', player: AI });
+        await dispatch({ type: 'END_TURN', player: seat });
         break;
       }
       if (action.type === 'END_TURN') break;
       if (actions > 60) {
-        await dispatch({ type: 'END_TURN', player: AI });
+        await dispatch({ type: 'END_TURN', player: seat });
         break;
       }
     }
@@ -595,7 +600,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     const cfg = s.config;
     // A Warden destroyed: the killing blow plays out before the results.
     if (state.endReason === 'HERO_DEFEATED' && (state.winner === 0 || state.winner === 1)) {
-      set({ finale: { loser: state.winner === HUMAN ? AI : HUMAN, id: fxSeq++ }, turnDeadline: null, selection: null, targets: [] });
+      set({ finale: { loser: wonBy(state, HUMAN) ? AI : HUMAN, id: fxSeq++ }, turnDeadline: null, selection: null, targets: [] });
       await sleep(anim(1700));
       if (recordedGen !== matchGen) return;
       set({ finale: null });
@@ -604,7 +609,7 @@ export const useMatch = create<MatchStore>((set, get) => {
     // A spectator has nothing to record.
     if (cfg?.online === 'spectator') return;
     aiLoopToken++;
-    const result = state.winner === HUMAN ? 'WIN' : state.winner === 'DRAW' ? 'DRAW' : 'LOSS';
+    const result = wonBy(state, HUMAN) ? 'WIN' : state.winner === 'DRAW' ? 'DRAW' : 'LOSS';
     audio.play(result === 'WIN' ? 'victory' : 'defeat');
     if (!cfg || cfg.mode === 'SPECTATE') return;
     const save = useAccount.getState().save;
@@ -620,10 +625,10 @@ export const useMatch = create<MatchStore>((set, get) => {
         deckName: deck?.name ?? 'Tutorial deck',
         deckFaction: deck?.heroFaction ?? 'EMBER',
         result,
-        turns: Math.ceil(state.turn / 2),
+        turns: Math.ceil(state.turn / state.players.length),
         durationMs: Date.now() - s.startedAt,
         stats: state.players[HUMAN].stats,
-        conceded: state.endReason === 'CONCEDE' && state.winner !== HUMAN,
+        conceded: state.endReason === 'CONCEDE' && !wonBy(state, HUMAN),
         pveEncounterId: cfg.mode === 'PVE' ? cfg.encounterId : undefined,
         firstWinReward: cfg.mode === 'PVE' ? cfg.opponent.firstWinReward : undefined,
         heroHealth: state.players[HUMAN].hero.health,
@@ -782,7 +787,9 @@ export const useMatch = create<MatchStore>((set, get) => {
           if (!fight) throw new Error('This Brawl is over.');
           me = applyBrawlMods(me, brawlPlayerMods(fight));
         }
-        setup = { seed: config.seed ?? randomSeed(), players: [me, opponent] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
+        setup = config.coop
+          ? { seed: config.seed ?? randomSeed(), players: [me, opponent, opponentSide(config.coop.ally)] as [SideSetup, SideSetup, SideSetup] }
+          : { seed: config.seed ?? randomSeed(), players: [me, opponent] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
       }
       const state = initialState ?? createGame(setup!).state;
       if (gen !== matchGen) return;
@@ -857,10 +864,17 @@ export const useMatch = create<MatchStore>((set, get) => {
         if (gen !== matchGen) return;
         const res = applyAction(get().game!, { type: 'MULLIGAN', player: AI, replaceUids: replace });
         if (!res.error) set({ game: res.state });
+        // Co-op: the AI teammate keeps or swaps its opening hand too.
+        if (config.coop && get().game!.players[ALLY]) {
+          const ally = config.coop.ally;
+          const r2 = applyAction(get().game!, { type: 'MULLIGAN', player: ALLY, replaceUids: await aiClient.chooseMulligan(get().game!, ALLY, ally.difficulty, ally.personality) });
+          if (gen !== matchGen) return;
+          if (!r2.error) set({ game: r2.state });
+        }
       } else if (state.activePlayer === HUMAN) {
         onTurnStarted(HUMAN);
       } else {
-        onTurnStarted(AI);
+        onTurnStarted(state.activePlayer);
       }
     },
 
@@ -887,7 +901,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       }
       // Wait for the AI's (hidden) mulligan so the main phase starts from one place.
       const gen = matchGen;
-      while (get().game && !get().game!.players[AI].mulliganDone && gen === matchGen) await sleep(40);
+      while (get().game && get().game!.players.some((p) => p.id !== HUMAN && !p.mulliganDone) && gen === matchGen) await sleep(40);
       if (gen !== matchGen) return;
       const s = get();
       if (!s.game || s.phase !== 'mulligan') return;

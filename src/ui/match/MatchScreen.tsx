@@ -6,7 +6,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { getCardSafe } from '@/data/cards';
 import { effectiveCost, canPlayCard } from '@/engine/queries';
 import type { GameState, PlayerId } from '@/engine/types';
-import { useMatch, HUMAN, AI, parseEntity } from '@/state/matchStore';
+import { useMatch, HUMAN, AI, parseEntity, ALLY } from '@/state/matchStore';
 import { useMatchLaunch } from '@/state/matchLaunch';
 import { useSettings } from '@/state/settingsStore';
 import { toast, useUi } from '@/state/uiStore';
@@ -429,6 +429,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const draggedCard = drag?.active && drag.kind === 'card' ? me.hand.find((c) => c.uid === drag.uid) : undefined;
   const draggingUnit = !!draggedCard && getCardSafe(draggedCard.cardId).cardType === 'UNIT';
 
+  // Co-op (2 v 1): the teammate's row sits between the boss's and yours.
+  const coop = game.players.length > 2;
   const renderRow = (player: PlayerId) => {
     const p = game.players[player];
     const units = [...p.board];
@@ -451,10 +453,10 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
     }
     return (
       <div
-        className={`board-row ${player === HUMAN ? 'self' : 'enemy'} ${drag?.active && drag.kind === 'card' && player === HUMAN ? 'is-drop-target' : ''}`}
+        className={`board-row ${player === HUMAN ? 'self' : player === ALLY ? 'ally' : 'enemy'} ${drag?.active && drag.kind === 'card' && player === HUMAN ? 'is-drop-target' : ''}`}
         data-dropzone={player === HUMAN ? 'board' : undefined}
-        data-tutorial={player === HUMAN ? 'my-board' : 'enemy-board'}
-        aria-label={player === HUMAN ? t('Your battlefield') : t('Enemy battlefield')}
+        data-tutorial={player === HUMAN ? 'my-board' : player === ALLY ? undefined : 'enemy-board'}
+        aria-label={player === HUMAN ? t('Your battlefield') : player === ALLY ? t('Your teammate’s battlefield') : t('Enemy battlefield')}
       >
         {player === HUMAN && draggingUnit && items.length < 7 && <span className="board-empty faint">{t('match.dragHere')}</span>}
         {items.map((i) => (
@@ -496,7 +498,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
 
   return (
     <div
-      className={`match ${myTurn ? 'my-turn' : 'their-turn'} ${selection ? 'is-targeting' : ''}`}
+      className={`match ${myTurn ? 'my-turn' : 'their-turn'} ${selection ? 'is-targeting' : ''} ${coop ? 'is-coop' : ''}`}
       style={boardBg ? ({ '--board-bg': `url(${boardBg.url})`, '--board-dim': boardBg.dim } as CSSProperties) : undefined}
       ref={boardRef}
       onContextMenu={(e) => {
@@ -594,11 +596,25 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       </section>
 
       {/* ---- Battlefield ---- */}
-      <section className="battlefield" aria-label={t('Battlefield')}>
+      <section className={`battlefield ${coop ? 'is-coop' : ''}`} aria-label={t('Battlefield')}>
         {renderRow(AI)}
         <div className="battle-divider" aria-hidden>
           <span />
         </div>
+        {coop && (
+          <div className={`ally-zone ${game.players[ALLY].hero.health <= 0 ? 'is-down' : ''}`}>
+            <div className="ally-hero" aria-label={t('Your teammate')}>
+              <HeroPanel game={game} player={ALLY} targetable={targets.includes('h:2')} onClick={() => store.getState().clickHero(ALLY)} />
+              <div className="ally-info">
+                <EnergyBar game={game} player={ALLY} />
+                <span className="ally-hand num" title={tn(game.players[ALLY].hand.length, '{n} card in hand', '{n} cards in hand')}>
+                  ✋ {game.players[ALLY].hand.length}
+                </span>
+              </div>
+            </div>
+            {renderRow(ALLY)}
+          </div>
+        )}
         {renderRow(HUMAN)}
       </section>
 

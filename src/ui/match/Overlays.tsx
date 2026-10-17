@@ -23,6 +23,7 @@ import { CROWN_RANK, TIER_COLORS, aiTierOf } from '@/domain/aiRanked';
 import { AiRankEmblem, aiRankLabel } from '@/ui/components/meta/aiRankedUi';
 import { MatchAchievements } from '@/ui/components/AchievementBadge';
 import { CardRewardReveal } from '@/ui/components/packs/CardRewardReveal';
+import { wonBy } from '@/engine/teams';
 import { parseNightmare } from '@/data/nightmare';
 import { t, tn } from '@/i18n';
 import '@/ui/styles/aiRanked.css';
@@ -442,7 +443,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
   const wonCard = rewards?.lines.find((l) => l.cardId);
   const [cardSeen, setCardSeen] = useState(false);
   const nightmare = config?.mode === 'PVE' ? parseNightmare(config.encounterId) : null;
-  const win = game.winner === HUMAN;
+  const win = wonBy(game, HUMAN);
   const draw = game.winner === 'DRAW';
   const stats = game.players[HUMAN].stats;
   const mins = Math.max(1, Math.round((endedAt - startedAt) / 60000));
@@ -466,7 +467,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
           <h4>{t('Battle report')}</h4>
           <dl>
             <dt>{t('Turns played')}</dt>
-            <dd className="num">{Math.ceil(game.turn / 2)}</dd>
+            <dd className="num">{Math.ceil(game.turn / game.players.length)}</dd>
             <dt>{t('Damage dealt')}</dt>
             <dd className="num">{stats.damageDealt}</dd>
             <dt>{t('Cards played')}</dt>

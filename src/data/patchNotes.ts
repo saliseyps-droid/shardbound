@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.57.0',
+    date: '2026-10-17',
+    title: 'Two against one',
+    summary: 'Practice matches have a new 2 v 1 co-op mode: you and an AI teammate take on a boss together.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Play → Practice: switch to “2 v 1 co-op” to fight the chosen rival as a boss with 50 Health and an extra Energy, side by side with an AI teammate of the faction you pick.',
+          'You play first, then your teammate, then the boss. The boss attacks and targets either of you; your spells that help allies can also help your teammate’s Warden and units.',
+          'A Warden who falls leaves the table and the other fights on. The boss wins only when both of you are down.',
+          'Your teammate’s Warden, Energy, hand size and battlefield sit between yours and the boss’s.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.56.1',
     date: '2026-10-17',
     title: 'Numbers on top',
