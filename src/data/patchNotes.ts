@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.58.5',
+    date: '2026-10-17',
+    title: 'Three rows in your pocket',
+    summary: '2 v 1 co-op fits on a phone held sideways.',
+    sections: [{ kind: 'fixed', items: ['2 v 1 co-op on phones: the three rows of units overlapped and your teammate’s Warden covered your deck. The units are now smaller so all three rows fit, and your teammate’s Warden sits at the free right edge.'] }],
+    commits: [],
+  },
+  {
     version: '0.58.4',
     date: '2026-10-17',
     title: 'Wrath, not a quake',

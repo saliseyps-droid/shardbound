@@ -465,3 +465,16 @@ body:has(.match-overlay.results) .toast-host { top: calc(10px + var(--safe-top))
   body .modal.inspector .modal-head { margin-bottom: 6px; }
   body .modal.inspector .modal-head h3 { font-size: 1.1rem; }
 }
+
+/* Phones sideways, 2 v 1 co-op: three rows of units must share the short battlefield, so the units
+   shrink and the rows sit tight; the teammate's Warden goes to the free right edge (your deck and
+   Warden hold the left). */
+@media (max-height: 520px) {
+  body .match.is-coop { --unit-w: clamp(34px, 12.5vh, 60px); }
+  body .battlefield.is-coop { padding-bottom: 0; row-gap: 0; }
+  body .battlefield.is-coop .board-row { min-height: calc(var(--unit-h) + 4px); margin: 1px 0; padding: 2px 8px; }
+  body .ally-zone > .ally-hero { left: auto; right: 4px; padding: 2px 6px; gap: 4px; }
+  body .ally-hero .hero { width: clamp(40px, 11vh, 56px); }
+  body .ally-hero .hero-health { min-width: 20px; height: 22px; font-size: 0.8rem; }
+  body .ally-hero .hero-armor { min-width: 18px; height: 20px; font-size: 0.75rem; }
+}

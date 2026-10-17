@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.58.5': {
+    title: 'Tři řady do kapsy',
+    summary: 'Kooperace 2 na 1 se vejde na telefon otočený na šířku.',
+    sections: [['Kooperace 2 na 1 na telefonu: tři řady jednotek se překrývaly a Strážce spoluhráče zakrýval tvůj balíček. Jednotky jsou teď menší, takže se vejdou všechny tři řady, a Strážce spoluhráče je u volného pravého okraje.']],
+  },
   '0.58.4': {
     title: 'Hněv místo zemětřesení',
     summary: 'Boss v kooperaci už každý tah nezasahuje všechny vaše jednotky, takže sestavy z malých jednotek zase fungují.',
