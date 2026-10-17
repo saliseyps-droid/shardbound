@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.59.5': {
+    title: 'Nebe plné peří',
+    summary: 'Azrafelovo peří padá po celý jeho příchod.',
+    sections: [['Příchod Azrafela: černé peří a rudé jiskry už nespadnou v jednom pásu, ale padají po celé obrazovce až do konce příchodu.']],
+  },
   '0.59.4': {
     title: 'Světlo a stín',
     summary: 'Příchody Arbitra, Halcyona a Azrafela jsou přepracované.',

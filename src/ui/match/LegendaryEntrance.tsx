@@ -770,7 +770,7 @@ const EXTRAS: Partial<Record<LegendTheme, { back?: () => ReactNode; stage?: () =
     stage: () => <div className="rz-ring" />,
     front: () => (
       <>
-        <div className="rz-feathers">{particles(34, 'rz-feather')}</div>
+        <div className="rz-feathers">{particles(44, 'rz-feather')}</div>
         <div className="rz-embers">{particles(40, 'rz-ember')}</div>
       </>
     ),

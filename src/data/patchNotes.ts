@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.59.5',
+    date: '2026-10-18',
+    title: 'A sky of feathers',
+    summary: 'Azrafel’s feathers keep falling for his whole entrance.',
+    sections: [{ kind: 'improved', items: ['Azrafel’s entrance: the black feathers and red embers no longer fall in a single band; they keep falling across the whole screen until the entrance ends.'] }],
+    commits: [],
+  },
+  {
     version: '0.59.4',
     date: '2026-10-18',
     title: 'Light and shadow',
