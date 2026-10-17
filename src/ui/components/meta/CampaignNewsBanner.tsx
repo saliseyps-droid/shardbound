@@ -6,18 +6,40 @@ import { CardView } from '@/ui/components/CardView';
 import { cinematicImageUrl } from '@/ui/components/Cinematic';
 import { t } from '@/i18n';
 
-/** The newest campaign, as shown on Home above the newest set. */
-const NEW_CAMPAIGN = {
-  id: 'heaven',
-  image: 'hv_rainbow_halls',
-  highlights: ['ast_halcyon_captain_of_the_pearl_gate', 'neu_the_arbiter', 'emb_azrafel_angel_of_the_red_moon'],
-  tagline: 'Two Wardens, one oath: climb the Rainbow Stair to the Host above Aethra and stand trial before the Arbiter, with an AI teammate or a friend.',
-  foes: '{n} knights of the Host',
-  cta: 'Ascend',
-};
+/** The newest campaigns, newest first, as shown on Home above the newest set. */
+const NEW_CAMPAIGNS = [
+  {
+    id: 'heaven',
+    image: 'hv_rainbow_halls',
+    highlights: ['ast_halcyon_captain_of_the_pearl_gate', 'neu_the_arbiter', 'emb_azrafel_angel_of_the_red_moon'],
+    tagline: 'Two Wardens, one oath: climb the Rainbow Stair to the Host above Aethra and stand trial before the Arbiter, with an AI teammate or a friend.',
+    foes: '{n} knights of the Host',
+    cta: 'Ascend',
+  },
+  {
+    id: 'inferno',
+    image: 'inf_descent',
+    highlights: ['vod_vhessa_the_ash_serpent', 'emb_azgaroth_the_ninth_sovereign', 'tid_rimegrave_lord_of_the_frozen_lake'],
+    tagline: 'Go down into the fire beneath Aethra and take the stolen Shard back from Azgaroth, the Ninth Sovereign.',
+    foes: '{n} demons to beat',
+    cta: 'Descend',
+  },
+];
+type NewCampaign = (typeof NEW_CAMPAIGNS)[number];
 
-/** Home: the newest campaign over one of its cinematic paintings, with its Legendaries and a way in. */
-export function CampaignNewsBanner() {
+/** Home: the newest campaigns, one banner each. */
+export function CampaignNewsBanners() {
+  return (
+    <>
+      {NEW_CAMPAIGNS.map((n) => (
+        <CampaignNewsBanner key={n.id} news={n} />
+      ))}
+    </>
+  );
+}
+
+/** One new campaign over one of its cinematic paintings, with its Legendaries and a way in. */
+function CampaignNewsBanner({ news: NEW_CAMPAIGN }: { news: NewCampaign }) {
   const camp = CAMPAIGNS.find((c) => c.id === NEW_CAMPAIGN.id);
   if (!camp) return null;
   const fights = camp.chapters.flatMap((ch) => ch.encounters);
@@ -25,10 +47,10 @@ export function CampaignNewsBanner() {
   const legends = cards.filter((id) => getCard(id)!.rarity === 'LEGENDARY').length;
   const bg = cinematicImageUrl(NEW_CAMPAIGN.image);
   return (
-    <section className={`news-banner campaign-news campaign-news-${camp.id} panel`} aria-labelledby="campaign-news-title" style={bg ? ({ '--cn-bg': `url(${bg})` } as CSSProperties) : undefined}>
+    <section className={`news-banner campaign-news campaign-news-${camp.id} panel`} aria-labelledby={`campaign-news-${camp.id}`} style={bg ? ({ '--cn-bg': `url(${bg})` } as CSSProperties) : undefined}>
       <div className="news-body">
         <span className="news-kicker">{t('New campaign')}</span>
-        <h2 id="campaign-news-title">{t(camp.name)}</h2>
+        <h2 id={`campaign-news-${camp.id}`}>{t(camp.name)}</h2>
         <p className="news-tagline">{t(NEW_CAMPAIGN.tagline)}</p>
         <ul className="news-facts">
           <li>{t('{n} chapters', { n: camp.chapters.length })}</li>
