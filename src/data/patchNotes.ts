@@ -19,6 +19,17 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.59.2',
+    date: '2026-10-18',
+    title: 'No one is spared',
+    summary: 'The Arbiter now judges every other unit, his own side’s too, and his fight is tougher.',
+    sections: [
+      { kind: 'balance', items: ['The Arbiter: On Deploy he now destroys all other units, friend and foe, and gains +1/+1 for each one.', 'The Arbiter’s fight in the Tribunal: he starts with 100 Health and 20 Armor (was 80 and 15).'] },
+      { kind: 'fixed', items: ['The Arbiter’s and Ostiarius’s art no longer shows a white stripe at the edge.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.59.1',
     date: '2026-10-18',
     title: 'Judgment Day',

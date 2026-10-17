@@ -707,7 +707,7 @@ const v: OpponentsOverlay = {
       name: 'Arbitr',
       title: 'Ten, který váží vše',
       intro: 'Zvážil jsem Korunu a shledal ji lehkou. Zvážil jsem Aethru a shledal ji nedostatečnou. Vstupte na váhy, oba dva.',
-      special: ['Začíná se 80 životy, 15 brnění a 1 energií navíc.', 'Každý tah: lízne si kartu navíc a získá 2 energie.', 'Váhy: na začátku každého jeho tahu způsobí 3 poškození náhodné vaší jednotce.', 'Jeho balíček obsahuje samotného Arbitra. Poraz ho a přidá se k tobě.'],
+      special: ['Začíná se 100 životy, 20 brnění a 1 energií navíc.', 'Každý tah: lízne si kartu navíc a získá 2 energie.', 'Váhy: na začátku každého jeho tahu způsobí 3 poškození náhodné vaší jednotce.', 'Jeho balíček obsahuje samotného Arbitra. Poraz ho a přidá se k tobě.'],
     },
   },
   chapters: {

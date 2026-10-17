@@ -1,6 +1,14 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.59.2': {
+    title: 'Nikdo není ušetřen',
+    summary: 'Arbitr teď soudí všechny ostatní jednotky, i ty na své straně, a jeho souboj je těžší.',
+    sections: [
+      ['Arbitr: Při nasazení teď zničí všechny ostatní jednotky, spřátelené i nepřátelské, a za každou získá +1/+1.', 'Souboj s Arbitrem v Tribunálu: začíná se 100 životy a 20 brnění (dřív 80 a 15).'],
+      ['Obrázky Arbitra a Ostiaria už nemají na okraji bílý pruh.'],
+    ],
+  },
   '0.59.1': {
     title: 'Soudný den',
     summary: 'Tři rytíři Dvojí přísahy mají nové schopnosti: Arbitr, Solenne a Halcyon.',

@@ -86,13 +86,14 @@ describe('The Twin Oath (co-op campaign)', () => {
     expect(r.state.players[2].board[0].keywords).toContain('BARRIER');
   });
 
-  it('the Arbiter passes judgment on the whole enemy board and grows with it', () => {
-    let s = newGame({ board1: ['neu_stonehide_ox', 'token_recruit', 'token_recruit'] });
+  it('the Arbiter passes judgment on every other unit, friend and foe, and grows with it', () => {
+    let s = newGame({ board0: ['token_recruit'], board1: ['neu_stonehide_ox', 'token_recruit', 'token_recruit'] });
     setEnergy(s, 0, 10);
     s = act(s, { type: 'PLAY_CARD', player: 0, cardUid: giveCard(s, 0, 'neu_the_arbiter') });
     expect(s.players[1].board).toHaveLength(0);
-    const arbiter = s.players[0].board.find((u) => u.cardId === 'neu_the_arbiter')!;
-    expect([unitAttack(s, arbiter), currentHealth(arbiter)]).toEqual([6, 6]);
+    expect(s.players[0].board.map((u) => u.cardId)).toEqual(['neu_the_arbiter']);
+    const arbiter = s.players[0].board[0];
+    expect([unitAttack(s, arbiter), currentHealth(arbiter)]).toEqual([7, 7]);
   });
 
   it('Halcyon shields everyone behind him, and everyone who comes after', () => {

@@ -81,12 +81,15 @@ export const HEAVEN_CARDS: CardDefinition[] = [
       {
         trigger: 'ON_DEPLOY',
         effects: [
+          // Counted before the verdict: every enemy unit and every other friendly one.
           { type: 'BUFF', attack: { kind: 'ENEMY_UNIT_COUNT' }, health: { kind: 'ENEMY_UNIT_COUNT' }, target: 'SELF' },
+          { type: 'BUFF', attack: { kind: 'ALLY_UNIT_COUNT', plus: -1 }, health: { kind: 'ALLY_UNIT_COUNT', plus: -1 }, target: 'SELF' },
           { type: 'DESTROY', target: 'ALL_ENEMY_UNITS' },
+          { type: 'DESTROY', target: 'OTHER_ALLY_UNITS' },
         ],
       },
     ],
-    description: 'On Deploy: Pass judgment: destroy all enemy units and gain +1/+1 for each one.',
+    description: 'On Deploy: Pass judgment: destroy all other units, friend and foe, and gain +1/+1 for each one.',
     flavorText: 'He weighed the Crown when it was whole and found it light. He has weighed Aethra since, and found it wanting.',
   },
 ];
