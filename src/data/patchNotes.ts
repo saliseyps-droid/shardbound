@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.58.2',
+    date: '2026-10-17',
+    title: 'Room to breathe',
+    summary: 'Warden frames on the Home screen keep clear of your name, and the co-op boss picker is easier to read.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          'Home: a Warden frame (the wings and banners especially) reached into your name and level. They now have room beside it.',
+          'Play a friend, 2 v 1 co-op: the boss picker squeezed six narrow tiles into a row and cut the names off. It is now three across, each portrait beside its name.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.58.1',
     date: '2026-10-17',
     title: 'Shoulder to shoulder',

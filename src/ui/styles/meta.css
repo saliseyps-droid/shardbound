@@ -393,6 +393,9 @@ label.toggle-row { cursor: pointer; }
 
 /* Home: large Warden portrait next to the player's name. */
 .home-hero-warden .warden-sigil { width: clamp(120px, 9.5vw, 170px); height: calc(clamp(120px, 9.5vw, 170px) * 1.14); }
+/* A Warden frame reaches 18% past the portrait (wf-layer), wings and banners a little further: keep it clear of the name and level. */
+.home-hero-warden > .framed-slot:has(.wf-layer) { margin-left: calc(clamp(120px, 9.5vw, 170px) * 0.2); margin-right: calc(clamp(120px, 9.5vw, 170px) * 0.3); }
+@media (max-width: 760px) { .home-hero-warden > .framed-slot:has(.wf-layer) { margin-block: calc(clamp(120px, 9.5vw, 170px) * 0.25); } }
 /* Containers that host a filled Warden portrait must be positioning parents. */
 .enc-portrait, .enc-sigil { position: relative; }
 

@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.58.2': {
+    title: 'Víc místa',
+    summary: 'Rámečky Strážce na úvodní obrazovce už nezasahují do jména a výběr bosse v kooperaci je přehlednější.',
+    sections: [
+      [
+        'Úvodní obrazovka: rámeček Strážce (hlavně křídla a prapory) zasahoval do tvého jména a úrovně. Teď má vedle sebe dost místa.',
+        'Hrát s přítelem, kooperace 2 na 1: výběr bosse mačkal šest úzkých dlaždic do řady a ořezával jména. Teď jsou tři vedle sebe a u každého portrétu je jméno.',
+      ],
+    ],
+  },
   '0.58.1': {
     title: 'Bok po boku',
     summary: 'V kooperaci 2 na 1 je bojiště spoluhráče vycentrované stejně jako tvoje a bossovo.',
