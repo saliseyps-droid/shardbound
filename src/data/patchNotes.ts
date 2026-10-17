@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.56.1',
+    date: '2026-10-17',
+    title: 'Numbers on top',
+    summary: 'Warden frames no longer cover your Health and Armor in a match, and the frame buttons in Customization fit their tiles.',
+    sections: [{ kind: 'fixed', items: ['Matches: with a Warden frame on, the Health and Armor numbers were hidden behind it. They now sit on top of every frame.', 'Customization: the frame buttons (“In use (click to remove)” and the shop prices) no longer spill out of their tiles.'] }],
+    commits: [],
+  },
+  {
     version: '0.56.0',
     date: '2026-10-16',
     title: 'Nightmares for every guest',

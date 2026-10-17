@@ -566,3 +566,6 @@ label.toggle-row { cursor: pointer; }
     #140a26;
 }
 .news-banner.has-art .news-tagline { text-shadow: 0 1px 3px #000; }
+/* Long button labels ("In use (click to remove)") wrap inside the frame tile. */
+.frame-tile .btn { max-width: 100%; white-space: normal; line-height: 1.2; text-align: center; height: auto; padding-top: 6px; padding-bottom: 6px; }
+.frame-tile { min-width: 0; }

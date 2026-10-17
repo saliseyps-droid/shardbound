@@ -160,3 +160,6 @@
 .wf-layer .wf-turn, .wf-layer .wf-orbit-slow, .wf-layer .wf-wingbeat { transform-box: view-box; }
 .wf-glimmer { opacity: 0; animation: wf-glimmer 4.5s ease-in-out infinite; }
 @keyframes wf-glimmer { 0%, 100% { opacity: 0; } 50% { opacity: 0.55; } }
+/* Above the frame, in the child's box: a hero's health and armor stay readable over any frame. */
+.framed-slot > .framed-over { display: block; position: relative; z-index: 3; grid-area: 1 / 1; pointer-events: none; }
+.framed-over .hero-health.is-low { animation: pulse-low 1.2s ease-in-out infinite; }

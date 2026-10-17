@@ -121,8 +121,8 @@ export default function CardBacksScreen() {
                     {chosen ? t('In use (click to remove)') : t('Use this frame')}
                   </button>
                 ) : (
-                  <button type="button" className="btn btn-sm" onClick={() => navigate('/shop')}>
-                    <GoldIcon size={13} /> <span className="num">{f.price.toLocaleString()}</span> · {t('In the Shop')}
+                  <button type="button" className="btn btn-sm" onClick={() => navigate('/shop')} title={t('In the Shop')}>
+                    <GoldIcon size={13} /> <span className="num">{f.price.toLocaleString()}</span>
                   </button>
                 )}
               </div>

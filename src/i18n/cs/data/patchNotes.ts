@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.56.1': {
+    title: 'Čísla navrchu',
+    summary: 'Rámečky Strážce už v zápase nezakrývají životy a brnění a tlačítka rámečků v Přizpůsobení se vejdou do dlaždic.',
+    sections: [['Zápasy: s nasazeným rámečkem Strážce se čísla životů a brnění schovávala pod ním. Teď jsou nad každým rámečkem.', 'Přizpůsobení: tlačítka u rámečků („Používá se (kliknutím odebereš)“ a ceny z obchodu) už nepřetékají z dlaždic.']],
+  },
   '0.56.0': {
     title: 'Noční můry pro každého hosta',
     summary: 'Každý souboj v kampani, který dává kartu, má teď také Noční můru, takže můžeš získat její Foil a Prismatic kopie a mít ji v balíčku dvakrát.',

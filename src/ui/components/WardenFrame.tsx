@@ -702,10 +702,12 @@ const DESIGNS: Record<string, (p: { u: string }) => { back: ReactNode; front: Re
  * Wraps an existing hexagonal portrait element (a match hero, the Home or Profile sigil) in the
  * faction's frame, stretched to that element's box. Without a frame the child is returned as is.
  */
-export function FramedSlot({ frame, children, className = '' }: { frame: string | null | undefined; children: ReactNode; className?: string }) {
+/** `over`: shown above the frame too (a hero's health and armor), in the same box as the child. */
+export function FramedSlot({ frame, children, over, className = '' }: { frame: string | null | undefined; children: ReactNode; over?: ReactNode; className?: string }) {
   const u = `wf${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
   const f = frame && frame in DESIGNS ? frame : null;
   if (!f) return <>{children}</>;
+  // (Without a frame the caller keeps `over` inside its own element.)
   const design = DESIGNS[f]({ u });
   return (
     <span className={`framed-slot wf-f-${f.toLowerCase()} ${className}`}>
@@ -716,6 +718,7 @@ export function FramedSlot({ frame, children, className = '' }: { frame: string 
       <svg className="wf-layer wf-front" viewBox={VIEW} preserveAspectRatio="none" aria-hidden>
         {design.front}
       </svg>
+      {over && <span className="framed-over">{over}</span>}
     </span>
   );
 }

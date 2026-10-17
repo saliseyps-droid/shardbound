@@ -16,6 +16,7 @@ import type { StaticKeyword } from '@/game/types';
 import { useMatch, HUMAN, type Fx } from '@/state/matchStore';
 import { t } from '@/i18n';
 import { FramedSlot } from '@/ui/components/WardenFrame';
+import { isFrameId } from '@/domain/frames';
 
 // ---------------------------------------------------------------------------
 // Floating combat numbers
@@ -216,8 +217,22 @@ export function HeroPanel({
   const key = `h:${player}`;
   const fx = useFxFor(key);
   const lowHealth = p.hero.health <= 10;
+  // With a frame, health and armor sit above it (the frame would cover them inside the hero).
+  const framed = isFrameId(p.hero.frame);
+  const stats = (
+    <>
+      <div className={`hero-health num ${lowHealth ? 'is-low' : ''}`} title={t('Health')}>
+        {p.hero.health}
+      </div>
+      {p.hero.armor > 0 && (
+        <div className="hero-armor num" title={t('Armor')}>
+          {p.hero.armor}
+        </div>
+      )}
+    </>
+  );
   return (
-    <FramedSlot frame={p.hero.frame} className="hero-frame">
+    <FramedSlot frame={p.hero.frame} className="hero-frame" over={framed ? stats : undefined}>
     <div
       className={`hero ${player === HUMAN ? 'hero-self' : 'hero-enemy'} ${targetable ? 'is-targetable' : ''} ${fx.some((f) => f.kind === 'damage') ? 'is-hit' : ''} ${lowHealth ? 'is-low' : ''}`}
       data-entity={key}
@@ -234,14 +249,7 @@ export function HeroPanel({
           <Glyph name={p.hero.avatar} size={44} />
         </div>
       )}
-      <div className="hero-health num" title={t('Health')}>
-        {p.hero.health}
-      </div>
-      {p.hero.armor > 0 && (
-        <div className="hero-armor num" title={t('Armor')}>
-          {p.hero.armor}
-        </div>
-      )}
+      {!framed && stats}
       <div className="hero-name">{p.hero.name}</div>
       {targetable && <span className="target-mark" aria-hidden>◎</span>}
       <FxLayer fx={fx} />
