@@ -429,7 +429,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const draggedCard = drag?.active && drag.kind === 'card' ? me.hand.find((c) => c.uid === drag.uid) : undefined;
   const draggingUnit = !!draggedCard && getCardSafe(draggedCard.cardId).cardType === 'UNIT';
 
-  const renderRow = (player: 0 | 1) => {
+  const renderRow = (player: PlayerId) => {
     const p = game.players[player];
     const units = [...p.board];
     const rowGhosts = ghosts.filter((g) => g.owner === player);

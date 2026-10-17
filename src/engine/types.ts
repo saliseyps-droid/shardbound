@@ -1,7 +1,9 @@
 import type { RngState } from '@/core/rng';
 import type { Ability, StaticKeyword } from '@/game/types';
 
-export type PlayerId = 0 | 1;
+/** A seat at the table: 0 and 1 in a normal match; a co-op match adds seat 2 (src/engine/teams.ts). */
+export type PlayerId = 0 | 1 | 2;
+/** The opponent in a two-player match (co-op code uses src/engine/teams.ts instead). */
 export const other = (p: PlayerId): PlayerId => (p === 0 ? 1 : 0);
 
 export type TargetRef = { type: 'unit'; uid: number } | { type: 'hero'; player: PlayerId };
@@ -150,8 +152,13 @@ export interface GameState {
   activePlayer: PlayerId;
   firstPlayer: PlayerId;
   phase: GamePhase;
-  players: [PlayerState, PlayerState];
+  players: PlayerState[];
+  /** Co-op: the team of each seat (missing = every seat its own team). */
+  teams?: number[];
+  /** Co-op: the order seats take their turns (missing = 0, 1). */
+  turnOrder?: PlayerId[];
   nextUid: number;
+  /** The winning seat; in co-op the seat that stands for the winning team (0 = the players, 1 = the boss). */
   winner: PlayerId | 'DRAW' | null;
   /** DISCONNECT: online link lost while both players were still online (a draw, set by the client). */
   endReason: 'HERO_DEFEATED' | 'CONCEDE' | 'TURN_LIMIT' | 'DISCONNECT' | null;
@@ -256,7 +263,8 @@ export interface SideSetup {
 
 export interface MatchSetup {
   seed: number;
-  players: [SideSetup, SideSetup];
+  /** Two sides; a third makes a co-op match: seats 0 and 2 together against seat 1. */
+  players: [SideSetup, SideSetup] | [SideSetup, SideSetup, SideSetup];
   /** Force who goes first (tutorial); otherwise random. */
   firstPlayer?: PlayerId;
   skipMulligan?: boolean;

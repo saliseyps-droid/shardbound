@@ -15,7 +15,7 @@ export function simulateBotMatch(a: SideSetup, b: SideSetup, difficulties: [Diff
   for (let i = 0; i < 4000 && s.phase === 'MAIN'; i++) {
     if (s.turn !== turn) [perTurn, turn] = [0, s.turn];
     const me = s.activePlayer as PlayerId;
-    const res = applyAction(s, chooseAction(s, me, cfgs[me], seed * 31 + i, perTurn++).action);
+    const res = applyAction(s, chooseAction(s, me, cfgs[me as 0 | 1], seed * 31 + i, perTurn++).action);
     s = res.error ? applyAction(s, { type: 'END_TURN', player: me }).state : res.state;
   }
   if (s.winner === 0 || s.winner === 1) return s.winner;

@@ -3,7 +3,7 @@ import { getCard } from '@/data/cards';
 import { applyAction } from '@/engine/game';
 import { getLegalActions } from '@/engine/legal';
 import type { GameAction, GameState, PlayerId } from '@/engine/types';
-import { other } from '@/engine/types';
+import { enemiesOf, wonBy } from '@/engine/teams';
 import { effectiveCost, findUnit, unitAttack } from '@/engine/queries';
 import type { AiConfig } from './config';
 import { WIN_SCORE, evaluate } from './evaluate';
@@ -20,10 +20,13 @@ export function determinize(state: GameState, me: PlayerId, seed: number): GameS
   const s = structuredClone(state);
   s.log = [];
   s.rng = createRng(seed);
-  const them = other(me);
   shuffleInPlace(s.rng, s.players[me].deck);
-  s.players[them].hand = s.players[them].hand.map((c) => (c.revealed ? c : { ...c, cardId: HIDDEN_CARD_ID, costMod: 0 }));
-  s.players[them].deck = s.players[them].deck.map((c) => ({ ...c, cardId: HIDDEN_CARD_ID, costMod: 0 }));
+  // Every other seat's hand and deck are hidden (in co-op the teammate's too).
+  for (const p of s.players) {
+    if (p.id === me) continue;
+    p.hand = p.hand.map((c) => (c.revealed ? c : { ...c, cardId: HIDDEN_CARD_ID, costMod: 0 }));
+    p.deck = p.deck.map((c) => ({ ...c, cardId: HIDDEN_CARD_ID, costMod: 0 }));
+  }
   return s;
 }
 
@@ -44,9 +47,11 @@ function leafScore(state: GameState, me: PlayerId, cfg: AiConfig, rngSeed: { v: 
   if (!cfg.simulateResponse) return evaluate(state, me, cfg.weights);
   const ended = step(state, { type: 'END_TURN', player: me });
   if (!ended || ended.phase === 'ENDED') return ended ? evaluate(ended, me, cfg.weights) : evaluate(state, me, cfg.weights);
-  // Opponent response: greedy attacks only (their hand is hidden to us).
+  // Opponent response: greedy attacks only (their hand is hidden to us). In co-op the next seat may
+  // be our teammate: then there is no opposing reply to look at right away.
   let s = ended;
-  const them = other(me);
+  const them = s.activePlayer;
+  if (!enemiesOf(s, me).includes(them)) return evaluate(state, me, cfg.weights);
   for (let i = 0; i < 8 && s.phase === 'MAIN' && s.activePlayer === them; i++) {
     const attacks = getLegalActions(s, them).filter((a) => a.type === 'ATTACK');
     if (attacks.length === 0) break;
@@ -140,7 +145,7 @@ export function chooseAction(realState: GameState, me: PlayerId, cfg: AiConfig, 
     for (const a of nonEnd) {
       const s = step(root, a);
       considered++;
-      if (s && s.phase === 'ENDED' && s.winner === me) return { action: a, score: WIN_SCORE, considered };
+      if (s && s.phase === 'ENDED' && wonBy(s, me)) return { action: a, score: WIN_SCORE, considered };
     }
   }
 
@@ -165,7 +170,7 @@ export function chooseAction(realState: GameState, me: PlayerId, cfg: AiConfig, 
         bestScore = n.score;
         bestFirst = n.first;
       }
-      if (n.state.phase === 'ENDED' && n.state.winner === me) return { action: n.first!, score: WIN_SCORE, considered };
+      if (n.state.phase === 'ENDED' && wonBy(n.state, me)) return { action: n.first!, score: WIN_SCORE, considered };
     }
     next.sort((a, b) => b.score - a.score);
     beam = next.slice(0, cfg.beamWidth);

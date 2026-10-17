@@ -1,11 +1,12 @@
 import { getCard, getCardSafe } from '@/data/cards';
+import { enemiesOf } from './teams';
 import type { Ability, TriggerType } from '@/game/types';
 import { getTalent } from '@/data/wardenTalents';
 import { GAME_RULES } from '@/config/gameRules';
 import type { AbilitySource, EngineContext, PendingAbility } from './context';
 import { pushEvent } from './context';
 import type { GameEvent, NewGameEvent, PlayerId, TargetRef } from './types';
-import { isEnded, other } from './types';
+import { isEnded } from './types';
 import { findUnit } from './queries';
 import { checkConditions, evalValue, executeEffect } from './effects';
 import { checkDeaths, checkGameOver } from './ops';
@@ -93,7 +94,7 @@ export function collectTriggers(ctx: EngineContext, event: GameEvent) {
       break;
     case 'UNIT_DIED':
       queueFor(ctx, event.player, 'ALLY_DIED', event, { triggerUnitUid: event.uid, excludeUid: event.uid, tagCheckCardId: event.cardId });
-      queueFor(ctx, other(event.player), 'ENEMY_DIED', event, { triggerUnitUid: event.uid, tagCheckCardId: event.cardId });
+      for (const e of enemiesOf(ctx.state, event.player)) queueFor(ctx, e, 'ENEMY_DIED', event, { triggerUnitUid: event.uid, tagCheckCardId: event.cardId });
       break;
     case 'SPELL_CAST':
       queueFor(ctx, event.player, 'FRIENDLY_SPELL_CAST', event, { tagCheckCardId: event.cardId });
@@ -109,7 +110,7 @@ export function collectTriggers(ctx: EngineContext, event: GameEvent) {
       break;
     }
     case 'HERO_DAMAGED':
-      queueFor(ctx, other(event.player), 'ENEMY_HERO_DAMAGED', event);
+      for (const e of enemiesOf(ctx.state, event.player)) queueFor(ctx, e, 'ENEMY_HERO_DAMAGED', event);
       break;
     case 'ARMOR_GAINED':
       queueFor(ctx, event.player, 'ARMOR_GAINED', event);

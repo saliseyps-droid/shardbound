@@ -1,10 +1,11 @@
 import { getCard, getCardSafe } from '@/data/cards';
+import { isCoop, mainEnemy, teamOf, teamSeat } from './teams';
 import { GAME_RULES } from '@/config/gameRules';
 import { nextInt } from '@/core/rng';
 import type { EngineContext } from './context';
 import { emit, enqueue } from './triggers';
 import type { CardInstance, PlayerId, TargetRef, UnitInstance } from './types';
-import { isEnded, other } from './types';
+import { isEnded } from './types';
 import { currentHealth, findUnit, hasKeyword, maxHealth } from './queries';
 
 export function newUid(ctx: EngineContext): number {
@@ -245,7 +246,7 @@ export function checkDeaths(ctx: EngineContext) {
       owner.graveyard.push(unit.cardId);
       owner.allyDiedThisTurn = true;
       owner.allyDeathsThisGame++;
-      ctx.state.players[other(unit.owner)].stats.unitsDestroyed++;
+      ctx.state.players[mainEnemy(ctx.state, unit.owner)].stats.unitsDestroyed++;
       if (!unit.silenced) {
         unit.abilities.forEach((ability, index) => {
           if (ability.trigger !== 'LAST_BREATH') return;
@@ -274,12 +275,29 @@ export function endGame(ctx: EngineContext, winner: PlayerId | 'DRAW', reason: '
 
 export function checkGameOver(ctx: EngineContext): boolean {
   if (isEnded(ctx.state)) return true;
-  const dead0 = ctx.state.players[0].hero.health <= 0;
-  const dead1 = ctx.state.players[1].hero.health <= 0;
+  const state = ctx.state;
+  if (isCoop(state)) {
+    // A fallen co-op Warden leaves the table (its units and relics with it) and its turns are skipped.
+    for (const p of state.players) {
+      if (p.hero.health > 0 || (p.board.length === 0 && p.relics.length === 0 && !p.location)) continue;
+      p.board = [];
+      p.relics = [];
+      p.location = null;
+    }
+    const teamDown = (team: number) => state.players.every((p) => teamOf(state, p.id) !== team || p.hero.health <= 0);
+    const players = teamDown(0);
+    const boss = teamDown(1);
+    if (players && boss) endGame(ctx, 'DRAW', 'HERO_DEFEATED');
+    else if (players) endGame(ctx, teamSeat(1), 'HERO_DEFEATED');
+    else if (boss) endGame(ctx, teamSeat(0), 'HERO_DEFEATED');
+    return isEnded(state);
+  }
+  const dead0 = state.players[0].hero.health <= 0;
+  const dead1 = state.players[1].hero.health <= 0;
   if (dead0 && dead1) endGame(ctx, 'DRAW', 'HERO_DEFEATED');
   else if (dead0) endGame(ctx, 1, 'HERO_DEFEATED');
   else if (dead1) endGame(ctx, 0, 'HERO_DEFEATED');
-  return isEnded(ctx.state);
+  return isEnded(state);
 }
 
 // ---------------------------------------------------------------------------

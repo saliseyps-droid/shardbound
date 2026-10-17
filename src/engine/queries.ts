@@ -3,14 +3,18 @@ import type { CardDefinition, StaticKeyword, TargetFilter, TargetKind, TargetReq
 import { getTalent, type ActiveLevel } from '@/data/wardenTalents';
 import { GAME_RULES } from '@/config/gameRules';
 import type { CardInstance, GameState, PlayerId, PlayerState, TargetRef, UnitInstance } from './types';
-import { other } from './types';
+import { alliesOf, enemiesOf, sameTeam } from './teams';
 
 export function player(state: GameState, id: PlayerId): PlayerState {
   return state.players[id];
 }
 
 export function findUnit(state: GameState, uid: number): UnitInstance | undefined {
-  return state.players[0].board.find((u) => u.uid === uid) ?? state.players[1].board.find((u) => u.uid === uid);
+  for (const p of state.players) {
+    const u = p.board.find((x) => x.uid === uid);
+    if (u) return u;
+  }
+  return undefined;
 }
 
 export function unitIndex(state: GameState, unit: UnitInstance): number {
@@ -38,8 +42,8 @@ export function auraBonus(state: GameState, unit: UnitInstance): AuraBonus {
     if (silenced) return;
     const aura = getCard(cardId)?.aura;
     if (!aura) return;
-    const friendly = sourceOwner === unit.owner;
-    if (aura.target === 'ENEMY_UNITS' ? friendly : !friendly) return;
+    // Ally auras reach only the source's own units; enemy auras every unit of the other team.
+    if (aura.target === 'ENEMY_UNITS' ? sameTeam(state, sourceOwner, unit.owner) : sourceOwner !== unit.owner) return;
     if (aura.target === 'OTHER_ALLY_UNITS' && sourceUid === unit.uid) return;
     if (aura.tag && !unitTags.includes(aura.tag)) return;
     bonus.attack += aura.attack ?? 0;
@@ -98,7 +102,7 @@ export function effectiveCost(state: GameState, playerId: PlayerId, card: CardIn
     if (silenced) return;
     const aura = getCard(cardId)?.costAura;
     if (!aura) return;
-    const applies = aura.side === 'ALLY' ? sourceOwner === playerId : sourceOwner !== playerId;
+    const applies = aura.side === 'ALLY' ? sourceOwner === playerId : !sameTeam(state, sourceOwner, playerId);
     if (!applies) return;
     if (aura.cardType && aura.cardType !== def.cardType) return;
     if (aura.tag && !(def.tags ?? []).includes(aura.tag)) return;
@@ -156,7 +160,7 @@ export function validTargets(
   req: TargetRequirement,
   opts: { spellLike: boolean; sourceUid?: number },
 ): TargetRef[] {
-  const enemy = other(playerId);
+  const enemies = enemiesOf(state, playerId);
   const out: TargetRef[] = [];
   const kind: TargetKind = req.kind;
   const includeHeroes = kind === 'ANY' || kind === 'ENEMY' || kind === 'ALLY';
@@ -170,17 +174,28 @@ export function validTargets(
       if (matchesFilter(state, u, req.filter)) out.push({ type: 'unit', uid: u.uid });
     }
   }
+  // Co-op: a teammate's units and Warden can take friendly (ally) targeting too.
+  if (includeAllyUnits && kind !== 'OTHER_ALLY_UNIT') {
+    for (const a of alliesOf(state, playerId)) {
+      for (const u of state.players[a].board) if (isAlive(u) && matchesFilter(state, u, req.filter)) out.push({ type: 'unit', uid: u.uid });
+    }
+  }
   if (includeEnemyUnits) {
-    for (const u of state.players[enemy].board) {
-      if (!isAlive(u)) continue;
-      if (u.ambush && !u.silenced) continue;
-      if (opts.spellLike && hasKeyword(state, u, 'WARD')) continue;
-      if (matchesFilter(state, u, req.filter)) out.push({ type: 'unit', uid: u.uid });
+    for (const enemy of enemies) {
+      for (const u of state.players[enemy].board) {
+        if (!isAlive(u)) continue;
+        if (u.ambush && !u.silenced) continue;
+        if (opts.spellLike && hasKeyword(state, u, 'WARD')) continue;
+        if (matchesFilter(state, u, req.filter)) out.push({ type: 'unit', uid: u.uid });
+      }
     }
   }
   if (includeHeroes && !req.filter) {
-    if (kind !== 'ENEMY') out.push({ type: 'hero', player: playerId });
-    if (kind !== 'ALLY') out.push({ type: 'hero', player: enemy });
+    if (kind !== 'ENEMY') {
+      out.push({ type: 'hero', player: playerId });
+      for (const a of alliesOf(state, playerId)) out.push({ type: 'hero', player: a });
+    }
+    if (kind !== 'ALLY') for (const enemy of enemies) out.push({ type: 'hero', player: enemy });
   }
   return out;
 }
@@ -259,14 +274,18 @@ export function canAttack(state: GameState, unit: UnitInstance): { ok: boolean; 
 
 export function attackTargets(state: GameState, unit: UnitInstance): TargetRef[] {
   if (!canAttack(state, unit).ok) return [];
-  const enemy = other(unit.owner);
-  const guards = hasActiveGuard(state, enemy);
   const heroAllowed = !unit.summonedThisTurn || hasKeyword(state, unit, 'SWIFT');
-  if (guards.length > 0) return guards.map((g) => ({ type: 'unit' as const, uid: g.uid }));
-  const out: TargetRef[] = state.players[enemy].board
-    .filter((u) => isAlive(u) && !(u.ambush && !u.silenced))
-    .map((u) => ({ type: 'unit' as const, uid: u.uid }));
-  if (heroAllowed) out.push({ type: 'hero', player: enemy });
+  const out: TargetRef[] = [];
+  // Each opposing side guards itself: its Guard units must be attacked before anything else on that side.
+  for (const enemy of enemiesOf(state, unit.owner)) {
+    const guards = hasActiveGuard(state, enemy);
+    if (guards.length > 0) {
+      out.push(...guards.map((g) => ({ type: 'unit' as const, uid: g.uid })));
+      continue;
+    }
+    for (const u of state.players[enemy].board) if (isAlive(u) && !(u.ambush && !u.silenced)) out.push({ type: 'unit', uid: u.uid });
+    if (heroAllowed) out.push({ type: 'hero', player: enemy });
+  }
   return out;
 }
 

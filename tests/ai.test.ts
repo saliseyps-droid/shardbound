@@ -34,7 +34,7 @@ function playOut(state: GameState, cfgs: [AiConfig, AiConfig], seed: number): { 
       lastTurn = s.turn;
     }
     const energyBefore = s.players[me].energy;
-    const d = chooseAction(s, me, cfgs[me], seed + i, perTurn);
+    const d = chooseAction(s, me, cfgs[me as 0 | 1], seed + i, perTurn);
     const res = applyAction(s, d.action);
     if (res.error) {
       illegal++;

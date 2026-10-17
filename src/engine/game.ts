@@ -7,6 +7,7 @@ import { createContext, pushEvent } from './context';
 import { emit, queuePlayerTrigger, resolveQueue, runAbility } from './triggers';
 import type { ActionResult, GameAction, GameState, MatchSetup, PlayerId, PlayerState, SideSetup, TargetRef } from './types';
 import { isEnded, other } from './types';
+import { isCoop, mainEnemy, nextInTurn, teamOf, teamSeat } from './teams';
 import {
   attackTargets,
   canAttack,
@@ -77,13 +78,18 @@ export function createGame(setup: MatchSetup): { state: GameState; events: Actio
     activePlayer: 0,
     firstPlayer: 0,
     phase: 'MULLIGAN',
-    players: [createPlayer(0, setup.players[0]), createPlayer(1, setup.players[1])],
+    players: setup.players.map((side, i) => createPlayer(i as PlayerId, side)),
     nextUid: 1,
     winner: null,
     endReason: null,
     eventSeq: 0,
     log: [],
   };
+  // Co-op: seats 0 and 2 against seat 1; the players move first, then the boss.
+  if (setup.players.length > 2) {
+    state.teams = [0, 1, 0];
+    state.turnOrder = [0, 2, 1];
+  }
   const ctx = createContext(state);
 
   setup.players.forEach((side, i) => {
@@ -116,16 +122,14 @@ export function createGame(setup: MatchSetup): { state: GameState; events: Actio
     if (side.startingArmor) p.hero.armor = Math.max(0, Math.floor(side.startingArmor));
   });
 
-  state.firstPlayer = setup.firstPlayer ?? (nextInt(state.rng, 0, 1) as PlayerId);
+  state.firstPlayer = isCoop(state) ? 0 : (setup.firstPlayer ?? (nextInt(state.rng, 0, 1) as PlayerId));
   state.activePlayer = state.firstPlayer;
-  const second = other(state.firstPlayer);
-  drawCards(ctx, state.firstPlayer, GAME_RULES.startingHandFirst);
-  drawCards(ctx, second, GAME_RULES.startingHandSecond);
+  // The first seat draws the smaller opening hand, every other seat the larger one.
+  for (const p of state.players) drawCards(ctx, p.id, p.id === state.firstPlayer ? GAME_RULES.startingHandFirst : GAME_RULES.startingHandSecond);
   ctx.queue.length = 0; // no triggers during the opening draw
 
   if (setup.skipMulligan) {
-    state.players[0].mulliganDone = true;
-    state.players[1].mulliganDone = true;
+    for (const p of state.players) p.mulliganDone = true;
     beginMainPhase(ctx);
   }
   return { state, events: ctx.events };
@@ -134,8 +138,9 @@ export function createGame(setup: MatchSetup): { state: GameState; events: Actio
 function beginMainPhase(ctx: EngineContext) {
   const state = ctx.state;
   state.phase = 'MAIN';
+  // The second player's bonus card (two-player matches; in co-op the second player is a teammate).
   const second = other(state.firstPlayer);
-  if (getCard(GAME_RULES.secondPlayerBonusCardId)) {
+  if (!isCoop(state) && getCard(GAME_RULES.secondPlayerBonusCardId)) {
     addToHand(ctx, second, makeCardInstance(ctx, GAME_RULES.secondPlayerBonusCardId));
   }
   emit(ctx, { type: 'GAME_STARTED', firstPlayer: state.firstPlayer });
@@ -154,7 +159,8 @@ function startTurn(ctx: EngineContext, playerId: PlayerId) {
   ctx.aborted = false;
   state.activePlayer = playerId;
   state.turn += 1;
-  if (state.turn > GAME_RULES.maxTurns) {
+  // Co-op rounds have three turns: the limit grows with the table.
+  if (state.turn > Math.round((GAME_RULES.maxTurns * state.players.length) / 2)) {
     endGame(ctx, 'DRAW', 'TURN_LIMIT');
     return;
   }
@@ -188,7 +194,7 @@ function startTurn(ctx: EngineContext, playerId: PlayerId) {
   // Burn ticks.
   for (const u of [...p.board]) {
     if (u.burn > 0 && isAlive(u)) {
-      dealDamage(ctx, { player: other(playerId) }, { type: 'unit', uid: u.uid }, u.burn);
+      dealDamage(ctx, { player: mainEnemy(state, playerId) }, { type: 'unit', uid: u.uid }, u.burn);
       u.burn = Math.max(0, u.burn - 1);
     }
   }
@@ -247,7 +253,7 @@ function endTurn(ctx: EngineContext, playerId: PlayerId) {
   checkDeaths(ctx);
   resolveQueue(ctx);
   if (isEnded(state)) return;
-  startTurn(ctx, other(playerId));
+  startTurn(ctx, nextInTurn(state, playerId));
 }
 
 // ---------------------------------------------------------------------------
@@ -273,7 +279,7 @@ function doMulligan(ctx: EngineContext, playerId: PlayerId, replaceUids: number[
   shuffleInPlace(state.rng, p.deck);
   p.mulliganDone = true;
   pushEvent(ctx, { type: 'MULLIGAN_DONE', player: playerId, replaced: replace.length });
-  if (state.players[0].mulliganDone && state.players[1].mulliganDone) beginMainPhase(ctx);
+  if (state.players.every((pl) => pl.mulliganDone)) beginMainPhase(ctx);
 }
 
 function doPlayCard(ctx: EngineContext, playerId: PlayerId, cardUid: number, target: TargetRef | undefined, position: number | undefined) {
@@ -452,7 +458,8 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         endTurn(ctx, action.player);
         break;
       case 'CONCEDE':
-        endGame(ctx, other(action.player), 'CONCEDE');
+        // A concession gives the match to the other team (in co-op the whole team concedes).
+        endGame(ctx, isCoop(draft) ? teamSeat(1 - teamOf(draft, action.player)) : other(action.player), 'CONCEDE');
         break;
     }
     checkDeaths(ctx);

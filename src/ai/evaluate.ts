@@ -1,6 +1,6 @@
 import { getCard } from '@/data/cards';
 import type { GameState, PlayerId, UnitInstance } from '@/engine/types';
-import { other } from '@/engine/types';
+import { alliesOf, enemiesOf, wonBy } from '@/engine/teams';
 import { currentHealth, hasActiveGuard, hasKeyword, keywordValue, unitAttack } from '@/engine/queries';
 import type { EvalWeights } from './config';
 
@@ -51,17 +51,26 @@ function heroValue(health: number, armor: number, w: EvalWeights, mine: boolean)
  */
 export function evaluate(state: GameState, me: PlayerId, w: EvalWeights): number {
   if (state.phase === 'ENDED') {
-    if (state.winner === me) return WIN_SCORE;
+    if (wonBy(state, me)) return WIN_SCORE;
     if (state.winner === 'DRAW') return -WIN_SCORE / 2;
     return -WIN_SCORE;
   }
-  const them = other(me);
+  // Co-op: the teammate's side counts for us (a little less than our own), and every opposing
+  // side against us. A normal match has no teammate and a single opponent, so nothing changes there.
+  const foes = enemiesOf(state, me);
+  const them = foes[0] ?? me;
   const my = state.players[me];
   const op = state.players[them];
   let score = 0;
 
   score += heroValue(my.hero.health, my.hero.armor, w, true);
-  score -= heroValue(op.hero.health, op.hero.armor, w, false);
+  for (const f of foes) score -= heroValue(state.players[f].hero.health, state.players[f].hero.armor, w, false);
+  for (const a of alliesOf(state, me)) {
+    const ally = state.players[a];
+    score += heroValue(ally.hero.health, ally.hero.armor, w, true) * 0.8;
+    for (const u of ally.board) score += unitValue(state, u, w) * 0.8;
+  }
+  for (const f of foes.slice(1)) for (const u of state.players[f].board) score -= unitValue(state, u, w) * w.enemyBoard;
 
   for (const u of my.board) score += unitValue(state, u, w);
   for (const u of op.board) score -= unitValue(state, u, w) * w.enemyBoard;

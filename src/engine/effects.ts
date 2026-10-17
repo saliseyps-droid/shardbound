@@ -5,7 +5,7 @@ import type { Condition, Effect, TargetSelector, ValueExpr } from '@/game/types'
 import type { AbilitySource, EngineContext } from './context';
 import { emit } from './triggers';
 import type { PlayerId, TargetRef, UnitInstance } from './types';
-import { other } from './types';
+import { enemiesOf, mainEnemy } from './teams';
 import { currentHealth, empower, findUnit, isAlive, targetExists, unitAttack } from './queries';
 import {
   addToHand,
@@ -33,7 +33,8 @@ export function evalValue(ctx: EngineContext, v: ValueExpr | undefined, source: 
   if (v === undefined) return 0;
   if (typeof v === 'number') return v;
   const me = ctx.state.players[source.controller];
-  const them = ctx.state.players[other(source.controller)];
+  // Every opposing board together (one in a normal match, the two players' in co-op).
+  const them = { board: enemiesOf(ctx.state, source.controller).flatMap((e) => ctx.state.players[e].board) };
   let base = 0;
   switch (v.kind) {
     case 'ALLY_UNIT_COUNT':
@@ -86,7 +87,7 @@ export function evalValue(ctx: EngineContext, v: ValueExpr | undefined, source: 
 
 export function checkConditions(ctx: EngineContext, c: Condition, source: AbilitySource, target?: TargetRef): boolean {
   const me = ctx.state.players[source.controller];
-  const them = ctx.state.players[other(source.controller)];
+  const them = { board: enemiesOf(ctx.state, source.controller).flatMap((e) => ctx.state.players[e].board) };
   const targetUnit = target?.type === 'unit' ? findUnit(ctx.state, target.uid) : undefined;
   switch (c.kind) {
     case 'ALLY_UNITS_GTE':
@@ -168,7 +169,11 @@ function resolveTargetsNow(
   triggerUnitUid: number | undefined,
 ): TargetRef[] {
   const me = source.controller;
-  const them = other(me);
+  const foes = enemiesOf(ctx.state, me);
+  // "The enemy Warden": the only one, or in co-op a random one of the opposing Wardens still standing.
+  const them = foes.length > 1 ? pickOne(ctx.state.rng, foes)! : mainEnemy(ctx.state, me);
+  const foeUnits = () => foes.flatMap((f) => liveUnits(ctx, f));
+  const foeHeroes = () => foes.map(heroRef);
   const selfUid = source.kind === 'unit' ? source.uid ?? undefined : undefined;
   switch (selector) {
     case 'SELF':
@@ -191,34 +196,35 @@ function resolveTargetsNow(
     case 'ENEMY_HERO':
       return [heroRef(them)];
     case 'BOTH_HEROES':
-      return [heroRef(me), heroRef(them)];
+      return [heroRef(me), ...foeHeroes()];
     case 'ALL_ALLY_UNITS':
       return liveUnits(ctx, me).map(unitRef);
     case 'OTHER_ALLY_UNITS':
       return liveUnits(ctx, me).filter((u) => u.uid !== selfUid).map(unitRef);
     case 'ALL_ENEMY_UNITS':
-      return liveUnits(ctx, them).map(unitRef);
+      return foeUnits().map(unitRef);
     case 'FROZEN_ENEMY_UNITS':
-      return liveUnits(ctx, them).filter((u) => u.frozen).map(unitRef);
+      return foeUnits().filter((u) => u.frozen).map(unitRef);
     case 'CORRUPTED_ENEMY_UNITS':
-      return liveUnits(ctx, them).filter((u) => u.corrupt).map(unitRef);
+      return foeUnits().filter((u) => u.corrupt).map(unitRef);
     case 'ALL_UNITS':
-      return [...liveUnits(ctx, me), ...liveUnits(ctx, them)].map(unitRef);
+      return ctx.state.players.flatMap((p) => liveUnits(ctx, p.id)).map(unitRef);
     case 'ALL_OTHER_UNITS':
-      return [...liveUnits(ctx, me), ...liveUnits(ctx, them)].filter((u) => u.uid !== selfUid).map(unitRef);
+      return ctx.state.players.flatMap((p) => liveUnits(ctx, p.id)).filter((u) => u.uid !== selfUid).map(unitRef);
     case 'ALL_ENEMIES':
-      return [...liveUnits(ctx, them).map(unitRef), heroRef(them)];
+      return [...foeUnits().map(unitRef), ...foeHeroes()];
     case 'ALL_ALLIES':
       return [...liveUnits(ctx, me).map(unitRef), heroRef(me)];
     case 'EVERYONE':
-      return [...liveUnits(ctx, me).map(unitRef), ...liveUnits(ctx, them).map(unitRef), heroRef(me), heroRef(them)];
+      return [...ctx.state.players.flatMap((p) => liveUnits(ctx, p.id)).map(unitRef), heroRef(me), ...foeHeroes()];
     case 'RANDOM_ENEMY_UNIT': {
-      const pick = pickOne(ctx.state.rng, liveUnits(ctx, them));
+      const pick = pickOne(ctx.state.rng, foeUnits());
       return pick ? [unitRef(pick)] : [];
     }
     case 'RANDOM_ENEMY': {
-      const options: TargetRef[] = [...liveUnits(ctx, them).map(unitRef), heroRef(them)];
-      return [pickOne(ctx.state.rng, options)!];
+      const options: TargetRef[] = [...foeUnits().map(unitRef), ...foeHeroes()];
+      const pick = pickOne(ctx.state.rng, options);
+      return pick ? [pick] : [];
     }
     case 'RANDOM_ALLY_UNIT': {
       const pick = pickOne(ctx.state.rng, liveUnits(ctx, me));
@@ -292,7 +298,8 @@ export function executeEffect(
 ): boolean {
   const state = ctx.state;
   const me = source.controller;
-  const them = other(me);
+  // Effects aimed at "the opponent" (their hand, deck or energy) take the main enemy in co-op.
+  const them = mainEnemy(state, me);
   const selector = effect.target ?? defaultSelector(effect);
   const srcUnitUid = source.kind === 'unit' && !source.fromGraveyard ? source.uid ?? undefined : undefined;
   const damageSource = { player: me, unitUid: srcUnitUid, isSpell: source.kind === 'spell' };
@@ -306,7 +313,10 @@ export function executeEffect(
       // Empower boosts spell damage to enemies only, never to your own side.
       const bonus = source.kind === 'spell' ? empower(state, me) : 0;
       // Area damage is dealt simultaneously: snapshot targets first.
-      for (const t of targets) dealDamage(ctx, damageSource, t, amount + (bonus > 0 && targetOwner(ctx, t) === them ? bonus : 0));
+      for (const t of targets) {
+        const owner = targetOwner(ctx, t);
+        dealDamage(ctx, damageSource, t, amount + (bonus > 0 && owner !== undefined && enemiesOf(state, me).includes(owner) ? bonus : 0));
+      }
       return targets.length > 0;
     }
     case 'HEAL': {

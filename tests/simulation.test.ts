@@ -28,7 +28,7 @@ function play(deck0: string[], deck1: string[], cfg: [AiConfig, AiConfig], seed:
   for (let i = 0; i < 4000 && s.phase === 'MAIN'; i++) {
     if (s.turn !== turn) [perTurn, turn] = [0, s.turn];
     const me = s.activePlayer as PlayerId;
-    const d = chooseAction(s, me, cfg[me], seed * 31 + i, perTurn++);
+    const d = chooseAction(s, me, cfg[me as 0 | 1], seed * 31 + i, perTurn++);
     const res = applyAction(s, d.action);
     s = res.error ? applyAction(s, { type: 'END_TURN', player: me }).state : res.state;
   }
