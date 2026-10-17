@@ -157,6 +157,35 @@ export const CINEMATICS: Record<string, CinematicDef> = {
       { image: 'inf_face', motion: 'pull-out', ms: 6500, focus: '50% 55%', text: 'Ten thousand years he has waited for someone worth burning. Tonight, it is you.' },
     ],
   },
+  heaven_intro: {
+    id: 'heaven_intro',
+    music: { track: 'paranoid_truth', at: 30 },
+    title: 'The Twin Oath',
+    shots: [
+      { image: 'hv_sky_isles', motion: 'push-in', ms: 6500, focus: '50% 45%', text: 'Above the clouds of Aethra lies the Empyrean, home of the Host, who forged the Crown at the dawn of the world and kept the sky open for a thousand years.' },
+      { image: 'hv_host_rising', motion: 'push-in', ms: 6000, focus: '50% 35%', text: 'When the Crown shattered, the Arbiter weighed the world below and found it wanting. The sky was sealed, and the Host stopped singing.' },
+      { image: 'hv_war_banners', motion: 'pull-out', ms: 6000, focus: '50% 40%', text: 'Now its legions gather on the clouds to end Aethra. Heaven’s law hears no lone voice, so two Wardens swear one oath and climb to stand trial together.' },
+    ],
+  },
+  heaven_tribunal: {
+    id: 'heaven_tribunal',
+    music: { track: 'paranoid_truth', at: 150 },
+    title: 'The Tribunal',
+    shots: [
+      { image: 'hv_falls_of_heaven', motion: 'push-in', ms: 6000, focus: '62% 45%', text: 'Above the seventh sky the rivers of heaven fall into nothing, and at their head stands the Tribunal.' },
+      { image: 'hv_rainbow_halls', motion: 'push-in', ms: 6500, focus: '50% 45%', text: 'Two halls face each other across the light, one for the accused and one for the witness. Between them the Arbiter waits with his scales.' },
+    ],
+  },
+  heaven_outro: {
+    id: 'heaven_outro',
+    music: { track: 'paranoid_truth', at: 90 },
+    title: 'The Open Sky',
+    shots: [
+      { image: 'hv_gates_open', motion: 'push-in', ms: 6500, focus: '50% 40%', text: 'The scales break, and the Arbiter falls silent for ever. For the first time since the Crown shattered, the gates of heaven swing open.' },
+      { image: 'hv_radiant_door', motion: 'pull-out', ms: 6000, focus: '50% 45%', text: 'Light pours down the Rainbow Stair, and the Host lowers its swords.' },
+      { image: 'hv_celestial_city', motion: 'pan-right', ms: 7000, focus: '55% 40%', text: 'The rivers of the Empyrean flow down to Aethra again, and somewhere above, the choirs begin to sing. Two voices were enough.' },
+    ],
+  },
   inferno_outro: {
     id: 'inferno_outro',
     music: { track: 'paranoid_truth', at: 60 },

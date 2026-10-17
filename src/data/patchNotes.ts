@@ -31,6 +31,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Every fight is played with a teammate: pick an AI teammate’s faction, or choose “Play with a friend instead” to open an online room for that fight. The fight counts for your friend too if it is open in their own campaign; otherwise they play it for practice rewards.',
           'Nine knights of the Host to beat, each a boss with the co-op powers, and every one pays its own Angel card: six Epics and three Legendaries (Halcyon, Captain of the Pearl Gate; Azrafel, Angel of the Red Moon; and the Arbiter). The chapter bosses add a rule of their own: the Pearl Gate, the Red Moon and the Scales.',
           'Their “friendly unit” cards reach your teammate’s units too, so Ostiarius can shield your friend’s best unit.',
+          'An intro, a scene at the Tribunal before the Arbiter and an ending, over paintings of the Empyrean and its Host.',
           'Nightmare I and II for every fight, four achievements (with the titles Witness of the Tribunal and Knight of the Host) and a Home banner for the new campaign.',
         ],
       },

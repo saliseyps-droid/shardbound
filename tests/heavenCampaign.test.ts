@@ -7,6 +7,7 @@ import { craftCost } from '@/domain/economy';
 import { isCoopEncounter, readCoopMeta } from '@/domain/coop';
 import { applyAction, createGame } from '@/engine';
 import { validTargets } from '@/engine/queries';
+import { CINEMATICS } from '@/data/cinematics';
 import cs from '@/i18n/cs/data/opponents';
 import csCards from '@/i18n/cs/cards/heaven';
 import { act, filler, giveCard, newGame, setEnergy } from './helpers';
@@ -28,6 +29,11 @@ describe('The Twin Oath (co-op campaign)', () => {
     expect(campaignOf('hv2_e1').id).toBe('heaven');
     expect(isCoopEncounter('hv3_final')).toBe(true);
     expect(isCoopEncounter('c1_e1')).toBe(false);
+    // An intro, a scene before the Arbiter and an ending, no picture twice.
+    expect(findEncounter('hv3_final')?.encounter.preCinematic).toBe('heaven_tribunal');
+    const shots = [camp.intro!, 'heaven_tribunal', camp.outro!].flatMap((id) => CINEMATICS[id].shots.map((s) => s.image));
+    expect(new Set(shots).size).toBe(shots.length);
+    for (const img of shots) expect(existsSync(`src/assets/cinematics/${img}.webp`), img).toBe(true);
   });
 
   it('every knight is a co-op boss that plays its own card and gives it up when beaten', () => {

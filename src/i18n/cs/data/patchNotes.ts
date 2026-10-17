@@ -10,6 +10,7 @@ const notes: PatchNotesOverlay = {
         'Každý souboj se hraje se spoluhráčem: vyber frakci spoluhráče s umělou inteligencí, nebo zvol „Hrát místo toho s přítelem“ a otevři pro ten souboj online místnost. Příteli se souboj započítá, pokud ho má otevřený i ve své kampani; jinak ho hraje za odměny jako za cvičný zápas.',
         'Devět rytířů Zástupu, každý z nich boss s kooperačními schopnostmi, a každý dává vlastní kartu Anděla: šest epických a tři legendární (Halcyon, kapitán Perlové brány; Azrafel, anděl Rudého měsíce; a Arbitr). Bossové kapitol mají i vlastní pravidlo: Perlovou bránu, Rudý měsíc a Váhy.',
         'Jejich karty „spřátelená jednotka“ zasáhnou i jednotky spoluhráče, takže Ostiarius může ochránit nejlepší jednotku tvého přítele.',
+        'Úvod, scéna u Tribunálu před Arbitrem a konec nad obrazy Empyrea a jeho Zástupu.',
         'Noční můra I a II u každého souboje, čtyři achievementy (s tituly Svědek Tribunálu a Rytíř Zástupu) a upoutávka na novou kampaň na úvodní obrazovce.',
       ],
     ],
