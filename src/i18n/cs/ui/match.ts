@@ -3,6 +3,7 @@ const d: Record<string, string> = {
   // Legacy match keys (resolved to their English text first)
   'End turn': 'Ukončit tah',
   'Enemy turn': 'Tah soupeře',
+  'Teammate’s turn': 'Tah spoluhráče',
   'Thinking…': 'Přemýšlí…',
   'Your turn': 'Tvůj tah',
   '{name}’s turn': 'Na tahu: {name}',
@@ -174,6 +175,8 @@ const d: Record<string, string> = {
   'Not connected to your opponent.': 'Nejsi spojen se soupeřem.',
   'Illegal action.': 'Nepovolený tah.',
   'Your opponent disconnected — you win.': 'Soupeř se odpojil — vyhráváš.',
+  'Your teammate disconnected — the AI takes over their Warden.': 'Tvůj spoluhráč se odpojil — jeho Strážce přebírá umělá inteligence.',
+  'Your friend joins as your teammate. Together you face a boss with {n} Health and an extra Energy, played by the AI. Rewards are those of a practice match.': 'Tvůj přítel se přidá jako spoluhráč. Společně se postavíte bossovi s {n} životy a energií navíc, kterého hraje umělá inteligence. Odměny jsou jako za cvičný zápas.',
   'The match result could not be saved.': 'Výsledek zápasu se nepodařilo uložit.',
   'No profile': 'Žádný profil',
   'The host did not start the match.': 'Hostitel zápas nespustil.',

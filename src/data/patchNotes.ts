@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.58.0',
+    date: '2026-10-17',
+    title: 'Two against one, with a friend',
+    summary: 'The 2 v 1 co-op fight now works online too: a friend can join you as your teammate against the boss.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Play a friend: choose “2 v 1 co-op” when you create the room, pick the boss and its difficulty, and send your friend the code. They join as your teammate and your AI plays the boss.',
+          'If your friend’s connection drops, the AI takes over their Warden and the fight goes on.',
+          'Co-op fights give the rewards of a practice match.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.57.0',
     date: '2026-10-17',
     title: 'Two against one',

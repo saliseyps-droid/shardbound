@@ -15,7 +15,7 @@ import type { DeltaStateMsg, FullStateMsg } from './stateSync';
  */
 
 // 5: delta states (`delta`/`resync`) and gzip-compressed large messages (`z`).
-export const PROTOCOL_VERSION = 5;
+export const PROTOCOL_VERSION = 6;
 export const ID_PREFIX = 'shardbound-v1-';
 const HEARTBEAT_MS = 4000;
 const TIMEOUT_MS = 15000;

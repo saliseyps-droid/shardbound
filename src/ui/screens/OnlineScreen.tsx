@@ -9,6 +9,13 @@ import { factionOfList } from '@/domain/decks';
 import { ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
+import { COOP_BOSS_HEALTH, coopBoss, type CoopMeta } from '@/domain/coop';
+import { PLAYABLE_FACTIONS } from '@/game/types';
+import { DIFFICULTIES } from '@/config/progression';
+import { PRACTICE_OPPONENTS } from '@/data/opponents';
+import { FACTIONS } from '@/data/factions';
+import { WardenPortrait } from '@/ui/components/WardenPortrait';
+import { DIFFICULTY_INFO, factionStyle } from '@/ui/components/meta/MetaWidgets';
 import { t } from '@/i18n';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/online.css';
@@ -22,6 +29,8 @@ export default function OnlineScreen() {
   const [status, setStatus] = useState(netSession.status);
   const [error, setError] = useState<string | null>(null);
   const [joinCode, setJoinCode] = useState('');
+  // 2 v 1 co-op: the friend joins as your teammate against a boss played by your AI.
+  const [coop, setCoop] = useState<CoopMeta | null>(null);
 
   useEffect(() => netSession.onStatus(() => setStatus(netSession.status)), []);
 
@@ -30,8 +39,10 @@ export default function OnlineScreen() {
     if (status !== 'connected' || netSession.role !== 'host' || !netSession.remoteSide) return;
     audio.play('turn');
     const faction = factionOfList(netSession.remoteSide.deck);
-    launchMatch({ mode: 'ONLINE', online: 'host', deckId, opponent: onlineOpponent(netSession.remoteName, netSession.remoteAvatar, faction) }, navigate);
-  }, [status, deckId, navigate]);
+    const friend = onlineOpponent(netSession.remoteName, netSession.remoteAvatar, faction);
+    if (coop) launchMatch({ mode: 'PRACTICE', online: 'host', deckId, opponent: coopBoss(coop.boss, coop.difficulty), coop: { ally: friend } }, navigate);
+    else launchMatch({ mode: 'ONLINE', online: 'host', deckId, opponent: friend }, navigate);
+  }, [status, deckId, navigate, coop]);
 
   // Leaving the lobby before a friend joins closes the room.
   useEffect(
@@ -47,7 +58,7 @@ export default function OnlineScreen() {
   const create = async () => {
     setError(null);
     try {
-      const c = await netSession.host(save.profile.username, save.profile.avatar, (hello) => validateRemoteSide(hello.side));
+      const c = await netSession.host(save.profile.username, save.profile.avatar, (hello) => validateRemoteSide(hello.side), coop ? { meta: { coop } } : {});
       setCode(c);
     } catch (e) {
       setError((e as Error).message);
@@ -80,7 +91,42 @@ export default function OnlineScreen() {
           {!waiting && (
             <>
               <div className="panel-title">{t('Create a match')}</div>
-              <p className="muted">{t('Online matches give the same Gold, XP and quest progress as normal matches. Both players need an internet connection.')}</p>
+              <div className="practice-mode" role="radiogroup" aria-label={t('Match type')}>
+                <button type="button" role="radio" aria-checked={!coop} className={`btn btn-sm ${!coop ? 'btn-primary' : ''}`} onClick={() => (audio.play('click'), setCoop(null))}>
+                  {t('1 v 1')}
+                </button>
+                <button type="button" role="radio" aria-checked={!!coop} className={`btn btn-sm ${coop ? 'btn-primary' : ''}`} onClick={() => (audio.play('click'), setCoop((c) => c ?? { boss: 'VERDANT', difficulty: 'NORMAL' }))}>
+                  {t('2 v 1 co-op')}
+                </button>
+              </div>
+              {!coop && <p className="muted">{t('Online matches give the same Gold, XP and quest progress as normal matches. Both players need an internet connection.')}</p>}
+              {coop && (
+                <>
+                  <p className="muted">{t('Your friend joins as your teammate. Together you face a boss with {n} Health and an extra Energy, played by the AI. Rewards are those of a practice match.', { n: COOP_BOSS_HEALTH })}</p>
+                  <div className="panel-title">{t('Boss')}</div>
+                  <div className="opponent-grid coop-boss-grid" role="radiogroup" aria-label={t('Boss')}>
+                    {PLAYABLE_FACTIONS.map((f) => {
+                      const sel = f === coop.boss;
+                      return (
+                        <button key={f} type="button" role="radio" aria-checked={sel} className={`opponent-tile ${sel ? 'selected' : ''}`} style={factionStyle(f)} onClick={() => (audio.play('click'), setCoop({ ...coop, boss: f }))}>
+                          <span className="opp-sigil" aria-hidden>
+                            <WardenPortrait faction={f} size={40} />
+                          </span>
+                          <strong>{PRACTICE_OPPONENTS[f].name}</strong>
+                          <span className="faint">{FACTIONS[f].name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="practice-mode" role="radiogroup" aria-label={t('Difficulty')}>
+                    {DIFFICULTIES.map((d) => (
+                      <button key={d} type="button" role="radio" aria-checked={d === coop.difficulty} className={`btn btn-sm ${d === coop.difficulty ? 'btn-primary' : ''}`} onClick={() => (audio.play('click'), setCoop({ ...coop, difficulty: d }))}>
+                        {t(DIFFICULTY_INFO[d].label)}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
               <button className="btn btn-primary btn-lg" disabled={!valid || status === 'opening'} onClick={() => void create()}>
                 {status === 'opening' ? t('Creating…') : t('Create match')}
               </button>

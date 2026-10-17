@@ -24,6 +24,7 @@ import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { DeckPicker, DIFFICULTY_INFO, factionStyle, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
+import { COOP_BOSS_HEALTH, coopAlly, coopBoss } from '@/domain/coop';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/social.css';
 import { t, tn } from '@/i18n';
@@ -153,9 +154,6 @@ function PuzzleStrip({ save }: { save: GameSave }) {
   );
 }
 
-/** The co-op practice boss's Health (two Wardens share the fight). */
-const COOP_BOSS_HEALTH = 50;
-
 export default function PlayScreen() {
   const save = useAccount((s) => s.save);
   const navigate = useNavigate();
@@ -174,10 +172,7 @@ export default function PlayScreen() {
   const start = () => {
     if (!validDeck) return;
     if (coop) {
-      const boss = { ...opp, id: `coop_${opp.id}`, difficulty, rarities: DIFFICULTY_POOLS[difficulty], special: { heroHealth: COOP_BOSS_HEALTH, bonusStartingEnergy: 1, description: [] } };
-      const a = PRACTICE_OPPONENTS[allyFaction];
-      const ally = { ...a, id: `ally_${a.id}`, difficulty: 'HARD' as Difficulty, rarities: DIFFICULTY_POOLS.HARD };
-      launchMatch({ mode: 'PRACTICE', deckId, opponent: boss, coop: { ally } }, navigate);
+      launchMatch({ mode: 'PRACTICE', deckId, opponent: coopBoss(faction, difficulty), coop: { ally: coopAlly(allyFaction) } }, navigate);
       return;
     }
     launchMatch({ mode: 'PRACTICE', deckId, opponent: { ...opp, difficulty, rarities: DIFFICULTY_POOLS[difficulty] } }, navigate);

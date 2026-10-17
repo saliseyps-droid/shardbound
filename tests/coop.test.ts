@@ -5,6 +5,9 @@ import { attackTargets, validTargets } from '@/engine/queries';
 import { enemiesOf, nextInTurn, wonBy } from '@/engine/teams';
 import { chooseAction, makeAiConfig } from '@/ai';
 import { filler } from './helpers';
+import { getLegalActions } from '@/engine';
+import { guestEvents, guestView, mirrorAction, mirrorState, HIDDEN_CARD } from '@/net/view';
+import { readCoopMeta } from '@/domain/coop';
 
 const side = (name: string, extra: Partial<SideSetup> = {}): SideSetup => ({ name, avatar: 'a', deck: filler(), keepDeckOrder: true, ...extra });
 const coop = (extra: { boss?: Partial<SideSetup>; a?: Partial<SideSetup>; b?: Partial<SideSetup> } = {}): GameState =>
@@ -90,4 +93,41 @@ describe('Co-op (2 v 1)', () => {
     }
     expect(s.phase).toBe('ENDED');
   }, 60_000);
+
+  it('online: the guest is the host’s teammate on seat 2 and sees itself as seat 0', () => {
+    const s = coop();
+    const v = guestView(s);
+    expect(v.players.map((p) => p.hero.name)).toEqual(['B', 'Boss', 'A']);
+    expect(v.players.map((p) => p.id)).toEqual([0, 1, 2]);
+    expect(v.turnOrder).toEqual([2, 0, 1]);
+    // Only the guest's own hand is visible.
+    expect(v.players[0].hand.some((c) => c.cardId !== HIDDEN_CARD)).toBe(true);
+    expect(v.players[1].hand.every((c) => c.cardId === HIDDEN_CARD)).toBe(true);
+    expect(v.players[2].hand.every((c) => c.cardId === HIDDEN_CARD)).toBe(true);
+    expect(mirrorState(mirrorState(s))).toEqual(s);
+  });
+
+  it('online: the guest’s actions are legal for the host as seat 2; the boss’s draws stay hidden', () => {
+    let s = coop();
+    s = act(s, { type: 'END_TURN', player: 0 }); // the guest's turn
+    expect(s.activePlayer).toBe(2);
+    const v = guestView(s);
+    expect(v.activePlayer).toBe(0);
+    for (const a of getLegalActions(v, 0)) {
+      const host = mirrorAction(a, true);
+      expect(host.player).toBe(2);
+      expect(applyAction(s, host).error).toBeUndefined();
+    }
+    const res = applyAction(s, { type: 'END_TURN', player: 2 }); // the boss draws
+    const evs = guestEvents(res.events, true);
+    const draw = evs.find((e) => e.type === 'CARD_DRAWN');
+    expect(draw && draw.type === 'CARD_DRAWN' && draw.player).toBe(1);
+    expect(draw && draw.type === 'CARD_DRAWN' && draw.cardId).toBe(HIDDEN_CARD);
+  });
+
+  it('online: the guest reads the co-op room from the host’s welcome', () => {
+    expect(readCoopMeta({ coop: { boss: 'TIDE', difficulty: 'HARD' } })).toEqual({ boss: 'TIDE', difficulty: 'HARD' });
+    expect(readCoopMeta({})).toBeNull();
+    expect(readCoopMeta({ coop: { boss: 'NOPE', difficulty: 'HARD' } })).toBeNull();
+  });
 });

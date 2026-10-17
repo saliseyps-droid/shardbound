@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.58.0': {
+    title: 'Dva proti jednomu, s přítelem',
+    summary: 'Kooperace 2 na 1 teď funguje i online: přítel se k tobě může přidat jako spoluhráč proti bossovi.',
+    sections: [
+      [
+        'Hrát s přítelem: při vytváření místnosti zvol „2 na 1 kooperace“, vyber bosse a jeho obtížnost a pošli příteli kód. Připojí se jako tvůj spoluhráč a bosse hraje tvoje umělá inteligence.',
+        'Když příteli vypadne spojení, jeho Strážce převezme umělá inteligence a boj pokračuje.',
+        'Kooperační souboje dávají odměny jako cvičný zápas.',
+      ],
+    ],
+  },
   '0.57.0': {
     title: 'Dva proti jednomu',
     summary: 'Cvičné zápasy mají nový režim 2 na 1: ty a spoluhráč s umělou inteligencí společně proti bossovi.',

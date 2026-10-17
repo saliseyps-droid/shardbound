@@ -28,6 +28,7 @@ import { t } from '@/i18n';
 import { netSession, type NetMessage } from '@/net/session';
 import { GuestSync, HostSync } from '@/net/stateSync';
 import { guestEvents, guestView, mirrorAction } from '@/net/view';
+import { isCoop } from '@/engine/teams';
 import { MAX_SPECTATORS, matchWatchCode, newWatchCode, watchHub, watchMatch, type Watching } from '@/net/spectate';
 import { TUTORIAL_STEPS, tutorialAllows, tutorialOpponentAction, tutorialSetup, type TutorialIntent } from '@/ui/match/tutorial';
 
@@ -307,7 +308,7 @@ export const useMatch = create<MatchStore>((set, get) => {
   /** Animates and commits a transition (computed locally, or received from the online host). */
   async function present(game: GameState, res: { state: GameState; events: GameEvent[] }, gen = matchGen): Promise<boolean> {
     const stale = () => gen !== matchGen || get().game !== game;
-    if (get().config?.online === 'host') netSession.send(hostSync.next(guestView(res.state), guestEvents(res.events)));
+    if (get().config?.online === 'host') netSession.send(hostSync.next(guestView(res.state), guestEvents(res.events, isCoop(res.state))));
     set({ busy: true });
     try {
       // Show what the opponent played before it resolves.
@@ -408,9 +409,10 @@ export const useMatch = create<MatchStore>((set, get) => {
     await waitIdle();
     const game = get().game;
     if (!game || get().config?.online !== 'host') return;
-    // The guest may only act as player 1.
-    const action = mirrorAction(remote);
-    if (action.player !== AI) return netSession.send({ t: 'error', message: 'Illegal action.' });
+    // The guest may only act as player 1 (in co-op: as our teammate, seat 2).
+    const coop = isCoop(game);
+    const action = mirrorAction(remote, coop);
+    if (action.player !== (coop ? ALLY : AI)) return netSession.send({ t: 'error', message: 'Illegal action.' });
     if (game.phase === 'ENDED') return;
     const res = applyAction(game, action);
     if (res.error) return netSession.send({ t: 'error', message: res.error });
@@ -470,6 +472,8 @@ export const useMatch = create<MatchStore>((set, get) => {
 
   netSession.onStatus(() => {
     if (netSession.status !== 'closed' || linkDropExpected()) return;
+    // Co-op host: the friend who left is replaced by the AI and the fight goes on.
+    if (get().config?.online === 'host' && get().config?.coop && get().game && isCoop(get().game!)) return void allyToAi();
     const gen = matchGen;
     set({ linkCheck: true, selection: null, targets: [] });
     netChain = netChain.then(async () => {
@@ -483,7 +487,10 @@ export const useMatch = create<MatchStore>((set, get) => {
         const localOk = await netSession.localNetworkOk();
         if (gen !== matchGen) return;
         let outcome: 'WIN' | 'LOSS' | 'DRAW' = localOk ? 'DRAW' : 'LOSS';
-        if (localOk) {
+        // Co-op guest: losing the host ends the fight (the host runs the boss), so nobody wins it.
+        if (localOk && get().config?.coop) {
+          // A draw, below.
+        } else if (localOk) {
           if (linkDropExpected()) return;
           toast(t('Connection lost — checking whether your opponent is still there…'), 'info');
           const deadline = Date.now() + DISCONNECT_TIMING.checkMs;
@@ -524,6 +531,23 @@ export const useMatch = create<MatchStore>((set, get) => {
     });
   });
 
+  /** Co-op host: the AI takes over the seat of a teammate whose link dropped. */
+  async function allyToAi() {
+    const cfg = get().config;
+    if (!cfg?.coop) return;
+    toast(t('Your teammate disconnected — the AI takes over their Warden.'), 'info');
+    set({ config: { ...cfg, online: undefined, coop: { ally: { ...cfg.coop.ally, difficulty: 'HARD', personality: 'BALANCED' } } }, linkCheck: false });
+    await waitIdle();
+    const game = get().game;
+    if (!game || game.phase === 'ENDED') return;
+    if (game.phase === 'MULLIGAN' && !game.players[ALLY].mulliganDone) {
+      const res = applyAction(game, { type: 'MULLIGAN', player: ALLY, replaceUids: [] });
+      if (!res.error) await present(game, res);
+      return;
+    }
+    if (game.phase === 'MAIN' && game.activePlayer === ALLY) void runAiTurn(ALLY);
+  }
+
   function onTurnStarted(player: PlayerId) {
     const cfg = get().config;
     if (cfg?.online === 'spectator') {
@@ -537,7 +561,8 @@ export const useMatch = create<MatchStore>((set, get) => {
       set({ turnDeadline: timer ? Date.now() + GAME_RULES.turnTimerSeconds * 1000 : null });
     } else {
       set({ turnDeadline: null });
-      if (!cfg?.online) void runAiTurn(player);
+      // Online co-op: the host's AI plays the boss; the teammate is the friend.
+      if (!cfg?.online || (cfg.online === 'host' && cfg.coop && player === AI)) void runAiTurn(player);
     }
   }
 
@@ -779,8 +804,10 @@ export const useMatch = create<MatchStore>((set, get) => {
         const issues = validateDeck(deck, (id) => ownedCopies(save.collection, id));
         if (issues.length) throw new Error(`Deck is not valid: ${issues[0].message}`);
         deckName = deck.name;
-        const opponent = config.online === 'host' ? netSession.remoteSide : opponentSide(config.opponent);
-        if (!opponent) throw new Error('Your opponent is no longer connected.');
+        // Online co-op: the friend is our teammate (seat 2) and the host's AI plays the boss.
+        const remoteAlly = config.online === 'host' && !!config.coop;
+        const opponent = config.online === 'host' && !remoteAlly ? netSession.remoteSide : opponentSide(config.opponent);
+        if (!opponent || (remoteAlly && !netSession.remoteSide)) throw new Error('Your opponent is no longer connected.');
         let me = playerSide(save.profile, deck, save.collection);
         if (config.mode === 'BRAWL') {
           const fight = config.brawlFightId ? findBrawlFight(config.brawlFightId) : undefined;
@@ -788,7 +815,7 @@ export const useMatch = create<MatchStore>((set, get) => {
           me = applyBrawlMods(me, brawlPlayerMods(fight));
         }
         setup = config.coop
-          ? { seed: config.seed ?? randomSeed(), players: [me, opponent, opponentSide(config.coop.ally)] as [SideSetup, SideSetup, SideSetup] }
+          ? { seed: config.seed ?? randomSeed(), players: [me, opponent, remoteAlly ? netSession.remoteSide! : opponentSide(config.coop.ally)] as [SideSetup, SideSetup, SideSetup] }
           : { seed: config.seed ?? randomSeed(), players: [me, opponent] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
       }
       const state = initialState ?? createGame(setup!).state;
@@ -856,7 +883,15 @@ export const useMatch = create<MatchStore>((set, get) => {
         linkCheck: false,
       });
       setLastMatchLog(state.log);
-      if (config.online) {
+      if (config.online === 'host' && config.coop && state.phase === 'MULLIGAN') {
+        // Online co-op: each player mulligans on their own screen; the host's AI does the boss's.
+        const replace = await aiClient.chooseMulligan(state, AI, config.opponent.difficulty, config.opponent.personality, config.aiTuning);
+        if (gen !== matchGen) return;
+        await waitIdle();
+        const g = get().game!;
+        const res = applyAction(g, { type: 'MULLIGAN', player: AI, replaceUids: replace });
+        if (!res.error) await present(g, res);
+      } else if (config.online) {
         // Online: each player mulligans on their own screen.
       } else if (state.phase === 'MULLIGAN') {
         // The AI decides its mulligan immediately (it cannot see the human's choice).
@@ -1047,7 +1082,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       // Concede works even during the opponent's turn.
       const res = applyAction(s.game, { type: 'CONCEDE', player: HUMAN });
       if (s.config?.online === 'guest') netSession.send({ t: 'action', action: { type: 'CONCEDE', player: HUMAN } });
-      if (s.config?.online === 'host' && !res.error) netSession.send(hostSync.next(guestView(res.state), guestEvents(res.events)));
+      if (s.config?.online === 'host' && !res.error) netSession.send(hostSync.next(guestView(res.state), guestEvents(res.events, isCoop(res.state))));
       if (!res.error) {
         set({ game: res.state, version: s.version + 1, busy: false, cast: null, linkCheck: false });
         setLastMatchLog(res.state.log);

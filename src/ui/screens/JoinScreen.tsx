@@ -4,6 +4,7 @@ import { useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
 import { netSession } from '@/net/session';
 import { onlineOpponent } from '@/net/lobby';
+import { coopBoss, readCoopMeta } from '@/domain/coop';
 import { playerSide } from '@/domain/matchSetup';
 import { ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
@@ -31,7 +32,11 @@ export default function JoinScreen() {
     try {
       await netSession.join(code, playerSide(save.profile, deck, save.collection), deck.name);
       // Host faction isn't known yet; the board shows the real Warden once the state arrives.
-      launchMatch({ mode: 'ONLINE', online: 'guest', deckId: deck.id, opponent: onlineOpponent(netSession.remoteName, netSession.remoteAvatar, 'EMBER') }, navigate);
+      const host = onlineOpponent(netSession.remoteName, netSession.remoteAvatar, 'EMBER');
+      const coop = readCoopMeta(netSession.remoteMeta);
+      // 2 v 1 co-op: we join the host as their teammate against the host's AI boss.
+      if (coop) launchMatch({ mode: 'PRACTICE', online: 'guest', deckId: deck.id, opponent: coopBoss(coop.boss, coop.difficulty), coop: { ally: host } }, navigate);
+      else launchMatch({ mode: 'ONLINE', online: 'guest', deckId: deck.id, opponent: host }, navigate);
     } catch (e) {
       setError((e as Error).message);
       setBusy(false);

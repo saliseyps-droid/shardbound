@@ -718,7 +718,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
             disabled={!interactive}
             aria-label={myTurn ? t('End turn (E)') : t('Opponent turn')}
           >
-            {myTurn ? t('match.endTurn') : aiThinking ? t('match.thinking') : t('match.enemyTurn')}
+            {myTurn ? t('match.endTurn') : game.activePlayer === ALLY ? t('Teammate’s turn') : aiThinking ? t('match.thinking') : t('match.enemyTurn')}
           </button>
           <div className="match-menu">
             <button className="btn btn-ghost btn-sm" onClick={() => void concede()} disabled={game.phase === 'ENDED'}>

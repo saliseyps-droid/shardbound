@@ -85,7 +85,7 @@ afterEach(() => {
 
 describe('message compression', () => {
   it('round-trips through gzip (Node/browser CompressionStream)', async () => {
-    expect(PROTOCOL_VERSION).toBe(5);
+    expect(PROTOCOL_VERSION).toBe(6);
     if (!gzipSupported()) return;
     const text = JSON.stringify({ t: 'state', s: 'é ✓ '.repeat(3000) });
     const z = await gzip(text);
