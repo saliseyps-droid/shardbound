@@ -19,7 +19,7 @@ const cards: CardsOverlay = {
   nm_curse_starfall: { name: 'Padání hvězd', description: 'Když sešleš kouzlo, způsob náhodnému nepříteli 1 poškození.' },
   coop_rule_draw: { name: 'Tyranův vhled', description: 'Na začátku tvého tahu si lízni kartu.' },
   coop_rule_energy: { name: 'Tyranův příval', description: 'Na začátku tvého tahu získej v tomto tahu 2 energie.' },
-  coop_rule_quake: { name: 'Tyranovo zemětřesení', description: 'Na začátku tvého tahu způsob 1 poškození každé nepřátelské jednotce.' },
+  coop_rule_quake: { name: 'Tyranův hněv', description: 'Na začátku tvého tahu dvakrát způsob 1 poškození náhodnému nepříteli.' },
   nm_curse_wellspring: { name: 'Pramen', description: 'Na začátku tvého tahu obnov svému Strážci 3 životy.' },
   nm_curse_crown_fire: { name: 'Plamen koruny', description: 'Na začátku tvého tahu způsob nepřátelskému Strážci 2 poškození.' },
   nm_curse_insight: { name: 'Poslední stránka', description: 'Na začátku tvého tahu si lízni kartu.' },

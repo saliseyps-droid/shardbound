@@ -8,18 +8,21 @@ import { PLAYABLE_FACTIONS, type PlayableFaction } from '@/game/types';
  */
 
 /** The co-op boss's Health (two Wardens share the fight). */
-export const COOP_BOSS_HEALTH = 50;
+export const COOP_BOSS_HEALTH = 60;
+/** …and Armor. */
+export const COOP_BOSS_ARMOR = 10;
 /**
- * The boss plays one turn for every two of yours and faces two boards, so it gets a card, 2 Energy and
- * a 1-damage quake on your units every turn (src/data/cards/tokens.ts). Without them it never won a
- * simulated fight; with them it wins about half against two Hard AIs (tuned 2026-10-17).
+ * The boss plays one turn for every two of yours and faces two boards, so every turn it gets a card,
+ * 2 Energy and two 1-damage hits on random enemies (src/data/cards/tokens.ts). Without them it never
+ * won a simulated fight; with them (and 60 Health, 10 Armor) it wins about half against two Hard AIs
+ * (tuned 2026-10-17). Not damage to every unit: that would shut out whole Warden builds of 1-Health units.
  */
 export const COOP_BOSS_RULES = ['coop_rule_draw', 'coop_rule_energy', 'coop_rule_quake'];
 
 /** The practice rival of `faction` as the co-op boss. */
 export function coopBoss(faction: PlayableFaction, difficulty: Difficulty): OpponentDef {
   const opp = PRACTICE_OPPONENTS[faction];
-  return { ...opp, id: `coop_${opp.id}`, difficulty, rarities: DIFFICULTY_POOLS[difficulty], special: { heroHealth: COOP_BOSS_HEALTH, bonusStartingEnergy: 1, rules: COOP_BOSS_RULES, description: [] } };
+  return { ...opp, id: `coop_${opp.id}`, difficulty, rarities: DIFFICULTY_POOLS[difficulty], special: { heroHealth: COOP_BOSS_HEALTH, startingArmor: COOP_BOSS_ARMOR, bonusStartingEnergy: 1, rules: COOP_BOSS_RULES, description: [] } };
 }
 
 /** The AI teammate of `faction`. */

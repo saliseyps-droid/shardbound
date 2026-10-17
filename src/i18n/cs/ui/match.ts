@@ -176,7 +176,7 @@ const d: Record<string, string> = {
   'Illegal action.': 'Nepovolený tah.',
   'Your opponent disconnected — you win.': 'Soupeř se odpojil — vyhráváš.',
   'Your teammate disconnected — the AI takes over their Warden.': 'Tvůj spoluhráč se odpojil — jeho Strážce přebírá umělá inteligence.',
-  'Your friend joins as your teammate. Together you face a boss with {n} Health and an extra Energy, played by the AI. Rewards are those of a practice match.': 'Tvůj přítel se přidá jako spoluhráč. Společně se postavíte bossovi s {n} životy a energií navíc, kterého hraje umělá inteligence. Odměny jsou jako za cvičný zápas.',
+  'Your friend joins as your teammate. Together you face a boss with {n} Health, {a} Armor and an extra Energy, played by the AI. Rewards are those of a practice match.': 'Tvůj přítel se přidá jako spoluhráč. Společně se postavíte bossovi s {n} životy, {a} brnění a energií navíc, kterého hraje umělá inteligence. Odměny jsou jako za cvičný zápas.',
   'The match result could not be saved.': 'Výsledek zápasu se nepodařilo uložit.',
   'No profile': 'Žádný profil',
   'The host did not start the match.': 'Hostitel zápas nespustil.',

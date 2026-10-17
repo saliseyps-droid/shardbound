@@ -24,7 +24,7 @@ import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { DeckPicker, DIFFICULTY_INFO, factionStyle, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
-import { COOP_BOSS_HEALTH, coopAlly, coopBoss } from '@/domain/coop';
+import { COOP_BOSS_ARMOR, COOP_BOSS_HEALTH, coopAlly, coopBoss } from '@/domain/coop';
 import '@/ui/styles/meta.css';
 import '@/ui/styles/social.css';
 import { t, tn } from '@/i18n';
@@ -210,7 +210,7 @@ export default function PlayScreen() {
       </div>
       <div className="practice-head">
         <h2>{t('Practice match')}</h2>
-        <p className="muted">{coop ? `${t('Two against one: you and an AI teammate against a boss with {n} Health and an extra Energy.', { n: COOP_BOSS_HEALTH })} ${t('Every turn the boss also draws a card, gains 2 Energy and deals 1 damage to each of your units.')}` : t('Pick a rival Warden, set their skill, and bring your deck.')}</p>
+        <p className="muted">{coop ? `${t('Two against one: you and an AI teammate against a boss with {n} Health, {a} Armor and an extra Energy.', { n: COOP_BOSS_HEALTH, a: COOP_BOSS_ARMOR })} ${t('Every turn the boss also draws a card, gains 2 Energy and deals 1 damage to a random enemy twice.')}` : t('Pick a rival Warden, set their skill, and bring your deck.')}</p>
         <div className="practice-mode" role="radiogroup" aria-label={t('Match type')}>
           <button type="button" role="radio" aria-checked={!coop} className={`btn btn-sm ${!coop ? 'btn-primary' : ''}`} onClick={() => (audio.play('click'), setCoop(false))}>
             {t('1 v 1')}

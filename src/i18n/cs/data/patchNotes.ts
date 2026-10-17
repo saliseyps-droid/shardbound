@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.58.4': {
+    title: 'Hněv místo zemětřesení',
+    summary: 'Boss v kooperaci už každý tah nezasahuje všechny vaše jednotky, takže sestavy z malých jednotek zase fungují.',
+    sections: [
+      [
+        'Kooperace 2 na 1: Tyranovo zemětřesení (každý tah 1 poškození každé vaší jednotce) znemožňovalo celé sestavy Strážců z malých jednotek. Teď je z něj Tyranův hněv: na začátku svého tahu boss dvakrát způsobí 1 poškození náhodnému nepříteli.',
+        'Aby boj zůstal vyrovnaný, má boss teď 60 životů a 10 brnění (dřív 50 životů). Dál si každý tah lízne kartu a získá 2 energie a v testovacích soubojích proti dvěma Strážcům s těžkou AI vyhrává zhruba v polovině případů.',
+      ],
+    ],
+  },
   '0.58.3': {
     title: 'Boss, jak má být',
     summary: 'Boss v kooperaci 2 na 1 už není snadná kořist: dostal tři schopnosti, které vyrovnávají boj proti dvěma Strážcům.',

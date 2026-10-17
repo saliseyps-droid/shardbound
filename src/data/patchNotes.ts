@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.58.4',
+    date: '2026-10-17',
+    title: 'Wrath, not a quake',
+    summary: 'The co-op boss no longer hits every one of your units each turn, so builds of small units work again.',
+    sections: [
+      {
+        kind: 'balance',
+        items: [
+          '2 v 1 co-op: Tyrant’s Quake (1 damage to each of your units every turn) shut out whole Warden builds of small units. It is now Tyrant’s Wrath: at the start of its turn the boss deals 1 damage to a random enemy twice.',
+          'To keep the fight even the boss now has 60 Health and 10 Armor (was 50 Health). It still draws a card and gains 2 Energy every turn, and in test fights against two Hard AI Wardens it wins about half the time.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.58.3',
     date: '2026-10-17',
     title: 'A boss worth the name',

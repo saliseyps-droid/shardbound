@@ -9,7 +9,7 @@ import { factionOfList } from '@/domain/decks';
 import { ScreenHeader, Spinner } from '@/ui/components/common';
 import { DeckPicker, firstValidDeck } from '@/ui/components/meta/MetaWidgets';
 import { audio } from '@/audio/audioService';
-import { COOP_BOSS_HEALTH, coopBoss, type CoopMeta } from '@/domain/coop';
+import { COOP_BOSS_ARMOR, COOP_BOSS_HEALTH, coopBoss, type CoopMeta } from '@/domain/coop';
 import { PLAYABLE_FACTIONS } from '@/game/types';
 import { DIFFICULTIES } from '@/config/progression';
 import { PRACTICE_OPPONENTS } from '@/data/opponents';
@@ -103,7 +103,7 @@ export default function OnlineScreen() {
               {coop && (
                 <>
                   <p className="muted">
-                    {t('Your friend joins as your teammate. Together you face a boss with {n} Health and an extra Energy, played by the AI. Rewards are those of a practice match.', { n: COOP_BOSS_HEALTH })} {t('Every turn the boss also draws a card, gains 2 Energy and deals 1 damage to each of your units.')}
+                    {t('Your friend joins as your teammate. Together you face a boss with {n} Health, {a} Armor and an extra Energy, played by the AI. Rewards are those of a practice match.', { n: COOP_BOSS_HEALTH, a: COOP_BOSS_ARMOR })} {t('Every turn the boss also draws a card, gains 2 Energy and deals 1 damage to a random enemy twice.')}
                   </p>
                   <div className="panel-title">{t('Boss')}</div>
                   <div className="opponent-grid coop-boss-grid" role="radiogroup" aria-label={t('Boss')}>
