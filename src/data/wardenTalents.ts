@@ -243,8 +243,8 @@ export const BOSS_TALENTS: TalentAbility[] = [
   active('BOSS', 'soul_pyre', 'Soul Pyre', [{ cost: 2, effects: [{ type: 'DEAL_DAMAGE', amount: 2, target: 'ENEMY_HERO' }, { type: 'HEAL', amount: 2, target: 'ALLY_HERO' }], description: 'Deal 2 damage to the enemy Warden and restore 2 Health to yours.' }]),
   // Chapters VI-IX
   // Sali, the Creator (Void Reckoning): the Warden's abilities once Sali takes the Warden's place.
-  active('BOSS', 'sali_sovereign', 'Raise the Sovereign', [{ cost: 2, cooldown: 1, effects: [{ type: 'SUMMON', cardId: 'token_hollow_sovereign' }], description: 'Summon a 3/4 Hollow Sovereign. Usable every other turn.' }]),
-  active('BOSS', 'sali_warden', 'Call the Eclipse', [{ cost: 2, cooldown: 1, effects: [{ type: 'SUMMON', cardId: 'token_eclipse_warden' }], description: 'Summon a 4/3 Eclipse Warden. Usable every other turn.' }]),
+  active('BOSS', 'sali_sovereign', 'Raise the Sovereign', [{ cost: 5, cooldown: 2, effects: [{ type: 'SUMMON', cardId: 'token_hollow_sovereign' }], description: 'Summon a 3/4 Hollow Sovereign. Usable every third turn.' }]),
+  active('BOSS', 'sali_warden', 'Call the Eclipse', [{ cost: 5, cooldown: 2, effects: [{ type: 'SUMMON', cardId: 'token_eclipse_warden' }], description: 'Summon a 4/3 Eclipse Warden. Usable every third turn.' }]),
   // The player's Sali card becoming the Warden (BECOME_WARDEN): the same abilities, usable every turn.
   active('BOSS', 'sali_risen_sovereign', 'Raise the Sovereign', [{ cost: 1, effects: [{ type: 'SUMMON', cardId: 'token_hollow_sovereign' }], description: 'Summon a 3/4 Hollow Sovereign.' }]),
   active('BOSS', 'sali_risen_eclipse', 'Call the Eclipse', [{ cost: 1, effects: [{ type: 'SUMMON', cardId: 'token_eclipse_warden' }], description: 'Summon a 4/3 Eclipse Warden.' }]),

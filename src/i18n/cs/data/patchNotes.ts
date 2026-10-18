@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.59.7': {
+    title: 'I Stvořitel může padnout',
+    summary: 'Saliho jde teď porazit: jeho schopnosti Strážce stojí mnohem víc a vracejí se pomaleji.',
+    sections: [['Černé slunce, Sali: Povstání vládce a Volání zatmění teď stojí 5 energie a dají se použít jednou za tři tahy (dřív 2 energie, jednou za dva tahy). V testovacích soubojích je teď zhruba stejně těžký jako ostatní finální bossové.']],
+  },
   '0.59.6': {
     title: 'Stvořitel zpomaluje',
     summary: 'Saliho schopnosti Strážce v Černém slunci jsou dražší.',

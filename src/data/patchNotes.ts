@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.59.7',
+    date: '2026-10-19',
+    title: 'The Creator can fall',
+    summary: 'Sali can now be beaten: his Warden abilities cost much more and come back more slowly.',
+    sections: [{ kind: 'balance', items: ['The Black Sun, Sali: Raise the Sovereign and Call the Eclipse now cost 5 Energy and can be used every third turn (were 2 Energy, every other turn). In test fights he is now about as hard as the other final bosses.'] }],
+    commits: [],
+  },
+  {
     version: '0.59.6',
     date: '2026-10-19',
     title: 'The Creator slows down',
