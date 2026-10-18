@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.59.6',
+    date: '2026-10-19',
+    title: 'The Creator slows down',
+    summary: 'Sali’s Warden abilities in The Black Sun cost more.',
+    sections: [{ kind: 'balance', items: ['The Black Sun, Sali: Raise the Sovereign and Call the Eclipse now cost 2 Energy (was 1). Still usable every other turn.'] }],
+    commits: [],
+  },
+  {
     version: '0.59.5',
     date: '2026-10-18',
     title: 'A sky of feathers',

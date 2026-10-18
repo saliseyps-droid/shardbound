@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.59.6': {
+    title: 'Stvořitel zpomaluje',
+    summary: 'Saliho schopnosti Strážce v Černém slunci jsou dražší.',
+    sections: [['Černé slunce, Sali: Povstání vládce a Volání zatmění teď stojí 2 energie (dřív 1). Dál se dají použít jednou za dva tahy.']],
+  },
   '0.59.5': {
     title: 'Nebe plné peří',
     summary: 'Azrafelovo peří padá po celý jeho příchod.',
