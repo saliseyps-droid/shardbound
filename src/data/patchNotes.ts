@@ -27,11 +27,11 @@ export const PATCH_NOTES: PatchNote[] = [
       {
         kind: 'new',
         items: [
-          'Animated boards: every one of the 15 boards now moves. Glowing parts breathe, lamps and candles flicker, and each board has its own particles: embers over lava and hellfire, snow on the frozen lake, fireflies in the grove, falling leaves in the butterfly garden, stars in the sky of the Twin Oath, steam from a teacup at the Wraithwood Inn.',
+          'Animated boards: every board now moves. Glowing parts breathe, lamps and candles flicker, and each board has its own life: embers over lava and hellfire, snow on the frozen lake, sunbeams and mist in the forest, falling leaves in the butterfly garden, stars in the sky of the Twin Oath, candlelight and steam on the Wraithwood Inn tables.',
           'The board reacts to the match: a dying unit makes its side of the board flare, the middle of the board lights up when your turn starts, the board burns hotter while your Warden has 10 Health or less, and the final blow bursts from its lights.',
         ],
       },
-      { kind: 'improved', items: ['With Reduced motion on, boards stay still with a steady glow. Performance mode shows fewer particles.'] },
+      { kind: 'improved', items: ['With Reduced motion on, boards stay still with a steady glow. Performance mode shows fewer particles.', 'Two boards are retired: the purple diamond and the castle tapestry.'] },
     ],
     commits: [],
   },

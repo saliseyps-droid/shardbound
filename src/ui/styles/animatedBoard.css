@@ -99,6 +99,53 @@
 }
 .is-heat .ab-lamp { filter: brightness(1.25); }
 
+/* Candlelight from beyond the mat's edge: a wide, soft pool of warm light that wavers, no flame. */
+.ab-lamp-candle {
+  background: radial-gradient(circle, rgba(var(--ab-color), 0.42) 0%, rgba(var(--ab-color), 0.2) 30%, rgba(var(--ab-color), 0.07) 50%, transparent 68%);
+  animation-name: ab-candle; animation-timing-function: ease-in-out; animation-duration: 5.5s;
+}
+@keyframes ab-candle {
+  0%, 100% { opacity: 0.75; transform: translate(-50%, -50%) scale(1); }
+  14% { opacity: 0.88; transform: translate(-50%, -50%) scale(1.02); }
+  27% { opacity: 0.7; transform: translate(-50%, -50%) scale(0.99); }
+  41% { opacity: 0.95; transform: translate(-50%, -50%) scale(1.03); }
+  58% { opacity: 0.78; transform: translate(-50%, -50%) scale(1); }
+  73% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.02); }
+  86% { opacity: 0.72; transform: translate(-50%, -50%) scale(0.99); }
+}
+
+/* Sunbeams slanting through the canopy, each swaying and fading to its own slow beat. */
+.ab-rays { position: absolute; inset: 0; overflow: hidden; mix-blend-mode: screen; }
+.ab-rays i {
+  position: absolute; top: -30%; height: 160%; width: 9%;
+  background: linear-gradient(180deg, rgba(var(--ab-color), 0) 0%, rgba(var(--ab-color), 0.34) 30%, rgba(var(--ab-color), 0.18) 65%, rgba(var(--ab-color), 0) 100%);
+  filter: blur(14px);
+  transform: rotate(24deg);
+  animation: ab-ray 17s ease-in-out infinite alternate;
+}
+.ab-rays i:nth-child(1) { left: 30%; animation-duration: 19s; }
+.ab-rays i:nth-child(2) { left: 50%; width: 6%; animation-duration: 14s; animation-delay: -6s; }
+.ab-rays i:nth-child(3) { left: 66%; width: 11%; animation-duration: 22s; animation-delay: -11s; }
+@keyframes ab-ray {
+  0% { opacity: 0.25; transform: translateX(-4%) rotate(24deg); }
+  50% { opacity: 0.9; }
+  100% { opacity: 0.35; transform: translateX(6%) rotate(21deg); }
+}
+
+/* Mist drifting slowly over the middle of the mat. */
+.ab-mist { position: absolute; inset: 0; overflow: hidden; mix-blend-mode: screen; }
+.ab-mist i {
+  position: absolute; width: 60%; height: 50%; left: 20%; top: 25%; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(var(--mist), 0.16) 0%, rgba(var(--mist), 0.06) 45%, transparent 70%);
+  animation: ab-mist 38s ease-in-out infinite alternate;
+}
+.ab-mist i:nth-child(2) { width: 50%; height: 40%; left: 30%; top: 35%; animation-duration: 29s; animation-delay: -14s; animation-direction: alternate-reverse; }
+@keyframes ab-mist {
+  0% { transform: translate(-12%, -4%) scale(1); opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { transform: translate(12%, 5%) scale(1.15); opacity: 0.7; }
+}
+
 /* Your turn: the medallion in the middle turns a little and glows. */
 .ab-medallion {
   position: absolute; aspect-ratio: 1;
@@ -125,6 +172,8 @@
 .animated-board.is-still .ab-flare-wash,
 .animated-board.is-still .ab-medallion { display: none; }
 .animated-board.is-still .ab-lamp { animation: none; opacity: 0.8; }
+.animated-board.is-still .ab-rays i,
+.animated-board.is-still .ab-mist i { animation: none; opacity: 0.6; }
 .performance-mode .ab-haze { display: none; }
 
 /* DEV board preview (#/boards/<mat>, src/ui/screens/BoardPreview.tsx). */
@@ -141,3 +190,18 @@
   padding: 8px 14px; border-radius: 18px; background: rgba(15, 12, 30, 0.82);
   max-width: calc(100vw - 32px);
 }
+
+/* Painted smoke that churns: two copies of it drift and swell against each other, fading in and out in turn. */
+.ab-smoke { position: absolute; inset: 0; overflow: hidden; mix-blend-mode: screen; }
+.ab-smoke img { position: absolute; inset: 0; width: 100%; height: 100%; user-select: none; opacity: 0; }
+.ab-smoke img:nth-child(1) { animation: ab-smoke-a 11s ease-in-out infinite; }
+.ab-smoke img:nth-child(2) { animation: ab-smoke-b 13s ease-in-out infinite; animation-delay: -5s; }
+@keyframes ab-smoke-a {
+  0%, 100% { opacity: 0.15; transform: translate(0, 0) scale(1); }
+  50% { opacity: 0.75; transform: translate(-1.2%, -1.6%) scale(1.035); }
+}
+@keyframes ab-smoke-b {
+  0%, 100% { opacity: 0.7; transform: translate(0.8%, 0.6%) scale(1.03) rotate(0.4deg); }
+  50% { opacity: 0.1; transform: translate(1.6%, -1%) scale(1.06) rotate(-0.3deg); }
+}
+.animated-board.is-still .ab-smoke img { animation: none; opacity: 0.35; }

@@ -9,6 +9,9 @@ import '@/ui/styles/animatedBoard.css';
 const glowModules = import.meta.glob('../../assets/boards/fx/*-glow.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 /** Each mat's glow layer (tools/board_glow.py), by mat name. */
 export const BOARD_GLOWS: Record<string, string> = Object.fromEntries(Object.entries(glowModules).map(([path, url]) => [path.match(/([^/]+)-glow\.webp$/)![1], url]));
+const smokeModules = import.meta.glob('../../assets/boards/fx/*-smoke.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+/** The painted smoke of a mat, alone (tools/board_glow.py), by mat name. */
+const BOARD_SMOKE: Record<string, string> = Object.fromEntries(Object.entries(smokeModules).map(([path, url]) => [path.match(/([^/]+)-smoke\.webp$/)![1], url]));
 
 /** The mats' size: the layer is laid out on a mat the way `background-size: cover` shows it. */
 const MAT_W = 3200;
@@ -47,7 +50,6 @@ function spawn(kind: ParticleKind, fx: BoardFx): Particle {
     case 'embers':
       return { ...base, ...rimPoint(), vx: rand(-0.005, 0.005), vy: -rand(0.02, 0.055), life: rand(1.6, 3.8), size: rand(0.8, 2.4) };
     case 'motes':
-    case 'sparks':
       return { ...base, ...rimPoint(), vx: rand(-0.008, 0.008), vy: rand(-0.012, 0.004), life: rand(2.5, 5), size: rand(0.8, 2) };
     case 'dust':
       return { ...base, x: rand(0.03, 0.97), y: rand(0.05, 0.95), vx: rand(-0.004, 0.004), vy: rand(-0.004, 0.002), life: rand(4, 8), size: rand(0.5, 1.3) };
@@ -55,8 +57,6 @@ function spawn(kind: ParticleKind, fx: BoardFx): Particle {
       return { ...base, x: rand(-0.05, 1.05), y: -0.03, vx: rand(-0.006, 0.006), vy: rand(0.03, 0.07), life: rand(14, 30), size: rand(0.7, 2.2) };
     case 'leaves':
       return { ...base, x: rand(0, 1), y: -0.05, vx: rand(0.002, 0.012), vy: rand(0.025, 0.045), life: rand(25, 45), size: rand(7, 11) };
-    case 'fireflies':
-      return { ...base, x: rand(0.04, 0.96), y: rand(0.06, 0.94), vx: 0, vy: 0, life: rand(4, 9), size: rand(1.6, 2.8) };
     case 'stars':
       return { ...base, x: rand(0.03, 0.97), y: rand(0.05, 0.95), vx: 0, vy: 0, life: rand(1.5, 3.5), size: rand(0.8, 2) };
     case 'steam': {
@@ -71,6 +71,44 @@ function burst(at: { x: number; y: number }): Particle {
   const a = Math.random() * Math.PI * 2;
   const v = rand(0.05, 0.17);
   return { x: at.x / 100, y: at.y / 100, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 0.04, age: 0, life: rand(0.9, 1.8), size: rand(1.2, 3), seed: Math.random() * 6.28, alt: false, burst: true };
+}
+
+interface Wisp {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  age: number;
+  life: number;
+  size: number;
+  seed: number;
+}
+
+/** A wisp of smoke rising from one of the places where the mat has painted smoke, drifting away from the table. */
+function wisp(at: [number, number]): Wisp {
+  const x = at[0] / 100 + rand(-0.02, 0.02);
+  const y = at[1] / 100 + rand(-0.02, 0.02);
+  const away = Math.atan2(y - 0.5, x - 0.5);
+  const v = rand(0.006, 0.014);
+  return { x, y, vx: Math.cos(away) * v, vy: Math.sin(away) * v - rand(0.004, 0.01), age: 0, life: rand(6, 10), size: rand(0.035, 0.07), seed: Math.random() * 6.28 };
+}
+
+function drawWisp(ctx: CanvasRenderingContext2D, w: Wisp, px: number, py: number, r: number, color: string) {
+  const t = w.age / w.life;
+  const alpha = 0.22 * Math.sin(Math.PI * t);
+  const rr = r * (0.7 + t * 0.9);
+  // A stretched, turning puff reads as a curl of smoke rather than a ball.
+  ctx.save();
+  ctx.translate(px, py);
+  ctx.rotate(w.seed + w.age * 0.15);
+  ctx.scale(1.8, 0.75);
+  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rr);
+  g.addColorStop(0, `rgba(${color}, ${alpha})`);
+  g.addColorStop(0.5, `rgba(${color}, ${alpha * 0.45})`);
+  g.addColorStop(1, `rgba(${color}, 0)`);
+  ctx.fillStyle = g;
+  ctx.fillRect(-rr, -rr, rr * 2, rr * 2);
+  ctx.restore();
 }
 
 /** Falling and drifting kinds stay until they leave the mat; the rest live out their life. */
@@ -89,10 +127,10 @@ function draw(ctx: CanvasRenderingContext2D, p: Particle, kind: ParticleKind, px
     ctx.fillRect(px - r * 3, py - r * 3, r * 6, r * 6);
     return;
   }
-  if (kind === 'sparks' || kind === 'stars') {
+  if (kind === 'stars') {
     // A four-pointed glint that flashes in and out.
     const alpha = Math.sin(Math.PI * t) ** 2;
-    const len = r * (kind === 'stars' ? 4 : 3) * (0.6 + 0.4 * alpha);
+    const len = r * 4 * (0.6 + 0.4 * alpha);
     ctx.strokeStyle = `rgba(${c}, ${alpha})`;
     ctx.lineWidth = Math.max(1, r * 0.35);
     ctx.beginPath();
@@ -106,17 +144,6 @@ function draw(ctx: CanvasRenderingContext2D, p: Particle, kind: ParticleKind, px
     g.addColorStop(1, `rgba(${c}, 0)`);
     ctx.fillStyle = g;
     ctx.fillRect(px - r * 2, py - r * 2, r * 4, r * 4);
-    return;
-  }
-  if (kind === 'fireflies') {
-    // Blink a few times over its life.
-    const alpha = Math.min(1, t * 4, (1 - t) * 4) * (0.45 + 0.55 * Math.max(0, Math.sin(p.age * 2.2 + p.seed)));
-    const g = ctx.createRadialGradient(px, py, 0, px, py, r * 4);
-    g.addColorStop(0, `rgba(250, 255, 210, ${alpha})`);
-    g.addColorStop(0.25, `rgba(${c}, ${alpha * 0.7})`);
-    g.addColorStop(1, `rgba(${c}, 0)`);
-    ctx.fillStyle = g;
-    ctx.fillRect(px - r * 4, py - r * 4, r * 8, r * 8);
     return;
   }
   if (kind === 'snow') {
@@ -230,6 +257,14 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
     const falls = FALLS.includes(kind);
     // Falling kinds start already spread over the mat instead of all at the top.
     particles.current = falls ? Array.from({ length: base }, () => ({ ...spawn(kind, fx), y: rand(0, 1), age: 1 })) : [];
+    const smoke = fx.smoke;
+    const wantWisps = smoke ? Math.round(smoke.at.length * (lowPower ? 0.4 : usingTouch() ? 0.6 : 1)) : 0;
+    // Smoke starts already drifting, at every age.
+    const wisps: Wisp[] = smoke ? Array.from({ length: wantWisps }, () => {
+      const w = wisp(smoke.at[Math.floor(Math.random() * smoke.at.length)]);
+      w.age = rand(0, w.life);
+      return w;
+    }) : [];
     let raf = 0;
     let last = performance.now();
     let acc = 0;
@@ -249,6 +284,21 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
       const st = stageRef.current;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (!st) return;
+      if (smoke) {
+        while (wisps.length < wantWisps) wisps.push(wisp(smoke.at[Math.floor(Math.random() * smoke.at.length)]));
+        ctx.globalCompositeOperation = 'source-over';
+        for (let i = wisps.length - 1; i >= 0; i--) {
+          const w = wisps[i];
+          w.age += step;
+          if (w.age >= w.life) {
+            wisps.splice(i, 1);
+            continue;
+          }
+          w.x += w.vx * step;
+          w.y += w.vy * step;
+          drawWisp(ctx, w, (st.x + w.x * st.w) * dpr, (st.y + w.y * st.h) * dpr, w.size * st.w * dpr, smoke.color);
+        }
+      }
       const list = particles.current;
       const want = heatRef.current ? base * 2 : base;
       let calm = 0;
@@ -263,15 +313,9 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
           list.splice(i, 1);
           continue;
         }
-        if (kind === 'fireflies' && !p.burst) {
-          // Wander along a slow, wavy path.
-          p.x += Math.sin(p.age * 0.7 + p.seed) * 0.012 * step;
-          p.y += Math.cos(p.age * 0.5 + p.seed * 1.3) * 0.01 * step;
-        } else {
-          const sway = falls ? Math.sin(p.age * 1.3 + p.seed) * 0.012 : Math.sin(p.age * 2.4 + p.seed) * 0.004;
-          p.x += (p.vx + (p.burst ? 0 : sway)) * step;
-          p.y += p.vy * step;
-        }
+        const sway = falls ? Math.sin(p.age * 1.3 + p.seed) * 0.012 : Math.sin(p.age * 2.4 + p.seed) * 0.004;
+        p.x += (p.vx + (p.burst ? 0 : sway)) * step;
+        p.y += p.vy * step;
         draw(ctx, p, kind, (st.x + p.x * st.w) * dpr, (st.y + p.y * st.h) * dpr, p.size * scale, fx.particles.color, fx.particles.alt);
       }
     };
@@ -302,6 +346,25 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
           {glowUrl && <img className="ab-glow ab-haze" src={glowUrl} alt="" draggable={false} />}
           {flare && glowUrl && <img key={flare.key} className={`ab-glow ab-flare ab-flare-${flare.side}`} src={glowUrl} alt="" draggable={false} />}
           {flare && !glowUrl && <span key={flare.key} className={`ab-flare-wash ab-flare-${flare.side}`} />}
+          {BOARD_SMOKE[board] && (
+            <span className="ab-smoke">
+              <img src={BOARD_SMOKE[board]} alt="" draggable={false} />
+              <img src={BOARD_SMOKE[board]} alt="" draggable={false} />
+            </span>
+          )}
+          {fx.rays && (
+            <span className="ab-rays">
+              <i />
+              <i />
+              <i />
+            </span>
+          )}
+          {fx.mist && (
+            <span className="ab-mist" style={{ '--mist': fx.mist } as CSSProperties}>
+              <i />
+              <i />
+            </span>
+          )}
           {fx.lamps?.map((l, i) => (
             <span key={i} className={`ab-lamp ab-lamp-${l.kind}`} style={{ left: `${l.x}%`, top: `${l.y}%`, width: `${l.size}%`, '--i': i } as CSSProperties} />
           ))}

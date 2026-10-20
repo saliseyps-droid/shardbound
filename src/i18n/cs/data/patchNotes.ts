@@ -6,10 +6,10 @@ const notes: PatchNotesOverlay = {
     summary: 'Každá herní deska ožila.',
     sections: [
       [
-        'Animované desky: všech 15 desek se teď hýbe. Zářící části dýchají, lampy a svíčky plápolají a každá deska má vlastní částice: uhlíky nad lávou a pekelným ohněm, sníh na zamrzlém jezeře, světlušky v háji, padající listí v motýlí zahradě, hvězdy na nebi Dvojí přísahy a páru ze šálku v Hostinci v Přízračném hvozdu.',
+        'Animované desky: každá deska se teď hýbe. Zářící části dýchají, lampy a svíčky plápolají a každá deska žije po svém: uhlíky nad lávou a pekelným ohněm, sníh na zamrzlém jezeře, sluneční paprsky a mlha v lese, padající listí v motýlí zahradě, hvězdy na nebi Dvojí přísahy, světlo svíčky a pára na stolech v Hostinci v Přízračném hvozdu.',
         'Deska reaguje na zápas: když padne jednotka, její strana desky vzplane, na začátku tvého tahu se rozzáří střed desky, když má tvůj Strážce 10 životů nebo méně, deska žhne víc, a poslední úder vybuchne z jejích světel.',
       ],
-      ['Se zapnutým Omezeným pohybem zůstávají desky v klidu a jen rovnoměrně září. Úsporný režim ukazuje méně částic.'],
+      ['Se zapnutým Omezeným pohybem zůstávají desky v klidu a jen rovnoměrně září. Úsporný režim ukazuje méně částic.', 'Dvě desky jsme vyřadili: fialový diamant a hradní gobelín.'],
     ],
   },
   '0.59.7': {

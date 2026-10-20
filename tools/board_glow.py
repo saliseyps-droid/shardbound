@@ -22,14 +22,11 @@ WIDTH = 1600  # the glow is soft: half the mat's resolution is plenty
 # the butterflies, the second inn table) only get particles.
 BOARDS = {
     "board-1": ("bright", 0.55),
-    "board-2": ("bright", 0.55),
     "board-3": ("gold", 0.28),
     "board-4": ("gold", 0.45),
     "board-5": ("bright", 0.7),
-    "board-8": ("gold", 0.32),
     "board-9": ("red", 0.0),
     "board-10": ("ice", 0.62),
-    "inn-board-1": ("bright", 0.75),
     "inferno-board-1": ("red", 0.0),
     "inferno-board-2": ("red", 0.0),
     "heaven-board-1": ("bright", 0.6),
@@ -71,7 +68,29 @@ def build(name: str) -> None:
     Image.fromarray(merged.astype(np.uint8)).save(os.path.join(DST, f"{name}-glow.webp"), "WEBP", quality=80)
 
 
+# Mats with painted smoke outside their frame: only that smoke, for the churning smoke layer (<mat>-smoke.webp).
+SMOKE = {"inferno-board-2"}
+
+
+def build_smoke(name: str) -> None:
+    im = Image.open(os.path.join(SRC, f"{name}.webp")).convert("RGB")
+    small = im.resize((WIDTH, round(WIDTH * im.height / im.width)), Image.LANCZOS)
+    a = np.asarray(small).astype(np.float32)
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    h, w = r.shape
+    yy, xx = np.mgrid[0:h, 0:w]
+    # Pure red wisps (no gold of the frame), fading out towards the table in the middle.
+    edge = np.maximum(np.abs(xx / w - 0.5) / 0.5, np.abs(yy / h - 0.5) / 0.5)
+    weight = np.clip((r - np.maximum(g, b) * 2.6) / 70.0, 0, 1) * np.clip((edge - 0.72) / 0.12, 0, 1)
+    out = Image.fromarray((a * weight[..., None]).clip(0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(2))
+    out.save(os.path.join(DST, f"{name}-smoke.webp"), "WEBP", quality=80)
+
+
 if __name__ == "__main__":
     for n in sys.argv[1:] or BOARDS:
         build(n)
         print(n)
+    for n in sys.argv[1:] or SMOKE:
+        if n in SMOKE:
+            build_smoke(n)
+            print(n, "smoke")
