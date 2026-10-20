@@ -52,7 +52,7 @@ export const BOARD_FX: Record<string, BoardFx> = {
     lamps: [...corners(9.7, 12.1, 3.6, 'flame'), { x: 9.5, y: 49, size: 3.6, kind: 'flame' }, { x: 90.1, y: 49, size: 3.6, kind: 'flame' }, ...corners(18.7, 24.7, 3, 'flame')],
   },
   // Deep grove: sunbeams through the canopy, slow mist over the clearing, fireflies.
-  'board-6': { color: '215, 235, 120', rays: true, mist: '120, 200, 130', particles: { kind: 'fireflies', count: 40, color: '215, 255, 120' } },
+  'board-6': { color: '215, 235, 120', rays: true, mist: '120, 200, 130', particles: { kind: 'fireflies', count: 55, color: '215, 255, 120' } },
   // Butterfly garden: leaves drifting down.
   'board-7': { color: '255, 200, 120', particles: { kind: 'leaves', count: 12, color: '232, 120, 40', alt: '70, 140, 70' } },
   // Lava rift: the cracks seethe, embers rise.

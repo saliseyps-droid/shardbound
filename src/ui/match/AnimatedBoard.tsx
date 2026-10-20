@@ -56,7 +56,7 @@ function spawn(kind: ParticleKind, fx: BoardFx): Particle {
     case 'leaves':
       return { ...base, x: rand(0, 1), y: -0.05, vx: rand(0.002, 0.012), vy: rand(0.025, 0.045), life: rand(25, 45), size: rand(7, 11) };
     case 'fireflies':
-      return { ...base, x: rand(0.04, 0.96), y: rand(0.06, 0.94), vx: 0, vy: 0, life: rand(5, 10), size: rand(2.4, 3.8) };
+      return { ...base, x: rand(0.04, 0.96), y: rand(0.06, 0.94), vx: 0, vy: 0, life: rand(5, 10), size: rand(0.6, 1.1) };
     case 'stars':
       return { ...base, x: rand(0.03, 0.97), y: rand(0.05, 0.95), vx: 0, vy: 0, life: rand(1.5, 3.5), size: rand(0.8, 2) };
     case 'steam': {
@@ -142,13 +142,14 @@ function draw(ctx: CanvasRenderingContext2D, p: Particle, kind: ParticleKind, px
   if (kind === 'fireflies') {
     // Blink a few times over its life.
     const alpha = Math.min(1, t * 4, (1 - t) * 4) * (0.6 + 0.4 * Math.max(0, Math.sin(p.age * 2.2 + p.seed)));
-    const g = ctx.createRadialGradient(px, py, 0, px, py, r * 5);
+    // A tiny bright point in a small halo.
+    const g = ctx.createRadialGradient(px, py, 0, px, py, r * 3.5);
     g.addColorStop(0, `rgba(255, 255, 230, ${alpha})`);
-    g.addColorStop(0.12, `rgba(250, 255, 190, ${alpha})`);
-    g.addColorStop(0.35, `rgba(${c}, ${alpha * 0.55})`);
+    g.addColorStop(0.2, `rgba(245, 255, 180, ${alpha})`);
+    g.addColorStop(0.45, `rgba(${c}, ${alpha * 0.4})`);
     g.addColorStop(1, `rgba(${c}, 0)`);
     ctx.fillStyle = g;
-    ctx.fillRect(px - r * 5, py - r * 5, r * 10, r * 10);
+    ctx.fillRect(px - r * 3.5, py - r * 3.5, r * 7, r * 7);
     return;
   }
   if (kind === 'snow') {
