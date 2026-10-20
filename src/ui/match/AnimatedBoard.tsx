@@ -82,8 +82,8 @@ function wisp(at: [number, number]): Wisp {
   const x = at[0] / 100 + rand(-0.02, 0.02);
   const y = at[1] / 100 + rand(-0.02, 0.02);
   const away = Math.atan2(y - 0.5, x - 0.5);
-  const v = rand(0.006, 0.014);
-  return { x, y, vx: Math.cos(away) * v, vy: Math.sin(away) * v - rand(0.004, 0.01), age: 0, life: rand(6, 10), size: rand(0.035, 0.07), seed: Math.random() * 6.28 };
+  const v = rand(0.009, 0.021);
+  return { x, y, vx: Math.cos(away) * v, vy: Math.sin(away) * v - rand(0.006, 0.015), age: 0, life: rand(4.5, 7.5), size: rand(0.035, 0.07), seed: Math.random() * 6.28 };
 }
 
 function drawWisp(ctx: CanvasRenderingContext2D, w: Wisp, px: number, py: number, r: number, color: string) {
@@ -93,7 +93,7 @@ function drawWisp(ctx: CanvasRenderingContext2D, w: Wisp, px: number, py: number
   // A stretched, turning puff reads as a curl of smoke rather than a ball.
   ctx.save();
   ctx.translate(px, py);
-  ctx.rotate(w.seed + w.age * 0.15);
+  ctx.rotate(w.seed + w.age * 0.22);
   ctx.scale(1.8, 0.75);
   const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rr);
   g.addColorStop(0, `rgba(${color}, ${alpha})`);
