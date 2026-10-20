@@ -107,11 +107,11 @@ function drawWisp(ctx: CanvasRenderingContext2D, w: Wisp, px: number, py: number
 /** Falling and drifting kinds stay until they leave the mat; the rest live out their life. */
 const FALLS: ParticleKind[] = ['snow', 'leaves'];
 
-function draw(ctx: CanvasRenderingContext2D, p: Particle, kind: ParticleKind, px: number, py: number, r: number, color: string, alt: string | undefined) {
+function draw(ctx: CanvasRenderingContext2D, p: Particle, kind: ParticleKind, px: number, py: number, r: number, color: string, alt: string | undefined, strength: number) {
   const t = p.age / p.life;
   const c = p.alt && alt ? alt : color;
   if (kind === 'embers' || kind === 'motes' || kind === 'dust') {
-    const alpha = (kind === 'dust' ? 0.45 : 1) * Math.min(1, t * 5) * (1 - t);
+    const alpha = Math.min(1, (kind === 'dust' ? 0.45 : 1) * strength) * Math.min(1, t * 5) * (1 - t);
     const g = ctx.createRadialGradient(px, py, 0, px, py, r * 3);
     g.addColorStop(0, `rgba(255, 245, 220, ${alpha})`);
     g.addColorStop(0.3, `rgba(${c}, ${alpha * 0.75})`);
@@ -325,7 +325,7 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
           p.x += (p.vx + sway) * step;
           p.y += p.vy * step;
         }
-        draw(ctx, p, kind, (st.x + p.x * st.w) * dpr, (st.y + p.y * st.h) * dpr, p.size * scale, fx.particles.color, fx.particles.alt);
+        draw(ctx, p, kind, (st.x + p.x * st.w) * dpr, (st.y + p.y * st.h) * dpr, p.size * scale, fx.particles.color, fx.particles.alt, fx.particles.strength ?? 1);
       }
     };
     raf = requestAnimationFrame(frame);

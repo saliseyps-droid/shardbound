@@ -20,7 +20,8 @@ export interface BoardFx {
   /** Light colour as "r, g, b": its lamps and glows. */
   color: string;
   glow?: { strength?: number; period?: number; min?: number; max?: number };
-  particles: { kind: ParticleKind; count: number; color: string; alt?: string; from?: { x: number; y: number } };
+  /** strength: how much brighter than usual the particles are (1). */
+  particles: { kind: ParticleKind; count: number; color: string; alt?: string; from?: { x: number; y: number }; strength?: number };
   lamps?: BoardLamp[];
   /** Sunbeams slanting across the mat, slowly swaying. */
   rays?: boolean;
@@ -60,7 +61,7 @@ export const BOARD_FX: Record<string, BoardFx> = {
   // Frozen lake: the frost glimmers, snow falls.
   'board-10': { color: '190, 235, 255', glow: { period: 6, min: 0.15, max: 0.5 }, particles: { kind: 'snow', count: 34, color: '235, 248, 255' } },
   // The Wraithwood Inn: warm candlelight falls on the table from beyond its top corner, dust drifts in it.
-  'inn-board-1': { color: '255, 190, 110', particles: { kind: 'dust', count: 18, color: '255, 215, 150' }, lamps: [{ x: 4, y: 4, size: 85, kind: 'candle' }] },
+  'inn-board-1': { color: '255, 190, 110', particles: { kind: 'dust', count: 38, color: '255, 215, 150', strength: 1.6 }, lamps: [{ x: 4, y: 4, size: 85, kind: 'candle' }] },
   // The other inn table: steam from the cup, dust.
   'inn-board-2': { color: '255, 210, 150', particles: { kind: 'steam', count: 12, color: '240, 235, 225', from: { x: 8.6, y: 13.5 } } },
   // The Burning Throne: the red rim breathes, four lamps, embers.
