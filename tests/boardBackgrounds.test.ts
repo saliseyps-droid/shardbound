@@ -28,7 +28,7 @@ describe('board backgrounds', () => {
   });
 
   it('the fire and ice mats, the hellish tables and the heavenly one are veiled less', () => {
-    expect(BOARD_BACKGROUNDS).toHaveLength(8);
+    expect(BOARD_BACKGROUNDS).toHaveLength(6);
     const dims = new Map<string, number>();
     for (let i = 0; i < 600; i++) {
       const b = pickBoardBackground()!;

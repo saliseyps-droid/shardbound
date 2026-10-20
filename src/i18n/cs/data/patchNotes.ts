@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.60.1': {
+    title: 'Prach ve světle svíček',
+    summary: 'Nad oběma stoly v Hostinci v Přízračném hvozdu se vznáší jemný prach a dvě desky jsme vyřadili.',
+    sections: [['Stoly v Hostinci v Přízračném hvozdu: nad oběma teď ve světle svíček poletují drobné prachové částečky, i kolem kouřícího šálku.', 'Vyřadili jsme další dvě desky: arkánní pečeť a smaragdovou síň.']],
+  },
   '0.60.0': {
     title: 'Živé desky',
     summary: 'Každá herní deska ožila.',

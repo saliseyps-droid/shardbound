@@ -21,9 +21,7 @@ WIDTH = 1600  # the glow is soft: half the mat's resolution is plenty
 # 'ice' (white-cyan frost), with a threshold (lo) where the glow starts. Mats without a glow (the forest,
 # the butterflies, the second inn table) only get particles.
 BOARDS = {
-    "board-1": ("bright", 0.55),
     "board-3": ("gold", 0.28),
-    "board-4": ("gold", 0.45),
     "board-5": ("bright", 0.7),
     "board-9": ("red", 0.0),
     "board-10": ("ice", 0.62),

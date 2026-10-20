@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.60.1',
+    date: '2026-10-20',
+    title: 'Dust in the candlelight',
+    summary: 'Both Wraithwood Inn tables have fine dust drifting over them, and two boards are retired.',
+    sections: [{ kind: 'improved', items: ['The Wraithwood Inn tables: tiny motes of dust now drift in the candlelight over both of them, also around the steaming teacup.', 'Two more boards are retired: the arcane sigil and the emerald hall.'] }],
+    commits: [],
+  },
+  {
     version: '0.60.0',
     date: '2026-10-20',
     title: 'Living boards',

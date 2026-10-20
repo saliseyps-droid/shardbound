@@ -16,12 +16,23 @@ export interface BoardLamp {
   kind: 'flame' | 'pulse' | 'twinkle' | 'candle';
 }
 
+/** strength: how much brighter than usual the particles are (1); from: where steam rises, in %. */
+export interface BoardParticles {
+  kind: ParticleKind;
+  count: number;
+  color: string;
+  alt?: string;
+  from?: { x: number; y: number };
+  strength?: number;
+}
+
 export interface BoardFx {
   /** Light colour as "r, g, b": its lamps and glows. */
   color: string;
   glow?: { strength?: number; period?: number; min?: number; max?: number };
-  /** strength: how much brighter than usual the particles are (1). */
-  particles: { kind: ParticleKind; count: number; color: string; alt?: string; from?: { x: number; y: number }; strength?: number };
+  particles: BoardParticles;
+  /** A second kind of particle drifting over the same mat. */
+  more?: BoardParticles;
   lamps?: BoardLamp[];
   /** Sunbeams slanting across the mat, slowly swaying. */
   rays?: boolean;
@@ -39,12 +50,8 @@ const corners = (x: number, y: number, size: number, kind: BoardLamp['kind']): B
 ];
 
 export const BOARD_FX: Record<string, BoardFx> = {
-  // Arcane sigil: violet orbs in the corners, pink runes breathing, motes of magic.
-  'board-1': { color: '255, 120, 220', glow: { period: 5, min: 0.2, max: 0.7 }, particles: { kind: 'motes', count: 22, color: '255, 140, 230', alt: '150, 140, 255' }, lamps: [{ x: 14.2, y: 16.8, size: 7, kind: 'pulse' }, { x: 86, y: 15.6, size: 7, kind: 'pulse' }, { x: 14, y: 81, size: 7, kind: 'pulse' }, { x: 86, y: 82, size: 7, kind: 'pulse' }] },
   // Sapphire court: the copper trim shimmers, gold dust.
   'board-3': { color: '255, 190, 110', glow: { strength: 2.2, period: 6, min: 0.25, max: 0.8 }, particles: { kind: 'motes', count: 14, color: '255, 200, 120', alt: '140, 190, 255' } },
-  // Emerald hall: the gold filigree catches the light.
-  'board-4': { color: '255, 215, 120', glow: { strength: 1.6, period: 6.5, min: 0.2, max: 0.75 }, particles: { kind: 'motes', count: 14, color: '255, 220, 130' } },
   // Candlelit mosaic: ten candles flicker, the heart of the mosaic glows.
   'board-5': {
     color: '255, 190, 110',
@@ -62,8 +69,8 @@ export const BOARD_FX: Record<string, BoardFx> = {
   'board-10': { color: '190, 235, 255', glow: { period: 6, min: 0.15, max: 0.5 }, particles: { kind: 'snow', count: 34, color: '235, 248, 255' } },
   // The Wraithwood Inn: warm candlelight falls on the table from beyond its top corner, dust drifts in it.
   'inn-board-1': { color: '255, 190, 110', particles: { kind: 'dust', count: 38, color: '255, 215, 150', strength: 1.6 }, lamps: [{ x: 4, y: 4, size: 85, kind: 'candle' }] },
-  // The other inn table: steam from the cup, dust.
-  'inn-board-2': { color: '255, 210, 150', particles: { kind: 'steam', count: 12, color: '240, 235, 225', from: { x: 8.6, y: 13.5 } } },
+  // The other inn table: steam from the cup, tiny dust motes.
+  'inn-board-2': { color: '255, 210, 150', particles: { kind: 'steam', count: 12, color: '240, 235, 225', from: { x: 8.6, y: 13.5 } }, more: { kind: 'dust', count: 38, color: '255, 215, 150', strength: 1.6 } },
   // The Burning Throne: the red rim breathes, four lamps, embers.
   'inferno-board-1': {
     color: '255, 190, 90',

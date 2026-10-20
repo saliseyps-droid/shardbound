@@ -3,7 +3,7 @@ import type { GameState } from '@/engine/types';
 import { HUMAN } from '@/state/matchStore';
 import { useSettings } from '@/state/settingsStore';
 import { usingTouch } from '@/ui/inputMode';
-import { BOARD_FX, type BoardFx, type ParticleKind } from './boardFx';
+import { BOARD_FX, type BoardParticles, type ParticleKind } from './boardFx';
 import logoUrl from '@/assets/logo.webp';
 import '@/ui/styles/animatedBoard.css';
 
@@ -42,7 +42,7 @@ function rimPoint(): { x: number; y: number } {
 }
 
 /** A new particle of this kind, drifting the way it does. */
-function spawn(kind: ParticleKind, fx: BoardFx): Particle {
+function spawn(kind: ParticleKind, cfg: BoardParticles): Particle {
   const base = { age: 0, seed: Math.random() * 6.28, alt: Math.random() < 0.4 };
   switch (kind) {
     case 'embers':
@@ -60,7 +60,7 @@ function spawn(kind: ParticleKind, fx: BoardFx): Particle {
     case 'stars':
       return { ...base, x: rand(0.03, 0.97), y: rand(0.05, 0.95), vx: 0, vy: 0, life: rand(1.5, 3.5), size: rand(0.8, 2) };
     case 'steam': {
-      const f = fx.particles.from ?? { x: 50, y: 50 };
+      const f = cfg.from ?? { x: 50, y: 50 };
       return { ...base, x: f.x / 100 + rand(-0.025, 0.025), y: f.y / 100 + rand(-0.02, 0.02), vx: rand(0.008, 0.02), vy: -rand(0.006, 0.016), life: rand(5, 7.5), size: rand(16, 26) };
     }
   }
@@ -251,18 +251,19 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
   }, []);
 
   // Particles: a small canvas at 30 fps; requestAnimationFrame already rests while the tab is hidden.
-  const particles = useRef<Particle[]>([]);
   useEffect(() => {
     if (reduced || !fx) return;
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) return;
-    const kind = fx.particles.kind;
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    const base = Math.max(3, Math.round(fx.particles.count * (lowPower ? 0.35 : usingTouch() ? 0.6 : 1)));
-    const falls = FALLS.includes(kind);
-    // Falling kinds start already spread over the mat instead of all at the top.
-    particles.current = falls ? Array.from({ length: base }, () => ({ ...spawn(kind, fx), y: rand(0, 1), age: 1 })) : [];
+    // Each kind of particle on the mat; falling kinds start already spread over it instead of all at the top.
+    const systems = [fx.particles, ...(fx.more ? [fx.more] : [])].map((cfg) => {
+      const base = Math.max(3, Math.round(cfg.count * (lowPower ? 0.35 : usingTouch() ? 0.6 : 1)));
+      const falls = FALLS.includes(cfg.kind);
+      const list: Particle[] = falls ? Array.from({ length: base }, () => ({ ...spawn(cfg.kind, cfg), y: rand(0, 1), age: 1 })) : [];
+      return { cfg, base, falls, list };
+    });
     const smoke = fx.smoke;
     const wantWisps = smoke ? Math.round(smoke.at.length * (lowPower ? 0.4 : usingTouch() ? 0.6 : 1)) : 0;
     // Smoke starts already drifting, at every age.
@@ -305,27 +306,29 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
           drawWisp(ctx, w, (st.x + w.x * st.w) * dpr, (st.y + w.y * st.h) * dpr, w.size * st.w * dpr, smoke.color);
         }
       }
-      const list = particles.current;
-      for (let i = list.length; i < base; i++) if (Math.random() < (falls ? 0.05 : 0.15)) list.push(spawn(kind, fx));
-      ctx.globalCompositeOperation = 'lighter';
       const scale = dpr * (st.w / 1600 + 0.6);
-      for (let i = list.length - 1; i >= 0; i--) {
-        const p = list[i];
-        p.age += step;
-        if (p.age >= p.life || (falls && p.y > 1.05)) {
-          list.splice(i, 1);
-          continue;
+      for (const { cfg, base, falls, list } of systems) {
+        const kind = cfg.kind;
+        for (let i = list.length; i < base; i++) if (Math.random() < (falls ? 0.05 : 0.15)) list.push(spawn(kind, cfg));
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = list.length - 1; i >= 0; i--) {
+          const p = list[i];
+          p.age += step;
+          if (p.age >= p.life || (falls && p.y > 1.05)) {
+            list.splice(i, 1);
+            continue;
+          }
+          if (kind === 'fireflies') {
+            // Wander along a slow, wavy path.
+            p.x += Math.sin(p.age * 0.7 + p.seed) * 0.012 * step;
+            p.y += Math.cos(p.age * 0.5 + p.seed * 1.3) * 0.01 * step;
+          } else {
+            const sway = falls ? Math.sin(p.age * 1.3 + p.seed) * 0.012 : Math.sin(p.age * 2.4 + p.seed) * 0.004;
+            p.x += (p.vx + sway) * step;
+            p.y += p.vy * step;
+          }
+          draw(ctx, p, kind, (st.x + p.x * st.w) * dpr, (st.y + p.y * st.h) * dpr, p.size * scale, cfg.color, cfg.alt, cfg.strength ?? 1);
         }
-        if (kind === 'fireflies') {
-          // Wander along a slow, wavy path.
-          p.x += Math.sin(p.age * 0.7 + p.seed) * 0.012 * step;
-          p.y += Math.cos(p.age * 0.5 + p.seed * 1.3) * 0.01 * step;
-        } else {
-          const sway = falls ? Math.sin(p.age * 1.3 + p.seed) * 0.012 : Math.sin(p.age * 2.4 + p.seed) * 0.004;
-          p.x += (p.vx + sway) * step;
-          p.y += p.vy * step;
-        }
-        draw(ctx, p, kind, (st.x + p.x * st.w) * dpr, (st.y + p.y * st.h) * dpr, p.size * scale, fx.particles.color, fx.particles.alt, fx.particles.strength ?? 1);
       }
     };
     raf = requestAnimationFrame(frame);
