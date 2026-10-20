@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.61.0',
+    date: '2026-10-20',
+    title: 'Pirate tables',
+    summary: 'Two new animated pirate boards join the rotation.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Pirate flags: a treasure map between a red and a black pirate flag. The lantern and the candle flicker, the gold coins glint and dust drifts in the lamplight.',
+          'Pirate deck: a ship’s deck with the sea all around it. The sea churns slowly, the lantern flickers and the treasure chest and the coins glint.',
+          'Both pirate boards are always shown whole, never cropped, whatever the size of your screen.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.60.1',
     date: '2026-10-20',
     title: 'Dust in the candlelight',

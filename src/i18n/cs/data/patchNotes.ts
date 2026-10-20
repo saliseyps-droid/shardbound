@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.61.0': {
+    title: 'Pirátské stoly',
+    summary: 'Mezi desky přibyly dvě nové animované pirátské.',
+    sections: [
+      [
+        'Pirátské vlajky: mapa pokladu mezi rudou a černou pirátskou vlajkou. Lucerna a svíčka plápolají, zlaté mince se třpytí a ve světle lampy se vznáší prach.',
+        'Pirátská paluba: lodní paluba s mořem všude kolem. Moře se pomalu převaluje, lucerna plápolá a truhla s pokladem i mince se třpytí.',
+        'Obě pirátské desky jsou vždy vidět celé, nikdy se neořezávají, ať máš obrazovku jakkoli velkou.',
+      ],
+    ],
+  },
   '0.60.1': {
     title: 'Prach ve světle svíček',
     summary: 'Nad oběma stoly v Hostinci v Přízračném hvozdu se vznáší jemný prach a dvě desky jsme vyřadili.',

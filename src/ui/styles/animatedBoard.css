@@ -136,7 +136,13 @@
   position: absolute; inset: 0;
   background:
     linear-gradient(rgba(23, 20, 43, var(--board-dim, 0.5)), rgba(23, 20, 43, var(--board-dim, 0.5))),
-    var(--board-bg, none) center / cover no-repeat;
+    var(--board-bg, none) center / var(--board-fit, cover) no-repeat;
+}
+.board-preview-mat.is-whole { overflow: hidden; }
+.board-preview-mat.is-whole::before {
+  content: ''; position: absolute; inset: -40px; z-index: -1;
+  background: var(--board-bg, none) center / cover no-repeat;
+  filter: blur(28px) brightness(0.35);
 }
 .board-preview-bar {
   position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%);
@@ -211,3 +217,8 @@
   75% { opacity: 0.95; transform: translate(-50%, -50%) scale(1.02); }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(1.08); }
 }
+
+
+/* The sea around the pirate deck: the same churn as the smoke, slower and softer. */
+.ab-sea img:nth-child(1) { animation-duration: 10s; }
+.ab-sea img:nth-child(2) { animation-duration: 12.5s; }

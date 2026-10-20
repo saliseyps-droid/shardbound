@@ -24,7 +24,8 @@
   user-select: none;
   touch-action: none;
 }
-/* Play-mat: the match's board (--board-bg) under a dark veil (--board-dim, 0.5 unless the board is darker), covering and centred on the play area only. */
+/* Play-mat: the match's board (--board-bg) under a dark veil (--board-dim, 0.5 unless the board is darker), covering and centred on the play area only.
+   A mat shown whole (.is-whole: --board-fit contain) sits on a blurred, darker copy of itself where it does not reach. */
 .board-mat {
   position: absolute;
   inset: 0 var(--sidebar-w) 0 0;
@@ -32,7 +33,13 @@
   pointer-events: none;
   background:
     linear-gradient(rgba(23, 20, 43, var(--board-dim, 0.5)), rgba(23, 20, 43, var(--board-dim, 0.5))),
-    var(--board-bg, none) center / cover no-repeat;
+    var(--board-bg, none) center / var(--board-fit, cover) no-repeat;
+}
+.board-mat.is-whole { overflow: hidden; }
+.board-mat.is-whole::before {
+  content: ''; position: absolute; inset: -40px; z-index: -1;
+  background: var(--board-bg, none) center / cover no-repeat;
+  filter: blur(28px) brightness(0.35);
 }
 .match::before {
   /* engraved runic ring on the table */

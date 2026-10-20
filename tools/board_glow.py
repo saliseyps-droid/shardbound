@@ -102,11 +102,33 @@ def build_smoke(name: str) -> None:
     out.save(os.path.join(DST, f"{name}-smoke.webp"), "WEBP", quality=80)
 
 
+# Mats with a painted sea around them: only that sea (<mat>-sea.webp), for the same slow churn as the smoke.
+SEA = {"board-12"}
+
+
+def build_sea(name: str) -> None:
+    im = Image.open(os.path.join(SRC, f"{name}.webp")).convert("RGB")
+    small = im.resize((WIDTH, round(WIDTH * im.height / im.width)), Image.LANCZOS)
+    a = np.asarray(small).astype(np.float32)
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    h, w = r.shape
+    x = np.mgrid[0:h, 0:w][1] / w
+    # Blue-green water and its white foam at the far edges.
+    sea = ((b > r + 12) & (g > r + 5)) | ((r > 150) & (g > 170) & (b > 170) & ((x < 0.05) | (x > 0.95)))
+    soft = np.asarray(Image.fromarray((sea * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(3))).astype(np.float32) / 255
+    Image.fromarray((a * soft[..., None]).clip(0, 255).astype(np.uint8)).save(os.path.join(DST, f"{name}-sea.webp"), "WEBP", quality=82)
+
+
 if __name__ == "__main__":
     for n in sys.argv[1:] or BOARDS:
-        build(n)
-        print(n)
+        if n in BOARDS:
+            build(n)
+            print(n)
     for n in sys.argv[1:] or SMOKE:
         if n in SMOKE:
             build_smoke(n)
             print(n, "smoke at", [list(p) for p in smoke_points(n)])
+    for n in sys.argv[1:] or SEA:
+        if n in SEA:
+            build_sea(n)
+            print(n, "sea")

@@ -13,8 +13,11 @@ export const BOARD_GLOWS: Record<string, string> = Object.fromEntries(Object.ent
 const smokeModules = import.meta.glob('../../assets/boards/fx/*-smoke.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 /** The painted smoke of a mat, alone (tools/board_glow.py), by mat name. */
 const BOARD_SMOKE: Record<string, string> = Object.fromEntries(Object.entries(smokeModules).map(([path, url]) => [path.match(/([^/]+)-smoke\.webp$/)![1], url]));
+const seaModules = import.meta.glob('../../assets/boards/fx/*-sea.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+/** The painted sea around a mat, alone (tools/board_glow.py), by mat name: it churns like the smoke. */
+const BOARD_SEA: Record<string, string> = Object.fromEntries(Object.entries(seaModules).map(([path, url]) => [path.match(/([^/]+)-sea\.webp$/)![1], url]));
 
-/** The mats' size: the layer is laid out on a mat the way `background-size: cover` shows it. */
+/** The mats' size (a few are a little less tall: BoardFx.height): the layer is laid out on a mat the way the board shows it. */
 const MAT_W = 3200;
 const MAT_H = 1823;
 
@@ -57,8 +60,12 @@ function spawn(kind: ParticleKind, cfg: BoardParticles): Particle {
       return { ...base, x: rand(0, 1), y: -0.05, vx: rand(0.002, 0.012), vy: rand(0.025, 0.045), life: rand(25, 45), size: rand(7, 11) };
     case 'fireflies':
       return { ...base, x: rand(0.04, 0.96), y: rand(0.06, 0.94), vx: 0, vy: 0, life: rand(5, 10), size: rand(0.6, 1.1) };
-    case 'stars':
-      return { ...base, x: rand(0.03, 0.97), y: rand(0.05, 0.95), vx: 0, vy: 0, life: rand(1.5, 3.5), size: rand(0.8, 2) };
+    case 'stars': {
+      // Anywhere in the sky, or on one of the given spots (coins catching the light).
+      const at = cfg.at?.[Math.floor(Math.random() * cfg.at.length)];
+      const pos = at ? { x: at[0] / 100 + rand(-0.004, 0.004), y: at[1] / 100 + rand(-0.006, 0.006) } : { x: rand(0.03, 0.97), y: rand(0.05, 0.95) };
+      return { ...base, ...pos, vx: 0, vy: 0, life: rand(1.5, 3.5), size: rand(0.8, 2) };
+    }
     case 'steam': {
       const f = cfg.from ?? { x: 50, y: 50 };
       return { ...base, x: f.x / 100 + rand(-0.025, 0.025), y: f.y / 100 + rand(-0.02, 0.02), vx: rand(0.008, 0.02), vy: -rand(0.006, 0.016), life: rand(5, 7.5), size: rand(16, 26) };
@@ -220,7 +227,7 @@ function TurnEmblem() {
  * A mat that comes alive (src/ui/match/boardFx.ts): its glow breathes, its lights flicker and particles
  * drift over it. When your turn begins, the Shardbound emblem rises in the middle of it.
  */
-export function AnimatedBoard({ board, game }: { board: string; game?: GameState }) {
+export function AnimatedBoard({ board, game, fit = 'cover' }: { board: string; game?: GameState; fit?: 'cover' | 'contain' }) {
   const fx = BOARD_FX[board];
   const glowUrl = BOARD_GLOWS[board];
   const reduced = useSettings((s) => s.reducedMotion);
@@ -233,22 +240,23 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
 
   const myTurnKey = game && game.activePlayer === HUMAN && game.phase === 'MAIN' ? game.turn : null;
 
-  // The mat as `cover` shows it, so the lights sit on the painting.
+  // The mat as the board shows it (`cover`, or whole with `contain`), so the lights sit on the painting.
   useLayoutEffect(() => {
     const host = hostRef.current;
     if (!host) return;
-    const fit = () => {
+    const matH = fx?.height ?? MAT_H;
+    const measure = () => {
       // Layout size, not getBoundingClientRect: the match intro and the final blow scale the board.
       const width = host.clientWidth;
       const height = host.clientHeight;
-      const s = Math.max(width / MAT_W, height / MAT_H);
-      setStage({ x: (width - MAT_W * s) / 2, y: (height - MAT_H * s) / 2, w: MAT_W * s, h: MAT_H * s });
+      const s = (fit === 'contain' ? Math.min : Math.max)(width / MAT_W, height / matH);
+      setStage({ x: (width - MAT_W * s) / 2, y: (height - matH * s) / 2, w: MAT_W * s, h: matH * s });
     };
-    fit();
-    const ro = new ResizeObserver(fit);
+    measure();
+    const ro = new ResizeObserver(measure);
     ro.observe(host);
     return () => ro.disconnect();
-  }, []);
+  }, [fit, fx]);
 
   // Particles: a small canvas at 30 fps; requestAnimationFrame already rests while the tab is hidden.
   useEffect(() => {
@@ -352,6 +360,12 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
             <span className="ab-smoke">
               <img src={BOARD_SMOKE[board]} alt="" draggable={false} />
               <img src={BOARD_SMOKE[board]} alt="" draggable={false} />
+            </span>
+          )}
+          {BOARD_SEA[board] && (
+            <span className="ab-smoke ab-sea">
+              <img src={BOARD_SEA[board]} alt="" draggable={false} />
+              <img src={BOARD_SEA[board]} alt="" draggable={false} />
             </span>
           )}
           {fx.rays && (

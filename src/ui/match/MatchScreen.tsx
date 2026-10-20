@@ -500,7 +500,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   return (
     <div
       className={`match ${myTurn ? 'my-turn' : 'their-turn'} ${selection ? 'is-targeting' : ''} ${coop ? 'is-coop' : ''}`}
-      style={boardBg ? ({ '--board-bg': `url(${boardBg.url})`, '--board-dim': boardBg.dim } as CSSProperties) : undefined}
+      style={boardBg ? ({ '--board-bg': `url(${boardBg.url})`, '--board-dim': boardBg.dim, '--board-fit': boardBg.fit } as CSSProperties) : undefined}
       ref={boardRef}
       onContextMenu={(e) => {
         e.preventDefault();
@@ -554,8 +554,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         }, LONG_PRESS_MS);
       }}
     >
-      <div className="board-mat" aria-hidden>
-        {boardBg?.key && <AnimatedBoard board={boardBg.key} game={game} />}
+      <div className={`board-mat ${boardBg?.fit === 'contain' ? 'is-whole' : ''}`} aria-hidden>
+        {boardBg?.key && <AnimatedBoard board={boardBg.key} game={game} fit={boardBg.fit} />}
       </div>
       {/* ---- Enemy side ---- */}
       <section className="side enemy-side" aria-label={t('Opponent')}>

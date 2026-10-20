@@ -36,7 +36,12 @@ export interface BoardBackground {
   dim: number;
   /** The mat's name ("board-3", "inn-board-1"…): which animation AnimatedBoard draws over it (src/ui/match/boardFx.ts). */
   key: string;
+  /** How it fills the play area: cropped to cover it, or shown whole (on a blurred copy of itself). */
+  fit: 'cover' | 'contain';
 }
+
+/** Mats shown whole, never cropped: the pirate boards. */
+const WHOLE = new Set(['board-11', 'board-12']);
 
 /** A mat's name from its file: ".../inn-board-1.webp" (or a hashed build file) -> "inn-board-1". */
 const keyOf = (path: string) => path.match(/((?:inn-|inferno-|heaven-)?board-\d+)[.-][^/]*$/)?.[1] ?? '';
@@ -44,7 +49,10 @@ const keyOf = (path: string) => path.match(/((?:inn-|inferno-|heaven-)?board-\d+
 export const BOARD_MATS: Record<string, string> = Object.fromEntries(
   [modules, innModules, infernoModules, heavenModules].flatMap((m) => Object.entries(m).map(([path, url]) => [keyOf(path), url])),
 );
-const board = (url: string): BoardBackground => ({ url, dim: dimOf(url), key: Object.keys(BOARD_MATS).find((k) => BOARD_MATS[k] === url) ?? '' });
+const board = (url: string): BoardBackground => {
+  const key = Object.keys(BOARD_MATS).find((k) => BOARD_MATS[k] === url) ?? '';
+  return { url, dim: dimOf(url), key, fit: WHOLE.has(key) ? 'contain' : 'cover' };
+};
 /** A mat by its name (the dev board preview, #/boards). */
 export const boardByKey = (key: string): BoardBackground | null => (BOARD_MATS[key] ? board(BOARD_MATS[key]) : null);
 
