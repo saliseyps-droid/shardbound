@@ -45,7 +45,7 @@
   animation-delay: calc(var(--i) * -0.7s);
   animation-iteration-count: infinite;
 }
-.ab-lamp-flame { animation-name: ab-flicker; animation-timing-function: steps(1, end); animation-duration: calc(1.9s + var(--i) * 0.37s); }
+.ab-lamp-flame { animation-name: ab-flicker; animation-timing-function: ease-in-out; animation-duration: calc(2.6s + var(--i) * 0.37s); }
 .ab-lamp-pulse { animation-name: ab-pulse; animation-timing-function: ease-in-out; animation-duration: calc(3.2s + var(--i) * 0.45s); }
 .ab-lamp-twinkle {
   animation-name: ab-twinkle; animation-timing-function: ease-in-out; animation-duration: calc(2.8s + var(--i) * 0.6s);

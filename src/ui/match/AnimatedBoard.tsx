@@ -258,7 +258,7 @@ export function AnimatedBoard({ board, game, fit = 'cover' }: { board: string; g
     return () => ro.disconnect();
   }, [fit, fx]);
 
-  // Particles: a small canvas at 30 fps; requestAnimationFrame already rests while the tab is hidden.
+  // Particles: a canvas at the screen's frame rate (30 fps in performance mode); requestAnimationFrame already rests while the tab is hidden.
   useEffect(() => {
     if (reduced || !fx) return;
     const canvas = canvasRef.current;
@@ -287,7 +287,7 @@ export function AnimatedBoard({ board, game, fit = 'cover' }: { board: string; g
       raf = requestAnimationFrame(frame);
       acc += Math.min(0.1, (now - last) / 1000);
       last = now;
-      if (acc < 1 / 30) return;
+      if (lowPower && acc < 1 / 30) return;
       const step = acc;
       acc = 0;
       const width = canvas.clientWidth;
