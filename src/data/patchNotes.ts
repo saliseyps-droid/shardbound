@@ -27,8 +27,8 @@ export const PATCH_NOTES: PatchNote[] = [
       {
         kind: 'new',
         items: [
-          'Animated boards: every board now moves. Glowing parts breathe, lamps and candles flicker, and each board has its own life: embers over lava and hellfire, snow on the frozen lake, sunbeams and mist in the forest, falling leaves in the butterfly garden, stars in the sky of the Twin Oath, candlelight and steam on the Wraithwood Inn tables.',
-          'The board reacts to the match: a dying unit makes its side of the board flare, the middle of the board lights up when your turn starts, the board burns hotter while your Warden has 10 Health or less, and the final blow bursts from its lights.',
+          'Animated boards: every board now moves. Glowing parts breathe, lamps and candles flicker, and each board has its own life: embers over lava and hellfire, red smoke curling around the infernal altar, snow on the frozen lake, sunbeams, mist and fireflies in the forest, falling leaves in the butterfly garden, stars in the sky of the Twin Oath, candlelight and steam on the Wraithwood Inn tables.',
+          'When your turn starts, the Shardbound emblem rises in the middle of the board inside two turning rune rings.',
         ],
       },
       { kind: 'improved', items: ['With Reduced motion on, boards stay still with a steady glow. Performance mode shows fewer particles.', 'Two boards are retired: the purple diamond and the castle tapestry.'] },

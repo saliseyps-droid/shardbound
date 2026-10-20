@@ -1,9 +1,10 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import type { GameState } from '@/engine/types';
-import { useMatch, HUMAN, ALLY } from '@/state/matchStore';
+import { HUMAN } from '@/state/matchStore';
 import { useSettings } from '@/state/settingsStore';
 import { usingTouch } from '@/ui/inputMode';
 import { BOARD_FX, type BoardFx, type ParticleKind } from './boardFx';
+import logoUrl from '@/assets/logo.webp';
 import '@/ui/styles/animatedBoard.css';
 
 const glowModules = import.meta.glob('../../assets/boards/fx/*-glow.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
@@ -16,8 +17,6 @@ const BOARD_SMOKE: Record<string, string> = Object.fromEntries(Object.entries(sm
 /** The mats' size: the layer is laid out on a mat the way `background-size: cover` shows it. */
 const MAT_W = 3200;
 const MAT_H = 1823;
-/** At or below this much Health your Warden is in danger: the board heats up. */
-const HEAT_HEALTH = 10;
 
 interface Particle {
   x: number;
@@ -30,7 +29,6 @@ interface Particle {
   /** Phase for sways, blinks and spins. */
   seed: number;
   alt: boolean;
-  burst?: boolean;
 }
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
@@ -57,6 +55,8 @@ function spawn(kind: ParticleKind, fx: BoardFx): Particle {
       return { ...base, x: rand(-0.05, 1.05), y: -0.03, vx: rand(-0.006, 0.006), vy: rand(0.03, 0.07), life: rand(14, 30), size: rand(0.7, 2.2) };
     case 'leaves':
       return { ...base, x: rand(0, 1), y: -0.05, vx: rand(0.002, 0.012), vy: rand(0.025, 0.045), life: rand(25, 45), size: rand(7, 11) };
+    case 'fireflies':
+      return { ...base, x: rand(0.04, 0.96), y: rand(0.06, 0.94), vx: 0, vy: 0, life: rand(5, 10), size: rand(2.4, 3.8) };
     case 'stars':
       return { ...base, x: rand(0.03, 0.97), y: rand(0.05, 0.95), vx: 0, vy: 0, life: rand(1.5, 3.5), size: rand(0.8, 2) };
     case 'steam': {
@@ -64,13 +64,6 @@ function spawn(kind: ParticleKind, fx: BoardFx): Particle {
       return { ...base, x: f.x / 100 + rand(-0.025, 0.025), y: f.y / 100 + rand(-0.02, 0.02), vx: rand(0.008, 0.02), vy: -rand(0.006, 0.016), life: rand(5, 7.5), size: rand(16, 26) };
     }
   }
-}
-
-/** The final blow: sparks fly from the lights (or the middle of the table). */
-function burst(at: { x: number; y: number }): Particle {
-  const a = Math.random() * Math.PI * 2;
-  const v = rand(0.05, 0.17);
-  return { x: at.x / 100, y: at.y / 100, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 0.04, age: 0, life: rand(0.9, 1.8), size: rand(1.2, 3), seed: Math.random() * 6.28, alt: false, burst: true };
 }
 
 interface Wisp {
@@ -117,8 +110,8 @@ const FALLS: ParticleKind[] = ['snow', 'leaves'];
 function draw(ctx: CanvasRenderingContext2D, p: Particle, kind: ParticleKind, px: number, py: number, r: number, color: string, alt: string | undefined) {
   const t = p.age / p.life;
   const c = p.alt && alt ? alt : color;
-  if (p.burst || kind === 'embers' || kind === 'motes' || kind === 'dust') {
-    const alpha = (kind === 'dust' && !p.burst ? 0.45 : 1) * Math.min(1, t * 5) * (1 - t);
+  if (kind === 'embers' || kind === 'motes' || kind === 'dust') {
+    const alpha = (kind === 'dust' ? 0.45 : 1) * Math.min(1, t * 5) * (1 - t);
     const g = ctx.createRadialGradient(px, py, 0, px, py, r * 3);
     g.addColorStop(0, `rgba(255, 245, 220, ${alpha})`);
     g.addColorStop(0.3, `rgba(${c}, ${alpha * 0.75})`);
@@ -144,6 +137,18 @@ function draw(ctx: CanvasRenderingContext2D, p: Particle, kind: ParticleKind, px
     g.addColorStop(1, `rgba(${c}, 0)`);
     ctx.fillStyle = g;
     ctx.fillRect(px - r * 2, py - r * 2, r * 4, r * 4);
+    return;
+  }
+  if (kind === 'fireflies') {
+    // Blink a few times over its life.
+    const alpha = Math.min(1, t * 4, (1 - t) * 4) * (0.6 + 0.4 * Math.max(0, Math.sin(p.age * 2.2 + p.seed)));
+    const g = ctx.createRadialGradient(px, py, 0, px, py, r * 5);
+    g.addColorStop(0, `rgba(255, 255, 230, ${alpha})`);
+    g.addColorStop(0.12, `rgba(250, 255, 190, ${alpha})`);
+    g.addColorStop(0.35, `rgba(${c}, ${alpha * 0.55})`);
+    g.addColorStop(1, `rgba(${c}, 0)`);
+    ctx.fillStyle = g;
+    ctx.fillRect(px - r * 5, py - r * 5, r * 10, r * 10);
     return;
   }
   if (kind === 'snow') {
@@ -191,30 +196,43 @@ function draw(ctx: CanvasRenderingContext2D, p: Particle, kind: ParticleKind, px
 }
 
 /**
+ * Your turn begins: the Shardbound emblem rises in the middle of the board, the same on every mat. Two rune
+ * rings draw themselves and turn against each other while the emblem forms out of its glow, then it all fades.
+ */
+function TurnEmblem() {
+  return (
+    <span className="ab-turn">
+      <svg className="ab-turn-rings" viewBox="0 0 200 200">
+        <circle className="ab-ring-outer" cx="100" cy="100" r="92" pathLength="100" />
+        <circle className="ab-ring-ticks" cx="100" cy="100" r="84" pathLength="100" />
+        <circle className="ab-ring-inner" cx="100" cy="100" r="74" pathLength="100" />
+        {[0, 60, 120, 180, 240, 300].map((a) => (
+          <path key={a} className="ab-ring-rune" d="M100 4 l5 9 -5 9 -5 -9z" transform={`rotate(${a} 100 100)`} />
+        ))}
+      </svg>
+      <img className="ab-turn-logo" src={logoUrl} alt="" draggable={false} />
+    </span>
+  );
+}
+
+/**
  * A mat that comes alive (src/ui/match/boardFx.ts): its glow breathes, its lights flicker and particles
- * drift over it. It answers the match: a dying unit flares its owner's half of the glow, your turn lights
- * the medallion, the board heats up while your Warden is low, and the final blow bursts from the lights.
+ * drift over it. When your turn begins, the Shardbound emblem rises in the middle of it.
  */
 export function AnimatedBoard({ board, game }: { board: string; game?: GameState }) {
   const fx = BOARD_FX[board];
   const glowUrl = BOARD_GLOWS[board];
   const reduced = useSettings((s) => s.reducedMotion);
   const lowPower = useSettings((s) => s.performanceMode);
-  const ghosts = useMatch((s) => s.ghosts);
-  const finale = useMatch((s) => s.finale);
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [stage, setStage] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const stageRef = useRef(stage);
   stageRef.current = stage;
 
-  const health = game?.players[HUMAN]?.hero.health ?? 0;
-  const heat = !!game && health > 0 && health <= HEAT_HEALTH;
-  const heatRef = useRef(heat);
-  heatRef.current = heat;
   const myTurnKey = game && game.activePlayer === HUMAN && game.phase === 'MAIN' ? game.turn : null;
 
-  // The mat as `cover` shows it, so the lights and the medallion sit on the painting.
+  // The mat as `cover` shows it, so the lights sit on the painting.
   useLayoutEffect(() => {
     const host = hostRef.current;
     if (!host) return;
@@ -230,19 +248,6 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
     ro.observe(host);
     return () => ro.disconnect();
   }, []);
-
-  // A unit died: its owner's half of the glow flares.
-  const [flare, setFlare] = useState<{ side: 'top' | 'bottom'; key: number } | null>(null);
-  const flareSeq = useRef(0);
-  const seenGhosts = useRef(ghosts);
-  useEffect(() => {
-    if (ghosts === seenGhosts.current || ghosts.length === 0) return;
-    seenGhosts.current = ghosts;
-    const mine = ghosts.some((g) => g.owner === HUMAN || g.owner === ALLY);
-    const theirs = ghosts.some((g) => g.owner !== HUMAN && g.owner !== ALLY);
-    setFlare({ side: mine && !theirs ? 'bottom' : 'top', key: ++flareSeq.current });
-    if (mine && theirs) window.setTimeout(() => setFlare({ side: 'bottom', key: ++flareSeq.current }), 260);
-  }, [ghosts]);
 
   // Particles: a small canvas at 30 fps; requestAnimationFrame already rests while the tab is hidden.
   const particles = useRef<Particle[]>([]);
@@ -300,36 +305,31 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
         }
       }
       const list = particles.current;
-      const want = heatRef.current ? base * 2 : base;
-      let calm = 0;
-      for (const p of list) if (!p.burst) calm++;
-      for (let i = calm; i < want; i++) if (Math.random() < (falls ? 0.05 : 0.15)) list.push(spawn(kind, fx));
+      for (let i = list.length; i < base; i++) if (Math.random() < (falls ? 0.05 : 0.15)) list.push(spawn(kind, fx));
       ctx.globalCompositeOperation = 'lighter';
       const scale = dpr * (st.w / 1600 + 0.6);
       for (let i = list.length - 1; i >= 0; i--) {
         const p = list[i];
         p.age += step;
-        if (p.age >= p.life || (falls && !p.burst && p.y > 1.05)) {
+        if (p.age >= p.life || (falls && p.y > 1.05)) {
           list.splice(i, 1);
           continue;
         }
-        const sway = falls ? Math.sin(p.age * 1.3 + p.seed) * 0.012 : Math.sin(p.age * 2.4 + p.seed) * 0.004;
-        p.x += (p.vx + (p.burst ? 0 : sway)) * step;
-        p.y += p.vy * step;
+        if (kind === 'fireflies') {
+          // Wander along a slow, wavy path.
+          p.x += Math.sin(p.age * 0.7 + p.seed) * 0.012 * step;
+          p.y += Math.cos(p.age * 0.5 + p.seed * 1.3) * 0.01 * step;
+        } else {
+          const sway = falls ? Math.sin(p.age * 1.3 + p.seed) * 0.012 : Math.sin(p.age * 2.4 + p.seed) * 0.004;
+          p.x += (p.vx + sway) * step;
+          p.y += p.vy * step;
+        }
         draw(ctx, p, kind, (st.x + p.x * st.w) * dpr, (st.y + p.y * st.h) * dpr, p.size * scale, fx.particles.color, fx.particles.alt);
       }
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
   }, [reduced, lowPower, fx]);
-
-  // The final blow: every light bursts (or the middle of the table, on a mat without lights).
-  useEffect(() => {
-    if (!finale || reduced || !fx) return;
-    const from = fx.lamps?.length ? fx.lamps : [{ x: 50, y: 50 }];
-    const each = Math.ceil(100 / from.length);
-    for (const at of from) for (let i = 0; i < each; i++) particles.current.push(burst(at));
-  }, [finale, reduced, fx]);
 
   if (!fx) return null;
   const glowStyle = {
@@ -339,13 +339,11 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
     '--ab-strength': fx.glow?.strength ?? 1,
   } as CSSProperties;
   return (
-    <div ref={hostRef} className={`animated-board ${heat ? 'is-heat' : ''} ${reduced ? 'is-still' : ''}`} style={{ ...glowStyle, '--ab-color': fx.color } as CSSProperties} aria-hidden>
+    <div ref={hostRef} className={`animated-board ${reduced ? 'is-still' : ''}`} style={{ ...glowStyle, '--ab-color': fx.color } as CSSProperties} aria-hidden>
       {stage && (
         <div className="ab-stage" style={{ left: stage.x, top: stage.y, width: stage.w, height: stage.h }}>
           {glowUrl && <img className="ab-glow" src={glowUrl} alt="" draggable={false} />}
           {glowUrl && <img className="ab-glow ab-haze" src={glowUrl} alt="" draggable={false} />}
-          {flare && glowUrl && <img key={flare.key} className={`ab-glow ab-flare ab-flare-${flare.side}`} src={glowUrl} alt="" draggable={false} />}
-          {flare && !glowUrl && <span key={flare.key} className={`ab-flare-wash ab-flare-${flare.side}`} />}
           {BOARD_SMOKE[board] && (
             <span className="ab-smoke">
               <img src={BOARD_SMOKE[board]} alt="" draggable={false} />
@@ -368,12 +366,10 @@ export function AnimatedBoard({ board, game }: { board: string; game?: GameState
           {fx.lamps?.map((l, i) => (
             <span key={i} className={`ab-lamp ab-lamp-${l.kind}`} style={{ left: `${l.x}%`, top: `${l.y}%`, width: `${l.size}%`, '--i': i } as CSSProperties} />
           ))}
-          {myTurnKey !== null && fx.medallion && (
-            <span key={myTurnKey} className="ab-medallion" style={{ left: `${fx.medallion.x}%`, top: `${fx.medallion.y}%`, width: `${fx.medallion.size}%` }} />
-          )}
         </div>
       )}
       <canvas ref={canvasRef} className="ab-embers" />
+      {myTurnKey !== null && !reduced && <TurnEmblem key={myTurnKey} />}
     </div>
   );
 }

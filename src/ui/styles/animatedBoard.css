@@ -19,12 +19,6 @@
   0%, 100% { opacity: var(--ab-min, 0.2); }
   50% { opacity: var(--ab-max, 0.6); }
 }
-/* Your Warden is low: the glow burns brighter and faster. */
-.is-heat .ab-glow:not(.ab-haze, .ab-flare) { animation: ab-breathe-heat 2.6s ease-in-out infinite; }
-@keyframes ab-breathe-heat {
-  0%, 100% { opacity: calc(var(--ab-max, 0.6) * 0.8); }
-  50% { opacity: min(1, calc(var(--ab-max, 0.6) * 1.5)); }
-}
 
 /* Shimmer: a blurred copy that wavers (only with a mouse: phones keep the battery). */
 .ab-haze { display: none; }
@@ -40,25 +34,7 @@
   0% { opacity: calc(var(--ab-min, 0.2) * 0.8); transform: scale(1, 1) translateY(0); }
   100% { opacity: calc(var(--ab-max, 0.6) * 0.5); transform: scale(1.008, 1.018) translateY(-0.5%); }
 }
-.is-heat .ab-haze { animation-duration: 1.8s; }
 
-/* A unit died: its owner's half of the board flares once. */
-.ab-flare { opacity: 0; animation: ab-flare 0.95s ease-out forwards; }
-.ab-flare-top { clip-path: inset(0 0 50% 0); }
-.ab-flare-bottom { clip-path: inset(50% 0 0 0); }
-@keyframes ab-flare {
-  0% { opacity: 0; }
-  18% { opacity: 1; filter: brightness(calc(var(--ab-strength, 1) * 1.6)); }
-  100% { opacity: 0; filter: brightness(var(--ab-strength, 1)); }
-}
-/* Mats without a glow: a wash of the board's light instead. */
-.ab-flare-wash {
-  position: absolute; inset: 0; mix-blend-mode: screen; opacity: 0;
-  background: radial-gradient(ellipse 70% 60% at 50% var(--wash-y, 50%), rgba(var(--ab-color), 0.35), transparent 70%);
-  animation: ab-flare 0.95s ease-out forwards;
-}
-.ab-flare-wash.ab-flare-top { --wash-y: 15%; }
-.ab-flare-wash.ab-flare-bottom { --wash-y: 85%; }
 
 /* Lights: flames flicker, magic pulses, stars flash; each to its own beat. */
 .ab-lamp {
@@ -97,7 +73,6 @@
   45% { opacity: 1; transform: translate(-50%, -50%) scale(1.15) rotate(20deg); }
   60% { opacity: 0.7; transform: translate(-50%, -50%) scale(1) rotate(25deg); }
 }
-.is-heat .ab-lamp { filter: brightness(1.25); }
 
 /* Candlelight from beyond the mat's edge: a wide, soft pool of warm light that wavers, no flame. */
 .ab-lamp-candle {
@@ -146,31 +121,10 @@
   100% { transform: translate(12%, 5%) scale(1.15); opacity: 0.7; }
 }
 
-/* Your turn: the medallion in the middle turns a little and glows. */
-.ab-medallion {
-  position: absolute; aspect-ratio: 1;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, transparent 38%, rgba(var(--ab-color), 0.55) 46%, transparent 60%),
-    conic-gradient(from 0deg, transparent 0 10%, rgba(var(--ab-color), 0.6) 14%, transparent 18% 35%, rgba(var(--ab-color), 0.6) 39%, transparent 43% 60%, rgba(var(--ab-color), 0.6) 64%, transparent 68% 85%, rgba(var(--ab-color), 0.6) 89%, transparent 93%);
-  -webkit-mask: radial-gradient(circle, transparent 30%, #000 36%, #000 64%, transparent 70%);
-  mask: radial-gradient(circle, transparent 30%, #000 36%, #000 64%, transparent 70%);
-  mix-blend-mode: screen;
-  opacity: 0;
-  animation: ab-medallion 1.6s ease-out forwards;
-}
-@keyframes ab-medallion {
-  0% { opacity: 0; transform: translate(-50%, -50%) rotate(0deg) scale(0.92); }
-  30% { opacity: 1; }
-  100% { opacity: 0; transform: translate(-50%, -50%) rotate(60deg) scale(1.04); }
-}
 
 /* Reduced motion: a still board with a steady glow. */
-.animated-board.is-still .ab-glow:not(.ab-haze, .ab-flare) { animation: none; opacity: calc((var(--ab-min, 0.2) + var(--ab-max, 0.6)) / 2); }
-.animated-board.is-still .ab-haze,
-.animated-board.is-still .ab-flare,
-.animated-board.is-still .ab-flare-wash,
-.animated-board.is-still .ab-medallion { display: none; }
+.animated-board.is-still .ab-glow:not(.ab-haze) { animation: none; opacity: calc((var(--ab-min, 0.2) + var(--ab-max, 0.6)) / 2); }
+.animated-board.is-still .ab-haze { display: none; }
 .animated-board.is-still .ab-lamp { animation: none; opacity: 0.8; }
 .animated-board.is-still .ab-rays i,
 .animated-board.is-still .ab-mist i { animation: none; opacity: 0.6; }
@@ -205,3 +159,55 @@
   50% { opacity: 0.1; transform: translate(1.6%, -1%) scale(1.06) rotate(-0.3deg); }
 }
 .animated-board.is-still .ab-smoke img { animation: none; opacity: 0.35; }
+
+/* Your turn: the Shardbound emblem in the middle of the board, the same on every mat (TurnEmblem). */
+.ab-turn {
+  position: absolute; left: 50%; top: 50%; width: clamp(150px, 26vh, 260px); aspect-ratio: 1;
+  transform: translate(-50%, -50%); pointer-events: none;
+}
+.ab-turn-rings { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; animation: ab-turn-fade 2.4s ease-in-out forwards; }
+.ab-turn-rings circle { fill: none; stroke-linecap: round; }
+.ab-ring-outer {
+  stroke: rgba(232, 176, 75, 0.85); stroke-width: 1.2; stroke-dasharray: 100; stroke-dashoffset: 100;
+  transform-origin: 100px 100px; animation: ab-ring-draw 1.1s ease-out forwards, ab-ring-turn 2.4s linear forwards;
+  filter: drop-shadow(0 0 3px rgba(232, 176, 75, 0.8));
+}
+.ab-ring-ticks {
+  stroke: rgba(255, 150, 220, 0.7); stroke-width: 3; stroke-dasharray: 0.6 2.9;
+  transform-origin: 100px 100px; animation: ab-ring-turn-back 2.4s linear forwards;
+}
+.ab-ring-inner {
+  stroke: rgba(170, 140, 255, 0.75); stroke-width: 0.8; stroke-dasharray: 100; stroke-dashoffset: -100;
+  transform-origin: 100px 100px; animation: ab-ring-draw 1.1s 0.15s ease-out forwards, ab-ring-turn-back 2.4s linear forwards;
+}
+.ab-ring-rune {
+  fill: rgba(255, 210, 120, 0.9); transform-box: view-box;
+  opacity: 0; animation: ab-rune-in 2.4s ease-out forwards;
+  filter: drop-shadow(0 0 2px rgba(255, 190, 90, 0.9));
+}
+.ab-turn-logo {
+  position: absolute; left: 50%; top: 50%; width: 58%; transform: translate(-50%, -50%) scale(0.7);
+  opacity: 0; user-select: none;
+  filter: drop-shadow(0 0 14px rgba(255, 110, 210, 0.55)) drop-shadow(0 0 30px rgba(150, 110, 255, 0.35));
+  animation: ab-logo 2.4s ease-in-out forwards;
+}
+@keyframes ab-ring-draw { to { stroke-dashoffset: 0; } }
+@keyframes ab-ring-turn { from { transform: rotate(-30deg); } to { transform: rotate(40deg); } }
+@keyframes ab-ring-turn-back { from { transform: rotate(20deg); } to { transform: rotate(-35deg); } }
+@keyframes ab-rune-in {
+  0%, 25% { opacity: 0; }
+  45%, 75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes ab-turn-fade {
+  0% { opacity: 0; transform: scale(0.92); }
+  15% { opacity: 1; }
+  78% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.06); }
+}
+@keyframes ab-logo {
+  0%, 12% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+  40% { opacity: 0.95; transform: translate(-50%, -50%) scale(1); }
+  75% { opacity: 0.95; transform: translate(-50%, -50%) scale(1.02); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.08); }
+}

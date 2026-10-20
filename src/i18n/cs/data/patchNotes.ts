@@ -6,8 +6,8 @@ const notes: PatchNotesOverlay = {
     summary: 'Každá herní deska ožila.',
     sections: [
       [
-        'Animované desky: každá deska se teď hýbe. Zářící části dýchají, lampy a svíčky plápolají a každá deska žije po svém: uhlíky nad lávou a pekelným ohněm, sníh na zamrzlém jezeře, sluneční paprsky a mlha v lese, padající listí v motýlí zahradě, hvězdy na nebi Dvojí přísahy, světlo svíčky a pára na stolech v Hostinci v Přízračném hvozdu.',
-        'Deska reaguje na zápas: když padne jednotka, její strana desky vzplane, na začátku tvého tahu se rozzáří střed desky, když má tvůj Strážce 10 životů nebo méně, deska žhne víc, a poslední úder vybuchne z jejích světel.',
+        'Animované desky: každá deska se teď hýbe. Zářící části dýchají, lampy a svíčky plápolají a každá deska žije po svém: uhlíky nad lávou a pekelným ohněm, rudý kouř vinoucí se kolem pekelného oltáře, sníh na zamrzlém jezeře, sluneční paprsky, mlha a světlušky v lese, padající listí v motýlí zahradě, hvězdy na nebi Dvojí přísahy, světlo svíčky a pára na stolech v Hostinci v Přízračném hvozdu.',
+        'Na začátku tvého tahu se uprostřed desky zjeví znak Shardbound ve dvou otáčejících se runových kruzích.',
       ],
       ['Se zapnutým Omezeným pohybem zůstávají desky v klidu a jen rovnoměrně září. Úsporný režim ukazuje méně částic.', 'Dvě desky jsme vyřadili: fialový diamant a hradní gobelín.'],
     ],

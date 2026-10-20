@@ -72,6 +72,26 @@ def build(name: str) -> None:
 SMOKE = {"inferno-board-2"}
 
 
+def smoke_area(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """Where smoke may be: anywhere but the red table inside the frame and the red rims of the frame's long edges."""
+    table = (x > 0.135) & (x < 0.865) & (y > 0.16) & (y < 0.84)
+    rims = (x > 0.17) & (x < 0.83) & (((y > 0.06) & (y < 0.13)) | ((y > 0.87) & (y < 0.94)))
+    return (~(table | rims)).astype(np.float32)
+
+
+def smoke_points(name: str, n: int = 64) -> list:
+    """Where the painted smoke is densest, in % of the mat: the places its wisps rise from."""
+    a = np.asarray(Image.open(os.path.join(SRC, f"{name}.webp")).convert("RGB").resize((400, 228))).astype(np.float32)
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    h, w = r.shape
+    yy, xx = np.mgrid[0:h, 0:w]
+    m = (r > 70) & (r > 2.6 * np.maximum(g, b)) & (smoke_area(xx / w, yy / h) > 0)
+    rng = np.random.default_rng(7)
+    ys, xs = np.nonzero(m)
+    pick = rng.choice(len(xs), size=min(n, len(xs)), replace=False)
+    return sorted((round(float(xs[i]) / w * 100, 1), round(float(ys[i]) / h * 100, 1)) for i in pick)
+
+
 def build_smoke(name: str) -> None:
     im = Image.open(os.path.join(SRC, f"{name}.webp")).convert("RGB")
     small = im.resize((WIDTH, round(WIDTH * im.height / im.width)), Image.LANCZOS)
@@ -79,9 +99,7 @@ def build_smoke(name: str) -> None:
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
     h, w = r.shape
     yy, xx = np.mgrid[0:h, 0:w]
-    # Pure red wisps (no gold of the frame), fading out towards the table in the middle.
-    edge = np.maximum(np.abs(xx / w - 0.5) / 0.5, np.abs(yy / h - 0.5) / 0.5)
-    weight = np.clip((r - np.maximum(g, b) * 2.6) / 70.0, 0, 1) * np.clip((edge - 0.72) / 0.12, 0, 1)
+    weight = np.clip((r - np.maximum(g, b) * 2.6) / 70.0, 0, 1) * smoke_area(xx / w, yy / h)
     out = Image.fromarray((a * weight[..., None]).clip(0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(2))
     out.save(os.path.join(DST, f"{name}-smoke.webp"), "WEBP", quality=80)
 
@@ -93,4 +111,4 @@ if __name__ == "__main__":
     for n in sys.argv[1:] or SMOKE:
         if n in SMOKE:
             build_smoke(n)
-            print(n, "smoke")
+            print(n, "smoke at", [list(p) for p in smoke_points(n)])
