@@ -5,6 +5,7 @@ import { HUMAN, AI } from '@/state/matchStore';
 import { AnimatedBoard } from '@/ui/match/AnimatedBoard';
 import { BOARD_FX } from '@/ui/match/boardFx';
 import { boardByKey } from '@/ui/match/boardBackgrounds';
+import '@/ui/styles/board.css';
 import '@/ui/styles/animatedBoard.css';
 
 const KEYS = Object.keys(BOARD_FX);
@@ -33,7 +34,8 @@ export default function BoardPreview() {
   const game = { turn, activePlayer: turn > 0 ? HUMAN : AI, phase: 'MAIN', players: [] } as unknown as GameState;
   return (
     <div className="board-preview">
-      <div className={`board-preview-mat ${bg.fit === 'contain' ? 'is-whole' : ''}`} style={{ '--board-bg': `url(${bg.url})`, '--board-dim': bg.dim, '--board-fit': bg.fit } as CSSProperties}>
+      <div className={`board-preview-mat ${bg.fit === 'contain' ? 'is-whole' : ''}`} style={{ '--board-bg': `url(${bg.url})`, '--board-dim': bg.dim } as CSSProperties}>
+        {bg.fit === 'contain' && <div className="board-mat-whole" />}
         <AnimatedBoard key={id} board={id} game={game} fit={bg.fit} />
       </div>
       <div className="board-preview-bar">

@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.61.1',
+    date: '2026-10-21',
+    title: 'Pirates in sight',
+    summary: 'The pirate boards show up in matches again.',
+    sections: [{ kind: 'fixed', items: ['The two pirate boards showed only a blurred background in matches. They now show whole, as intended, and every animation runs smoothly at your screen’s frame rate.'] }],
+    commits: [],
+  },
+  {
     version: '0.61.0',
     date: '2026-10-20',
     title: 'Pirate tables',

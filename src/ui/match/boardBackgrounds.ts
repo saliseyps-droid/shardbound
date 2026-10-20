@@ -82,6 +82,16 @@ function writeIndex(key: string, i: number) {
  * A random pick is never the same as the previous match's (also across reloads).
  */
 export function pickBoardBackground(opts: { campaign?: string | null } = {}): BoardBackground | null {
+  // DEV: localStorage 'shardbound.devBoard' = a mat's name forces that board (to look at it in a real match).
+  if (import.meta.env.DEV) {
+    let forced: string | null = null;
+    try {
+      forced = localStorage.getItem('shardbound.devBoard');
+    } catch {
+      /* ignore */
+    }
+    if (forced && BOARD_MATS[forced]) return board(BOARD_MATS[forced]);
+  }
   const own = opts.campaign ? CAMPAIGN_BOARDS[opts.campaign] : undefined;
   if (own && own.length > 0) {
     const key = CAMPAIGN_KEY(opts.campaign!);

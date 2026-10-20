@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.61.1': {
+    title: 'Piráti na dohled',
+    summary: 'Pirátské desky jsou v zápasech zase vidět.',
+    sections: [['Obě pirátské desky v zápasech ukazovaly jen rozmazané pozadí. Teď jsou vidět celé, jak mají být, a všechny animace běží plynule na plnou frekvenci tvé obrazovky.']],
+  },
   '0.61.0': {
     title: 'Pirátské stoly',
     summary: 'Mezi desky přibyly dvě nové animované pirátské.',
