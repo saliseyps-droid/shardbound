@@ -31,8 +31,6 @@ import { Glyph } from '@/ui/components/Icons';
 import { enterGameFullscreen, fullscreenSupported, maybeAutoFullscreen, startMatchFullscreen } from './fullscreen';
 import { pickBoardBackground } from './boardBackgrounds';
 import { AnimatedBoard } from './AnimatedBoard';
-import { activeBoard } from '@/domain/boards';
-import { useAccount } from '@/state/accountStore';
 import { campaignOf } from '@/data/opponents';
 import '@/ui/styles/board.css';
 
@@ -171,9 +169,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   // A new play-mat for every match (rematches included); Wraithwood Inn fights alternate its two tavern tables.
   // Campaign fights pick from that campaign's mats (src/ui/match/boardBackgrounds.ts).
   const boardCampaign = config?.mode === 'PVE' && config.encounterId ? campaignOf(config.encounterId).id : null;
-  // The board you picked in Customization, in every match without mats of its own.
-  const chosenBoard = useAccount((s) => (s.save ? activeBoard(s.save) : null));
-  const boardBg = useMemo(() => pickBoardBackground({ campaign: boardCampaign, board: chosenBoard }), [startedAt, boardCampaign, chosenBoard]);
+  const boardBg = useMemo(() => pickBoardBackground({ campaign: boardCampaign }), [startedAt, boardCampaign]);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [hover, setHover] = useState<{ cardId: string; uid?: number } | null>(null);

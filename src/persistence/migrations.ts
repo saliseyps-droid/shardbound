@@ -17,7 +17,6 @@ import { repairAiRanked } from '@/domain/aiRanked';
 import { repairAchievements } from '@/domain/achievements';
 import { deckStatsFromHistory, repairDeckStats } from '@/domain/deckStats';
 import { isFrameId } from '@/domain/frames';
-import { getBoard } from '@/domain/boards';
 import { getShopFrame } from '@/data/shopFrames';
 
 export interface MigrationReport {
@@ -138,7 +137,6 @@ export function migrateSave(input: Raw): MigrationReport {
   p.achievements = repairAchievements(p.achievements);
   p.ownedFrames = Array.isArray(p.ownedFrames) ? [...new Set(p.ownedFrames.filter((id: unknown) => !!getShopFrame(id)))] : [];
   p.wardenFrame = isFrameId(p.wardenFrame) ? p.wardenFrame : null;
-  if (p.board !== undefined) p.board = getBoard(p.board) ? p.board : null;
   // Deck statistics: repaired, or rebuilt from the match history the first time.
   p.deckStats = p.deckStats === undefined ? deckStatsFromHistory(Array.isArray(raw.matchHistory) ? raw.matchHistory.filter((m: unknown) => m && typeof m === 'object' && typeof (m as { deckId?: unknown }).deckId === 'string') : []) : repairDeckStats(p.deckStats);
   for (const k of ['winStreak', 'bestWinStreak', 'tournamentsWon'] as const) p[k] = Math.floor(num(p[k], 0));

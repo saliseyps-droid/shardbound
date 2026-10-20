@@ -22,15 +22,13 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.60.0',
     date: '2026-10-20',
     title: 'Living boards',
-    summary: 'Every game board comes alive, and you can pick the one you play on.',
+    summary: 'Every game board comes alive.',
     sections: [
       {
         kind: 'new',
         items: [
-          'Animated boards: every one of the 15 boards now moves. Glowing parts breathe, lamps and candles flicker, and each board has its own particles: embers over lava and hellfire, snow on the frozen lake, fireflies in the grove, falling leaves in the butterfly garden, stars on the Host’s firmament, steam from the inn’s teacup.',
+          'Animated boards: every one of the 15 boards now moves. Glowing parts breathe, lamps and candles flicker, and each board has its own particles: embers over lava and hellfire, snow on the frozen lake, fireflies in the grove, falling leaves in the butterfly garden, stars in the sky of the Twin Oath, steam from a teacup at the Wraithwood Inn.',
           'The board reacts to the match: a dying unit makes its side of the board flare, the middle of the board lights up when your turn starts, the board burns hotter while your Warden has 10 Health or less, and the final blow bursts from its lights.',
-          'Customization has a new Game boards section: keep a random board or pick one to play on in every match. Campaigns with tables of their own still use them, and only you see your board. Click a board to see it full screen.',
-          'The general boards are yours from the start. The campaign tables are rewards: beat the Hollow Host for the two Wraithwood Inn tables, Azgaroth for The Burning Throne and The Infernal Altar, and the Arbiter for The Host’s Firmament. Bosses you already beat count.',
         ],
       },
       { kind: 'improved', items: ['With Reduced motion on, boards stay still with a steady glow. Performance mode shows fewer particles.'] },

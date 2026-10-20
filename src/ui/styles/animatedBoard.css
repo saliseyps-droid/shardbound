@@ -127,27 +127,17 @@
 .animated-board.is-still .ab-lamp { animation: none; opacity: 0.8; }
 .performance-mode .ab-haze { display: none; }
 
-/* Customization: each board as a small live tile. */
-.board-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
-.board-grid .frame-tile { --f1: var(--gold, #e8b04b); width: 100%; }
-.board-tile-preview { position: relative; width: 100%; aspect-ratio: 3200 / 1823; border-radius: 8px; overflow: hidden; background: #17142b center / cover no-repeat; }
-.board-tile-preview::before { content: ''; position: absolute; inset: 0; background: rgba(23, 20, 43, 0.35); }
-.frame-tile.is-locked .board-tile-preview { filter: grayscale(0.7) brightness(0.6); }
-.board-tile-random { display: grid; place-items: center; color: var(--text-faint, #8a83a8); font-size: 28px; background: linear-gradient(135deg, #2a2346, #17142b); }
-.board-tile-random::before { display: none; }
-button.board-tile-preview { display: block; padding: 0; border: 0; cursor: zoom-in; }
-
-/* Full-screen look at a board (Customization). */
-.board-viewer { position: fixed; inset: 0; z-index: 900; background: #17142b; cursor: zoom-out; }
-.board-viewer-mat {
+/* DEV board preview (#/boards/<mat>, src/ui/screens/BoardPreview.tsx). */
+.board-preview { position: fixed; inset: 0; z-index: 900; background: #17142b; }
+.board-preview-mat {
   position: absolute; inset: 0;
   background:
     linear-gradient(rgba(23, 20, 43, var(--board-dim, 0.5)), rgba(23, 20, 43, var(--board-dim, 0.5))),
     var(--board-bg, none) center / cover no-repeat;
 }
-.board-viewer-bar {
+.board-preview-bar {
   position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%);
-  display: flex; align-items: center; gap: var(--space-3, 12px);
-  padding: 8px 14px; border-radius: 999px; background: rgba(15, 12, 30, 0.82); cursor: default;
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px;
+  padding: 8px 14px; border-radius: 18px; background: rgba(15, 12, 30, 0.82);
   max-width: calc(100vw - 32px);
 }

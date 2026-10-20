@@ -167,9 +167,8 @@ function draw(ctx: CanvasRenderingContext2D, p: Particle, kind: ParticleKind, px
  * A mat that comes alive (src/ui/match/boardFx.ts): its glow breathes, its lights flicker and particles
  * drift over it. It answers the match: a dying unit flares its owner's half of the glow, your turn lights
  * the medallion, the board heats up while your Warden is low, and the final blow bursts from the lights.
- * `preview` (Customization) shows only the calm loop.
  */
-export function AnimatedBoard({ board, game, preview }: { board: string; game?: GameState; preview?: boolean }) {
+export function AnimatedBoard({ board, game }: { board: string; game?: GameState }) {
   const fx = BOARD_FX[board];
   const glowUrl = BOARD_GLOWS[board];
   const reduced = useSettings((s) => s.reducedMotion);
@@ -210,13 +209,13 @@ export function AnimatedBoard({ board, game, preview }: { board: string; game?: 
   const flareSeq = useRef(0);
   const seenGhosts = useRef(ghosts);
   useEffect(() => {
-    if (preview || ghosts === seenGhosts.current || ghosts.length === 0) return;
+    if (ghosts === seenGhosts.current || ghosts.length === 0) return;
     seenGhosts.current = ghosts;
     const mine = ghosts.some((g) => g.owner === HUMAN || g.owner === ALLY);
     const theirs = ghosts.some((g) => g.owner !== HUMAN && g.owner !== ALLY);
     setFlare({ side: mine && !theirs ? 'bottom' : 'top', key: ++flareSeq.current });
     if (mine && theirs) window.setTimeout(() => setFlare({ side: 'bottom', key: ++flareSeq.current }), 260);
-  }, [ghosts, preview]);
+  }, [ghosts]);
 
   // Particles: a small canvas at 30 fps; requestAnimationFrame already rests while the tab is hidden.
   const particles = useRef<Particle[]>([]);
@@ -227,7 +226,7 @@ export function AnimatedBoard({ board, game, preview }: { board: string; game?: 
     if (!canvas || !ctx) return;
     const kind = fx.particles.kind;
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    const base = Math.max(3, Math.round(fx.particles.count * (lowPower ? 0.35 : usingTouch() || preview ? 0.6 : 1)));
+    const base = Math.max(3, Math.round(fx.particles.count * (lowPower ? 0.35 : usingTouch() ? 0.6 : 1)));
     const falls = FALLS.includes(kind);
     // Falling kinds start already spread over the mat instead of all at the top.
     particles.current = falls ? Array.from({ length: base }, () => ({ ...spawn(kind, fx), y: rand(0, 1), age: 1 })) : [];
@@ -278,15 +277,15 @@ export function AnimatedBoard({ board, game, preview }: { board: string; game?: 
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [reduced, lowPower, fx, preview]);
+  }, [reduced, lowPower, fx]);
 
   // The final blow: every light bursts (or the middle of the table, on a mat without lights).
   useEffect(() => {
-    if (!finale || reduced || preview || !fx) return;
+    if (!finale || reduced || !fx) return;
     const from = fx.lamps?.length ? fx.lamps : [{ x: 50, y: 50 }];
     const each = Math.ceil(100 / from.length);
     for (const at of from) for (let i = 0; i < each; i++) particles.current.push(burst(at));
-  }, [finale, reduced, preview, fx]);
+  }, [finale, reduced, fx]);
 
   if (!fx) return null;
   const glowStyle = {
@@ -300,13 +299,13 @@ export function AnimatedBoard({ board, game, preview }: { board: string; game?: 
       {stage && (
         <div className="ab-stage" style={{ left: stage.x, top: stage.y, width: stage.w, height: stage.h }}>
           {glowUrl && <img className="ab-glow" src={glowUrl} alt="" draggable={false} />}
-          {glowUrl && !preview && <img className="ab-glow ab-haze" src={glowUrl} alt="" draggable={false} />}
+          {glowUrl && <img className="ab-glow ab-haze" src={glowUrl} alt="" draggable={false} />}
           {flare && glowUrl && <img key={flare.key} className={`ab-glow ab-flare ab-flare-${flare.side}`} src={glowUrl} alt="" draggable={false} />}
           {flare && !glowUrl && <span key={flare.key} className={`ab-flare-wash ab-flare-${flare.side}`} />}
           {fx.lamps?.map((l, i) => (
             <span key={i} className={`ab-lamp ab-lamp-${l.kind}`} style={{ left: `${l.x}%`, top: `${l.y}%`, width: `${l.size}%`, '--i': i } as CSSProperties} />
           ))}
-          {myTurnKey !== null && fx.medallion && !preview && (
+          {myTurnKey !== null && fx.medallion && (
             <span key={myTurnKey} className="ab-medallion" style={{ left: `${fx.medallion.x}%`, top: `${fx.medallion.y}%`, width: `${fx.medallion.size}%` }} />
           )}
         </div>

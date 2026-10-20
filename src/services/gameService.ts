@@ -31,7 +31,6 @@ import { acknowledgeSeasonReward, applySeasonRollover } from '@/domain/season';
 import { SaveGateway } from '@/persistence/repositories';
 import { IndexedDbStore, MemoryStore, type KeyValueStore } from '@/persistence/storage';
 import { buyFrame, chooseFrame } from '@/domain/frames';
-import { chooseBoard } from '@/domain/boards';
 
 export type InitStatus =
   | { kind: 'NEW' }
@@ -361,12 +360,6 @@ export class GameService {
 
   chooseFrame(f: string | null): Result<GameSave> {
     const res = chooseFrame(this.require(), f);
-    if (res.ok) this.commit(res.value);
-    return res;
-  }
-
-  chooseBoard(id: string | null): Result<GameSave> {
-    const res = chooseBoard(this.require(), id);
     if (res.ok) this.commit(res.value);
     return res;
   }

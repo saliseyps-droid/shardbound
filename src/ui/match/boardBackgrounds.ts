@@ -23,7 +23,7 @@ const CAMPAIGN_BOARDS: Record<string, string[]> = { inn: INN_BOARDS, inferno: IN
 
 /** How much the dark veil over the mat hides it (0.5 by default); the dark fire and ice mats get a lighter one. */
 const DIM: Record<string, number> = { 'board-9': 0.28, 'board-10': 0.3, 'inferno-board-1': 0.42, 'inferno-board-2': 0.42, 'heaven-board-1': 0.38 };
-export const dimOf = (url: string) => {
+const dimOf = (url: string) => {
   const key = Object.keys(DIM)
     .sort((a, b) => b.length - a.length)
     .find((k) => new RegExp(`/${k}[.-]`).test(url));
@@ -34,7 +34,7 @@ export interface BoardBackground {
   url: string;
   /** Opacity of the dark veil over it. */
   dim: number;
-  /** The mat's name ("board-3", "inn-board-1"…): the board id (src/domain/boards.ts) whose animation AnimatedBoard draws. */
+  /** The mat's name ("board-3", "inn-board-1"…): which animation AnimatedBoard draws over it (src/ui/match/boardFx.ts). */
   key: string;
 }
 
@@ -45,6 +45,8 @@ export const BOARD_MATS: Record<string, string> = Object.fromEntries(
   [modules, innModules, infernoModules, heavenModules].flatMap((m) => Object.entries(m).map(([path, url]) => [keyOf(path), url])),
 );
 const board = (url: string): BoardBackground => ({ url, dim: dimOf(url), key: Object.keys(BOARD_MATS).find((k) => BOARD_MATS[k] === url) ?? '' });
+/** A mat by its name (the dev board preview, #/boards). */
+export const boardByKey = (key: string): BoardBackground | null => (BOARD_MATS[key] ? board(BOARD_MATS[key]) : null);
 
 const KEY = 'shardbound.lastBoard';
 const CAMPAIGN_KEY = (c: string) => (c === 'inn' ? 'shardbound.lastInnBoard' : `shardbound.lastBoard.${c}`);
@@ -69,10 +71,9 @@ function writeIndex(key: string, i: number) {
  * - A fight in a campaign with its own mats (the Wraithwood Inn, the Underflame, the Twin Oath) takes turns on those.
  * - A fight in any other campaign gets one of the general mats.
  * - Any other match (practice, ranked, online…) gets any mat, the campaign ones included.
- * - Otherwise the board you chose in Customization, if any.
  * A random pick is never the same as the previous match's (also across reloads).
  */
-export function pickBoardBackground(opts: { campaign?: string | null; board?: string | null } = {}): BoardBackground | null {
+export function pickBoardBackground(opts: { campaign?: string | null } = {}): BoardBackground | null {
   const own = opts.campaign ? CAMPAIGN_BOARDS[opts.campaign] : undefined;
   if (own && own.length > 0) {
     const key = CAMPAIGN_KEY(opts.campaign!);
@@ -80,8 +81,6 @@ export function pickBoardBackground(opts: { campaign?: string | null; board?: st
     writeIndex(key, i);
     return board(own[i]);
   }
-  const mat = opts.board ? BOARD_MATS[opts.board] : undefined;
-  if (mat) return board(mat);
   const pool = opts.campaign ? BOARD_BACKGROUNDS : [...BOARD_BACKGROUNDS, ...INN_BOARDS, ...INFERNO_BOARDS, ...HEAVEN_BOARDS];
   const n = pool.length;
   if (n === 0) return null;

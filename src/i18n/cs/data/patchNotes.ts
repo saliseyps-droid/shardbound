@@ -3,13 +3,11 @@ import type { PatchNotesOverlay } from '../../overlayTypes';
 const notes: PatchNotesOverlay = {
   '0.60.0': {
     title: 'Živé desky',
-    summary: 'Každá herní deska ožila a můžeš si vybrat tu, na které hraješ.',
+    summary: 'Každá herní deska ožila.',
     sections: [
       [
-        'Animované desky: všech 15 desek se teď hýbe. Zářící části dýchají, lampy a svíčky plápolají a každá deska má vlastní částice: uhlíky nad lávou a pekelným ohněm, sníh na zamrzlém jezeře, světlušky v háji, padající listí v motýlí zahradě, hvězdy na Hostitelově klenbě a páru ze šálku v hostinci.',
+        'Animované desky: všech 15 desek se teď hýbe. Zářící části dýchají, lampy a svíčky plápolají a každá deska má vlastní částice: uhlíky nad lávou a pekelným ohněm, sníh na zamrzlém jezeře, světlušky v háji, padající listí v motýlí zahradě, hvězdy na nebi Dvojí přísahy a páru ze šálku v Hostinci v Přízračném hvozdu.',
         'Deska reaguje na zápas: když padne jednotka, její strana desky vzplane, na začátku tvého tahu se rozzáří střed desky, když má tvůj Strážce 10 životů nebo méně, deska žhne víc, a poslední úder vybuchne z jejích světel.',
-        'V Customization přibyla sekce Herní desky: nech náhodnou desku, nebo si vyber jednu, na které budeš hrát každý zápas. Kampaně s vlastními stoly je používají dál a tvou desku vidíš jen ty. Kliknutím na desku ji uvidíš přes celou obrazovku.',
-        'Obecné desky máš od začátku. Stoly z kampaní jsou odměny: poraz Dutého hostitele a získáš oba stoly z Hostince v Přízračném hvozdu, Azgarotha pro Hořící trůn a Pekelný oltář a Arbitra pro Hostitelovu klenbu. Bossové, které už máš poražené, se počítají.',
       ],
       ['Se zapnutým Omezeným pohybem zůstávají desky v klidu a jen rovnoměrně září. Úsporný režim ukazuje méně částic.'],
     ],
