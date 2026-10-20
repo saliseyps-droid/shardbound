@@ -23,7 +23,7 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-21',
     title: 'Pirates in sight',
     summary: 'The pirate boards show up in matches again.',
-    sections: [{ kind: 'fixed', items: ['The two pirate boards showed only a blurred background in matches. They now show whole, as intended, and every animation runs smoothly at your screen’s frame rate.'] }],
+    sections: [{ kind: 'fixed', items: ['The two pirate boards showed only a blurred background in matches. They now show whole, as intended, a little brighter, and every animation runs smoothly at your screen’s frame rate.'] }],
     commits: [],
   },
   {

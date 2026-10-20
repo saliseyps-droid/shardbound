@@ -27,13 +27,13 @@ describe('board backgrounds', () => {
     expect(seen).toEqual(new Set([...BOARD_BACKGROUNDS, ...special]));
   });
 
-  it('the fire and ice mats, the hellish tables and the heavenly one are veiled less', () => {
+  it('the fire, ice and pirate mats, the hellish tables and the heavenly one are veiled less', () => {
     expect(BOARD_BACKGROUNDS).toHaveLength(8);
     const dims = new Map<string, number>();
     for (let i = 0; i < 600; i++) {
       const b = pickBoardBackground()!;
       dims.set(b.url, b.dim);
     }
-    expect([...dims.values()].filter((d) => d < 0.5)).toHaveLength(5);
+    expect([...dims.values()].filter((d) => d < 0.5)).toHaveLength(7);
   });
 });

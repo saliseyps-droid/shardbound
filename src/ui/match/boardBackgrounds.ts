@@ -21,8 +21,8 @@ export const INFERNO_BOARDS: string[] = sorted(infernoModules);
 export const HEAVEN_BOARDS: string[] = sorted(heavenModules);
 const CAMPAIGN_BOARDS: Record<string, string[]> = { inn: INN_BOARDS, inferno: INFERNO_BOARDS, heaven: HEAVEN_BOARDS };
 
-/** How much the dark veil over the mat hides it (0.5 by default); the dark fire and ice mats get a lighter one. */
-const DIM: Record<string, number> = { 'board-9': 0.28, 'board-10': 0.3, 'inferno-board-1': 0.42, 'inferno-board-2': 0.42, 'heaven-board-1': 0.38 };
+/** How much the dark veil over the mat hides it (0.5 by default); the dark fire, ice and pirate mats get a lighter one. */
+const DIM: Record<string, number> = { 'board-9': 0.28, 'board-10': 0.3, 'board-11': 0.28, 'board-12': 0.26, 'inferno-board-1': 0.42, 'inferno-board-2': 0.42, 'heaven-board-1': 0.38 };
 const dimOf = (url: string) => {
   const key = Object.keys(DIM)
     .sort((a, b) => b.length - a.length)
