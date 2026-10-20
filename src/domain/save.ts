@@ -76,6 +76,8 @@ export interface PlayerProfile {
   wardenFrame?: string | null;
   /** Warden frames bought in the Shop (src/data/shopFrames.ts). */
   ownedFrames?: string[];
+  /** The chosen animated board (src/domain/boards.ts); null or missing for a random mat. */
+  board?: string | null;
 }
 
 export type VariantCounts = Record<Variant, number>;

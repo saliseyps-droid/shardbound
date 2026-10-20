@@ -638,7 +638,7 @@ const d: Record<string, string> = {
   News: 'Novinky',
   'Unread news': 'Nepřečtené novinky',
   Customization: 'Přizpůsobení',
-  'Your Warden portraits and card backs.': 'Tvoje portréty Strážců a rubové strany karet.',
+  'Your Warden portraits, frames, boards and card backs.': 'Tvoje portréty Strážců, rámečky, herní desky a rubové strany karet.',
   'What changed in each update of Shardbound.': 'Co se změnilo v jednotlivých aktualizacích Shardboundu.',
   New: 'Nové',
   Improved: 'Vylepšeno',
