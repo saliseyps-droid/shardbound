@@ -142,6 +142,57 @@ def bg_flood_cutout(A: np.ndarray, tol: int = 7, erode: int = 0) -> Image.Image:
     return rgba.crop(rgba.getchannel('A').point(lambda v: 255 if v > 8 else 0).getbbox())
 
 
+def seal_body_cutout(A: np.ndarray, T: int = 14) -> Image.Image:
+    """Black packs with bright gold seals on a dark background (the gilded sheet, Forbidden Spellbook).
+    The seals are the bright row runs at the top and bottom, cut as rectangles; between them the body's
+    left edge is its faint light rim (first pixel above T, smoothed), and the right edge mirrors it
+    across the seals' axis (the right rim is lost in shadow)."""
+    h, w = A.shape[:2]
+    L = np.asarray(Image.fromarray(A).convert('L').filter(ImageFilter.MedianFilter(3))).astype(int)
+    mid = L[:, w // 4: 3 * w // 4].mean(axis=1)
+    bright = mid > 40
+    runs, y = [], 0
+    while y < h:
+        if bright[y]:
+            y0 = y
+            while y < h and bright[y]:
+                y += 1
+            if y - y0 > 20:
+                runs.append((y0, y - 1))
+        y += 1
+    (t0, t1), (b0, b1) = runs[0], runs[-1]
+    def extent(y0, y1):
+        xs = [np.where(L[y, 20: w - 20] > 45)[0] + 20 for y in range((y0 + y1) // 2 - 5, (y0 + y1) // 2 + 6)]
+        return int(np.median([x.min() for x in xs])), int(np.median([x.max() for x in xs]))
+    (tl, tr), (bl, br) = extent(t0, t1), extent(b0, b1)
+    axis2 = (tl + tr + bl + br) / 2
+    left = np.full(h, np.nan)
+    for y in range(t1 + 1, b0):
+        xs = np.where(L[y, max(0, min(tl, bl) - 10): w // 2] > T)[0]
+        if len(xs):
+            left[y] = xs.min() + max(0, min(tl, bl) - 10)
+    sm = left.copy()
+    for y in range(t1 + 1, b0):
+        win = left[max(t1 + 1, y - 12): min(b0, y + 13)]
+        win = win[~np.isnan(win)]
+        sm[y] = np.median(win) if len(win) else min(tl, bl)
+    H, W = h * SS, w * SS
+    mask = np.zeros((H, W), bool)
+    X = np.arange(W) / SS
+    for Y in range(H):
+        yi = Y / SS
+        if t0 <= yi <= t1 + 1:
+            mask[Y] = (X >= tl) & (X <= tr + 1)
+        elif b0 <= yi <= b1 + 1:
+            mask[Y] = (X >= bl) & (X <= br + 1)
+        elif t1 < yi < b0:
+            e = sm[int(yi)]
+            mask[Y] = (X >= e) & (X <= axis2 - e + 1)
+    alpha = Image.fromarray((mask * 255).astype(np.uint8)).resize((w, h), Image.LANCZOS)
+    rgba = Image.fromarray(np.dstack([A, np.asarray(alpha)]).astype(np.uint8), 'RGBA')
+    return rgba.crop(rgba.getchannel('A').point(lambda v: 255 if v > 8 else 0).getbbox())
+
+
 def mirror_left_edge(img: Image.Image) -> Image.Image:
     """Packs are symmetric: rebuild the right edge of the alpha mask by mirroring the left one
     across the pack axis (fixes notches where the background leaked through a gap in the rim)."""
@@ -188,18 +239,23 @@ def main():
     ap.add_argument('--bg-flood', action='store_true', help='remove the even background instead of measuring edges (packs4)')
     ap.add_argument('--erode', type=int, default=0, help='with --bg-flood: shrink by this many px to drop the drop shadow (packs4: 12)')
     ap.add_argument('--row-shift', type=int, default=0, help='move the row ranges by this many 1x pixels (packs4: -18)')
+    ap.add_argument('--seal-body', action='store_true', help='black pack, bright gold seals, dark background (the gilded sheet)')
+    ap.add_argument('--box', nargs=4, type=int, metavar=('X0', 'Y0', 'X1', 'Y1'), help='crop this sheet rectangle (pixels) instead of the grid cell; for sheets with another layout (gilded sheet, Forbidden Spellbook: 2320 4060 3052 5420)')
     a = ap.parse_args()
     global ROW_SHIFT, EDGE_T
     ROW_SHIFT = a.row_shift
     EDGE_T = a.threshold
     sheet = Image.open(a.sheet)
-    A = crop(sheet, a.col, a.row)
+    A = np.asarray(sheet.convert('RGB').crop(tuple(a.box))).copy() if a.box else crop(sheet, a.col, a.row)
     if a.kingdoms_patch:
         src = list(range(302 * S + M, 310 * S + M))
         for t, y in enumerate(range(331 * S + M, 343 * S + M)):
             A[y, 38 * S + M: 166 * S + M] = A[src[t % len(src)], 38 * S + M: 166 * S + M]
     template = crop(sheet, *a.shape_from) if a.shape_from else None
-    img = bg_flood_cutout(A, erode=a.erode) if a.bg_flood else cutout(A, template, tuple(a.edges) if a.edges else None)
+    if a.seal_body:
+        img = seal_body_cutout(A, a.threshold)
+    else:
+        img = bg_flood_cutout(A, erode=a.erode) if a.bg_flood else cutout(A, template, tuple(a.edges) if a.edges else None)
     if a.mirror:
         img = mirror_left_edge(img)
     if a.vmirror:

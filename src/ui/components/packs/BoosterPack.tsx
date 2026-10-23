@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { packInfo, type PackId } from '@/config/economy';
+import { isPremiumPack, packInfo, type PackId } from '@/config/economy';
 import { t } from '@/i18n';
 import '@/ui/styles/prismaticPack.css';
 import kingdomsAtWar from '@/assets/packs/kingdoms_at_war.webp';
@@ -9,6 +9,7 @@ import dragonRealm from '@/assets/packs/dragon_realm.webp';
 import voidReckoning from '@/assets/packs/void_reckoning.webp';
 import prismaticArt from '@/assets/packs/prismatic.webp';
 import prismaticLegendArt from '@/assets/packs/prismatic_legend.webp';
+import gildedArt from '@/assets/packs/gilded.webp';
 
 /** Per-set accent colours (glows around the pack, the pack-opening stage). */
 export const PACK_THEME: Record<PackId, { a: string; b: string; c: string; glow: string; emblem: string }> = {
@@ -22,15 +23,15 @@ export const PACK_THEME: Record<PackId, { a: string; b: string; c: string; glow:
   GILDED: { a: '#ffe39a', b: '#2a2016', c: '#080605', glow: '#f2b84b', emblem: '#ffd27a' },
 };
 
-export const isPrismaticPack = (id: PackId) => id === 'PRISMATIC' || id === 'PRISMATIC_LEGEND';
+export const isPrismaticPack = isPremiumPack;
 
 /** Pack artwork per set (src/assets/packs). */
-const PACK_ART: Record<PackId, string> = { CORE: kingdomsAtWar, DEEP: fantasyRealms, ABYSS: legionsOfShadow, DRAGON: dragonRealm, RECKONING: voidReckoning, PRISMATIC: prismaticArt, PRISMATIC_LEGEND: prismaticLegendArt, GILDED: prismaticLegendArt };
+const PACK_ART: Record<PackId, string> = { CORE: kingdomsAtWar, DEEP: fantasyRealms, ABYSS: legionsOfShadow, DRAGON: dragonRealm, RECKONING: voidReckoning, PRISMATIC: prismaticArt, PRISMATIC_LEGEND: prismaticLegendArt, GILDED: gildedArt };
 
 export function BoosterPack({ setId, width = 180, className = '', style }: { setId: PackId; width?: number; className?: string; style?: CSSProperties }) {
   const art = PACK_ART[setId];
   return (
-    <div className={`booster ${setId === 'PRISMATIC' || setId === 'PRISMATIC_LEGEND' ? 'is-prismatic is-gold' : ''} ${className}`} style={{ width, '--pack-art': `url(${art})`, ...style } as CSSProperties} role="img" aria-label={t('{name} booster pack', { name: t(packInfo(setId).name) })}>
+    <div className={`booster ${isPremiumPack(setId) ? 'is-prismatic is-gold' : ''} ${className}`} style={{ width, '--pack-art': `url(${art})`, ...style } as CSSProperties} role="img" aria-label={t('{name} booster pack', { name: t(packInfo(setId).name) })}>
       <img className="booster-art" src={art} alt="" draggable={false} />
       <span className="booster-sheen" aria-hidden />
       {isPrismaticPack(setId) && <span className="booster-prism" aria-hidden />}
