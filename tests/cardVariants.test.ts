@@ -9,7 +9,7 @@ import type { Deck } from '@/domain/decks';
 
 const UNIT = 'neu_trail_hound';
 
-function game(variants?: Record<string, { PRISMATIC?: number; FOIL?: number }>) {
+function game(variants?: Record<string, { GILDED?: number; PRISMATIC?: number; FOIL?: number }>) {
   return createGame({
     seed: 1,
     firstPlayer: 0,
@@ -104,5 +104,23 @@ describe('Gilded copies in the collection', () => {
     const raw = JSON.parse(JSON.stringify(createNewSave('A', 'flame', 1, 'p')));
     raw.collection.cards = { [UNIT]: { NORMAL: 2, FOIL: 1, PRISMATIC: 0 } };
     expect(migrateSave(raw).save.collection.cards[UNIT]).toEqual({ NORMAL: 2, FOIL: 1, PRISMATIC: 0, GILDED: 0 });
+  });
+});
+
+describe('Gilded copies in matches', () => {
+  it('go into the deck before Prismatic and Foil copies', () => {
+    const deck = { cards: { [UNIT]: 2 } } as unknown as Deck;
+    expect(deckVariants(collection({ [UNIT]: { NORMAL: 1, FOIL: 1, PRISMATIC: 1, GILDED: 1 } }), deck)).toEqual({ [UNIT]: { GILDED: 1, PRISMATIC: 1 } });
+  });
+
+  it('give deck cards the Gilded variant', () => {
+    const s = game({ [UNIT]: { GILDED: 1, FOIL: 1 } });
+    const units = s.players[0].deck.concat(s.players[0].hand).filter((c) => c.cardId === UNIT);
+    expect(units.map((c) => c.variant ?? 'NORMAL').sort()).toEqual(['FOIL', 'GILDED', 'NORMAL']);
+  });
+
+  it('a remote side cannot claim more Gilded copies than its deck holds', () => {
+    const side = sanitizeRemoteSide({ name: 'g', avatar: 'a', deck: [UNIT], variants: { [UNIT]: { GILDED: 5, PRISMATIC: 1 } } as never });
+    expect(side.variants).toEqual({ [UNIT]: { GILDED: 1 } });
   });
 });

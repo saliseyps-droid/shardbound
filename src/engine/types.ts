@@ -19,12 +19,14 @@ export interface CardInstance {
   echoCopy?: boolean;
   /** Visible to the opponent (e.g. stolen/returned cards). */
   revealed?: boolean;
-  /** Cosmetic: the owner's Foil or Prismatic copy. */
+  /** Cosmetic: the owner's Foil, Prismatic or Gilded copy. */
   variant?: CardVariant;
 }
 
 /** Cosmetic card variants shown in a match (a normal copy has none). */
-export type CardVariant = 'FOIL' | 'PRISMATIC';
+export type CardVariant = 'FOIL' | 'PRISMATIC' | 'GILDED';
+/** Best first: the first copies of a card in a deck take these variants in this order. */
+export const CARD_VARIANTS_BEST_FIRST: readonly CardVariant[] = ['GILDED', 'PRISMATIC', 'FOIL'];
 
 export interface UnitInstance {
   uid: number;
@@ -57,7 +59,7 @@ export interface UnitInstance {
   pendingDestroy: boolean;
   /** Sequence number to order simultaneous deaths. */
   playOrder: number;
-  /** Cosmetic: played from a Foil or Prismatic card. */
+  /** Cosmetic: played from a Foil, Prismatic or Gilded card. */
   variant?: CardVariant;
 }
 
@@ -239,7 +241,7 @@ export interface SideSetup {
   faction?: string | null;
   /** Card ids; order is shuffled by the engine unless `keepDeckOrder`. */
   deck: string[];
-  /** Cosmetic: how many copies of a card in `deck` are Prismatic or Foil. */
+  /** Cosmetic: how many copies of a card in `deck` are Gilded, Prismatic or Foil. */
   variants?: Record<string, Partial<Record<CardVariant, number>>>;
   /** Cosmetic card back id. */
   cardBack?: string | null;

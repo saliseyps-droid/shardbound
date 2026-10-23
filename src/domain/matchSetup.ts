@@ -4,7 +4,7 @@ import { randomPortrait } from '@/data/portraits';
 import { effectivePortrait } from './portraits';
 import type { CollectionState, PlayerProfile } from './save';
 import { DIFFICULTY_POOLS, type OpponentDef } from '@/data/opponents';
-import type { MatchSetup, SideSetup } from '@/engine/types';
+import { CARD_VARIANTS_BEST_FIRST, type CardVariant, type MatchSetup, type SideSetup } from '@/engine/types';
 import { hashString } from '@/core/rng';
 import { autoBuildDeck, deckToList, type Deck } from './decks';
 import { frameOwnedBy } from '@/domain/frames';
@@ -45,7 +45,7 @@ export function opponentSide(opponent: OpponentDef, random: () => number = Math.
 }
 
 /**
- * Which copies of a deck show as Prismatic or Foil: the best variants you own go in first.
+ * Which copies of a deck show as Gilded, Prismatic or Foil: the best variants you own go in first.
  * Decks only count copies, so every deck (old ones too) gets its variants from the collection.
  */
 export function deckVariants(collection: CollectionState, deck: Pick<Deck, 'cards'>): NonNullable<SideSetup['variants']> {
@@ -53,15 +53,21 @@ export function deckVariants(collection: CollectionState, deck: Pick<Deck, 'card
   for (const [id, count] of Object.entries(deck.cards)) {
     const owned = collection.cards[id];
     if (!owned || count <= 0) continue;
-    const prismatic = Math.min(count, owned.PRISMATIC);
-    const foil = Math.min(count - prismatic, owned.FOIL);
-    if (prismatic + foil === 0) continue;
-    out[id] = { ...(prismatic ? { PRISMATIC: prismatic } : {}), ...(foil ? { FOIL: foil } : {}) };
+    const entry: Partial<Record<CardVariant, number>> = {};
+    let room = count;
+    for (const k of CARD_VARIANTS_BEST_FIRST) {
+      const n = Math.min(room, owned[k] ?? 0);
+      if (n > 0) {
+        entry[k] = n;
+        room -= n;
+      }
+    }
+    if (Object.keys(entry).length) out[id] = entry;
   }
   return out;
 }
 
-/** `collection` shows your Prismatic and Foil copies in the match (left out for borrowed decks). */
+/** `collection` shows your Gilded, Prismatic and Foil copies in the match (left out for borrowed decks). */
 export function playerSide(profile: Pick<PlayerProfile, 'username' | 'avatar' | 'cardBack' | 'portraits' | 'factionPortraits'> & Partial<Pick<PlayerProfile, 'wardenFrame' | 'factionWins' | 'ownedFrames'>>, deck: Deck, collection?: CollectionState): SideSetup {
   return {
     name: profile.username,

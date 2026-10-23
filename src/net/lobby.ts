@@ -1,7 +1,7 @@
 import type { OpponentDef } from '@/data/opponents';
 import type { PlayableFaction } from '@/game/types';
 import { factionOfList, validateDeck } from '@/domain/decks';
-import type { SideSetup } from '@/engine/types';
+import { CARD_VARIANTS_BEST_FIRST, type CardVariant, type SideSetup } from '@/engine/types';
 import { validateBuild } from '@/data/wardenTalents';
 import { getCardBack } from '@/data/cardBacks';
 import { getPortrait } from '@/data/portraits';
@@ -75,8 +75,8 @@ function sanitizeVariants(side: SideSetup): SideSetup['variants'] {
   for (const [id, v] of Object.entries(raw)) {
     if (!v || typeof v !== 'object') continue;
     let room = side.deck.filter((c) => c === id).length;
-    const entry: Partial<Record<'FOIL' | 'PRISMATIC', number>> = {};
-    for (const k of ['PRISMATIC', 'FOIL'] as const) {
+    const entry: Partial<Record<CardVariant, number>> = {};
+    for (const k of CARD_VARIANTS_BEST_FIRST) {
       const n = Math.min(room, Math.floor(Number(v[k]) || 0));
       if (n > 0) {
         entry[k] = n;

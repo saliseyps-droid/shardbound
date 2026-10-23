@@ -6,7 +6,7 @@ import type { EngineContext } from './context';
 import { createContext, pushEvent } from './context';
 import { emit, queuePlayerTrigger, resolveQueue, runAbility } from './triggers';
 import type { ActionResult, GameAction, GameState, MatchSetup, PlayerId, PlayerState, SideSetup, TargetRef } from './types';
-import { isEnded, other } from './types';
+import { CARD_VARIANTS_BEST_FIRST, isEnded, other } from './types';
 import { isCoop, mainEnemy, nextInTurn, teamOf, teamSeat } from './teams';
 import {
   attackTargets,
@@ -99,9 +99,9 @@ export function createGame(setup: MatchSetup): { state: GameState; events: Actio
     p.deck = side.deck
       .filter((id) => !!getCard(id))
       .map((id) => {
-        // The first copies of a card take the Prismatic, then the Foil variants.
+        // The first copies of a card take the Gilded, then the Prismatic, then the Foil variants.
         const v = left.get(id);
-        const variant = v && (v.PRISMATIC ?? 0) > 0 ? 'PRISMATIC' : v && (v.FOIL ?? 0) > 0 ? 'FOIL' : undefined;
+        const variant = v && CARD_VARIANTS_BEST_FIRST.find((k) => (v[k] ?? 0) > 0);
         if (variant) v![variant]!--;
         return makeCardInstance(ctx, id, variant ? { variant } : {});
       });
