@@ -412,3 +412,9 @@ export const CARD_ART_FOCUS: Record<string, number> = {
   neu_black_sun_idol: 15,
   vod_devourer_of_names: 55,
 };
+
+/** Hand-tuned: horizontal focus (object-position X %) for art whose subject sits near one side. */
+export const CARD_ART_FOCUS_X: Record<string, number> = {
+  // The jaws are at the right edge of the art.
+  ver_thornpelt_packmother: 100,
+};

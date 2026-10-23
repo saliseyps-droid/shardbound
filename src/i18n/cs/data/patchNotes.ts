@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.62.2': {
+    title: 'Celé drahokamy',
+    summary: 'Drahokamy útoku a životů už nejsou useknuté a Thornpelt Packmother ukazuje tlamu.',
+    sections: [
+      [
+        'Drahokamy útoku a životů (i nábojů a trvání) na kartách měly špičky useknuté zkosenými rohy karty. Teď jsou vidět celé.',
+        'Zlacená Thornpelt Packmother: obrázek je posunutý víc doprava, takže je vidět její otevřená tlama.',
+      ],
+    ],
+  },
   '0.62.1': {
     title: 'Černá a zlatá',
     summary: 'Zlacené karty dostaly vzhled, jaký měly mít: černozlatý, s obrázkem, do kterého se díváš jako oknem.',

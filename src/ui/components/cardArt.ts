@@ -2,7 +2,7 @@ import { createRng, hashString, nextFloat, nextInt } from '@/core/rng';
 import { FACTIONS } from '@/data/factions';
 import type { CardDefinition } from '@/game/types';
 import { GLYPHS } from './Icons';
-import { CARD_ART_FOCUS } from './cardArtFocus';
+import { CARD_ART_FOCUS, CARD_ART_FOCUS_X } from './cardArtFocus';
 import { figureSvg } from './unitFigures';
 
 /** Painted artwork, one per card id: src/assets/cards/<id>.webp (4:5 portrait). */
@@ -12,9 +12,21 @@ export function paintedArtUrl(card: CardDefinition): string | undefined {
   return PAINTED[`../../assets/cards/${card.id}.webp`];
 }
 
-/** object-position for painted art shown in a frame wider than the 4:5 source. */
+/**
+ * object-position for painted art: the Y focus matters in the landscape card frame, the X focus in
+ * the narrower full-art Gilded card and the board token.
+ */
 export function cardArtPosition(card: CardDefinition): string {
-  return `50% ${CARD_ART_FOCUS[card.id] ?? 40}%`;
+  return `${CARD_ART_FOCUS_X[card.id] ?? 50}% ${CARD_ART_FOCUS[card.id] ?? 40}%`;
+}
+
+/**
+ * transform-origin for art that is zoomed and moved (Gilded cards, board tokens): leans towards the
+ * X focus, but stays inside the middle 72% so the 1.18 zoom always leaves room for a 5% shift.
+ */
+export function cardArtOrigin(card: CardDefinition): string {
+  const x = CARD_ART_FOCUS_X[card.id] ?? 50;
+  return `${50 + (x - 50) * 0.44}% ${CARD_ART_FOCUS[card.id] ?? 40}%`;
 }
 
 /**

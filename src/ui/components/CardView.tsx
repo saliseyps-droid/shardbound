@@ -2,7 +2,7 @@ import { memo, useLayoutEffect, useRef, useState, type CSSProperties, type Mouse
 import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import type { CardDefinition, Variant } from '@/game/types';
-import { cardArtPosition, cardArtUri, proceduralArtUri } from './cardArt';
+import { cardArtOrigin, cardArtPosition, cardArtUri, proceduralArtUri } from './cardArt';
 import { Glyph } from './Icons';
 import { KeywordText } from './Tooltip';
 import { DEFAULT_CARD_BACK } from '@/data/cardBacks';
@@ -73,7 +73,7 @@ function CardArtImage({ card }: { card: CardDefinition }) {
       key={src}
       className="card-art"
       src={src}
-      style={external && failures === 0 ? undefined : { objectPosition: cardArtPosition(card) }}
+      style={external && failures === 0 ? undefined : { objectPosition: cardArtPosition(card), transformOrigin: cardArtOrigin(card) }}
       alt=""
       loading="lazy"
       decoding="async"
@@ -280,27 +280,28 @@ export const CardView = memo(function CardView(props: CardViewProps) {
           </p>
           {showFlavor && <p className="card-flavor">{card.flavorText}</p>}
         </div>
-        {card.cardType === 'UNIT' && (
-          <>
-            <div className="card-stat stat-attack" aria-hidden>
-              <span>{card.attack}</span>
-            </div>
-            <div className="card-stat stat-health" aria-hidden>
-              <span>{card.health}</span>
-            </div>
-          </>
-        )}
-        {card.cardType === 'RELIC' && card.charges && (
-          <div className="card-stat stat-charges" aria-hidden title={t('Charges')}>
-            <span>{card.charges}</span>
-          </div>
-        )}
-        {card.cardType === 'LOCATION' && card.duration && (
-          <div className="card-stat stat-duration" aria-hidden title={t('Duration')}>
-            <span>{card.duration}</span>
-          </div>
-        )}
       </div>
+      {/* The gems sit outside .card-inner so its chamfered clip-path never cuts their tips. */}
+      {card.cardType === 'UNIT' && (
+        <>
+          <div className="card-stat stat-attack" aria-hidden>
+            <span>{card.attack}</span>
+          </div>
+          <div className="card-stat stat-health" aria-hidden>
+            <span>{card.health}</span>
+          </div>
+        </>
+      )}
+      {card.cardType === 'RELIC' && card.charges && (
+        <div className="card-stat stat-charges" aria-hidden title={t('Charges')}>
+          <span>{card.charges}</span>
+        </div>
+      )}
+      {card.cardType === 'LOCATION' && card.duration && (
+        <div className="card-stat stat-duration" aria-hidden title={t('Duration')}>
+          <span>{card.duration}</span>
+        </div>
+      )}
       <div className={`card-cost ${costClass}`} aria-hidden>
         <span>{cost}</span>
       </div>

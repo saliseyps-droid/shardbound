@@ -5,7 +5,7 @@ import { RANK_LABEL, getTalent } from '@/data/wardenTalents';
 import { KEYWORDS } from '@/data/keywords';
 import type { GameState, PlayerId, UnitInstance } from '@/engine/types';
 import { canAttack, canUseHeroPower, currentHealth, empower, hasKeyword, maxHealth, unitAttack } from '@/engine/queries';
-import { cardArtUri } from '@/ui/components/cardArt';
+import { cardArtOrigin, cardArtPosition, cardArtUri } from '@/ui/components/cardArt';
 import { CardBack } from '@/ui/components/CardView';
 import { Glyph } from '@/ui/components/Icons';
 import { WardenPortrait, portraitUrl } from '@/ui/components/WardenPortrait';
@@ -140,7 +140,7 @@ export const UnitView = memo(function UnitView({
     >
       <div className="unit-body">
         {unit.variant === 'PRISMATIC' && <div className="unit-prism-frame" aria-hidden />}
-        <img className="unit-art" src={cardArtUri(card)} alt="" draggable={false} />
+        <img className="unit-art" src={cardArtUri(card)} alt="" draggable={false} style={unit.variant === 'GILDED' ? { objectPosition: cardArtPosition(card), transformOrigin: cardArtOrigin(card) } : undefined} />
         {unit.variant && unit.variant !== 'GILDED' && <div className="unit-shine" aria-hidden />}
         {unit.variant === 'GILDED' && <div className="unit-gild-frame" aria-hidden />}
         {unit.frozen && <div className="unit-ice" aria-hidden />}

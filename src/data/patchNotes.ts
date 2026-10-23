@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.62.2',
+    date: '2026-10-23',
+    title: 'Whole gems',
+    summary: 'The Attack and Health gems are no longer clipped, and the Thornpelt Packmother shows its jaws.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          'The Attack and Health gems (and the Charges and Duration gems) on cards were clipped at their tips by the card’s cut corners. They are now shown whole.',
+          'Gilded Thornpelt Packmother: the art is framed further to the right, so its open jaws are in view.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.62.1',
     date: '2026-10-23',
     title: 'Black and gold',
