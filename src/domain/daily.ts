@@ -3,7 +3,7 @@ import { cardsBy } from '@/data/cards';
 import type { RngState } from '@/core/rng';
 import { pickOne } from '@/core/rng';
 import { dayKey, daysBetween, err, ok, type Result } from '@/core/utils';
-import { addCards, pushReward, type GameSave } from './save';
+import { addCards, ownedCopies, pushReward, type GameSave } from './save';
 
 export interface DailyStatus {
   canClaim: boolean;
@@ -51,7 +51,7 @@ export function claimDaily(save: GameSave, now: number, rng: RngState): Result<{
       break;
     case 'RANDOM_CARD': {
       const pool = cardsBy({ rarity: reward.rarity });
-      const unowned = pool.filter((c) => !(next.collection.cards[c.id] && next.collection.cards[c.id].NORMAL + next.collection.cards[c.id].FOIL + next.collection.cards[c.id].PRISMATIC > 0));
+      const unowned = pool.filter((c) => ownedCopies(next.collection, c.id) === 0);
       const card = pickOne(rng, unowned.length ? unowned : pool);
       if (card) {
         cardId = card.id;

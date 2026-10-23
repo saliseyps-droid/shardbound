@@ -12,7 +12,7 @@ import { CardView } from './CardView';
 import { Modal } from './common';
 import { t } from '@/i18n';
 
-const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic' };
+const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic', GILDED: 'Gilded' };
 
 /** Keywords referenced by a card (static + trigger + status). */
 export function cardKeywords(cardId: string): KeywordId[] {

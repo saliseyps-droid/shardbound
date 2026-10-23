@@ -26,16 +26,16 @@ const collection = (cards: CollectionState['cards']): CollectionState => ({ card
 describe('card variants in decks and matches', () => {
   it('assigns the best owned variants to copies in the deck', () => {
     const deck = { cards: { [UNIT]: 2, token_recruit: 1 } } as unknown as Deck;
-    expect(deckVariants(collection({ [UNIT]: { NORMAL: 1, FOIL: 0, PRISMATIC: 1 } }), deck)).toEqual({ [UNIT]: { PRISMATIC: 1 } });
-    expect(deckVariants(collection({ [UNIT]: { NORMAL: 0, FOIL: 3, PRISMATIC: 1 } }), deck)).toEqual({ [UNIT]: { PRISMATIC: 1, FOIL: 1 } });
-    expect(deckVariants(collection({ [UNIT]: { NORMAL: 0, FOIL: 0, PRISMATIC: 5 } }), deck)).toEqual({ [UNIT]: { PRISMATIC: 2 } });
-    expect(deckVariants(collection({ [UNIT]: { NORMAL: 2, FOIL: 0, PRISMATIC: 0 } }), deck)).toEqual({});
+    expect(deckVariants(collection({ [UNIT]: { NORMAL: 1, FOIL: 0, PRISMATIC: 1, GILDED: 0 } }), deck)).toEqual({ [UNIT]: { PRISMATIC: 1 } });
+    expect(deckVariants(collection({ [UNIT]: { NORMAL: 0, FOIL: 3, PRISMATIC: 1, GILDED: 0 } }), deck)).toEqual({ [UNIT]: { PRISMATIC: 1, FOIL: 1 } });
+    expect(deckVariants(collection({ [UNIT]: { NORMAL: 0, FOIL: 0, PRISMATIC: 5, GILDED: 0 } }), deck)).toEqual({ [UNIT]: { PRISMATIC: 2 } });
+    expect(deckVariants(collection({ [UNIT]: { NORMAL: 2, FOIL: 0, PRISMATIC: 0, GILDED: 0 } }), deck)).toEqual({});
   });
 
   it('puts the variants on the player side of an existing deck', () => {
     const deck = { id: 'd', name: 'x', heroFaction: 'EMBER', cards: { [UNIT]: 2 }, talents: [], favorite: false, createdAt: 0, updatedAt: 0 } as Deck;
     const profile = { username: 'me', avatar: 'a', cardBack: null, portraits: [], factionPortraits: {} } as never;
-    expect(playerSide(profile, deck, collection({ [UNIT]: { NORMAL: 1, FOIL: 1, PRISMATIC: 0 } })).variants).toEqual({ [UNIT]: { FOIL: 1 } });
+    expect(playerSide(profile, deck, collection({ [UNIT]: { NORMAL: 1, FOIL: 1, PRISMATIC: 0, GILDED: 0 } })).variants).toEqual({ [UNIT]: { FOIL: 1 } });
     expect(playerSide(profile, deck).variants).toBeUndefined();
   });
 
@@ -67,5 +67,42 @@ describe('card variants in decks and matches', () => {
   it('keeps a remote side variants, clamped to the deck', () => {
     const side = sanitizeRemoteSide({ name: 'g', avatar: 'a', deck: [UNIT, UNIT], variants: { [UNIT]: { PRISMATIC: 5, FOIL: -1 }, other: { FOIL: 1 }, bad: 'x' as never } });
     expect(side.variants).toEqual({ [UNIT]: { PRISMATIC: 2 } });
+  });
+});
+
+describe('Gilded copies in the collection', () => {
+  it('count as owned copies', async () => {
+    const { ownedCopies } = await import('@/domain/save');
+    expect(ownedCopies(collection({ [UNIT]: { NORMAL: 0, FOIL: 0, PRISMATIC: 0, GILDED: 2 } }), UNIT)).toBe(2);
+  });
+
+  it('cannot be crafted', async () => {
+    const { craftCard } = await import('@/domain/economy');
+    const { createNewSave } = await import('@/domain/newAccount');
+    const base = createNewSave('A', 'flame', 1, 'p');
+    const rich = { ...base, profile: { ...base.profile, essence: 1_000_000 } };
+    const res = craftCard(rich, UNIT, 'GILDED', 1);
+    expect(res.ok).toBe(false);
+  });
+
+  it('recycle for 16 times a normal copy', async () => {
+    const { recycleValue } = await import('@/domain/economy');
+    expect(recycleValue(UNIT, 'GILDED')).toBe(recycleValue(UNIT, 'NORMAL') * 16);
+  });
+
+  it('are kept first when surplus copies are recycled', async () => {
+    const { surplusCopies } = await import('@/domain/economy');
+    const { createNewSave } = await import('@/domain/newAccount');
+    const base = createNewSave('A', 'flame', 1, 'p');
+    const save = { ...base, collection: collection({ [UNIT]: { NORMAL: 1, FOIL: 0, PRISMATIC: 1, GILDED: 1 } }) };
+    expect(surplusCopies(save, UNIT)).toEqual({ NORMAL: 1, FOIL: 0, PRISMATIC: 0, GILDED: 0 });
+  });
+
+  it('are zero in older saves', async () => {
+    const { migrateSave } = await import('@/persistence/migrations');
+    const { createNewSave } = await import('@/domain/newAccount');
+    const raw = JSON.parse(JSON.stringify(createNewSave('A', 'flame', 1, 'p')));
+    raw.collection.cards = { [UNIT]: { NORMAL: 2, FOIL: 1, PRISMATIC: 0 } };
+    expect(migrateSave(raw).save.collection.cards[UNIT]).toEqual({ NORMAL: 2, FOIL: 1, PRISMATIC: 0, GILDED: 0 });
   });
 });

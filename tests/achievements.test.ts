@@ -107,7 +107,7 @@ describe('evaluateAchievements', () => {
     expect(evaluateAchievements(s)).toEqual(expect.arrayContaining(['faction_all', 'faction_25']));
     const legends = collectibleCards().filter((c) => c.rarity === 'LEGENDARY' && c.faction === 'VOID');
     const cards = { ...fresh().collection.cards };
-    for (const c of legends) cards[c.id] = { NORMAL: 1, FOIL: 0, PRISMATIC: 0 };
+    for (const c of legends) cards[c.id] = { NORMAL: 1, FOIL: 0, PRISMATIC: 0, GILDED: 0 };
     expect(evaluateAchievements({ ...fresh(), collection: { cards, unseen: [] } })).toContain('legend_faction');
   });
 

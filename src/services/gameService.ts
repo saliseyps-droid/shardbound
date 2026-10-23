@@ -387,7 +387,7 @@ export class GameService {
     let missingCopies = 0;
     for (const [id, n] of Object.entries(cards)) {
       const v = collection.cards[id];
-      const have = v ? v.NORMAL + v.FOIL + v.PRISMATIC : 0;
+      const have = v ? v.NORMAL + v.FOIL + v.PRISMATIC + v.GILDED : 0;
       missingCopies += Math.max(0, n - have);
     }
     return ok({ deck: created.value, missingCopies, unknownCards: unknownCards.length });

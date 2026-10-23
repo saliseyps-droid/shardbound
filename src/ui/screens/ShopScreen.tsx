@@ -21,7 +21,7 @@ const SETS = (Object.keys(SET_INFO) as SetId[]).sort((a, b) => SET_INFO[b].relea
 /** The Prismatic packs (newest), then set packs, newest first. */
 const SHOP_PACKS: PackId[] = ['PRISMATIC_LEGEND', 'PRISMATIC', ...SETS];
 const RARITY_LABEL: Record<Rarity, string> = { COMMON: 'Common', RARE: 'Rare', EPIC: 'Epic', LEGENDARY: 'Legendary' };
-const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic' };
+const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic', GILDED: 'Gilded' };
 
 function pct(weights: Record<string, number>, key: string) {
   const total = Object.values(weights).reduce((a, b) => a + b, 0);

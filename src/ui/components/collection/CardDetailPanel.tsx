@@ -17,19 +17,21 @@ import { t, tn } from '@/i18n';
 import { useCallback, useState } from 'react';
 import { LegendShowcase } from '@/ui/match/LegendaryEntrance';
 
-export const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic' };
+export const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic', GILDED: 'Gilded' };
 
 /** Variant-specific sentences (Czech declines the variant adjective). */
-const CRAFTED: Record<Variant, string> = { NORMAL: 'Crafted normal {name}.', FOIL: 'Crafted foil {name}.', PRISMATIC: 'Crafted prismatic {name}.' };
+const CRAFTED: Record<Variant, string> = { NORMAL: 'Crafted normal {name}.', FOIL: 'Crafted foil {name}.', PRISMATIC: 'Crafted prismatic {name}.', GILDED: 'Crafted gilded {name}.' };
 const DESTROY_ONE: Record<Variant, string> = {
   NORMAL: 'You will destroy one normal copy and receive',
   FOIL: 'You will destroy one foil copy and receive',
   PRISMATIC: 'You will destroy one prismatic copy and receive',
+  GILDED: 'You will destroy one gilded copy and receive',
 };
-const THIS_IS: Record<Variant, string> = { NORMAL: 'This is a normal copy.', FOIL: 'This is a foil copy.', PRISMATIC: 'This is a prismatic copy.' };
+const THIS_IS: Record<Variant, string> = { NORMAL: 'This is a normal copy.', FOIL: 'This is a foil copy.', PRISMATIC: 'This is a prismatic copy.', GILDED: 'This is a gilded copy.' };
 
 export function bestVariant(counts: Record<Variant, number> | undefined): Variant {
   if (!counts) return 'NORMAL';
+  if (counts.GILDED > 0) return 'GILDED';
   if (counts.PRISMATIC > 0) return 'PRISMATIC';
   if (counts.FOIL > 0) return 'FOIL';
   return 'NORMAL';

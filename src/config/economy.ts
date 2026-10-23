@@ -98,7 +98,9 @@ export const CRAFTING = {
   craft: { COMMON: 40, RARE: 100, EPIC: 400, LEGENDARY: 1600 } as Record<Rarity, number>,
   recycle: { COMMON: 5, RARE: 20, EPIC: 100, LEGENDARY: 400 } as Record<Rarity, number>,
   /** Cosmetic variants cost/return more but never change gameplay. */
-  variantMultiplier: { NORMAL: 1, FOIL: 4, PRISMATIC: 8 } as Record<Variant, number>,
+  variantMultiplier: { NORMAL: 1, FOIL: 4, PRISMATIC: 8, GILDED: 16 } as Record<Variant, number>,
+  /** Variants that only come from packs: they can be recycled but never crafted. */
+  uncraftable: ['GILDED'] as Variant[],
   /** Rarities that require explicit confirmation before recycling. */
   confirmRecycle: ['RARE', 'EPIC', 'LEGENDARY'] as Rarity[],
 };

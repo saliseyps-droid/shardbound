@@ -62,6 +62,7 @@ const d: Record<string, string> = {
   'You do not own this card back yet.': 'Tuhle rubovou stranu ještě nevlastníš.',
   'You have no unopened packs of this set.': 'Nemáš žádné neotevřené boostery této edice.',
   'This card cannot be crafted.': 'Tuto kartu nelze vyrobit.',
+  'Gilded cards cannot be crafted.': 'Zlacené karty nelze vyrobit.',
   'Campaign reward cards cannot be recycled.': 'Karty z odměn kampaně nelze recyklovat.',
   'This chapter is not for sale.': 'Tahle kapitola se neprodává.',
   'You already unlocked this chapter.': 'Tuhle kapitolu už máš odemčenou.',

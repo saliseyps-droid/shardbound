@@ -81,10 +81,10 @@ describe('crafting and recycling', () => {
   it('identifies and recycles surplus copies only', () => {
     let save = fresh();
     const id = Object.keys(save.collection.cards)[0];
-    save = { ...save, collection: { ...save.collection, cards: { ...save.collection.cards, [id]: { NORMAL: 4, FOIL: 1, PRISMATIC: 0 } } } };
+    save = { ...save, collection: { ...save.collection, cards: { ...save.collection.cards, [id]: { NORMAL: 4, FOIL: 1, PRISMATIC: 0, GILDED: 0 } } } };
     const surplus = surplusCopies(save, id);
     // Keep the foil (cosmetic priority) + 1 normal; 3 normals surplus.
-    expect(surplus).toEqual({ NORMAL: 3, FOIL: 0, PRISMATIC: 0 });
+    expect(surplus).toEqual({ NORMAL: 3, FOIL: 0, PRISMATIC: 0, GILDED: 0 });
     const res = recycleAllSurplus(save);
     expect(res.cards).toBe(3);
     expect(ownedCopies(res.save.collection, id)).toBe(2);

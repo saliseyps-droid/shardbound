@@ -34,7 +34,7 @@ function simulatePacks(setId: SetId, n: number): SimResult {
   const t0 = performance.now();
   const rng = createRng(randomSeed());
   const zero = () => ({ COMMON: 0, RARE: 0, EPIC: 0, LEGENDARY: 0 });
-  const r: SimResult = { packs: n, setId, standard: zero(), guaranteed: zero(), variants: { NORMAL: 0, FOIL: 0, PRISMATIC: 0 }, maxSinceEpic: 0, maxSinceLegendary: 0, packsWithLegendary: 0, ms: 0 };
+  const r: SimResult = { packs: n, setId, standard: zero(), guaranteed: zero(), variants: { NORMAL: 0, FOIL: 0, PRISMATIC: 0, GILDED: 0 }, maxSinceEpic: 0, maxSinceLegendary: 0, packsWithLegendary: 0, ms: 0 };
   let pity: PityState = { EPIC: 0, LEGENDARY: 0 };
   let sinceE = 0;
   let sinceL = 0;

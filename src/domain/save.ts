@@ -197,12 +197,12 @@ export const MATCH_HISTORY_LIMIT = 100;
 export const RECENT_REWARDS_LIMIT = 20;
 
 export function emptyVariants(): VariantCounts {
-  return { NORMAL: 0, FOIL: 0, PRISMATIC: 0 };
+  return { NORMAL: 0, FOIL: 0, PRISMATIC: 0, GILDED: 0 };
 }
 
 export function ownedCopies(collection: CollectionState, cardId: string): number {
   const v = collection.cards[cardId];
-  return v ? v.NORMAL + v.FOIL + v.PRISMATIC : 0;
+  return v ? v.NORMAL + v.FOIL + v.PRISMATIC + v.GILDED : 0;
 }
 
 export function addCards(collection: CollectionState, cards: { cardId: string; variant: Variant }[]): CollectionState {

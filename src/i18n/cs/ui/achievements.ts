@@ -64,7 +64,7 @@ const d: Record<string, string> = {
   'Prismatic Prize': 'Prizmatická trofej',
   'Own a Prismatic card.': 'Měj prizmatickou kartu.',
   'Shimmering Collection': 'Třpytivá sbírka',
-  'Own 15 different cards in Foil or Prismatic.': 'Měj 15 různých karet ve variantě Foil nebo Prismatic.',
+  'Own 15 different cards in Foil, Prismatic or Gilded.': 'Měj 15 různých karet ve variantě Foil, Prismatic nebo Zlacená.',
   'New Faces': 'Nové tváře',
   'Own 3 Warden portraits.': 'Měj 3 portréty Strážců.',
   'Hall of Faces': 'Síň tváří',

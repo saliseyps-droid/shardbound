@@ -107,7 +107,7 @@ const setProgress = (save: GameSave, set: SetId) => {
   const pool = poolCards().filter((c) => c.set === set);
   return count(ownedOf(save, pool), pool.length);
 };
-const shinyCards = (save: GameSave) => Object.values(save.collection.cards).filter((v) => v.FOIL + v.PRISMATIC > 0).length;
+const shinyCards = (save: GameSave) => Object.values(save.collection.cards).filter((v) => v.FOIL + v.PRISMATIC + v.GILDED > 0).length;
 const prismaticCards = (save: GameSave) => Object.values(save.collection.cards).filter((v) => v.PRISMATIC > 0).length;
 const dragonPool = () => collectibleCards().filter((c) => c.tags?.includes('Dragon'));
 /** The four cat Legendaries of Void Reckoning. */
@@ -282,7 +282,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     progress: (s) => count(ownedOf(s, collectibleCards().filter((c) => c.rarity === 'LEGENDARY')), 30),
   },
   { id: 'prismatic_1', name: 'Prismatic Prize', description: 'Own a Prismatic card.', category: 'COLLECTION', tier: 'BRONZE', icon: 'star', rewards: [gold(100)], progress: (s) => count(prismaticCards(s), 1) },
-  { id: 'shiny_15', name: 'Shimmering Collection', description: 'Own 15 different cards in Foil or Prismatic.', category: 'COLLECTION', tier: 'SILVER', icon: 'star', rewards: [essence(200)], progress: (s) => count(shinyCards(s), 15) },
+  { id: 'shiny_15', name: 'Shimmering Collection', description: 'Own 15 different cards in Foil, Prismatic or Gilded.', category: 'COLLECTION', tier: 'SILVER', icon: 'star', rewards: [essence(200)], progress: (s) => count(shinyCards(s), 15) },
   { id: 'portraits_3', name: 'New Faces', description: 'Own 3 Warden portraits.', category: 'COLLECTION', tier: 'BRONZE', icon: 'person', rewards: [gold(150)], progress: (s) => count(s.profile.portraits.length, 3) },
   {
     id: 'portraits_all', name: 'Hall of Faces', description: 'Own every Warden portrait.', category: 'COLLECTION', tier: 'GOLD', icon: 'person', rewards: [title('Many-Faced'), essence(300)],

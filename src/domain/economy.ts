@@ -83,6 +83,7 @@ export function recycleValue(cardId: string, variant: Variant = 'NORMAL'): numbe
 export function craftCard(save: GameSave, cardId: string, variant: Variant, now: number): Result<GameSave> {
   const card = getCard(cardId);
   if (!card || !card.collectible || card.rewardOnly) return err('This card cannot be crafted.');
+  if (CRAFTING.uncraftable.includes(variant)) return err('Gilded cards cannot be crafted.');
   const cost = craftCost(cardId, variant);
   if (save.profile.essence < cost) return err('Not enough Essence.');
   let next: GameSave = {

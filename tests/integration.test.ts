@@ -53,7 +53,7 @@ describe('persistence', () => {
       decks: [{ id: 'd1', name: 'Legacy', heroFaction: 'EMBER', cards: { emb_kindling_imp: 2, gone: 1 } }],
     });
     expect(report.save.saveVersion).toBe(CURRENT_SAVE_VERSION);
-    expect(report.save.collection.cards.emb_kindling_imp).toEqual({ NORMAL: 2, FOIL: 0, PRISMATIC: 0 });
+    expect(report.save.collection.cards.emb_kindling_imp).toEqual({ NORMAL: 2, FOIL: 0, PRISMATIC: 0, GILDED: 0 });
     expect(report.save.collection.cards.not_a_card).toBeUndefined();
     expect(report.save.profile.gold).toBe(0);
     expect(report.save.decks[0].cards).toEqual({ emb_kindling_imp: 2 });
