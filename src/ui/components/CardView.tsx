@@ -7,6 +7,7 @@ import { Glyph } from './Icons';
 import { KeywordText } from './Tooltip';
 import { DEFAULT_CARD_BACK } from '@/data/cardBacks';
 import { t } from '@/i18n';
+import '@/ui/styles/gilded.css';
 
 /** Card back artwork: src/assets/cardbacks/<id>.webp */
 const BACK_ART = import.meta.glob('../../assets/cardbacks/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
@@ -176,6 +177,7 @@ export const CardView = memo(function CardView(props: CardViewProps) {
     `rarity-${card.rarity.toLowerCase()}`,
     variant === 'FOIL' ? 'card-foil' : '',
     variant === 'PRISMATIC' ? 'card-prismatic' : '',
+    variant === 'GILDED' ? 'card-gilded' : '',
     props.playable ? 'is-playable' : '',
     props.dimmed ? 'is-dimmed' : '',
     props.selected ? 'is-selected' : '',
@@ -228,6 +230,7 @@ export const CardView = memo(function CardView(props: CardViewProps) {
       <div className="card-inner">
         {variant !== 'NORMAL' && <div className="card-shine" aria-hidden />}
         {variant === 'PRISMATIC' && <div className="card-prism-frame" aria-hidden />}
+        {variant === 'GILDED' && <div className="card-gild-light" aria-hidden />}
         <div className="card-art-wrap">
           <CardArtImage card={card} />
         </div>

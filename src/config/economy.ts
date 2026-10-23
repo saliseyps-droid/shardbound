@@ -29,6 +29,13 @@ export const GILDED_PACK = {
   pityLegendary: 10,
 };
 
+/** Packs until a Legendary is guaranteed (the premium packs have a shorter timer). */
+export function legendaryPity(id: PackId): number {
+  if (id === 'PRISMATIC') return PRISMATIC_PACK.pityLegendary;
+  if (id === 'GILDED') return GILDED_PACK.pityLegendary;
+  return PACK_CONFIG.pity.LEGENDARY ?? 30;
+}
+
 /** One Prismatic Legendary from any set (unowned ones first). */
 export const PRISMATIC_LEGEND_PACK = {
   price: 5000,

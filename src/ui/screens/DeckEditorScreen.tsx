@@ -426,6 +426,11 @@ export default function DeckEditorScreen() {
                 >
                   <span className="row-cost num">{card.manaCost}</span>
                   <span className="row-name">{card.name}</span>
+                  {!!variants[card.id]?.GILDED && (
+                    <span className="row-variant is-gilded" title={t('{n} Gilded', { n: variants[card.id].GILDED! })}>
+                      ✦{variants[card.id].GILDED}
+                    </span>
+                  )}
                   {!!variants[card.id]?.PRISMATIC && (
                     <span className="row-variant is-prismatic" title={t('{n} Prismatic', { n: variants[card.id].PRISMATIC! })}>
                       ✦{variants[card.id].PRISMATIC}

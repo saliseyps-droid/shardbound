@@ -1,4 +1,4 @@
-import { GILDED_PACK, PACK_CONFIG, PREMIUM_PACK_VARIANT, PRISMATIC_PACK, isPremiumPack, type PackId } from '@/config/economy';
+import { PACK_CONFIG, PREMIUM_PACK_VARIANT, isPremiumPack, legendaryPity, type PackId } from '@/config/economy';
 import { cardsBy } from '@/data/cards';
 import type { RngState } from '@/core/rng';
 import { nextFloat, pickOne, pickWeighted } from '@/core/rng';
@@ -46,8 +46,7 @@ export function generatePack(setId: PackId, pity: PityState, owned: (cardId: str
   const packsSinceLegendary = pity.LEGENDARY + 1;
   const packsSinceEpic = pity.EPIC + 1;
   const hasAtLeast = (r: Rarity) => [...rarities, guaranteed].some((x) => rank(x) >= rank(r));
-  const legendaryPity = setId === 'PRISMATIC' ? PRISMATIC_PACK.pityLegendary : setId === 'GILDED' ? GILDED_PACK.pityLegendary : cfg.pity.LEGENDARY;
-  if (legendaryPity && packsSinceLegendary >= legendaryPity && !hasAtLeast('LEGENDARY')) guaranteed = 'LEGENDARY';
+  if (packsSinceLegendary >= legendaryPity(setId) && !hasAtLeast('LEGENDARY')) guaranteed = 'LEGENDARY';
   else if (cfg.pity.EPIC && packsSinceEpic >= cfg.pity.EPIC && !hasAtLeast('EPIC')) guaranteed = 'EPIC';
   rarities.push(guaranteed);
 

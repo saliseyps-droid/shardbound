@@ -5,6 +5,7 @@ import type { DungeonState } from './dungeon';
 import type { Difficulty } from '@/config/progression';
 import type { QuestType } from '@/config/quests';
 import type { PlayableFaction, SetId, Variant } from '@/game/types';
+import { VARIANTS } from '@/game/types';
 import type { Deck } from './decks';
 import type { RankedState } from './ranked';
 import type { AiRankedState } from './aiRanked';
@@ -200,9 +201,19 @@ export function emptyVariants(): VariantCounts {
   return { NORMAL: 0, FOIL: 0, PRISMATIC: 0, GILDED: 0 };
 }
 
+/** The most valuable variant you own a copy of (NORMAL when none). */
+export function bestOwnedVariant(v: VariantCounts | undefined): Variant {
+  return [...VARIANTS].reverse().find((k) => (v?.[k] ?? 0) > 0) ?? 'NORMAL';
+}
+
+/** Copies of every variant together. */
+export function ownedCount(v: VariantCounts): number {
+  return v.NORMAL + v.FOIL + v.PRISMATIC + v.GILDED;
+}
+
 export function ownedCopies(collection: CollectionState, cardId: string): number {
   const v = collection.cards[cardId];
-  return v ? v.NORMAL + v.FOIL + v.PRISMATIC + v.GILDED : 0;
+  return v ? ownedCount(v) : 0;
 }
 
 export function addCards(collection: CollectionState, cards: { cardId: string; variant: Variant }[]): CollectionState {

@@ -204,6 +204,7 @@
   background: linear-gradient(90deg, #ff5f6d, #ffc371, #7ef29a, #72dfe6, #b565ff);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
+.row-variant.is-gilded { color: #ffd27a; text-shadow: 0 0 6px rgba(255, 190, 80, 0.75); }
 .row-variant.is-foil { color: #d8e6ff; text-shadow: 0 0 6px rgba(160, 200, 255, 0.7); }
 .editor-actions { display: flex; gap: 4px; flex-wrap: wrap; }
 

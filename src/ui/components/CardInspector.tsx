@@ -6,13 +6,14 @@ import { KEYWORDS } from '@/data/keywords';
 import { SET_INFO } from '@/config/economy';
 import { craftCost, recycleValue } from '@/domain/economy';
 import { maxCopiesFor } from '@/domain/decks';
-import type { KeywordId, Variant } from '@/game/types';
+import { bestOwnedVariant, ownedCount } from '@/domain/save';
+import type { KeywordId } from '@/game/types';
 import { VARIANTS } from '@/game/types';
 import { CardView } from './CardView';
 import { Modal } from './common';
 import { t } from '@/i18n';
 
-const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic', GILDED: 'Gilded' };
+import { VARIANT_LABEL } from '@/ui/components/variantLabels';
 
 /** Keywords referenced by a card (static + trigger + status). */
 export function cardKeywords(cardId: string): KeywordId[] {
@@ -41,8 +42,8 @@ export function CardInspector() {
   const card = inspect ? getCard(inspect.cardId) : undefined;
   if (!inspect || !card) return null;
   const faction = FACTIONS[card.faction];
-  const variant = inspect.variant ?? (counts?.PRISMATIC ? 'PRISMATIC' : counts?.FOIL ? 'FOIL' : 'NORMAL');
-  const owned = counts ? counts.NORMAL + counts.FOIL + counts.PRISMATIC : 0;
+  const variant = inspect.variant ?? bestOwnedVariant(counts);
+  const owned = counts ? ownedCount(counts) : 0;
   const keywords = cardKeywords(card.id);
   return (
     <Modal open onClose={() => close(null)} title={card.name} wide labelledBy="inspector-title" className="inspector">

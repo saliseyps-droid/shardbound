@@ -4,7 +4,7 @@ import { err, ok, uid, type Result } from '@/core/utils';
 import { collectibleCards, getCard } from '@/data/cards';
 import { DECK_RULES } from '@/config/gameRules';
 import { LEVELS } from '@/config/progression';
-import type { PlayableFaction, SetId, Variant } from '@/game/types';
+import type { PlayableFaction, Variant } from '@/game/types';
 import { maxCopiesFor, type Deck } from '@/domain/decks';
 import { defaultBuild, type TalentPick } from '@/data/wardenTalents';
 import { acknowledgeArenaResult, chooseArenaFaction, pickArenaCard, recordArenaMatch, retireArena, setArenaTalents, startArena } from '@/domain/arena';
@@ -567,7 +567,7 @@ export class GameService {
     this.commit({ ...save, profile: { ...save.profile, [kind]: Math.max(0, save.profile[kind] + amount) } });
   }
 
-  debugGrantPacks(setId: SetId, amount: number) {
+  debugGrantPacks(setId: PackId, amount: number) {
     const save = this.require();
     this.commit({ ...save, economy: { ...save.economy, packs: { ...save.economy.packs, [setId]: Math.max(0, (save.economy.packs[setId] ?? 0) + amount) } } });
   }

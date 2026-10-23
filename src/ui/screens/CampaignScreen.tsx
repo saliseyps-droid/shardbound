@@ -1,3 +1,4 @@
+import { VARIANT_LABEL } from '@/ui/components/variantLabels';
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
@@ -51,7 +52,7 @@ function RewardList({ r, claimed }: { r: OpponentReward; claimed?: boolean }) {
       ) : null}
       {r.cardId ? (
         <span className={`chip ${r.variant && r.variant !== 'NORMAL' ? `chip-${r.variant.toLowerCase()}` : ''}`}>
-          {r.variant === 'FOIL' ? `${t('Foil')} ` : r.variant === 'PRISMATIC' ? `${t('Prismatic')} ` : ''}
+          {r.variant && r.variant !== 'NORMAL' ? `${t(VARIANT_LABEL[r.variant])} ` : ''}
           {getCardSafe(r.cardId).name}
         </span>
       ) : null}

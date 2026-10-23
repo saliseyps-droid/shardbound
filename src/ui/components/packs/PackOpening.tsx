@@ -1,3 +1,4 @@
+import { VARIANT_LABEL } from '@/ui/components/variantLabels';
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { packInfo, type PackId } from '@/config/economy';
 import { getCardSafe } from '@/data/cards';
@@ -212,7 +213,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: PackId; 
                       </span>
                       <span className="flip-face flip-front">
                         <CardView card={def} width={cardW} variant={c.variant} />
-                        {c.variant !== 'NORMAL' && <span className="variant-label">{c.variant === 'FOIL' ? t('Foil') : t('Prismatic')}</span>}
+                        {c.variant !== 'NORMAL' && <span className="variant-label">{t(VARIANT_LABEL[c.variant])}</span>}
                       </span>
                     </span>
                     {isUp && c.rarity === 'EPIC' && <span className="epic-swirl" aria-hidden />}

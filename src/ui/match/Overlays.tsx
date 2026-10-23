@@ -1,3 +1,4 @@
+import { VARIANT_LABEL } from '@/ui/components/variantLabels';
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { findPuzzle } from '@/domain/puzzles';
 import { createPortal } from 'react-dom';
@@ -498,7 +499,7 @@ export function ResultsOverlay({ game }: { game: GameState }) {
                 {l.packs ? <span className="chip">{tn(l.packs.amount, '+{n} pack', '+{n} packs')}</span> : null}
                 {l.cardId ? (
                   <button type="button" className="chip chip-card" onClick={() => useUi.getState().inspectCard(l.cardId!, l.variant)}>
-                    {l.variant === 'FOIL' ? `${t('Foil')} ` : l.variant === 'PRISMATIC' ? `${t('Prismatic')} ` : ''}
+                    {l.variant && l.variant !== 'NORMAL' ? `${t(VARIANT_LABEL[l.variant])} ` : ''}
                     {getCardSafe(l.cardId).name}
                   </button>
                 ) : null}

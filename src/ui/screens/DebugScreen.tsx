@@ -172,6 +172,9 @@ export default function DebugScreen() {
             <button className="btn btn-sm" onClick={() => gameService.debugGrantPacks('DEEP', 10)}>
               +10 Deep packs
             </button>
+            <button className="btn btn-sm" onClick={() => gameService.debugGrantPacks('GILDED', 5)}>
+              +5 Forbidden Spellbook packs
+            </button>
             <button className="btn btn-sm" onClick={() => (gameService.debugUnlockAll(), toast('All cards unlocked', 'success'))}>
               Unlock all cards
             </button>

@@ -109,7 +109,7 @@ export const UnitView = memo(function UnitView({
     ghost ? 'is-dying' : '',
     fx.some((f) => f.kind === 'damage') ? 'is-hit' : '',
     fx.some((f) => f.kind === 'summon') ? 'is-summoned' : '',
-    unit.variant === 'PRISMATIC' ? 'is-prismatic' : unit.variant === 'FOIL' ? 'is-foil' : '',
+    unit.variant === 'GILDED' ? 'is-gilded' : unit.variant === 'PRISMATIC' ? 'is-prismatic' : unit.variant === 'FOIL' ? 'is-foil' : '',
   ].join(' ');
   const status = [
     t('{name}, {atk} attack, {hp} of {max} health', { name: card.name, atk, hp, max: maxHp }),
@@ -141,7 +141,8 @@ export const UnitView = memo(function UnitView({
       <div className="unit-body">
         {unit.variant === 'PRISMATIC' && <div className="unit-prism-frame" aria-hidden />}
         <img className="unit-art" src={cardArtUri(card)} alt="" draggable={false} />
-        {unit.variant && <div className="unit-shine" aria-hidden />}
+        {unit.variant && unit.variant !== 'GILDED' && <div className="unit-shine" aria-hidden />}
+        {unit.variant === 'GILDED' && <div className="unit-gild-frame" aria-hidden />}
         {unit.frozen && <div className="unit-ice" aria-hidden />}
         {unit.corrupt && <div className="unit-corrupt" aria-hidden />}
         <div className="unit-name">{card.name}</div>

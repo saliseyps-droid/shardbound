@@ -18,10 +18,10 @@ import '@/ui/styles/shop.css';
 
 /** Newest set first. */
 const SETS = (Object.keys(SET_INFO) as SetId[]).sort((a, b) => SET_INFO[b].releaseOrder - SET_INFO[a].releaseOrder);
-/** The Prismatic packs (newest), then set packs, newest first. */
-const SHOP_PACKS: PackId[] = ['PRISMATIC_LEGEND', 'PRISMATIC', ...SETS];
+/** The premium packs (newest first), then set packs, newest first. */
+const SHOP_PACKS: PackId[] = ['GILDED', 'PRISMATIC_LEGEND', 'PRISMATIC', ...SETS];
 const RARITY_LABEL: Record<Rarity, string> = { COMMON: 'Common', RARE: 'Rare', EPIC: 'Epic', LEGENDARY: 'Legendary' };
-const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic', GILDED: 'Gilded' };
+import { VARIANT_LABEL } from '@/ui/components/variantLabels';
 
 function pct(weights: Record<string, number>, key: string) {
   const total = Object.values(weights).reduce((a, b) => a + b, 0);

@@ -1,3 +1,4 @@
+import { VARIANT_LABEL } from '@/ui/components/variantLabels';
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { getCardSafe } from '@/data/cards';
 import { maxCopiesFor } from '@/domain/decks';
@@ -72,7 +73,7 @@ export function CardRewardReveal({ cardId, variant, onDone }: { cardId: string; 
                 </span>
                 <span className="flip-face flip-front">
                   <CardView card={def} width={cardW} variant={variant} />
-                  {variant !== 'NORMAL' && <span className="variant-label">{variant === 'FOIL' ? t('Foil') : t('Prismatic')}</span>}
+                  {variant !== 'NORMAL' && <span className="variant-label">{t(VARIANT_LABEL[variant])}</span>}
                 </span>
               </span>
               {up && def.rarity === 'EPIC' && <span className="epic-swirl" aria-hidden />}

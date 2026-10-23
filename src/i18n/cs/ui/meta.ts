@@ -6,6 +6,7 @@ const d: Record<string, string> = {
   // Prismatic packs
   'No unopened packs of this kind.': 'Žádné neotevřené balíčky tohoto druhu.',
   'Prismatic pack: five Prismatic cards from every set. A Legendary at least every ten packs.': 'Prismatický balíček: pět prismatických karet ze všech setů. Legendárka nejméně v každém desátém balíčku.',
+  'Gilded pack: five Gilded cards from every set. A Legendary at least every ten packs.': 'Zlacený balíček: pět zlacených karet ze všech setů. Legendárka nejméně v každém desátém balíčku.',
   'Prismatic Legend: one Prismatic Legendary from any set, one you do not have yet whenever possible.': 'Prismatická legenda: jedna prismatická legendárka z libovolného setu, pokud možno taková, kterou ještě nemáš.',
   '1 Legendary': '1 legendárka',
   // Daily puzzle
@@ -539,7 +540,7 @@ const d: Record<string, string> = {
   'Collection and economy': 'Sbírka a ekonomika',
   'Cards discovered': 'Objevené karty',
   'Cards owned': 'Vlastněné karty',
-  'Foil and prismatic': 'Foil a prizmatické',
+  'Foil, prismatic and gilded': 'Foil, prizmatické a zlacené',
   'Packs opened': 'Otevřené boostery',
   'Cards crafted': 'Vyrobené karty',
   'Cards recycled': 'Recyklované karty',

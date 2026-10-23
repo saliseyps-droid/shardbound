@@ -538,6 +538,7 @@ label.toggle-row { cursor: pointer; }
 .enc-detail.is-nightmare .enc-portrait { filter: saturate(1.25) hue-rotate(-12deg) drop-shadow(0 0 10px rgba(255, 60, 120, 0.6)); }
 .nm-rules { background: rgba(200, 30, 90, 0.1); border-left-color: #ff5a8a; }
 .chip-foil { border-color: #9ad8ff; color: #d6f0ff; background: linear-gradient(100deg, rgba(120, 200, 255, 0.12), rgba(255, 255, 255, 0.18), rgba(120, 200, 255, 0.12)); }
+.chip-gilded { border-color: #ffd27a; color: #ffe9b0; background: linear-gradient(100deg, rgba(40, 28, 10, 0.6), rgba(210, 155, 42, 0.3)); }
 .chip-prismatic { border-color: #ff9ad8; color: #fff; background: linear-gradient(100deg, rgba(255, 90, 160, 0.22), rgba(255, 220, 90, 0.22), rgba(90, 220, 255, 0.22), rgba(170, 120, 255, 0.22)); }
 
 .frame-tile-shop { --f1: var(--gold); }

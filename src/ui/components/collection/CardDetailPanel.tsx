@@ -4,7 +4,7 @@ import { FACTIONS } from '@/data/factions';
 import { CRAFTING, SET_INFO } from '@/config/economy';
 import { craftCost, recycleValue } from '@/domain/economy';
 import { maxCopiesFor } from '@/domain/decks';
-import { emptyVariants } from '@/domain/save';
+import { bestOwnedVariant, emptyVariants, ownedCount } from '@/domain/save';
 import type { Variant } from '@/game/types';
 import { VARIANTS } from '@/game/types';
 import { gameService, useAccount } from '@/state/accountStore';
@@ -17,7 +17,7 @@ import { t, tn } from '@/i18n';
 import { useCallback, useState } from 'react';
 import { LegendShowcase } from '@/ui/match/LegendaryEntrance';
 
-export const VARIANT_LABEL: Record<Variant, string> = { NORMAL: 'Normal', FOIL: 'Foil', PRISMATIC: 'Prismatic', GILDED: 'Gilded' };
+import { VARIANT_LABEL } from '@/ui/components/variantLabels';
 
 /** Variant-specific sentences (Czech declines the variant adjective). */
 const CRAFTED: Record<Variant, string> = { NORMAL: 'Crafted normal {name}.', FOIL: 'Crafted foil {name}.', PRISMATIC: 'Crafted prismatic {name}.', GILDED: 'Crafted gilded {name}.' };
@@ -29,13 +29,7 @@ const DESTROY_ONE: Record<Variant, string> = {
 };
 const THIS_IS: Record<Variant, string> = { NORMAL: 'This is a normal copy.', FOIL: 'This is a foil copy.', PRISMATIC: 'This is a prismatic copy.', GILDED: 'This is a gilded copy.' };
 
-export function bestVariant(counts: Record<Variant, number> | undefined): Variant {
-  if (!counts) return 'NORMAL';
-  if (counts.GILDED > 0) return 'GILDED';
-  if (counts.PRISMATIC > 0) return 'PRISMATIC';
-  if (counts.FOIL > 0) return 'FOIL';
-  return 'NORMAL';
-}
+export const bestVariant = bestOwnedVariant;
 
 /** Side panel for one card: ownership per variant, crafting and recycling. */
 export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: () => void }) {
@@ -46,7 +40,7 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
   const [showcase, setShowcase] = useState(false);
   const endShowcase = useCallback(() => setShowcase(false), []);
   if (!card) return null;
-  const owned = counts.NORMAL + counts.FOIL + counts.PRISMATIC;
+  const owned = ownedCount(counts);
   const max = maxCopiesFor(card);
   const usedIn = decks.filter((d) => (d.cards[cardId] ?? 0) > 0);
   const maxUsage = usedIn.reduce((m, d) => Math.max(m, d.cards[cardId] ?? 0), 0);
@@ -146,16 +140,22 @@ export function CardDetailPanel({ cardId, onClose }: { cardId: string; onClose: 
                 </th>
                 <td className="num">{counts[v]}</td>
                 <td>
-                  <button
-                    className="btn btn-sm btn-cyan"
-                    disabled={essence < cost}
-                    onClick={() => craft(v)}
-                    aria-label={t('Craft {variant} {name} for {n} Essence', { variant: t(VARIANT_LABEL[v]), name: card.name, n: cost })}
-                    title={essence < cost ? t('Needs {n} more Essence', { n: cost - essence }) : undefined}
-                  >
-                    <EssenceIcon size={14} />
-                    {cost}
-                  </button>
+                  {CRAFTING.uncraftable.includes(v) ? (
+                    <span className="faint" title={t('Gilded cards come only from the Forbidden Spellbook pack.')}>
+                      {t('Packs only')}
+                    </span>
+                  ) : (
+                    <button
+                      className="btn btn-sm btn-cyan"
+                      disabled={essence < cost}
+                      onClick={() => craft(v)}
+                      aria-label={t('Craft {variant} {name} for {n} Essence', { variant: t(VARIANT_LABEL[v]), name: card.name, n: cost })}
+                      title={essence < cost ? t('Needs {n} more Essence', { n: cost - essence }) : undefined}
+                    >
+                      <EssenceIcon size={14} />
+                      {cost}
+                    </button>
+                  )}
                 </td>
                 <td>
                   <button

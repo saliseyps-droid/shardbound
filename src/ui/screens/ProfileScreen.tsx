@@ -8,7 +8,7 @@ import { FACTIONS } from '@/data/factions';
 import { LEVELS, MAX_LEVEL, type LevelReward } from '@/config/progression';
 import { SET_INFO } from '@/config/economy';
 import { xpToNext } from '@/domain/progression';
-import { ownedCopies } from '@/domain/save';
+import { ownedCopies, ownedCount } from '@/domain/save';
 import { PLAYABLE_FACTIONS, RARITIES, type SetId } from '@/game/types';
 import { Essence, Gold, ProgressBar, ScreenHeader } from '@/ui/components/common';
 import { Glyph } from '@/ui/components/Icons';
@@ -72,8 +72,8 @@ export default function ProfileScreen() {
   const winRate = games ? Math.round((p.wins / games) * 100) : 0;
   const all = collectibleCards();
   const unique = all.filter((c) => ownedCopies(save.collection, c.id) > 0).length;
-  const totalCopies = Object.values(save.collection.cards).reduce((a, v) => a + v.NORMAL + v.FOIL + v.PRISMATIC, 0);
-  const cosmetic = Object.values(save.collection.cards).reduce((a, v) => a + v.FOIL + v.PRISMATIC, 0);
+  const totalCopies = Object.values(save.collection.cards).reduce((a, v) => a + ownedCount(v), 0);
+  const cosmetic = Object.values(save.collection.cards).reduce((a, v) => a + v.FOIL + v.PRISMATIC + v.GILDED, 0);
   const fav = save.decks.find((d) => d.id === p.favoriteDeckId);
   // The portrait follows the Warden of the deck you play (selected, else favourite, else first).
   const playingDeck = save.decks.find((d) => d.id === p.selectedDeckId) ?? fav ?? save.decks[0];
@@ -225,7 +225,7 @@ export default function ProfileScreen() {
           <div className="collection-stats">
             <CollectionStat label={t('Cards discovered')} value={`${unique} / ${all.length}`} extra={`${Math.round((unique / all.length) * 100)}%`} />
             <CollectionStat label={t('Cards owned')} value={totalCopies} />
-            <CollectionStat label={t('Foil and prismatic')} value={cosmetic} />
+            <CollectionStat label={t('Foil, prismatic and gilded')} value={cosmetic} />
             <CollectionStat label={t('Packs opened')} value={p.packsOpened} />
             <CollectionStat label={t('Cards crafted')} value={p.cardsCrafted} />
             <CollectionStat label={t('Cards recycled')} value={p.cardsRecycled} />

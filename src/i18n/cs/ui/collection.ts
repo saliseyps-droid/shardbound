@@ -168,6 +168,7 @@ const d: Record<string, string> = {
   Prismatic: 'Prizmatická',
   Gilded: 'Zlacená',
   '{n} Prismatic': 'Prizmatické: {n}',
+  '{n} Gilded': 'Zlacené: {n}',
   '{n} Foil': 'Foil: {n}',
   'Meow!': 'Mňau!',
   Wanted: 'Hledá se',
@@ -290,6 +291,8 @@ const d: Record<string, string> = {
   'This is a foil copy.': 'Toto je foil kopie.',
   'This is a prismatic copy.': 'Toto je prizmatická kopie.',
   'This is a gilded copy.': 'Toto je zlacená kopie.',
+  'Packs only': 'Jen z balíčků',
+  'Gilded cards come only from the Forbidden Spellbook pack.': 'Zlacené karty padají jen z balíčku Forbidden Spellbook.',
   'It is used in {n} decks ({names}), which will lose a copy.':
     'Je použita v {n} balíčku ({names}), který o kopii přijde.|Je použita ve {n} balíčcích ({names}), které o kopii přijdou.|Je použita v {n} balíčcích ({names}), které o kopii přijdou.',
   'Recycle {name}?': 'Recyklovat {name}?',

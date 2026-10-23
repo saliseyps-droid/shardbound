@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { PACK_CONFIG, PRISMATIC_PACK, SET_INFO, packInfo, type PackId } from '@/config/economy';
+import { PACK_CONFIG, SET_INFO, legendaryPity, packInfo, type PackId } from '@/config/economy';
 import type { SetId } from '@/game/types';
 import { useAccount } from '@/state/accountStore';
 import { audio } from '@/audio/audioService';
@@ -12,7 +12,7 @@ import '@/ui/styles/shop.css';
 import '@/ui/styles/packs.css';
 
 /** Newest set first, like the shop. */
-const SETS: PackId[] = ['PRISMATIC_LEGEND', 'PRISMATIC', ...(Object.keys(SET_INFO) as SetId[]).sort((a, b) => SET_INFO[b].releaseOrder - SET_INFO[a].releaseOrder)];
+const SETS: PackId[] = ['GILDED', 'PRISMATIC_LEGEND', 'PRISMATIC', ...(Object.keys(SET_INFO) as SetId[]).sort((a, b) => SET_INFO[b].releaseOrder - SET_INFO[a].releaseOrder)];
 
 export default function PacksScreen() {
   const navigate = useNavigate();
@@ -44,10 +44,9 @@ export default function PacksScreen() {
       <div className="pack-inventory">
         {SETS.map((setId) => {
           const count = packs[setId] ?? 0;
-          // The Prismatic packs show only while you have some.
           const p = pity[setId] ?? { EPIC: 0, LEGENDARY: 0 };
           const epicIn = Math.max(1, (PACK_CONFIG.pity.EPIC ?? 10) - p.EPIC);
-          const legIn = Math.max(1, (setId === 'PRISMATIC' ? PRISMATIC_PACK.pityLegendary : PACK_CONFIG.pity.LEGENDARY ?? 30) - p.LEGENDARY);
+          const legIn = Math.max(1, legendaryPity(setId) - p.LEGENDARY);
           return (
             <section key={setId} className={`inventory-set panel ${count === 0 ? 'is-empty' : ''} ${highlight === setId ? 'is-highlight' : ''}`} aria-labelledby={`inv-${setId}`}>
               <button className="inventory-stack" onClick={() => count > 0 && start(setId)} disabled={count === 0} aria-label={count > 0 ? t('Open a {name} pack', { name: t(packInfo(setId).name) }) : t('No {name} packs', { name: t(packInfo(setId).name) })}>
@@ -68,7 +67,7 @@ export default function PacksScreen() {
                     <span>
                       {t('Legendary guaranteed within')} <strong className="num">{legIn}</strong> {tn(legIn, 'pack', 'packs')}
                     </span>
-                    <ProgressBar value={p.LEGENDARY} max={setId === 'PRISMATIC' ? PRISMATIC_PACK.pityLegendary : PACK_CONFIG.pity.LEGENDARY ?? 30} gold label={t('Legendary pity progress')} />
+                    <ProgressBar value={p.LEGENDARY} max={legendaryPity(setId)} gold label={t('Legendary pity progress')} />
                   </div>
                 </div>}
                 {count > 0 ? (
