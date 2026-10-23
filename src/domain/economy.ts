@@ -1,9 +1,9 @@
-import { CRAFTING, SHOP_BONUS_PACKS, SHOP_OFFERS, packInfo, type PackId } from '@/config/economy';
+import { CRAFTING, SHOP_BONUS_PACKS, SHOP_OFFERS, isPremiumPack, packInfo, type PackId } from '@/config/economy';
 import { getCardBack } from '@/data/cardBacks';
 import { getCard } from '@/data/cards';
 import type { RngState } from '@/core/rng';
 import { err, ok, type Result } from '@/core/utils';
-import type { Variant } from '@/game/types';
+import type { SetId, Variant } from '@/game/types';
 import { VARIANTS } from '@/game/types';
 import { maxCopiesFor } from './decks';
 import { generatePack, type PackCard } from './packs';
@@ -21,9 +21,9 @@ export function buyOffer(save: GameSave, offerId: string, now: number): Result<G
   const packs = { ...save.economy.packs, [offer.setId]: (save.economy.packs[offer.setId] ?? 0) + amount };
   let next: GameSave = { ...save, profile: { ...save.profile, gold: save.profile.gold - offer.price }, economy: { ...save.economy, packs } };
   const setId = offer.setId;
-  next = setId === 'PRISMATIC' || setId === 'PRISMATIC_LEGEND'
+  next = isPremiumPack(setId)
     ? pushReward(next, { source: `Purchased ${packInfo(setId).name}` }, now)
-    : pushReward(next, { source: `Purchased ${amount} pack${amount > 1 ? 's' : ''}`, packs: { setId, amount } }, now);
+    : pushReward(next, { source: `Purchased ${amount} pack${amount > 1 ? 's' : ''}`, packs: { setId: setId as SetId, amount } }, now);
   return ok(next);
 }
 

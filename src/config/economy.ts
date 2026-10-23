@@ -6,14 +6,26 @@ export const STARTING_CURRENCY = {
   packs: { CORE: 2 } as Partial<Record<SetId, number>>,
 };
 
-/** What a booster can be: a set's pack, or the Prismatic pack (every set, Prismatic cards only). */
-export type PackId = SetId | 'PRISMATIC' | 'PRISMATIC_LEGEND';
+/** What a booster can be: a set's pack, or a premium pack (every set, one variant only). */
+export type PackId = SetId | 'PRISMATIC' | 'PRISMATIC_LEGEND' | 'GILDED';
+
+/** Premium packs draw from every set and hand out a single variant. */
+export const PREMIUM_PACK_VARIANT: Partial<Record<PackId, Variant>> = { PRISMATIC: 'PRISMATIC', PRISMATIC_LEGEND: 'PRISMATIC', GILDED: 'GILDED' };
+export const isPremiumPack = (id: PackId) => id in PREMIUM_PACK_VARIANT;
 
 export const PRISMATIC_PACK = {
   price: 1000,
   name: 'Gears of Invention',
   tagline: 'Prismatic pack: five Prismatic cards from every set. A Legendary at least every ten packs.',
   /** Pity: a Legendary is guaranteed by this many packs without one. */
+  pityLegendary: 10,
+};
+
+/** Five Gilded cards from every set; Gilded cards come from nowhere else. */
+export const GILDED_PACK = {
+  price: 2500,
+  name: 'Forbidden Spellbook',
+  tagline: 'Gilded pack: five Gilded cards from every set. A Legendary at least every ten packs.',
   pityLegendary: 10,
 };
 
@@ -28,6 +40,7 @@ export const PRISMATIC_LEGEND_PACK = {
 export function packInfo(id: PackId): { name: string; tagline: string } {
   if (id === 'PRISMATIC') return { name: PRISMATIC_PACK.name, tagline: PRISMATIC_PACK.tagline };
   if (id === 'PRISMATIC_LEGEND') return { name: PRISMATIC_LEGEND_PACK.name, tagline: PRISMATIC_LEGEND_PACK.tagline };
+  if (id === 'GILDED') return { name: GILDED_PACK.name, tagline: GILDED_PACK.tagline };
   return SET_INFO[id];
 }
 
@@ -57,6 +70,7 @@ export const SHOP_OFFERS: ShopOffer[] = [
   { id: 'reckoning_5', setId: 'RECKONING', packs: 5, price: 450, label: '5 Packs', badge: 'Save 10%' },
   { id: 'reckoning_10', setId: 'RECKONING', packs: 10, price: 1000, label: '10 Packs', badge: '+2 Bonus Packs' },
   { id: 'prismatic_1', setId: 'PRISMATIC', packs: 1, price: PRISMATIC_PACK.price, label: '1 Pack' },
+  { id: 'gilded_1', setId: 'GILDED', packs: 1, price: GILDED_PACK.price, label: '1 Pack' },
   { id: 'prismatic_legend_1', setId: 'PRISMATIC_LEGEND', packs: 1, price: PRISMATIC_LEGEND_PACK.price, label: '1 Legendary' },
 ];
 

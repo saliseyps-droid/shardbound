@@ -19,12 +19,13 @@ export const PACK_THEME: Record<PackId, { a: string; b: string; c: string; glow:
   RECKONING: { a: '#b57cff', b: '#24123f', c: '#0a0614', glow: '#a45cff', emblem: '#e8b84e' },
   PRISMATIC: { a: '#9ff3ff', b: '#3a1f6a', c: '#0d0820', glow: '#c99bff', emblem: '#9ff3ff' },
   PRISMATIC_LEGEND: { a: '#ffe08a', b: '#4a2a6a', c: '#120a20', glow: '#ff9bea', emblem: '#ffe08a' },
+  GILDED: { a: '#ffe39a', b: '#2a2016', c: '#080605', glow: '#f2b84b', emblem: '#ffd27a' },
 };
 
 export const isPrismaticPack = (id: PackId) => id === 'PRISMATIC' || id === 'PRISMATIC_LEGEND';
 
 /** Pack artwork per set (src/assets/packs). */
-const PACK_ART: Record<PackId, string> = { CORE: kingdomsAtWar, DEEP: fantasyRealms, ABYSS: legionsOfShadow, DRAGON: dragonRealm, RECKONING: voidReckoning, PRISMATIC: prismaticArt, PRISMATIC_LEGEND: prismaticLegendArt };
+const PACK_ART: Record<PackId, string> = { CORE: kingdomsAtWar, DEEP: fantasyRealms, ABYSS: legionsOfShadow, DRAGON: dragonRealm, RECKONING: voidReckoning, PRISMATIC: prismaticArt, PRISMATIC_LEGEND: prismaticLegendArt, GILDED: prismaticLegendArt };
 
 export function BoosterPack({ setId, width = 180, className = '', style }: { setId: PackId; width?: number; className?: string; style?: CSSProperties }) {
   const art = PACK_ART[setId];

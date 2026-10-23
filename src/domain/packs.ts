@@ -1,4 +1,4 @@
-import { PACK_CONFIG, PRISMATIC_PACK, type PackId } from '@/config/economy';
+import { GILDED_PACK, PACK_CONFIG, PREMIUM_PACK_VARIANT, PRISMATIC_PACK, isPremiumPack, type PackId } from '@/config/economy';
 import { cardsBy } from '@/data/cards';
 import type { RngState } from '@/core/rng';
 import { nextFloat, pickOne, pickWeighted } from '@/core/rng';
@@ -46,7 +46,7 @@ export function generatePack(setId: PackId, pity: PityState, owned: (cardId: str
   const packsSinceLegendary = pity.LEGENDARY + 1;
   const packsSinceEpic = pity.EPIC + 1;
   const hasAtLeast = (r: Rarity) => [...rarities, guaranteed].some((x) => rank(x) >= rank(r));
-  const legendaryPity = setId === 'PRISMATIC' ? PRISMATIC_PACK.pityLegendary : cfg.pity.LEGENDARY;
+  const legendaryPity = setId === 'PRISMATIC' ? PRISMATIC_PACK.pityLegendary : setId === 'GILDED' ? GILDED_PACK.pityLegendary : cfg.pity.LEGENDARY;
   if (legendaryPity && packsSinceLegendary >= legendaryPity && !hasAtLeast('LEGENDARY')) guaranteed = 'LEGENDARY';
   else if (cfg.pity.EPIC && packsSinceEpic >= cfg.pity.EPIC && !hasAtLeast('EPIC')) guaranteed = 'EPIC';
   rarities.push(guaranteed);
@@ -56,7 +56,7 @@ export function generatePack(setId: PackId, pity: PityState, owned: (cardId: str
     const card = pickCard(setId, rarity, (id) => owned(id) + (inPack.get(id) ?? 0), rng);
     const before = owned(card.id) + (inPack.get(card.id) ?? 0);
     inPack.set(card.id, (inPack.get(card.id) ?? 0) + 1);
-    const variant = setId === 'PRISMATIC' ? 'PRISMATIC' : pickWeighted(rng, cfg.variantWeights);
+    const variant = PREMIUM_PACK_VARIANT[setId] ?? pickWeighted(rng, cfg.variantWeights);
     return { cardId: card.id, rarity: card.rarity, variant, isNew: before === 0 };
   });
 
@@ -69,8 +69,8 @@ export function generatePack(setId: PackId, pity: PityState, owned: (cardId: str
 }
 
 function pickCard(setId: PackId, rarity: Rarity, owned: (id: string) => number, rng: RngState): CardDefinition {
-  // The Prismatic packs draw from every set.
-  const set: SetId | undefined = setId === 'PRISMATIC' || setId === 'PRISMATIC_LEGEND' ? undefined : setId;
+  // The premium packs draw from every set.
+  const set: SetId | undefined = isPremiumPack(setId) ? undefined : (setId as SetId);
   // Fall back through rarities if a set lacks cards of the rolled rarity.
   let pool = cardsBy({ set, rarity });
   for (let r = rank(rarity); pool.length === 0 && r >= 0; r--) pool = cardsBy({ set, rarity: RARITIES[r] });
