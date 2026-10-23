@@ -19,6 +19,25 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.62.0',
+    date: '2026-10-23',
+    title: 'Gilded',
+    summary: 'A new, rarest card finish: Gilded, sold in its own pack, the Forbidden Spellbook.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Gilded cards: the art fills the whole card inside a gold frame, with a gold name and gold gems. The picture is alive: it slowly drifts and breathes inside the frame, a soft light pulses in it and a faint gold sheen crosses the card now and then. On the battlefield a Gilded unit gets a gold rim and the same living picture.',
+          'Forbidden Spellbook: a new pack in the shop for 2500 Gold. Five Gilded cards from every set, and a Legendary at least every ten packs.',
+          'Gilded cards come only from the Forbidden Spellbook. They cannot be crafted, but recycling one gives 16 times the Essence of a normal copy.',
+          'Your Gilded copies go into your decks first, before Prismatic and Foil ones, and your opponents see them too.',
+          'Gilded cards count towards the Shimmering Collection achievement.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.61.1',
     date: '2026-10-21',
     title: 'Pirates in sight',

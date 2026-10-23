@@ -1,6 +1,19 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.62.0': {
+    title: 'Zlacené',
+    summary: 'Nová, nejvzácnější úprava karet: Zlacená, ve vlastním balíčku Forbidden Spellbook.',
+    sections: [
+      [
+        'Zlacené karty: obrázek vyplňuje celou kartu ve zlatém rámečku, jméno i drahokamy jsou zlaté. Obrázek žije: pomalu v rámečku plyne a dýchá, pulzuje v něm jemné světlo a přes kartu občas přejede slabý zlatý lesk. Na bojišti má zlacená jednotka zlatý lem a stejný živý obrázek.',
+        'Forbidden Spellbook: nový balíček v obchodě za 2500 zlata. Pět zlacených karet ze všech setů a legendárka nejméně v každém desátém balíčku.',
+        'Zlacené karty padají jen z balíčku Forbidden Spellbook. Vyrobit je nejde, ale rozložení jedné dá 16krát víc esence než normální kopie.',
+        'Tvoje zlacené kopie jdou do balíčků jako první, před prizmatickými a foil, a vidí je i soupeři.',
+        'Zlacené karty se počítají do achievementu Třpytivá sbírka.',
+      ],
+    ],
+  },
   '0.61.1': {
     title: 'Piráti na dohled',
     summary: 'Pirátské desky jsou v zápasech zase vidět.',
