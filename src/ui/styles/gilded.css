@@ -13,7 +13,10 @@
   overflow: hidden;
   background: linear-gradient(135deg, #fff1b8, #d39b2a 25%, #7a4f0e 50%, #f5d27a 75%, #8c5a12);
 }
-.card.card-gilded.card-unit .card-inner { padding-bottom: 17cqw; }
+/* Clear the bottom gems (their top is 19cqw up): Attack/Health on units, Charges/Duration on relics and locations. */
+.card.card-gilded.card-unit .card-inner,
+.card.card-gilded.card-relic .card-inner,
+.card.card-gilded.card-location .card-inner { padding-bottom: 19.5cqw; }
 .card.card-gilded .card-inner::before {
   inset: 2.4cqw;
   background: #0d0a16;
