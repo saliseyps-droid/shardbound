@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.62.1',
+    date: '2026-10-23',
+    title: 'Black and gold',
+    summary: 'Gilded cards get the look they were meant to have: black and gold, and a picture you look into like a window.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'Gilded cards now have a black lacquer frame with fine gold trim, a gold name and black gems with gold numbers. The art keeps its own colours.',
+          'The picture is a window: move your pointer over a Gilded card and the art shifts towards it, with only a faint glare. Without a pointer the art drifts slowly on its own.',
+          'Gilded relics and locations: the rules text no longer hides behind the Charges or Duration gem.',
+          'On the battlefield a Gilded unit has a black rim with gold edges.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.62.0',
     date: '2026-10-23',
     title: 'Gilded',

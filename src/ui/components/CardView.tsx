@@ -92,6 +92,31 @@ export const isTouchScreen = () =>
  * Android fires `contextmenu` on a long press by itself but iOS Safari never does, so it is timed here;
  * the tap that ends a long press is swallowed so it doesn't also select or add the card.
  */
+/**
+ * Gilded cards are a window onto their art: the picture shifts towards the pointer and a faint glare
+ * follows it. Writes CSS variables straight onto the element, so moving the pointer never re-renders.
+ */
+function gildedPointer(enabled: boolean) {
+  if (!enabled) return {};
+  return {
+    onPointerMove: (e: PointerEvent<HTMLDivElement>) => {
+      const el = e.currentTarget;
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+      el.style.setProperty('--tx', String(+clamp(((e.clientX - r.left) / r.width - 0.5) * 2).toFixed(3)));
+      el.style.setProperty('--ty', String(+clamp(((e.clientY - r.top) / r.height - 0.5) * 2).toFixed(3)));
+      el.classList.add('is-pointing');
+    },
+    onPointerLeave: (e: PointerEvent<HTMLDivElement>) => {
+      const el = e.currentTarget;
+      el.classList.remove('is-pointing');
+      el.style.removeProperty('--tx');
+      el.style.removeProperty('--ty');
+    },
+  };
+}
+
 function useLongPress(onContextMenu: ((e: MouseEvent) => void) | undefined, onPointerDown: ((e: PointerEvent) => void) | undefined) {
   const timer = useRef<number | null>(null);
   const start = useRef<{ x: number; y: number } | null>(null);
@@ -220,6 +245,7 @@ export const CardView = memo(function CardView(props: CardViewProps) {
         })
       }
       {...pressHandlers}
+      {...gildedPointer(variant === 'GILDED')}
       onMouseEnter={props.onMouseEnter}
       onMouseLeave={props.onMouseLeave}
       role={props.onClick ? 'button' : 'img'}
@@ -230,7 +256,7 @@ export const CardView = memo(function CardView(props: CardViewProps) {
       <div className="card-inner">
         {variant !== 'NORMAL' && <div className="card-shine" aria-hidden />}
         {variant === 'PRISMATIC' && <div className="card-prism-frame" aria-hidden />}
-        {variant === 'GILDED' && <div className="card-gild-light" aria-hidden />}
+        {variant === 'GILDED' && <div className="card-gild-glare" aria-hidden />}
         <div className="card-art-wrap">
           <CardArtImage card={card} />
         </div>

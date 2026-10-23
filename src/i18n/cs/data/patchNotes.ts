@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.62.1': {
+    title: 'Černá a zlatá',
+    summary: 'Zlacené karty dostaly vzhled, jaký měly mít: černozlatý, s obrázkem, do kterého se díváš jako oknem.',
+    sections: [
+      [
+        'Zlacené karty mají teď černý lakovaný rámeček s jemným zlatým lemem, zlaté jméno a černé drahokamy se zlatými čísly. Obrázek si nechává své vlastní barvy.',
+        'Obrázek je okno: když nad zlacenou kartou pohneš ukazatelem, obrázek se posune za ním a zůstane jen slabý odlesk. Bez ukazatele obrázek pomalu plyne sám.',
+        'Zlacené relikvie a lokace: text už se neschovává za drahokamem s náboji nebo trváním.',
+        'Na bojišti má zlacená jednotka černý rámeček se zlatými okraji.',
+      ],
+    ],
+  },
   '0.62.0': {
     title: 'Zlacené',
     summary: 'Nová, nejvzácnější úprava karet: Zlacená, ve vlastním balíčku Forbidden Spellbook.',

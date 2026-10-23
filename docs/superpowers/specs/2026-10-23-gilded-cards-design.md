@@ -37,7 +37,11 @@ reference for this spec.
 - Animation that stutters or costs frame rate on the board: animate `transform`/`opacity` only (as `card.css` already
   does for `.card-shine`), and keep it off the main thread.
 
-## The look (from the approved mockup)
+## Update 2026-10-23 (0.62.1): the look the user actually chose
+
+The user's "dvojku" meant the second row of the final mockup page, **B: Okno do obrázku — zlatočerné** (`three-finishes-v2.html`, `.v-gild.v-live.onyx`), not the gold "Živý obraz" row that 0.62.0 shipped. 0.62.1 replaces the look: black lacquer frame with fine gold trim, gold name, black gems with a gold rim and gold numbers; the art shifts towards the pointer (window), drifts slowly on its own without one; only a faint glare follows the pointer; no pulsing light. Board units: black rim with gold edges. The sections below describe the superseded 0.62.0 look.
+
+## The look (0.62.0, superseded)
 
 **Card (`CardView`, class `card-gilded`):**
 - Full-art: the illustration fills the whole card inside a thin gold frame (no body plate, no art window shape).

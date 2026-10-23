@@ -1,8 +1,9 @@
 /* ------------------------------------------------------------------ */
-/* Gilded cards: full art in a gold frame. The card stays still; only   */
-/* the picture inside breathes (slow pan and zoom), a soft light pulses */
-/* in it and a faint gold sheen crosses now and then. Transform and     */
-/* opacity only, so it runs on the compositor.                          */
+/* Gilded cards: full art in a black lacquer frame with fine gold trim, */
+/* a gold name and black gems with gold numbers. The card stays still;  */
+/* the art is a window: it shifts towards the pointer (CardView sets    */
+/* --tx/--ty from -1 to 1) and drifts slowly on its own otherwise. Only */
+/* a faint glare follows the pointer. Transform and opacity only.       */
 /* ------------------------------------------------------------------ */
 
 .card.card-gilded .card-inner {
@@ -11,7 +12,7 @@
   justify-content: flex-end;
   padding: 2.4cqw 2.4cqw 7cqw;
   overflow: hidden;
-  background: linear-gradient(135deg, #fff1b8, #d39b2a 25%, #7a4f0e 50%, #f5d27a 75%, #8c5a12);
+  background: linear-gradient(135deg, #2a2420, #0b0908 30%, #1c1712 55%, #050404 80%, #221b14);
 }
 /* Clear the bottom gems (their top is 19cqw up): Attack/Health on units, Charges/Duration on relics and locations. */
 .card.card-gilded.card-unit .card-inner,
@@ -19,8 +20,8 @@
 .card.card-gilded.card-location .card-inner { padding-bottom: 19.5cqw; }
 .card.card-gilded .card-inner::before {
   inset: 2.4cqw;
-  background: #0d0a16;
-  box-shadow: none;
+  background: #0b0908;
+  box-shadow: inset 0 0 0 0.45cqw #f5d27a, inset 0 0 0 1.3cqw #0b0908, inset 0 0 0 1.7cqw #b07f22;
 }
 
 /* The art fills the card inside the frame, whatever the card type. */
@@ -33,48 +34,59 @@
 }
 .card.card-gilded .card-art {
   will-change: transform;
-  animation: gild-pan 14s ease-in-out infinite alternate;
+  transform: scale(1.18) translate(calc(var(--tx, 0) * -5%), calc(var(--ty, 0) * -5%));
+  transition: transform 0.25s ease-out;
+  animation: gild-drift 9s ease-in-out infinite alternate;
+}
+.card.card-gilded.is-pointing .card-art { animation: none; }
+@keyframes gild-drift {
+  0% { transform: scale(1.18) translate(2.2%, -0.5%); }
+  33% { transform: scale(1.18) translate(0.5%, -1.7%); }
+  66% { transform: scale(1.18) translate(-1.6%, 0.8%); }
+  100% { transform: scale(1.18) translate(-2.2%, 1.5%); }
 }
 /* Dark fade under the text, and the gold trim lines just inside the frame. */
 .card.card-gilded .card-art-wrap::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 42%, rgba(10, 6, 4, 0.75) 62%, rgba(10, 6, 4, 0.95));
-  box-shadow: inset 0 0 0 0.5cqw #ffe39a, inset 0 0 0 1.2cqw rgba(58, 38, 6, 0.8);
-}
-@keyframes gild-pan {
-  0% { transform: scale(1.12) translate(-3%, -2%); }
-  50% { transform: scale(1.2) translate(2%, 1%); }
-  100% { transform: scale(1.14) translate(3%, -3%); }
+  background: linear-gradient(180deg, transparent 42%, rgba(0, 0, 0, 0.8) 62%, rgba(0, 0, 0, 0.97));
+  box-shadow: inset 0 0 0 0.45cqw #f5d27a, inset 0 0 0 1.2cqw rgba(0, 0, 0, 0.85);
 }
 
-.card-gild-light {
+/* Only a hint of glare, following the pointer. */
+.card-gild-glare {
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
   mix-blend-mode: soft-light;
-  background: radial-gradient(ellipse at 50% 30%, rgba(255, 240, 200, 0.6), transparent 55%);
-  animation: gild-breathe 5s ease-in-out infinite;
+  background: radial-gradient(circle at calc(50% + var(--tx, 0) * 50%) calc(40% + var(--ty, 0) * 50%), rgba(255, 255, 255, 0.22), transparent 40%);
 }
-@keyframes gild-breathe { 50% { opacity: 0.35; } }
-
-/* A slow, low-contrast gold sheen instead of the rainbow one. */
+/* The sheen is faint and moves with the pointer instead of sweeping on its own. */
 .card.card-gilded .card-shine {
+  opacity: 0.35;
   mix-blend-mode: overlay;
-  animation-duration: 6s;
+  animation: none;
+  transform: translateX(calc(var(--tx, 0) * 30%));
+  transition: transform 0.25s ease-out;
   background: linear-gradient(105deg, transparent 44%, rgba(255, 240, 190, 0.65) 50%, transparent 56%);
 }
 
-/* Name, type line and rules text sit at the bottom, over the dark fade. */
+/* Name, type line and rules text sit at the bottom, over the dark fade, a little nearer than the art. */
+.card.card-gilded .card-name,
+.card.card-gilded .card-typeline,
+.card.card-gilded .card-text {
+  transform: translate(calc(var(--tx, 0) * 2%), calc(var(--ty, 0) * 2%));
+  transition: transform 0.25s ease-out;
+}
 .card.card-gilded .card-name {
   z-index: 3;
   margin: 0 3cqw 0.8cqw;
   padding: 0;
   background: none;
   clip-path: none;
-  font-size: 9cqw;
+  font-size: 9.4cqw;
   text-shadow: none;
   filter: drop-shadow(0 1px 1px #000);
 }
@@ -86,8 +98,8 @@
   animation: gild-name 4s linear infinite;
 }
 @keyframes gild-name { to { background-position: -200% 0; } }
-.card.card-gilded .card-typeline { z-index: 3; padding: 0 5cqw 1.2cqw; color: #e7cf95; }
-.card.card-gilded .rarity-gem { background: linear-gradient(135deg, #fff1b8, #d39b2a); box-shadow: 0 0 2cqw #ffd27a; }
+.card.card-gilded .card-typeline { z-index: 3; padding: 0 5cqw 1.2cqw; color: #d9b86a; }
+.card.card-gilded .rarity-gem { background: #0b0908; box-shadow: 0 0 0 0.5cqw #e8b04b, 0 0 2cqw rgba(255, 190, 80, 0.6); }
 .card.card-gilded .card-textbox,
 .card.card-gilded .card-watermark { display: none; }
 .card.card-gilded .card-text {
@@ -96,40 +108,51 @@
   max-height: 32%;
   margin: 0 3cqw;
   padding: 1.6cqw 1cqw 0;
-  border-top: 0.4cqw solid rgba(255, 227, 154, 0.55);
+  border-top: 0.4cqw solid rgba(232, 176, 75, 0.6);
   color: #f3e8cc;
   text-shadow: 0 1px 2px #000;
 }
 
-/* Gold gems (a changed cost keeps its green/red). */
-.card.card-gilded .card-cost:not(.cost-down):not(.cost-up) { background: linear-gradient(160deg, #fff1b8, #d39b2a 45%, #6b4207); text-shadow: 0 1px 2px #3a2606; }
-.card.card-gilded .stat-attack,
-.card.card-gilded .stat-health { background: linear-gradient(160deg, #fff1b8, #c58f2c 50%, #5a3a06); }
+/* Black gems with a gold rim and gold numbers (a changed cost keeps its green/red). */
+.card.card-gilded .card-cost:not(.cost-down):not(.cost-up),
+.card.card-gilded .card-stat {
+  background: linear-gradient(160deg, #fff1b8, #d39b2a 50%, #7a4f0e);
+  color: #ffd27a;
+  text-shadow: 0 0 6px rgba(255, 190, 80, 0.55), 0 1px 2px #000;
+}
+.card.card-gilded .card-cost:not(.cost-down):not(.cost-up)::before,
+.card.card-gilded .card-stat::before {
+  content: '';
+  position: absolute;
+  inset: 1.3cqw;
+  z-index: -1;
+  clip-path: inherit;
+  background: linear-gradient(160deg, #3a332b, #0b0908 55%, #000);
+}
 
-/* Board units: a gold rim over the art, the same breathing picture inside. */
-.unit.is-gilded .unit-body { overflow: hidden; background: #0d0a16; }
+/* Board units: a black rim with gold edges over the art, the same drifting picture inside. */
+.unit.is-gilded .unit-body { overflow: hidden; background: #0b0908; }
 .unit.is-gilded .unit-art {
   clip-path: none;
   will-change: transform;
-  animation: gild-pan 14s ease-in-out infinite alternate;
+  animation: gild-drift 9s ease-in-out infinite alternate;
 }
-.unit-gild-frame {
+.unit-gild-frame,
+.unit-gild-frame::after {
   --ft: clamp(3px, calc(var(--unit-w) * 0.05), 6px);
   position: absolute; inset: 0; pointer-events: none;
   clip-path: polygon(50% 0, 100% 14%, 100% 86%, 50% 100%, 0 86%, 0 14%, var(--ft) 15%, var(--ft) 85%, 50% calc(100% - var(--ft)), calc(100% - var(--ft)) 85%, calc(100% - var(--ft)) 15%, 50% var(--ft), var(--ft) 15%, 0 14%);
-  background: linear-gradient(135deg, #fff1b8, #d39b2a 30%, #7a4f0e 55%, #f5d27a 80%, #8c5a12);
 }
+.unit-gild-frame { background: linear-gradient(135deg, #f5d27a, #b07f22 50%, #f5d27a); }
+.unit-gild-frame::after { content: ''; --ft: clamp(2px, calc(var(--unit-w) * 0.035), 4px); inset: 1px; background: #0b0908; }
 
-/* Performance mode and reduced motion: a still gilded card. */
+/* Performance mode and reduced motion: the art stays still unless the pointer moves it. */
 .performance-mode .card.card-gilded .card-art,
-.performance-mode .card-gild-light,
 .performance-mode .card.card-gilded .card-name span,
 .performance-mode .unit.is-gilded .unit-art { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .card.card-gilded .card-art,
-  .card-gild-light,
   .card.card-gilded .card-name span,
-  .card.card-gilded .card-shine,
   .unit.is-gilded .unit-art { animation: none; }
   .card.card-gilded .card-shine { display: none; }
 }
