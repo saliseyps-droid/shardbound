@@ -464,6 +464,13 @@ html:not([data-input='touch']) .hand.is-hidden-hand:has(.hand-card:hover) .hand-
   transform: translateX(calc(-50% + var(--o) * var(--spread))) scale(1.45);
   transform-origin: 50% 100%;
 }
+/* The lifted card leaves the spot it rested in; this bridge keeps the hover while the pointer is still
+   there, so a card held near its lower edge does not drop and rise again in a loop. */
+.hand-card:hover::after {
+  content: ''; position: absolute; left: 0; right: 0; top: 100%;
+  height: calc(var(--card-w) * 0.16);
+  pointer-events: auto;
+}
 .hand-card.is-dragging { opacity: 0.25; }
 /* The card inside flies in, not the .hand-card wrapper: the wrapper (which takes the taps) is in its
    slot from the start, so a just-drawn card can be played during the animation. */
