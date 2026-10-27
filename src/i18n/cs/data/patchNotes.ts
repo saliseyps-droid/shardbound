@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.68.0': {
+    title: 'Jiskry na stole',
+    summary: 'Zásahy, léčení i smrt se na 3D stole teď odehrávají ve 3D.',
+    sections: [
+      [
+        '3D stůl: každý zásah rozhodí po stole jiskry a záblesk světla, léčení a posílení stoupají jako zářící světélka a čísla vyplouvají nahoru čelem k tobě, i nad Wardeny.',
+        'Jednotka, která zemře, se roztříští na kusy své karty, které se kutálejí po stole. Vyvolaná jednotka dopadne na stůl a útočící karta skočí obloukem na svůj cíl.',
+        'Každá líznutá karta vyletí z vršku balíčku směrem k ruce a silné zásahy nebo zásahy do Wardena stolem trochu otřesou.',
+      ],
+    ],
+  },
   '0.67.0': {
     title: 'Karty na stole',
     summary: 'Na 3D stole jsou teď jednotky, Wardeni, balíčky i energie skutečné předměty.',

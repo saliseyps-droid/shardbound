@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 import type { GameState } from '@/engine/types';
+import { useMatch } from '@/state/matchStore';
 import { MAT, PLANE } from './tableCamera';
 import { coverUv, energyColors, pileCards } from './bodyRules';
+import { arcHeight } from './effectRules';
+import type { Effects } from './effects';
 
 /**
  * The 3D bodies on the table (WebGL), following the match DOM laid onto the mat: a thick card for
@@ -57,7 +60,7 @@ const percent = (v: string | undefined, fallback: number) => {
   return Number.isFinite(n) ? n : fallback;
 };
 
-export function createBodies(scene: THREE.Scene): Bodies {
+export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
   const owned: { dispose(): void }[] = [];
   const keep = <T extends { dispose(): void }>(x: T) => (owned.push(x), x);
   // One texture per picture (from the browser cache, as the DOM already shows it); null until loaded.
@@ -129,6 +132,10 @@ export function createBodies(scene: THREE.Scene): Bodies {
     h: number;
     art: string;
     lift: number;
+    /** 1 → 0 while a just-summoned card drops onto the table. */
+    drop: number;
+    key: string;
+    at: THREE.Vector3;
     seen: boolean;
   }
   const units = new Map<HTMLElement, UnitBody>();
@@ -152,14 +159,15 @@ export function createBodies(scene: THREE.Scene): Bodies {
     g.add(slab, face);
     const shadow = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.7, h * 1.6), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
     scene.add(shadow, g);
-    return { g, face, shadow, w, h, art: '', lift: 0, seen: true };
+    return { g, face, shadow, w, h, art: '', lift: 0, drop: 0, key: '', at: new THREE.Vector3(), seen: true };
   };
 
   // ---- Warden plinths.
   const heroes = new Map<string, THREE.Mesh>();
 
   // ---- Card piles.
-  interface Pile { g: THREE.Group; n: number; url: string; w: number }
+  interface Pile { g: THREE.Group; n: number; url: string; w: number; face: THREE.Texture }
+  const deckCounts = new Map<string, number>();
   const piles = new Map<string, Pile>();
   const dropPile = (p: Pile) => {
     scene.remove(p.g);
@@ -203,8 +211,18 @@ export function createBodies(scene: THREE.Scene): Bodies {
     return toMat(r.left + r.width / 2, r.top + r.height / 2);
   };
 
+  // The WAAPI lunge matchStore plays on an attacking unit (CSS animations are CSSAnimation): its progress.
+  const lungeProgress = (el: HTMLElement) => {
+    const a = el.getAnimations().find((x) => !('animationName' in x));
+    const d = Number(a?.effect?.getTiming().duration);
+    return a && d ? Number(a.currentTime) / d : 0;
+  };
+  let last = 0;
+
   return {
     update(plane, toMat, game, t) {
+      const dt = Math.min(0.05, last ? t - last : 0);
+      last = t;
       // Units (a dying unit's ghost keeps its flat DOM art for the death animation, so no body).
       for (const u of units.values()) u.seen = false;
       plane.querySelectorAll<HTMLElement>('.unit:not(.is-dying)').forEach((el) => {
@@ -215,10 +233,13 @@ export function createBodies(scene: THREE.Scene): Bodies {
         let b = units.get(el);
         if (!b || Math.abs(b.w - w) > 1e-3 || Math.abs(b.h - h) > 1e-3) {
           if (b) dropUnit(b);
+          const fresh = !b;
           b = makeUnit(w, h, !!el.closest('.enemy-side'));
+          if (fresh && el.classList.contains('is-summoned')) b.drop = 1;
           units.set(el, b);
         }
         b.seen = true;
+        b.key = el.dataset.entity ?? b.key;
         const img = el.querySelector<HTMLImageElement>('.unit-art');
         const art = img?.src ?? '';
         const loaded = art && art !== b.art ? image(art) : null;
@@ -240,12 +261,18 @@ export function createBodies(scene: THREE.Scene): Bodies {
         m.opacity = el.classList.contains('has-ambush') ? 0.55 : 1;
         const up = el.matches(':hover') || el.classList.contains('is-selected') ? 1 : 0;
         b.lift += (up - b.lift) * 0.2;
-        b.g.position.set(p.x, p.y, MAT.top + 0.01 + b.lift * 0.16);
+        b.drop = Math.max(0, b.drop - dt * 2.2);
+        const z = MAT.top + 0.01 + b.lift * 0.16 + b.drop * b.drop * 1.4 + arcHeight(lungeProgress(el));
+        b.g.position.set(p.x, p.y, z);
+        b.at.set(p.x, p.y, z);
         b.shadow.position.set(p.x + b.lift * 0.08, p.y + b.lift * 0.08, MAT.top + 0.004);
         b.shadow.scale.setScalar(1 + b.lift * 0.15);
       });
+      // Units that died (the store keeps their ghosts for the death animation) shatter; others just go.
+      const dead = new Set(useMatch.getState().ghosts.map((g) => `u:${g.unit.uid}`));
       for (const [k, u] of units)
         if (!u.seen) {
+          if (dead.has(u.key)) effects.shatter(u.face.material.map, u.w, u.h, u.at);
           dropUnit(u);
           units.delete(k);
         }
@@ -277,7 +304,8 @@ export function createBodies(scene: THREE.Scene): Bodies {
         const key = el.dataset.drawPile!;
         const p = centre(el.querySelector('.draw-pile-stack') ?? el, toMat);
         if (!p) return;
-        const n = pileCards(game?.players[Number(key)]?.deck.length ?? 0);
+        const count = game?.players[Number(key)]?.deck.length ?? 0;
+        const n = pileCards(count);
         const src = el.querySelector<HTMLImageElement>('.card-back-img')?.src;
         const backTex = src ? image(src) : null;
         // The default back until the design's picture has loaded (then the pile is rebuilt with it).
@@ -297,10 +325,19 @@ export function createBodies(scene: THREE.Scene): Bodies {
             g.add(c);
           }
           scene.add(g);
-          pile = { g, n, url, w };
+          pile = { g, n, url, w, face };
           piles.set(key, pile);
         }
         pile.g.position.set(p.x, p.y, MAT.top);
+        // A card drawn: its back flies off the pile towards the owner's hand.
+        const before = deckCounts.get(key);
+        deckCounts.set(key, count);
+        if (before !== undefined && count < before && n > 0) {
+          const handEl = document.querySelector(key === '0' ? '.match .self-screen .hand' : '.table3d-plane .enemy-hand');
+          const r = handEl?.getBoundingClientRect();
+          const to = r && toMat(r.left + r.width / 2, r.top + r.height / 2);
+          if (to) effects.flyCard(pile.face, w, new THREE.Vector3(p.x, p.y, MAT.top + 0.06 + n * 0.045), to.setZ(MAT.top + (key === '0' ? 1.5 : 0.3)));
+        }
       });
 
       // Energy crystals, one per DOM crystal, in the owner's faction colours.

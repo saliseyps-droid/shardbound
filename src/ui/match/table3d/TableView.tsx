@@ -1,8 +1,10 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { useMatch } from '@/state/matchStore';
+import { useSettings } from '@/state/settingsStore';
 import { buildTableScene } from './TableScene3D';
 import { createBodies } from './bodies';
+import { createEffects } from './effects';
 import { MAT, PLANE, cameraCss, placeCamera, planeCss, type CameraState } from './tableCamera';
 import '@/ui/styles/table3d.css';
 
@@ -27,6 +29,7 @@ const ZOOM_MAX = 3;
 export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnavailable }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fxCanvasRef = useRef<HTMLCanvasElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
   const camRef = useRef<HTMLDivElement>(null);
   const planeRef = useRef<HTMLDivElement>(null);
@@ -37,8 +40,10 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
     const root = rootRef.current!;
     const canvas = canvasRef.current!;
     let renderer: THREE.WebGLRenderer;
+    let fxRenderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      fxRenderer = new THREE.WebGLRenderer({ canvas: fxCanvasRef.current!, antialias: true, alpha: true });
     } catch {
       failRef.current();
       return;
@@ -49,8 +54,16 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
     renderer.toneMappingExposure = 1.45;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    fxRenderer.setPixelRatio(renderer.getPixelRatio());
+    fxRenderer.outputColorSpace = THREE.SRGBColorSpace;
+    fxRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+    fxRenderer.toneMappingExposure = 1.45;
+    fxRenderer.setClearColor(0x000000, 0);
     const table = buildTableScene(boardUrl, warm);
-    const bodies = createBodies(table.scene);
+    const effects = createEffects(table.scene);
+    const bodies = createBodies(table.scene, effects);
+    // Dev server only: lets a browser check fire effects on demand.
+    if (import.meta.env.DEV) Object.assign(window, { __table3d: { useMatch, useSettings } });
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 600);
     planeRef.current!.style.transform = planeCss();
 
@@ -60,6 +73,7 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
     const resize = () => {
       view = { width: root.clientWidth || 1, height: root.clientHeight || 1 };
       renderer.setSize(view.width, view.height, false);
+      fxRenderer.setSize(view.width, view.height, false);
     };
     const ro = new ResizeObserver(resize);
     ro.observe(root);
@@ -132,6 +146,13 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
       state.panX += (target.panX - state.panX) * k;
       state.panY += (target.panY - state.panY) * k;
       placeCamera(camera, view, state);
+      // Heavy hits tremble the camera (the CSS plane follows, since it is computed from the same camera).
+      const shake = effects.shake();
+      if (shake.x || shake.y) {
+        camera.position.x += shake.x;
+        camera.position.y += shake.y;
+        camera.updateMatrixWorld();
+      }
       const css = cameraCss(camera, view);
       viewRef.current!.style.perspective = css.perspective;
       viewRef.current!.style.perspectiveOrigin = css.origin;
@@ -139,9 +160,12 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
       camRef.current!.style.transformOrigin = css.origin;
       camRef.current!.style.transform = css.transform;
       // The bodies follow the plane's DOM, so they read it after this frame's camera is written.
-      bodies.update(planeRef.current!, matPoint, useMatch.getState().game, clock.elapsedTime);
+      const m = useMatch.getState();
+      bodies.update(planeRef.current!, matPoint, m.game, clock.elapsedTime);
+      effects.update(planeRef.current!, matPoint, m.fx, dt);
       table.update(clock.elapsedTime, dt);
       renderer.render(table.scene, camera);
+      fxRenderer.render(effects.scene, camera);
     };
     frame = requestAnimationFrame(tick);
     root.style.setProperty('--tilt', String(TILT));
@@ -155,8 +179,10 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
       window.removeEventListener('pointerup', onUp);
       match.removeEventListener('dblclick', onDbl);
       bodies.dispose();
+      effects.dispose();
       table.dispose();
       renderer.dispose();
+      fxRenderer.dispose();
     };
   }, [boardUrl, warm]);
 
@@ -170,6 +196,7 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
           </div>
         </div>
       </div>
+      <canvas className="table3d-canvas table3d-fx" ref={fxCanvasRef} aria-hidden />
     </div>
   );
 }

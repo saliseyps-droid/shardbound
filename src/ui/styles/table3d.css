@@ -71,3 +71,9 @@
 .table3d-plane .draw-pile-slot { visibility: hidden; }
 .table3d-plane .energy-crystals { gap: 4px; }
 .table3d-plane .crystal { visibility: hidden; width: 22px; height: 30px; }
+
+/* From 0.68.0 the effects are drawn in 3D (effects.ts): sparks, flashes and the numbers floating up
+   facing the camera; the flat numbers on the plane would only lie foreshortened under them. */
+.table3d-plane .fx-layer { display: none; }
+/* A dead unit shatters in 3D; its flat ghost would only show under the shards. */
+.table3d-plane .unit.is-dying { visibility: hidden; }

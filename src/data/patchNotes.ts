@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.68.0',
+    date: '2026-10-28',
+    title: 'Sparks on the table',
+    summary: 'Hits, heals and deaths on the 3D table now happen in 3D.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          '3D table: every hit throws sparks and a flash of light across the table, heals and buffs rise as glowing motes, and the numbers float up facing you, also over the Wardens.',
+          'A unit that dies shatters into pieces of its card that tumble across the table. A summoned unit drops onto the table, and an attacking card leaps at its target in an arc.',
+          'Every card drawn flies off the top of its deck towards the hand, and heavy hits or hits on a Warden shake the table a little.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.67.0',
     date: '2026-10-28',
     title: 'Cards on the table',
