@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.67.0': {
+    title: 'Karty na stole',
+    summary: 'Na 3D stole jsou teď jednotky, Wardeni, balíčky i energie skutečné předměty.',
+    sections: [
+      [
+        '3D stůl: každá jednotka leží na stole jako silná karta se zlatou hranou a celým svým obrázkem a trochu se zvedne, když na ni ukážeš. Útok, Životy a ikonky schopností na ní zůstávají; celou kartu si přečteš v bočním panelu, když na jednotku najedeš.',
+        'Tvůj Warden stojí na zlatém podstavci, oba balíčky jsou skutečné hromádky rubů karet, které se líznutím zmenšují, a energie je řada vysokých broušených krystalů zářících barvou tvé frakce.',
+        'Stráž, Bariéra, zmražení i záře připravené, vybrané a zaměřitelné jednotky kopírují na stole tvar karet.',
+      ],
+    ],
+  },
   '0.66.0': {
     title: '3D stůl na vyzkoušení',
     summary: 'Zápasy se teď dají hrát na 3D stole. Ve výchozím stavu je vypnutý a ještě se na něm pracuje.',

@@ -41,3 +41,33 @@
 /* The 2D / 3D switch in the match. */
 .table3d-toggle { font: 700 var(--t-xs) var(--font-body); letter-spacing: 0.04em; min-width: 34px; }
 .table3d-toggle[aria-pressed='true'] { color: var(--gold-bright); box-shadow: inset 0 0 0 1px var(--gold); }
+
+/* From 0.67.0 WebGL draws the bodies (TableView → bodies.ts): units as thick cards with their whole
+   art, Warden plinths, piles of card backs, cut energy crystals. The DOM above them keeps the
+   numbers, keyword icons, statuses and effects, and stays the hit target. Units are rectangles here,
+   so the hexagon cut-outs of the 2D board become rounded rectangles. */
+.table3d-plane .unit { filter: none !important; transition: none; }
+.table3d-plane .unit:hover,
+.table3d-plane .unit:focus-visible,
+.table3d-plane .unit.is-selected { transform: none; }
+.table3d-plane .unit-body { clip-path: none; background: none; padding: 0; border-radius: 7px; }
+.table3d-plane .unit:not(.is-dying) :is(.unit-art, .unit-name, .unit-shine, .unit-prism-frame, .unit-gild-frame) { visibility: hidden; }
+.table3d-plane .unit.is-dying .unit-name { display: none; }
+.table3d-plane .has-ambush .unit-body { opacity: 1; filter: none; }
+.table3d-plane :is(.unit-ice, .unit-corrupt, .unit-barrier) { clip-path: none; border-radius: 9px; mix-blend-mode: normal; }
+.table3d-plane .unit-ice { opacity: 0.6; }
+.table3d-plane .unit-corrupt { opacity: 0.4; }
+.table3d-plane .unit-barrier { background: radial-gradient(ellipse 80% 70% at 50% 45%, transparent 55%, rgba(255, 226, 140, 0.35) 82%, rgba(255, 244, 200, 0.85) 100%); box-shadow: 0 0 14px rgba(255, 214, 110, 0.8); }
+.table3d-plane .unit-guard-plate { clip-path: none; background: none; border: var(--gt) solid #c9c1ad; border-radius: 11px; box-shadow: inset 0 0 0 1px #6d6656, 0 0 0 1px #6d6656; }
+.table3d-plane .unit-frost { clip-path: none; background: none; border: var(--ft) solid #bfe9ff; border-radius: 11px; box-shadow: 0 0 10px rgba(150, 220, 255, 0.85); }
+/* State glows as a ring around the card instead of a drop-shadow of the hexagon. */
+.table3d-plane .unit.is-ready .unit-body { box-shadow: 0 0 0 2px var(--heal), 0 0 14px rgba(126, 242, 154, 0.7); }
+.table3d-plane .unit.is-selected .unit-body { box-shadow: 0 0 0 2px var(--cyan), 0 0 18px var(--cyan); }
+.table3d-plane .unit.is-targetable .unit-body { box-shadow: 0 0 0 2px var(--damage), 0 0 16px rgba(255, 107, 90, 0.8); }
+.match.is-targeting .table3d-plane .unit:not(.is-targetable):not(.is-selected) .unit-body { background: rgba(0, 0, 0, 0.4); }
+/* Both decks are the same real size on the table (2D draws yours bigger, as nearer). */
+.table3d-plane .draw-pile { --pile-w: 92px !important; }
+.table3d-plane .draw-pile-card,
+.table3d-plane .draw-pile-slot { visibility: hidden; }
+.table3d-plane .energy-crystals { gap: 4px; }
+.table3d-plane .crystal { visibility: hidden; width: 22px; height: 30px; }

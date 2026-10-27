@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.67.0',
+    date: '2026-10-28',
+    title: 'Cards on the table',
+    summary: 'On the 3D table, units, Wardens, decks and energy are now real objects.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          '3D table: every unit lies on the table as a thick card with a gold edge showing its whole picture, and rises a little when you point at it. Attack, Health and keyword icons stay on it; point at a unit to read the full card in the side panel.',
+          'Your Warden stands on a gold plinth, both decks are real piles of card backs that shrink as you draw, and your energy is a row of tall cut crystals glowing in the colour of your faction.',
+          'Guard, Barrier, Freeze and the ready, selected and target glows follow the shape of the cards on the table.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.66.0',
     date: '2026-10-27',
     title: 'A 3D table to try',

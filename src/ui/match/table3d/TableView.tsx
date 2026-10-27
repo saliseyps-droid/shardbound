@@ -1,6 +1,8 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import * as THREE from 'three';
+import { useMatch } from '@/state/matchStore';
 import { buildTableScene } from './TableScene3D';
+import { createBodies } from './bodies';
 import { MAT, PLANE, cameraCss, placeCamera, planeCss, type CameraState } from './tableCamera';
 import '@/ui/styles/table3d.css';
 
@@ -48,6 +50,7 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     const table = buildTableScene(boardUrl, warm);
+    const bodies = createBodies(table.scene);
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 600);
     planeRef.current!.style.transform = planeCss();
 
@@ -135,6 +138,8 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
       // The camera transform turns about the same point the perspective looks from.
       camRef.current!.style.transformOrigin = css.origin;
       camRef.current!.style.transform = css.transform;
+      // The bodies follow the plane's DOM, so they read it after this frame's camera is written.
+      bodies.update(planeRef.current!, matPoint, useMatch.getState().game, clock.elapsedTime);
       table.update(clock.elapsedTime, dt);
       renderer.render(table.scene, camera);
     };
@@ -149,6 +154,7 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
       match.removeEventListener('dblclick', onDbl);
+      bodies.dispose();
       table.dispose();
       renderer.dispose();
     };
