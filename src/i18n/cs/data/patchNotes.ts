@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.64.0': {
+    title: 'Balíčky se otevírají ve 3D',
+    summary: 'Otevření balíčku je teď malé kouzlo: balíček se roztočí, vybuchne a karty k tobě vyletí po spirále.',
+    sections: [
+      [
+        'Balíček se vznáší ve 3D jako lesklá fólie, po které přejíždí světlo.',
+        'Když ho otevřeš, točí se čím dál rychleji, nasává jiskry, smrští se do zářícího bodu a vybuchne. Karty vyletí po spirále, každá se stopou v barvě své vzácnosti, a dopadnou před tebe.',
+        'Než kartu otočíš, prozradí její vzácnost zářící rámeček: modrý u vzácné, fialový se stoupajícími částicemi u epické a zlatý u legendárky, za kterou se točí sluneční paprsky, krouží kolem ní žhavé jiskry a čas od času z ní vyjde zlatá vlna.',
+        'Ve výkonovém režimu, s omezenými animacemi nebo tam, kde 3D grafika není dostupná, se balíčky otevírají jako dřív.',
+      ],
+    ],
+  },
   '0.63.0': {
     title: 'Roztříštěná koruna',
     summary: 'Na Home se teď za tlačítkem Play vznáší Roztříštěná koruna.',

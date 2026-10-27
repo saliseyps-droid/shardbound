@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.64.0',
+    date: '2026-10-27',
+    title: 'Packs open in 3D',
+    summary: 'Opening a pack is now a little spell: the pack spins up, bursts, and the cards spiral out to you.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'The pack floats in 3D, a glossy foil with light gliding over it.',
+          'Open it and it spins faster and faster, draws in sparks, shrinks into a point of light and bursts. The cards spiral out, each with a trail in its rarity colour, and land in front of you.',
+          'Before you turn a card, a glowing rim shows its rarity: blue for Rare, purple for Epic with rising motes, and gold for a Legendary, with turning sun rays behind it, embers circling it and a golden wave now and then.',
+          'In performance mode, with reduced motion, or where 3D graphics are not available, packs open as before.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.63.0',
     date: '2026-10-27',
     title: 'The Sundered Crown',

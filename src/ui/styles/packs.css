@@ -60,6 +60,16 @@ html:not([data-input='touch']) .inventory-stack:not(:disabled):hover .stack-0 { 
 }
 @keyframes stage-rotate { to { transform: rotate(360deg); } }
 
+/* 3D opening (PackScene3D): the canvas sits behind the page; the 2D pack only marks where the 3D one floats. */
+.pack-scene-3d { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.pack-center, .pack-cards, .pack-controls { position: relative; z-index: 1; }
+.with-3d .pack-hero { visibility: hidden; }
+.pack-cards.staging, .pack-controls.staging { visibility: hidden; }
+/* The 3D cards land on a straight row; the real cards take over without dealing in again. */
+.pack-cards.from-3d .pack-slot { animation: none; transform: none; }
+/* An unturned Legendary stands a little forward, its 3D rays behind it. */
+.pack-cards.from-3d .pack-slot.rarity-legendary:not(.is-up) .flip-card { transform: translateY(-10px) scale(1.04); }
+
 .pack-center { grid-row: 1 / span 2; display: grid; justify-items: center; gap: var(--space-4); }
 .pack-open-btn { position: relative; background: none; border: 0; padding: 0; cursor: pointer; }
 .pack-open-btn:focus-visible { outline: none; filter: drop-shadow(0 0 16px var(--cyan)); }

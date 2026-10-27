@@ -26,7 +26,7 @@ export const PACK_THEME: Record<PackId, { a: string; b: string; c: string; glow:
 export const isPrismaticPack = isPremiumPack;
 
 /** Pack artwork per set (src/assets/packs). */
-const PACK_ART: Record<PackId, string> = { CORE: kingdomsAtWar, DEEP: fantasyRealms, ABYSS: legionsOfShadow, DRAGON: dragonRealm, RECKONING: voidReckoning, PRISMATIC: prismaticArt, PRISMATIC_LEGEND: prismaticLegendArt, GILDED: gildedArt };
+export const PACK_ART: Record<PackId, string> = { CORE: kingdomsAtWar, DEEP: fantasyRealms, ABYSS: legionsOfShadow, DRAGON: dragonRealm, RECKONING: voidReckoning, PRISMATIC: prismaticArt, PRISMATIC_LEGEND: prismaticLegendArt, GILDED: gildedArt };
 
 export function BoosterPack({ setId, width = 180, className = '', style }: { setId: PackId; width?: number; className?: string; style?: CSSProperties }) {
   const art = PACK_ART[setId];

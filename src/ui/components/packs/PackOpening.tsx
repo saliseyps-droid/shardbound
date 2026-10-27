@@ -1,5 +1,5 @@
 import { VARIANT_LABEL } from '@/ui/components/variantLabels';
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { packInfo, type PackId } from '@/config/economy';
 import { getCardSafe } from '@/data/cards';
 import { maxCopiesFor } from '@/domain/decks';
@@ -11,14 +11,21 @@ import { gameService, useAccount } from '@/state/accountStore';
 import { anim, useSettings } from '@/state/settingsStore';
 import { toast, useUi } from '@/state/uiStore';
 import { audio, type SoundEvent } from '@/audio/audioService';
-import { CardBack, CardView, isTouchScreen } from '@/ui/components/CardView';
+import { CardBack, CardView, cardBackUrl, isTouchScreen } from '@/ui/components/CardView';
 import { Essence } from '@/ui/components/common';
-import { BoosterPack, PACK_THEME } from './BoosterPack';
+import { BoosterPack, PACK_ART, PACK_THEME } from './BoosterPack';
 import { packCardWidth, packHeroWidth } from './packLayout';
 import { t, tn } from '@/i18n';
 import { LegendShowcase } from '@/ui/match/LegendaryEntrance';
 
 type Phase = 'intro' | 'opening' | 'reveal' | 'summary';
+
+/** The 3D opening loads Three.js only when it is used; without WebGL the 2D opening stays. */
+const PackScene3D = lazy(() =>
+  import('./PackScene3D').catch(() => ({ default: (() => null) as unknown as typeof import('./PackScene3D').default })),
+);
+/** 'pending' while the 3D scene loads, 'ready' once it shows the pack, 'off' for the 2D opening. */
+type Scene3D = 'pending' | 'ready' | 'off';
 
 const REVEAL_SOUND: Record<Rarity, SoundEvent> = { COMMON: 'reveal', RARE: 'rareReveal', EPIC: 'epicReveal', LEGENDARY: 'legendaryReveal' };
 const RARITY_LABEL: Record<Rarity, string> = { COMMON: 'Common', RARE: 'Rare', EPIC: 'Epic', LEGENDARY: 'Legendary' };
@@ -50,6 +57,10 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: PackId; 
   const endShowcase = useCallback(() => setShowcase(null), []);
   const [freshReveal, setFreshReveal] = useState<number | null>(null);
   const reducedMotion = useSettings((s) => s.reducedMotion);
+  const performanceMode = useSettings((s) => s.performanceMode);
+  const [scene3d, setScene3d] = useState<Scene3D>(() => (reducedMotion || performanceMode ? 'off' : 'pending'));
+  const [packHover, setPackHover] = useState(false);
+  const slotRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const collection = useAccount((s) => s.save?.collection);
   const cardBack = useAccount((s) => s.save?.profile.cardBack);
   const remaining = useAccount((s) => s.save?.economy.packs[setId] ?? 0);
@@ -82,8 +93,21 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: PackId; 
     setRevealed(res.value.map(() => false));
     setPhase('opening');
     audio.play('packOpen');
-    later(() => setPhase('reveal'), anim(1250));
-  }, [phase, setId, onClose]);
+    // The 3D opening moves on to the reveal when its cards have landed (onLanded); if the 3D scene
+    // was not ready yet when the pack was opened, this pack opens in 2D.
+    if (scene3d !== 'ready') {
+      setScene3d('off');
+      later(() => setPhase('reveal'), anim(1250));
+    }
+  }, [phase, setId, onClose, scene3d]);
+  const landed = useCallback(() => setPhase('reveal'), []);
+  const ready3d = useCallback(() => setScene3d((s) => (s === 'pending' ? 'ready' : s)), []);
+  const off3d = useCallback(() => setScene3d('off'), []);
+  const packRect = useCallback(() => openBtn.current?.getBoundingClientRect() ?? null, []);
+  const slotRects = useCallback(() => slotRefs.current.map((el) => el?.getBoundingClientRect() ?? null), []);
+  const with3d = scene3d === 'ready';
+  // With 3D the card row is laid out (hidden) while the cards fly, so they can land on it.
+  const showRow = phase === 'reveal' || phase === 'summary' || (with3d && phase === 'opening');
 
   const revealedRef = useRef<boolean[]>([]);
   revealedRef.current = revealed;
@@ -158,16 +182,34 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: PackId; 
 
   return (
     <div
-      className={`pack-stage phase-${phase} ${legendFx ? 'legend-shake' : ''}`}
+      className={`pack-stage phase-${phase} ${legendFx ? 'legend-shake' : ''} ${with3d ? 'with-3d' : ''}`}
       style={{ '--pack-glow': theme.glow, '--pack-a': theme.a, '--pack-card-w': `${cardW}px` } as CSSProperties}
       role="dialog"
       aria-modal="true"
       aria-label={t('Opening a {name} pack', { name: t(packInfo(setId).name) })}
     >
       <div className="pack-stage-bg" aria-hidden />
-      {(phase === 'intro' || phase === 'opening') && (
+      {scene3d !== 'off' && (
+        <Suspense fallback={null}>
+          <PackScene3D
+            packArt={PACK_ART[setId]}
+            glow={theme.glow}
+            cardBack={cardBackUrl(cardBack)}
+            stage={phase}
+            rarities={cards.map((c) => c.rarity)}
+            revealed={revealed}
+            hover={packHover}
+            packRect={packRect}
+            slotRects={slotRects}
+            onReady={ready3d}
+            onLanded={landed}
+            onUnavailable={off3d}
+          />
+        </Suspense>
+      )}
+      {(phase === 'intro' || (phase === 'opening' && !with3d)) && (
         <div className="pack-center">
-          <button ref={openBtn} className="pack-open-btn" onClick={open} disabled={phase !== 'intro'} aria-label={t('Open the pack')}>
+          <button ref={openBtn} className="pack-open-btn" onClick={open} disabled={phase !== 'intro'} aria-label={t('Open the pack')} onMouseEnter={() => setPackHover(true)} onMouseLeave={() => setPackHover(false)}>
             <BoosterPack setId={setId} width={packHeroWidth(cardW, window.innerHeight)} className="pack-hero" />
             {phase === 'opening' && (
               <>
@@ -187,9 +229,9 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: PackId; 
         </div>
       )}
 
-      {(phase === 'reveal' || phase === 'summary') && (
+      {showRow && (
         <>
-          <ol className="pack-cards" aria-label={t('Pack contents')}>
+          <ol className={`pack-cards ${with3d ? 'from-3d' : ''} ${phase === 'opening' ? 'staging' : ''}`} aria-label={t('Pack contents')} aria-hidden={phase === 'opening'}>
             {cards.map((c, i) => {
               const isUp = revealed[i];
               const def = getCardSafe(c.cardId);
@@ -202,6 +244,9 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: PackId; 
                   style={{ '--i': i } as CSSProperties}
                 >
                   <button
+                    ref={(el) => {
+                      slotRefs.current[i] = el;
+                    }}
                     className="flip-card"
                     onClick={() => (isUp ? inspect(c.cardId, c.variant) : reveal(i))}
                     aria-label={isUp ? `${def.name}, ${t(RARITY_LABEL[c.rarity])}${c.isNew ? t(', new') : ''}. ${t('Open details')}` : t('Reveal card {n}', { n: i + 1 })}
@@ -235,7 +280,7 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: PackId; 
             })}
           </ol>
 
-          <div className="pack-controls">
+          <div className={`pack-controls ${phase === 'opening' ? 'staging' : ''}`}>
             {phase === 'reveal' && !allRevealed && (
               <>
                 <span className="muted">{touch ? t('Tap a card to reveal it') : t('Click a card to reveal it')}</span>
