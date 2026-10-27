@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.63.0',
+    date: '2026-10-27',
+    title: 'The Sundered Crown',
+    summary: 'The Sundered Crown now hovers behind the Play button on Home.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Home: the Sundered Crown floats behind the Play button in 3D. Its crystal points turn slowly, its core glows, one point is missing and two have broken loose, and small shards keep breaking off and drifting away.',
+          'The crown takes the colours of your deck’s faction; without a deck it is a pale Aether blue on a gold band.',
+          'In performance mode or with reduced motion the crown stands still.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.62.2',
     date: '2026-10-23',
     title: 'Whole gems',

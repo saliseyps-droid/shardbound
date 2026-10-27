@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAccount } from '@/state/accountStore';
 import { launchMatch } from '@/state/matchLaunch';
@@ -25,10 +26,18 @@ import { CampaignNewsBanners } from '@/ui/components/meta/CampaignNewsBanner';
 import { t, tn } from '@/i18n';
 import { FramedSlot } from '@/ui/components/WardenFrame';
 import { activeFrame } from '@/domain/frames';
+import { useSettings } from '@/state/settingsStore';
+import { crownColors, crownMotion } from '@/ui/components/home/crownConfig';
+
+/** Three.js loads with the crown only; if it fails to load, Home just shows the Play button. */
+const SunderedCrown = lazy(() =>
+  import('@/ui/components/home/SunderedCrown').catch(() => ({ default: (() => null) as unknown as typeof import('@/ui/components/home/SunderedCrown').default })),
+);
 
 export default function HomeScreen() {
   const save = useAccount((s) => s.save);
   const navigate = useNavigate();
+  const motion = useSettings((s) => crownMotion(s));
   if (!save) return null;
   const p = save.profile;
   const deck = save.decks.find((d) => d.id === p.selectedDeckId) ?? save.decks.find((d) => d.favorite) ?? save.decks[0];
@@ -71,13 +80,18 @@ export default function HomeScreen() {
           </div>
         </div>
 
-        <button className="play-shard" onClick={() => (audio.play('click'), navigate('/play'))} aria-label={t('Play a match')}>
-          <svg className="play-shard-hex" viewBox="0 0 100 115.5" aria-hidden>
-            <polygon className="play-hex-hit" points="50,2 98,29.5 98,86 50,113.5 2,86 2,29.5" />
-            <polygon className="play-hex-inner" points="50,8.5 92.5,33 92.5,82.5 50,107 7.5,82.5 7.5,33" />
-          </svg>
-          <span className="play-shard-label">{t('Play')}</span>
-        </button>
+        <div className="play-stage">
+          <Suspense fallback={null}>
+            <SunderedCrown {...crownColors(faction)} motion={motion} />
+          </Suspense>
+          <button className="play-shard" onClick={() => (audio.play('click'), navigate('/play'))} aria-label={t('Play a match')}>
+            <svg className="play-shard-hex" viewBox="0 0 100 115.5" aria-hidden>
+              <polygon className="play-hex-hit" points="50,2 98,29.5 98,86 50,113.5 2,86 2,29.5" />
+              <polygon className="play-hex-inner" points="50,8.5 92.5,33 92.5,82.5 50,107 7.5,82.5 7.5,33" />
+            </svg>
+            <span className="play-shard-label">{t('Play')}</span>
+          </button>
+        </div>
 
         <div className="home-deck">
           <span className="faint">{t('Your deck')}</span>

@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.63.0': {
+    title: 'Roztříštěná koruna',
+    summary: 'Na Home se teď za tlačítkem Play vznáší Roztříštěná koruna.',
+    sections: [
+      [
+        'Home: za tlačítkem Play se ve 3D vznáší Roztříštěná koruna. Její krystalové zuby se pomalu otáčejí, jádro září, jeden zub chybí a dva se uvolnily a z koruny se neustále odlamují drobné Střepy, které odplouvají pryč.',
+        'Koruna má barvy frakce tvého balíčku; bez balíčku je světle modrá jako Aether, na zlaté obroučce.',
+        'Ve výkonovém režimu a s omezenými animacemi koruna stojí.',
+      ],
+    ],
+  },
   '0.62.2': {
     title: 'Celé drahokamy',
     summary: 'Drahokamy útoku a životů už nejsou useknuté a Thornpelt Packmother ukazuje tlamu.',
