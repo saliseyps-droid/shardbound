@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.65.0': {
+    title: 'Portál',
+    summary: 'Legendárky bez vlastního vstupu teď přicházejí portálem.',
+    sections: [
+      [
+        'Když zahraješ legendárku bez vlastního vstupu, bojiště ztichne a otevře se kruhový portál se zlatou obroučkou a vírem energie v barvách její frakce. Uvnitř je její obraz, do kterého tě to vtáhne, a její jméno ve zlatě. Pak se portál zavře jako clona.',
+        'Přehraje se v zápasech i při otočení legendárky z balíčku. Draci a legendárky s vlastním vstupem si nechávají svůj.',
+        'Ve výkonovém režimu, s omezenými animacemi nebo tam, kde 3D grafika není dostupná, se přehraje zlatý vstup jako dřív.',
+      ],
+    ],
+  },
   '0.64.0': {
     title: 'Balíčky se otevírají ve 3D',
     summary: 'Otevření balíčku je teď malé kouzlo: balíček se roztočí, vybuchne a karty k tobě vyletí po spirále.',

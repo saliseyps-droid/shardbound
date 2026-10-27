@@ -1522,3 +1522,40 @@
 .jd-flash { position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, #fff, rgba(255, 245, 215, 0.9) 35%, rgba(255, 220, 140, 0.35) 65%, transparent); opacity: 0; animation: lk-flash 0.8s 2.15s ease-out forwards; }
 .jd-rain { position: absolute; inset: 0; }
 .jd-mote { position: absolute; left: calc(var(--x) * 100%); top: -3%; width: calc(2px + var(--s) * 5px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #fff, #ffd76a 60%, transparent); box-shadow: 0 0 8px #ffd76a; opacity: 0; animation: vh-fall calc(1.4s + var(--s) * 0.8s) calc(2.15s + var(--d) * 1.2s) linear forwards; }
+
+/* The Portal: the entrance of Legendaries without one of their own (3D window, LegendPortal3D).
+   ≈3.5s: the board goes quiet, the portal opens on the art, the name shows, the portal closes. */
+.legend-portal {
+  position: fixed; inset: 0 var(--sidebar-w, 0px) 0 0; z-index: 300;
+  pointer-events: none; overflow: hidden;
+}
+.lp-hush {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.92) 70%);
+  animation: lp-hush 3.5s ease-in-out both;
+}
+@keyframes lp-hush { 0% { opacity: 0; } 14%, 90% { opacity: 1; } 100% { opacity: 0; } }
+.lp-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.lp-title {
+  position: absolute; left: 0; right: 0; top: 70%;
+  display: grid; justify-items: center; text-align: center;
+  animation: lp-title 3.5s ease-out both;
+}
+@keyframes lp-title {
+  0%, 29% { opacity: 0; transform: translateY(14px); }
+  42%, 78% { opacity: 1; transform: none; }
+  86%, 100% { opacity: 0; transform: none; }
+}
+.lp-kicker {
+  font: 700 clamp(13px, 1.5vw, 20px) var(--font-num); letter-spacing: 0.45em; text-transform: uppercase;
+  color: var(--f1); text-shadow: 0 0 12px var(--f1);
+}
+.lp-name {
+  margin-top: 6px; font: 700 clamp(38px, 6vw, 88px) / 1 var(--font-display);
+  background: linear-gradient(100deg, #8c5a12 0%, #ffe39a 20%, #fff8dc 26%, #d39b2a 34%, #8c5a12 50%, #ffe39a 70%, #fff8dc 76%, #d39b2a 84%, #8c5a12 100%) 0 0 / 200% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 4px 10px #000);
+  animation: lp-sweep 3s linear infinite;
+}
+@keyframes lp-sweep { to { background-position: -200% 0; } }
+.lp-sub { margin-top: 8px; font-style: italic; color: var(--parchment-dim); font-size: clamp(14px, 1.3vw, 18px); }

@@ -44,8 +44,13 @@ export const ENTRANCE_PORTRAITS: Record<string, string> = {
 };
 
 /** How long an entrance plays (ms, before reduced-motion scaling): the Arbiter's is the longest, then Sali's and Azgaroth's. */
-export function legendDuration(cardId: string): number {
+/** The Portal (3D) that replaces the golden entrance where it can play. */
+export const PORTAL_MS = 3500;
+
+/** How long an entrance plays (ms, before reduced-motion scaling); `portal`: the Portal plays for golden ones. */
+export function legendDuration(cardId: string, portal = false): number {
   const t = legendTheme(cardId);
+  if (t === 'gold' && portal) return PORTAL_MS;
   return t === 'arbiter' ? 3800 : t === 'sali' || t === 'azgaroth' ? 3400 : t === 'azrafel' ? 2500 : 2150;
 }
 
@@ -53,6 +58,31 @@ export function legendDuration(cardId: string): number {
 export function heroReplaced(events: GameEvent[]): { player: PlayerId; cardId: string } | null {
   for (const e of events) if (e.type === 'HERO_REPLACED') return { player: e.player, cardId: e.cardId };
   return null;
+}
+
+/** The Portal plays unless the player wants less motion, and only with WebGL. */
+export function portalAllowed(s: { performanceMode: boolean; reducedMotion: boolean }, webgl: boolean): boolean {
+  return webgl && !s.performanceMode && !s.reducedMotion;
+}
+
+let webglCache: boolean | null = null;
+/** Whether this browser can draw WebGL (checked once). */
+export function hasWebGL(): boolean {
+  if (webglCache === null) {
+    try {
+      const c = document.createElement('canvas');
+      webglCache = !!(c.getContext('webgl2') ?? c.getContext('webgl'));
+    } catch {
+      webglCache = false;
+    }
+  }
+  return webglCache;
+}
+
+/** "Nhal, the Silent Hymn" -> title "Nhal" and epithet "the Silent Hymn". */
+export function portalTitle(name: string): { title: string; sub: string } {
+  const i = name.indexOf(',');
+  return i < 0 ? { title: name, sub: '' } : { title: name.slice(0, i).trim(), sub: name.slice(i + 1).trim() };
 }
 
 export function legendTheme(cardId: string): LegendTheme {

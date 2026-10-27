@@ -44,3 +44,34 @@ describe('legendary entrance', () => {
     expect(legendTheme('emb_ignivar')).toBe('gold');
   });
 });
+
+describe('the Portal entrance for Legendaries without their own', () => {
+  it('replaces the golden entrance and lasts longer when it plays', async () => {
+    const { legendDuration, PORTAL_MS } = await import('@/ui/match/legendEntrance');
+    expect(legendTheme('vod_nhal')).toBe('gold');
+    expect(legendDuration('vod_nhal', true)).toBe(PORTAL_MS);
+    expect(legendDuration('vod_nhal', false)).toBe(2150);
+  });
+
+  it('leaves dragons and the special entrances alone', async () => {
+    const { legendDuration } = await import('@/ui/match/legendEntrance');
+    const dragon = 'emb_pyraxis_ashen_sovereign';
+    expect(legendTheme(dragon)).toBe('dragon');
+    expect(legendDuration(dragon, true)).toBe(2150);
+    expect(legendDuration('neu_meowchick', true)).toBe(2150);
+  });
+
+  it('splits a Legendary name into a title and its epithet', async () => {
+    const { portalTitle } = await import('@/ui/match/legendEntrance');
+    expect(portalTitle('Nhal, the Silent Hymn')).toEqual({ title: 'Nhal', sub: 'the Silent Hymn' });
+    expect(portalTitle('Simba')).toEqual({ title: 'Simba', sub: '' });
+  });
+
+  it('only plays where motion is wanted', async () => {
+    const { portalAllowed } = await import('@/ui/match/legendEntrance');
+    expect(portalAllowed({ performanceMode: false, reducedMotion: false }, true)).toBe(true);
+    expect(portalAllowed({ performanceMode: true, reducedMotion: false }, true)).toBe(false);
+    expect(portalAllowed({ performanceMode: false, reducedMotion: true }, true)).toBe(false);
+    expect(portalAllowed({ performanceMode: false, reducedMotion: false }, false)).toBe(false);
+  });
+});

@@ -20,7 +20,7 @@ import { sanitizeRating } from '@/domain/ranked';
 import { validateDeck } from '@/domain/decks';
 import { gameService, useAccount } from './accountStore';
 import { anim, useSettings } from './settingsStore';
-import { bigSpell, heroReplaced, legendDuration, legendEntrance } from '@/ui/match/legendEntrance';
+import { bigSpell, hasWebGL, heroReplaced, legendDuration, legendEntrance, portalAllowed } from '@/ui/match/legendEntrance';
 import { toast } from './uiStore';
 import { useMatchLaunch, type MatchConfig } from './matchLaunch';
 import { setLastMatchLog } from '@/ui/match/matchLog';
@@ -318,7 +318,7 @@ export const useMatch = create<MatchStore>((set, get) => {
       if (entrance) {
         set({ legend: { ...entrance, id: fxSeq++ } });
         audio.play('legendaryReveal');
-        await sleep(anim(legendDuration(entrance.cardId)));
+        await sleep(anim(legendDuration(entrance.cardId, portalAllowed(useSettings.getState(), hasWebGL()))));
         set({ legend: null });
       } else if (spell) {
         set({ spellFx: { ...spell, id: fxSeq++ } });

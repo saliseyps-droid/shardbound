@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.65.0',
+    date: '2026-10-27',
+    title: 'The Portal',
+    summary: 'Legendaries without an entrance of their own now arrive through a portal.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'When a Legendary without its own entrance is played, the board goes quiet and a round portal tears open, framed in gold with energy swirling in its faction’s colours. Inside is the Legendary’s art, drawing you in, with its name in gold. Then the portal closes like an iris.',
+          'It plays in matches and when you turn a Legendary from a pack. Dragons and the Legendaries with their own entrance keep theirs.',
+          'In performance mode, with reduced motion, or where 3D graphics are not available, the golden entrance plays as before.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.64.0',
     date: '2026-10-27',
     title: 'Packs open in 3D',

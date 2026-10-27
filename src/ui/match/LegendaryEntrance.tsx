@@ -1,13 +1,19 @@
-import { useEffect, type CSSProperties, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import { useMatch, AI } from '@/state/matchStore';
 import { cardArtUri } from '@/ui/components/cardArt';
-import { ENTRANCE_PORTRAITS, dragonElement, legendDuration, legendTheme, type LegendTheme } from './legendEntrance';
+import { ENTRANCE_PORTRAITS, dragonElement, hasWebGL, legendDuration, legendTheme, portalAllowed, portalTitle, type LegendTheme } from './legendEntrance';
 import { portraitUrl } from '@/ui/components/WardenPortrait';
 import { audio } from '@/audio/audioService';
-import { anim } from '@/state/settingsStore';
+import { anim, useSettings } from '@/state/settingsStore';
+
+/** The Portal entrance's 3D part; Three.js loads with it only. */
+const LegendPortal3D = lazy(() =>
+  import('./LegendPortal3D').catch(() => ({ default: (() => null) as unknown as typeof import('./LegendPortal3D').default })),
+);
+const portalOn = () => portalAllowed(useSettings.getState(), hasWebGL());
 import { t } from '@/i18n';
 import '@/ui/styles/legendary.css';
 import saliThrone from '@/assets/cinematics/sali_throne.webp';
@@ -868,7 +874,7 @@ export function LegendaryEntrance() {
 export function LegendShowcase({ cardId, onDone }: { cardId: string; onDone: () => void }) {
   useEffect(() => {
     audio.play('legendaryReveal');
-    const id = setTimeout(onDone, anim(legendDuration(cardId)));
+    const id = setTimeout(onDone, anim(legendDuration(cardId, portalOn())));
     return () => clearTimeout(id);
   }, [cardId, onDone]);
   // Portalled to the body: a panel with a transform would otherwise trap the fixed overlay inside it.
@@ -896,6 +902,29 @@ export function LegendaryEntranceView({ cardId, enemy }: { cardId: string; enemy
   const extras = EXTRAS[theme] ?? {};
   const faction = FACTIONS[card.faction] ?? FACTIONS.NEUTRAL;
   const art = (ENTRANCE_PORTRAITS[cardId] && portraitUrl(null, ENTRANCE_PORTRAITS[cardId])) || cardArtUri(card);
+  // Legendaries without an entrance of their own open the Portal (unless 3D cannot play here).
+  const [portalFailed, setPortalFailed] = useState(false);
+  if (theme === 'gold' && !portalFailed && portalOn()) {
+    const { title, sub } = portalTitle(card.name);
+    return (
+      <div
+        className={`legend-portal ${enemy ? 'from-enemy' : 'from-self'}`}
+        style={{ '--f1': faction.colors.primary, '--fglow': faction.colors.glow } as CSSProperties}
+        role="status"
+        aria-label={t('{who} played {card}', { who: enemy ? t('Opponent') : t('You'), card: card.name })}
+      >
+        <div className="lp-hush" />
+        <Suspense fallback={null}>
+          <LegendPortal3D art={art} color={faction.colors.primary} glow={faction.colors.glow} onUnavailable={() => setPortalFailed(true)} />
+        </Suspense>
+        <div className="lp-title">
+          <span className="lp-kicker">{t('Legendary')}</span>
+          <strong className="lp-name">{title}</strong>
+          {sub && <span className="lp-sub">{sub}</span>}
+        </div>
+      </div>
+    );
+  }
   return (
     <div
       className={`legend-entrance theme-${theme} ${theme === 'dragon' ? `el-${dragonElement(cardId)}` : ''} ${enemy ? 'from-enemy' : 'from-self'}`}
