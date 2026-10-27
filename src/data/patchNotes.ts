@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.66.0',
+    date: '2026-10-27',
+    title: 'A 3D table to try',
+    summary: 'Matches can now be played on a 3D table. It is off by default and still being built.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          '3D table: the board lies as a mat on a wooden table in a dim room, its carving catching the light of a lantern, flickering candles and a lamp that follows your pointer. Everything plays exactly as before: drag cards onto the table, attack, target.',
+          'Turn it on in Settings (3D table) or with the 2D / 3D button in the bottom-left corner of a match. Zoom in with the mouse wheel towards the pointer, pan with the middle button, double-click the table to see all of it again.',
+          'It stays 2D in performance mode, with reduced motion and on phones. Cards, Wardens and effects get their own 3D look in the next versions.',
+        ],
+      },
+      { kind: 'fixed', items: ['A card in your hand held near its lower edge no longer flickers up and down.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.65.0',
     date: '2026-10-27',
     title: 'The Portal',

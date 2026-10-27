@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.66.0': {
+    title: '3D stůl na vyzkoušení',
+    summary: 'Zápasy se teď dají hrát na 3D stole. Ve výchozím stavu je vypnutý a ještě se na něm pracuje.',
+    sections: [
+      [
+        '3D stůl: deska leží jako podložka na dřevěném stole v šeré místnosti a její řezba chytá světlo lucerny, mihotavých svíček a lampy, která jde za tvým kurzorem. Hraje se úplně stejně jako dřív: karty táhneš na stůl, útočíš, vybíráš cíle.',
+        'Zapneš ho v Nastavení (3D stůl) nebo tlačítkem 2D / 3D v levém dolním rohu zápasu. Kolečkem myši přiblížíš místo pod kurzorem, prostředním tlačítkem posouváš a dvojklikem na stůl ho uvidíš zase celý.',
+        'V úsporném režimu, s omezenými animacemi a na telefonech zůstává 2D. Karty, Wardeni a efekty dostanou vlastní 3D podobu v dalších verzích.',
+      ],
+      ['Karta v ruce, kterou držíš u spodního okraje, už necuká nahoru a dolů.'],
+    ],
+  },
   '0.65.0': {
     title: 'Portál',
     summary: 'Legendárky bez vlastního vstupu teď přicházejí portálem.',

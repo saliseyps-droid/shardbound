@@ -109,6 +109,12 @@ export default function SettingsScreen() {
           <div className="panel-title">{t('Display and accessibility')}</div>
           <Toggle label={t('Reduced motion')} hint={t('Minimises animations and screen movement.')} checked={s.reducedMotion} onChange={(v) => set({ reducedMotion: v })} />
           <Toggle label={t('Performance mode')} hint={t('Disables blur and animated foil effects.')} checked={s.performanceMode} onChange={(v) => set({ performanceMode: v })} />
+          <Toggle
+            label={t('3D table')}
+            hint={s.performanceMode || s.reducedMotion ? t('Matches stay 2D in performance mode and with reduced motion.') : t('Plays matches on a 3D table. Still in progress.')}
+            checked={s.table3d}
+            onChange={(v) => set({ table3d: v })}
+          />
           {document.fullscreenEnabled && <Toggle label={t('Fullscreen')} checked={fullscreen} onChange={() => void toggleFullscreen()} />}
           <div className="toggle-row">
             <label htmlFor="lang">{t('Language')}</label>

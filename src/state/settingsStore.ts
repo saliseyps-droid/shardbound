@@ -13,6 +13,8 @@ export interface Settings {
   reducedMotion: boolean;
   confirmEndTurn: boolean;
   performanceMode: boolean;
+  /** Matches on the 3D table (per device; off by default). */
+  table3d: boolean;
   turnTimer: boolean;
   language: string;
   showDamageNumbers: boolean;
@@ -32,6 +34,7 @@ export const DEFAULT_SETTINGS: Settings = {
   reducedMotion: false,
   confirmEndTurn: false,
   performanceMode: false,
+  table3d: false,
   turnTimer: true,
   language: 'en',
   showDamageNumbers: true,

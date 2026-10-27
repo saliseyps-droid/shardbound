@@ -1,0 +1,43 @@
+/* The 3D table (src/ui/match/table3d): the WebGL room behind the play area, and the on-table DOM laid
+   onto the mat by TableView (perspective on .table3d-view, the camera matrix on .table3d-cam, the
+   plane's matrix on .table3d-plane). Only the plane takes pointer events. */
+.table3d {
+  position: absolute; inset: 0 var(--sidebar-w) 0 0; z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.table3d-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.table3d-view { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.table3d-cam { position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; }
+
+/* The plane: fixed pixel sizes (the board's own px, not the window's), laid out like the mockup:
+   the opponent's Warden at the far edge, the two rows, your Warden at the near edge, piles on the right. */
+.table3d-plane {
+  position: absolute; left: 0; top: 0;
+  pointer-events: auto;
+  --unit-w: 150px;
+  --unit-h: calc(var(--unit-w) * 1.22);
+  display: grid;
+  grid-template-rows: 210px minmax(0, 1fr) 210px;
+  padding: 0 170px;
+}
+.table3d-plane > .side,
+.table3d-plane > .battlefield { grid-area: auto; min-height: 0; }
+.table3d-plane .enemy-side { padding-top: 0; }
+.table3d-plane .self-side { justify-content: center; }
+.table3d-plane .hero-area { top: 50%; transform: translate(-50%, -50%); }
+/* Your Warden a little further up the table, clear of the hand. */
+.table3d-plane .self-side .hero-area { top: 34%; }
+.table3d-plane .hero { width: 150px; }
+.table3d-plane .draw-pile-anchor { left: auto; right: -110px; }
+/* The opponent's hand lies on the far edge of the table, as in the mockup. */
+.table3d-plane .enemy-hand { top: -18px; }
+
+/* The screen-space part of your side (hand, End turn) keeps its place in the grid. */
+.match.is-3d > .self-screen { grid-area: self; }
+.match.is-3d > .self-screen .hero-area,
+.match.is-3d > .self-screen .draw-pile-anchor { display: none; }
+
+/* The 2D / 3D switch in the match. */
+.table3d-toggle { font: 700 var(--t-xs) var(--font-body); letter-spacing: 0.04em; min-width: 34px; }
+.table3d-toggle[aria-pressed='true'] { color: var(--gold-bright); box-shadow: inset 0 0 0 1px var(--gold); }

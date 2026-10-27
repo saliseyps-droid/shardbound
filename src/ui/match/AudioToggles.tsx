@@ -1,11 +1,14 @@
 import { useSettings } from '@/state/settingsStore';
 import { t } from '@/i18n';
+import { table3dAllowed, table3dEnv } from './table3d/table3dRules';
 
 /** Two small switches (fixed label + aria-pressed = on; the tooltip names the action) in the bottom-left corner of the board: music on top, sound effects below. */
 export function AudioToggles() {
   const musicMuted = useSettings((s) => s.musicMuted);
   const sfxMuted = useSettings((s) => s.sfxMuted);
   const update = useSettings((s) => s.update);
+  const table3d = useSettings((s) => s.table3d);
+  const can3d = useSettings((s) => table3dAllowed({ ...s, table3d: true }, table3dEnv()));
   return (
     <div className="audio-toggles">
       <button
@@ -36,6 +39,18 @@ export function AudioToggles() {
           {sfxMuted ? <path d="M16 9l6 6M22 9l-6 6" /> : <path d="M15.5 8.5a5 5 0 010 7M19 5a10 10 0 010 14" />}
         </svg>
       </button>
+      {can3d && (
+        <button
+          type="button"
+          className="icon-btn audio-toggle table3d-toggle"
+          aria-pressed={table3d}
+          aria-label={t('3D table')}
+          title={table3d ? t('Switch to the 2D board') : t('Switch to the 3D table')}
+          onClick={() => update({ table3d: !table3d })}
+        >
+          {table3d ? '3D' : '2D'}
+        </button>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type PointerEvent as RPointerEvent } from 'react';
 import { findPuzzle } from '@/domain/puzzles';
 import { findBrawlFight } from '@/domain/brawl';
 import '@/ui/styles/brawl.css';
@@ -33,6 +33,10 @@ import { pickBoardBackground } from './boardBackgrounds';
 import { AnimatedBoard } from './AnimatedBoard';
 import { campaignOf } from '@/data/opponents';
 import '@/ui/styles/board.css';
+import { table3dAllowed, table3dEnv } from './table3d/table3dRules';
+
+/** The 3D table (Three.js) loads only when it is turned on; until then, and if it fails, the board is 2D. */
+const TableView = lazy(() => import('./table3d/TableView').catch(() => ({ default: (() => null) as unknown as typeof import('./table3d/TableView').default })));
 
 interface Drag {
   kind: 'card' | 'attack';
@@ -163,6 +167,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const version = useMatch((s) => s.version);
   const config = useMatch((s) => s.config);
   const confirmEnd = useSettings((s) => s.confirmEndTurn);
+  const want3d = useSettings((s) => table3dAllowed(s, table3dEnv()));
+  const [failed3d, setFailed3d] = useState(false);
   const cardW = useViewportCardWidth();
   const t = useT();
   const startedAt = useMatch((s) => s.startedAt);
@@ -470,6 +476,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   };
 
   const handCount = me.hand.length;
+  const show3d = want3d && !failed3d && !!boardBg?.url;
   const draggingCard = drag?.active && drag.kind === 'card' ? me.hand.find((c) => c.uid === drag.uid) : undefined;
   const peekCard = peek !== null && !drag?.active ? me.hand.find((c) => c.uid === peek) : undefined;
   const peekW = Math.round(Math.min(220, window.innerHeight * 0.44));
@@ -499,7 +506,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
 
   return (
     <div
-      className={`match ${myTurn ? 'my-turn' : 'their-turn'} ${selection ? 'is-targeting' : ''} ${coop ? 'is-coop' : ''}`}
+      className={`match ${myTurn ? 'my-turn' : 'their-turn'} ${selection ? 'is-targeting' : ''} ${coop ? 'is-coop' : ''} ${show3d ? 'is-3d' : ''}`}
       style={boardBg ? ({ '--board-bg': `url(${boardBg.url})`, '--board-dim': boardBg.dim } as CSSProperties) : undefined}
       ref={boardRef}
       onContextMenu={(e) => {
@@ -554,11 +561,15 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         }, LONG_PRESS_MS);
       }}
     >
+      {!show3d && (
       <div className={`board-mat ${boardBg?.fit === 'contain' ? 'is-whole' : ''}`} aria-hidden>
         {boardBg?.fit === 'contain' && <div className="board-mat-whole" />}
         {boardBg?.key && <AnimatedBoard board={boardBg.key} game={game} fit={boardBg.fit} />}
       </div>
-      {/* ---- Enemy side ---- */}
+      )}
+      {/* ---- Enemy side, battlefield, your Warden: on the 3D table, or the 2D board ---- */}
+      {(() => {
+        const enemySide = (
       <section className="side enemy-side" aria-label={t('Opponent')}>
         <div
           className={`enemy-hand ${handTapped === AI ? 'show-count' : ''}`}
@@ -599,7 +610,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         </div>
       </section>
 
-      {/* ---- Battlefield ---- */}
+        );
+        const battlefield = (
       <section className={`battlefield ${coop ? 'is-coop' : ''}`} aria-label={t('Battlefield')}>
         {renderRow(AI)}
         <div className="battle-divider" aria-hidden>
@@ -622,8 +634,10 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         {renderRow(HUMAN)}
       </section>
 
-      {/* ---- Player side ---- */}
-      <section className="side self-side" aria-label={t('You')} style={{ '--card-w': `${cardW}px` } as CSSProperties}>
+        );
+        const selfStyle = { '--card-w': `${cardW}px` } as CSSProperties;
+        const selfTable: ReactNode = (
+          <>
         <div className="hero-area hero-self-area">
           <div className="hero-col-left">
             <PermanentsRow game={game} player={HUMAN} onHover={setHoverCard} />
@@ -641,6 +655,10 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         <div className="draw-pile-anchor">
           <DrawPile count={me.deck.length} label="your deck" player={HUMAN} width={Math.round(cardW * 1.24)} design={me.hero.cardBack} />
         </div>
+          </>
+        );
+        const selfHand: ReactNode = (
+          <>
         <div
           className={`hand ${spectating ? 'is-hidden-hand' : ''} ${handTapped === HUMAN ? 'show-count' : ''}`}
           data-tutorial="hand"
@@ -731,7 +749,36 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           </div>
         </div>
         )}
-      </section>
+          </>
+        );
+        if (show3d)
+          return (
+            <>
+              <Suspense fallback={null}>
+                <TableView boardUrl={boardBg!.url} onUnavailable={() => setFailed3d(true)}>
+                  {enemySide}
+                  {battlefield}
+                  <section className="side self-side" aria-label={t('You')} style={selfStyle}>
+                    {selfTable}
+                  </section>
+                </TableView>
+              </Suspense>
+              <section className="side self-side self-screen" aria-label={t('Your hand')} style={selfStyle}>
+                {selfHand}
+              </section>
+            </>
+          );
+        return (
+          <>
+            {enemySide}
+            {battlefield}
+            <section className="side self-side" aria-label={t('You')} style={selfStyle}>
+              {selfTable}
+              {selfHand}
+            </section>
+          </>
+        );
+      })()}
 
       {logOpen && <div className="log-sheet-backdrop" onClick={() => setLogOpen(false)} aria-hidden />}
       <aside className={`match-sidebar ${logOpen ? 'is-open' : ''}`}>
