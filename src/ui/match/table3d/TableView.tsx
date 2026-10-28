@@ -33,9 +33,9 @@ const BOTTOM = 0.2;
  * The 3D table: the WebGL room behind, and `children` (plain match DOM) laid onto the mat with the
  * same camera, so drag, drop and clicks keep working on the tilted board. As in the mockup: dragging
  * bare table (or the room) moves around the room, the right button (or Shift) turns and tilts the
- * view; the middle button and a drag with Space held move too. Wheel or pinch zooms towards the
- * pointer, from the usual view in to 3× or out to 0.4× to see the room; a double click on the
- * table goes back to the usual view.
+ * view; the middle button moves too. Wheel or pinch zooms towards the
+ * pointer, from the usual view in to 3× or out to 0.4× to see the room; Space, the camera button
+ * or a double click on the table goes back to the usual view.
  */
 export default function TableView({ boardUrl, board, warm = '#ffb05a', children, onUnavailable, onSlow }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -163,16 +163,20 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       e.preventDefault();
       zoomAt(target.zoom * Math.exp(-e.deltaY * 0.0015), e.clientX, e.clientY);
     };
-    // Panning: the middle button, or the left one with Space held (it then doesn't pick up cards).
-    let space = false;
-    const typing = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
-    const onKey = (e: KeyboardEvent) => {
-      if (e.code !== 'Space' || typing(e.target)) return;
-      space = e.type === 'keydown';
-      // Keep the page from scrolling, but let Space still press a focused button or unit.
-      if (space && e.target === document.body) e.preventDefault();
+    // Back to the usual view: Space (unless it presses a focused button or types), the camera button
+    // (it sends 'table3d-reset'), or a double click on the bare table.
+    const reset = () => {
+      target.zoom = 1;
+      target.panX = target.panY = 0;
+      target.yaw = 0;
+      target.tilt = TILT;
     };
-    const onBlur = () => (space = false);
+    const typing = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(t.tagName) || t.getAttribute('role') === 'button');
+    const onKey = (e: KeyboardEvent) => {
+      if (e.code !== 'Space' || e.repeat || typing(e.target)) return;
+      e.preventDefault();
+      reset();
+    };
     // A drag that moves the view: 'maybe' until it has moved a few px (a plain click still clicks).
     type Drag = { mode: 'maybe' | 'pan' | 'orbit'; x: number; y: number; px: number; py: number; yaw: number; tilt: number; shift: boolean };
     let drag: Drag | null = null;
@@ -200,7 +204,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
         } else if (isEmptyTable(el, match)) startDrag(e, 'maybe');
         return;
       }
-      if (e.button === 1 || (e.button === 0 && space)) {
+      if (e.button === 1) {
         e.preventDefault();
         e.stopPropagation();
         startDrag(e, 'pan');
@@ -262,10 +266,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
     const onDbl = (e: MouseEvent) => {
       const el = e.target as HTMLElement;
       if (el.closest('[data-entity], [data-hand-uid], button, .match-sidebar')) return;
-      target.zoom = 1;
-      target.panX = target.panY = 0;
-      target.yaw = 0;
-      target.tilt = TILT;
+      reset();
     };
     match.addEventListener('wheel', onWheel, { passive: false });
     // Capture: a pan or pinch must start before the board picks up a card or an attacker.
@@ -274,8 +275,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
     window.addEventListener('pointerup', onUp);
     window.addEventListener('pointercancel', onUp);
     window.addEventListener('keydown', onKey);
-    window.addEventListener('keyup', onKey);
-    window.addEventListener('blur', onBlur);
+    window.addEventListener('table3d-reset', reset);
     match.addEventListener('dblclick', onDbl);
     match.addEventListener('click', onClick, true);
     match.addEventListener('contextmenu', onMenu);
@@ -350,8 +350,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       window.removeEventListener('pointerup', onUp);
       window.removeEventListener('pointercancel', onUp);
       window.removeEventListener('keydown', onKey);
-      window.removeEventListener('keyup', onKey);
-      window.removeEventListener('blur', onBlur);
+      window.removeEventListener('table3d-reset', reset);
       match.removeEventListener('dblclick', onDbl);
       match.removeEventListener('click', onClick, true);
       match.removeEventListener('contextmenu', onMenu);

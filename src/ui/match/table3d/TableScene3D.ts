@@ -47,6 +47,48 @@ const woodTexture = (base: string, dark: string) => {
 /** Normal maps already made, by board image (making one takes a moment; every 2D→3D switch would redo it). */
 const normalCache = new Map<string, HTMLCanvasElement>();
 
+/** A tabletop of planks running along the table: grain, a few knots, dark seams between the boards. */
+const plankTexture = () => {
+  const t = canvasTexture(1024, 1024, (g) => {
+    const planks = 6;
+    const ph = 1024 / planks;
+    for (let p = 0; p < planks; p++) {
+      const y0 = p * ph;
+      const v = 0.85 + Math.random() * 0.3;
+      g.fillStyle = `rgb(${Math.round(92 * v)},${Math.round(60 * v)},${Math.round(36 * v)})`;
+      g.fillRect(0, y0, 1024, ph);
+      // Grain: long wavy lines along the plank.
+      for (let i = 0; i < 40; i++) {
+        const y = y0 + Math.random() * ph;
+        g.strokeStyle = `rgba(30,16,6,${0.06 + Math.random() * 0.16})`;
+        g.lineWidth = 0.6 + Math.random() * 2;
+        g.beginPath();
+        g.moveTo(0, y);
+        for (let x = 0; x <= 1024; x += 32) g.lineTo(x, y + Math.sin(x * 0.006 + i + p) * 2.5);
+        g.stroke();
+      }
+      // A knot or two.
+      for (let k = 0; k < 1 + Math.floor(Math.random() * 2); k++) {
+        const x = Math.random() * 1024;
+        const y = y0 + ph * (0.3 + Math.random() * 0.4);
+        for (let r = 3; r > 0; r--) {
+          g.strokeStyle = `rgba(30,16,6,${0.25 + r * 0.08})`;
+          g.lineWidth = 2;
+          g.beginPath();
+          g.ellipse(x, y, 10 * r, 4 * r, 0, 0, Math.PI * 2);
+          g.stroke();
+        }
+      }
+      // The seam to the next plank.
+      g.fillStyle = 'rgba(20,10,4,.85)';
+      g.fillRect(0, y0 + ph - 3, 1024, 3);
+    }
+  });
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.anisotropy = 8;
+  return t;
+};
+
 /** Bright = raised, dark = sunken: a normal map from the board image, so its carving catches the light. */
 function normalMapFrom(img: HTMLImageElement): HTMLCanvasElement {
   const w = 1600;
@@ -111,8 +153,12 @@ export function buildTableScene(boardUrl: string, warm: string): TableScene {
   // The table: a thick rounded top, an apron, four turned legs; a stone floor below.
   const W = MAT.w;
   const H = MAT.h;
-  const topWood = keep(new THREE.MeshStandardMaterial({ map: keep(woodTexture('#5a3a22', '30,16,6')), roughness: 0.62, metalness: 0.02 }));
-  topWood.map!.repeat.set(0.12, 0.3);
+  // The top: planks along the table (one texture spans 12 × 8 units); the edges a plainer wood, so the
+  // grain doesn't stretch into streaks down the sides.
+  const topWood = keep(new THREE.MeshStandardMaterial({ map: keep(plankTexture()), roughness: 0.62, metalness: 0.02 }));
+  topWood.map!.repeat.set(1 / 12, 1 / 8);
+  const edgeWood = keep(new THREE.MeshStandardMaterial({ map: keep(woodTexture('#4a2f1b', '25,12,4')), roughness: 0.7 }));
+  edgeWood.map!.repeat.set(0.08, 1.2);
   const TW = W + 2.6;
   const TH = H + 2.6;
   const TD = 0.7;
@@ -131,7 +177,7 @@ export function buildTableScene(boardUrl: string, warm: string): TableScene {
     shape.lineTo(-a, -b + r);
     shape.quadraticCurveTo(-a, -b, -a + r, -b);
   }
-  const top = new THREE.Mesh(keep(new THREE.ExtrudeGeometry(shape, { depth: TD, bevelEnabled: true, bevelThickness: 0.12, bevelSize: 0.14, bevelSegments: 4 })), topWood);
+  const top = new THREE.Mesh(keep(new THREE.ExtrudeGeometry(shape, { depth: TD, bevelEnabled: true, bevelThickness: 0.12, bevelSize: 0.14, bevelSegments: 4 })), [topWood, edgeWood]);
   top.position.z = -TD - 0.12;
   top.castShadow = top.receiveShadow = true;
   scene.add(top);

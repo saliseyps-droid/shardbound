@@ -154,3 +154,6 @@
 .match.is-3d .self-screen .hand-card:hover,
 .match.is-3d .self-screen .hand-card:focus-within,
 .match.is-3d .self-screen .hand-card.is-selected { bottom: calc(var(--card-w) * 0.3); }
+/* The Warden's abilities a little further from its portrait (a purchased frame reaches out over them). */
+.table3d-plane .hero-area { gap: 40px; }
+.table3d-plane .hero-abilities { gap: 14px; }

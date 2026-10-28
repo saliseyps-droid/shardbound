@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.72.1': {
+    title: 'Zpátky do výchozího pohledu',
+    summary: 'Tlačítko a mezerník vrátí 3D stůl do výchozího pohledu, plus pár oprav.',
+    sections: [
+      ['3D stůl: tlačítko s kamerou vlevo dole (a mezerník) tě vrátí do výchozího pohledu.'],
+      [
+        '3D stůl: schopnost Wardena, kterou můžeš použít, se teď zvedne ze stolu a pulzuje světlem; schopnosti jsou o kousek dál od Wardena, aby je nezakrýval koupený rámeček.',
+        '3D stůl: deska stolu je z dřevěných prken s letokruhy a suky, už ne z rozmazaných pruhů.',
+      ],
+      ['3D stůl: portrét Wardena (ani čísla na kartách) už při pohybu pohledu neujíždí ze svého místa.'],
+    ],
+  },
   '0.72.0': {
     title: 'Karty jako v náhledu',
     summary: 'Karty na 3D stole i v ruce teď vypadají jako v prvním náhledu stolu.',

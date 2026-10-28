@@ -220,21 +220,24 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
   };
 
   // ---- Warden abilities: gold-rimmed tokens (hexagonal when active, round when passive).
-  interface Token { m: THREE.Mesh; top: THREE.MeshStandardMaterial; passive: boolean; w: number; shift: { dx: number; dy: number }; seen: boolean }
+  interface Token { m: THREE.Mesh; top: THREE.MeshStandardMaterial; halo: THREE.Sprite; passive: boolean; w: number; lift: number; shift: { dx: number; dy: number }; seen: boolean }
   const tokens = new Map<HTMLElement, Token>();
   const TOKEN_D = 0.1;
   const dropToken = (k: Token) => {
-    scene.remove(k.m);
+    scene.remove(k.m, k.halo);
     k.m.geometry.dispose();
     k.top.dispose();
+    k.halo.material.dispose();
   };
   const makeToken = (w: number, h: number, passive: boolean): Token => {
     const shape = passive ? new THREE.Shape().absarc(0, 0, w / 2, 0, Math.PI * 2, false) : hexShape(w, h);
     const top = new THREE.MeshStandardMaterial({ color: 0x3d3564, roughness: 0.5, metalness: 0.2 });
     const m = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth: TOKEN_D, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2, curveSegments: 24 }), [top, gold]);
     m.castShadow = true;
-    scene.add(m);
-    return { m, top, passive, w, shift: { dx: 0, dy: 0 }, seen: true };
+    // A glow under a usable ability, pulsing so it can't be missed.
+    const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0, toneMapped: false }));
+    scene.add(m, halo);
+    return { m, top, halo, passive, w, lift: 0, shift: { dx: 0, dy: 0 }, seen: true };
   };
 
   // ---- Card piles.
@@ -358,8 +361,12 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         p.x -= b.shift.dx * PX;
         p.y += b.shift.dy * PX;
         const shift = rise > 0.002 ? riseShift(p, seenAt(new THREE.Vector3(p.x, p.y, z))) : { dx: 0, dy: 0 };
-        if (Math.abs(shift.dx - b.shift.dx) + Math.abs(shift.dy - b.shift.dy) > 0.05) el.style.translate = shift.dx || shift.dy ? `${shift.dx.toFixed(2)}px ${shift.dy.toFixed(2)}px` : '';
-        b.shift = shift;
+        // Only what was written counts as the shift (else a small, unwritten change would make the card
+        // drift from its DOM while the camera moves).
+        if (Math.abs(shift.dx - b.shift.dx) + Math.abs(shift.dy - b.shift.dy) > 0.05) {
+          el.style.translate = shift.dx || shift.dy ? `${shift.dx.toFixed(2)}px ${shift.dy.toFixed(2)}px` : '';
+          b.shift = shift;
+        }
         b.g.position.set(p.x, p.y, z);
         b.at.set(p.x, p.y, z);
         if (b.key) lastSeen.set(b.key, { at: b.at.clone(), t });
@@ -386,7 +393,9 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         p.x -= shift.dx * PX;
         p.y += shift.dy * PX;
         const next = riseShift(p, seenAt(new THREE.Vector3(p.x, p.y, MAT.top + height)));
-        if (Math.abs(next.dx - shift.dx) + Math.abs(next.dy - shift.dy) > 0.05) el.style.translate = `${next.dx.toFixed(2)}px ${next.dy.toFixed(2)}px`;
+        // Returns the shift actually written (see the units above).
+        if (Math.abs(next.dx - shift.dx) + Math.abs(next.dy - shift.dy) <= 0.05) return shift;
+        el.style.translate = `${next.dx.toFixed(2)}px ${next.dy.toFixed(2)}px`;
         return next;
       };
       const heroSeen = new Set<string>();
@@ -448,13 +457,22 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         k.seen = true;
         const tint = getComputedStyle(el.closest('.hero-abilities') ?? el).getPropertyValue('--ability-tint').trim() || '#e8b04b';
         const usable = el.classList.contains('is-usable');
-        k.top.color.set(usable ? '#5a4a1c' : passive ? '#2e2648' : '#3d3564');
+        const pulse = 0.5 + 0.5 * Math.sin(t * 3.2);
+        k.top.color.set(usable ? '#5e4614' : passive ? '#2e2648' : '#3d3564');
         k.top.emissive.set(usable ? tint : '#000000');
-        k.top.emissiveIntensity = usable ? 0.25 + Math.sin(t * 3) * 0.1 : 0;
+        // Bright enough to catch the eye, not so bright the icon on it washes out.
+        k.top.emissiveIntensity = usable ? 0.2 + pulse * 0.2 : 0;
         k.top.transparent = el.classList.contains('is-used');
         k.top.opacity = k.top.transparent ? 0.5 : 1;
-        k.shift = raise(el, p, TOKEN_D + 0.02, k.shift);
-        k.m.position.set(p.x, p.y, MAT.top);
+        // A usable ability rises a little off the table and glows.
+        k.lift = approach(k.lift, usable ? 1 : 0, dt, 8);
+        const z = MAT.top + k.lift * 0.12;
+        k.shift = raise(el, p, z - MAT.top + TOKEN_D + 0.02, k.shift);
+        k.m.position.set(p.x, p.y, z);
+        k.halo.material.color.set(tint);
+        k.halo.material.opacity = usable ? 0.55 + pulse * 0.45 : 0;
+        k.halo.scale.setScalar(w * (2.4 + pulse * 0.4));
+        k.halo.position.set(p.x, p.y, z + TOKEN_D * 0.5);
       });
       for (const [el, k] of tokens)
         if (!k.seen) {

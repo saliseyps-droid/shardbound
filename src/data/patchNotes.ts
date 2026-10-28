@@ -19,6 +19,27 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.72.1',
+    date: '2026-10-28',
+    title: 'Back to the usual view',
+    summary: 'A button and the Space bar bring the 3D table back to its usual view, and a few fixes.',
+    sections: [
+      {
+        kind: 'new',
+        items: ['3D table: a camera button in the bottom-left corner (and the Space bar) brings you back to the usual view.'],
+      },
+      {
+        kind: 'improved',
+        items: [
+          '3D table: a Warden ability you can use now rises off the table and pulses with light; the abilities sit a little further from the Warden, clear of a purchased frame.',
+          '3D table: the table top is made of wooden planks with grain and knots, no longer streaked.',
+        ],
+      },
+      { kind: 'fixed', items: ['3D table: the Warden’s portrait (and the cards’ numbers) no longer slide off their place while you move the view.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.72.0',
     date: '2026-10-28',
     title: 'Cards as in the preview',
