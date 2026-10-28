@@ -1,6 +1,13 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.73.4': {
+    title: 'Ostrá ruka',
+    summary: 'Karty v ruce na 3D stole jsou zase skutečné karty hry.',
+    sections: [
+      ['3D stůl: ruka ukazuje skutečné karty (ostrý text, obvyklá záře zahratelných karet, Foil, Prismatic i Gilded), nakloněné u přední hrany stolu, o kousek blíž ke stolu a víc natočené k tobě.'],
+    ],
+  },
   '0.73.3': {
     title: 'Čísla na svých drahokamech',
     summary: 'Opravy karet na 3D stole i v ruce.',

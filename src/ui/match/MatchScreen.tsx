@@ -666,11 +666,13 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         </div>
           </>
         );
+        // On the 3D table the hand lies on its own plane of fixed size: fixed cards (sized for it).
+        const handCardW = show3d ? 150 : cardW;
         const handNode: ReactNode = (
         <div
           className={`hand ${spectating ? 'is-hidden-hand' : ''} ${handTapped === HUMAN ? 'show-count' : ''}`}
           data-tutorial="hand"
-          style={{ '--card-w': `${cardW}px`, '--n': handCount } as CSSProperties}
+          style={{ '--card-w': `${handCardW}px`, '--n': handCount } as CSSProperties}
           aria-label={t('Your hand')}
           onClick={() => spectating && showHandCount(HUMAN)}
         >
@@ -691,12 +693,12 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
                 onPointerDown={(e) => !spectating && startCardDrag(e, c.uid)}
               >
                 {spectating && !c.revealed ? (
-                  <CardBack width={cardW} design={me.hero.cardBack} />
+                  <CardBack width={handCardW} design={me.hero.cardBack} />
                 ) : (
                 <CardView
                   card={c.cardId}
                   variant={c.variant}
-                  width={cardW}
+                  width={handCardW}
                   cost={cost}
                   playable={playable}
                   dimmed={myTurn && !playable}

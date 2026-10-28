@@ -29,10 +29,6 @@ describe('3D table layout', () => {
     expect(decl('.table3d-plane .draw-pile-count', 'transform')).toBe('translate(calc(-50% + var(--pile-side, 0px)), calc(-50% - var(--pile-rise, 0px)))');
   });
 
-  it('draws the hand in 3D: its DOM cards stay as invisible hit targets', () => {
-    expect(decl('.table3d-hand-plane .hand-card > .card', 'opacity')).toBe('0');
-  });
-
   it('fits the two rows of the mockup-sized cards (1 : 1.4) between the Warden bands', () => {
     const w = parseFloat(decl('.table3d-plane', '--unit-w') ?? '0');
     expect(2 * (w * 1.4 + 44)).toBeLessThanOrEqual(911 - 2 * 210);

@@ -111,7 +111,7 @@ export function planeCss(): string {
  * mockup): HAND px wide and tall, `HAND.scale` world units per px, its centre at `HAND.at`, leaning
  * back from upright by `HAND.lean`. Its DOM (the hand's cards) is laid on it like the mat's plane.
  */
-export const HAND = { w: 1600, h: 380, scale: 0.0092, at: new THREE.Vector3(0, -MAT.h / 2 - 2.1, MAT.top + 1.6), lean: 0.5 };
+export const HAND = { w: 1600, h: 380, scale: 0.0092, at: new THREE.Vector3(0, -MAT.h / 2 - 1.8, MAT.top + 1.6), lean: 0.85 };
 
 /** The hand plane's object (world) matrix. */
 export function handMatrix(): THREE.Matrix4 {

@@ -19,6 +19,21 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.73.4',
+    date: '2026-10-28',
+    title: 'Your hand, sharp again',
+    summary: 'The cards in your hand on the 3D table are the game’s real cards again.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          '3D table: your hand shows the real cards (sharp text, the usual playable glow, Foil, Prismatic and Gilded), held on a slant at the near edge of the table, a little closer to it and turned more towards you.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.73.3',
     date: '2026-10-28',
     title: 'Numbers on their gems',

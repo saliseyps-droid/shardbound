@@ -9,9 +9,8 @@ import { createBoardLife } from './boardLife';
 import { createFpsWatch } from './fpsWatch';
 import { createBodies } from './bodies';
 import { createEffects } from './effects';
-import { createHandCards } from './handCards';
 import { ZOOM, clampRoomPan, isEmptyTable, orbitTo, pinchZoom, zoomsTable } from './tableInput';
-import { HAND, MAT, PLANE, TILT, cameraCss, handCss, handMatrix, placeCamera, planeCss, type CameraState } from './tableCamera';
+import { HAND, MAT, PLANE, TILT, cameraCss, handCss, placeCamera, planeCss, type CameraState } from './tableCamera';
 import '@/ui/styles/table3d.css';
 
 interface Props {
@@ -102,8 +101,6 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
     );
     const effects = createEffects(table.scene);
     const bodies = createBodies(table.scene, effects);
-    // The hand is drawn with the effects, over the table's DOM (its own DOM stays as the hit target).
-    const hand = createHandCards(effects.scene);
     // Dev server only: lets a browser check fire effects on demand.
     if (import.meta.env.DEV) Object.assign(window, { __table3d: { useMatch, useSettings, scene: table.scene } });
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 600);
@@ -133,15 +130,6 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       ray.setFromCamera(ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1), camera);
       const hit = new THREE.Vector3();
       return ray.ray.intersectPlane(matPlane, hit) ? hit : null;
-    };
-    // The point of the hand's plane under a screen point (for the hand's cards).
-    const handWorld = handMatrix();
-    const handPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1).transformDirection(handWorld), HAND.at);
-    const handPoint = (cx: number, cy: number) => {
-      const r = rootRect;
-      ray.setFromCamera(ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1), camera);
-      const hit = new THREE.Vector3();
-      return ray.ray.intersectPlane(handPlane, hit) ? hit : null;
     };
     // A world point to screen px (for DOM that sits on raised objects).
     const toScreen = (v: THREE.Vector3) => {
@@ -345,7 +333,6 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       const m = useMatch.getState();
       bodies.update(planeRef.current!, matPoint, m.game, clock.elapsedTime, toScreen);
       effects.update(planeRef.current!, matPoint, m.fx, dt, bodies.lastAt);
-      hand.update(handRef.current, handPoint, handWorld, dt, clock.elapsedTime);
       table.update(clock.elapsedTime, dt);
       life.update(clock.elapsedTime, dt);
       renderer.render(table.scene, camera);
@@ -369,7 +356,6 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       match.removeEventListener('contextmenu', onMenu);
       match.classList.remove('is-moving-view');
       bodies.dispose();
-      hand.dispose();
       life.dispose();
       effects.dispose();
       table.dispose();

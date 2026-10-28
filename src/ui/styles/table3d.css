@@ -131,7 +131,9 @@
 
 /* The hand on the 3D table is drawn in WebGL (handCards.ts): the DOM cards stay, invisible, for
    pointing, dragging and playing. */
-.table3d-hand-plane .hand-card > .card { opacity: 0; }
+/* The hand shows the real cards (crisp text, playable glow, Foil / Prismatic / Gilded), laid on the hand's
+   3D plane; a thin gold edge under each gives it body. */
+.table3d-hand-plane .hand-card > .card { filter: drop-shadow(0 3px 0 #b8862c) drop-shadow(0 6px 6px rgba(0, 0, 0, 0.55)); }
 /* While a drag moves the view. */
 .match.is-moving-view, .match.is-moving-view * { cursor: grabbing !important; }
 
@@ -166,7 +168,7 @@
 /* The hand's plane at the near edge of the table (TableView, HAND): fixed card size in its own px,
    the cards along its foot; only the cards take the pointer. */
 .table3d-hand-plane { position: absolute; left: 0; top: 0; pointer-events: none; }
-.table3d-hand-plane .hand { position: absolute; left: 0; right: 0; bottom: 20px; --card-w: 150px !important; }
+.table3d-hand-plane .hand { position: absolute; left: 0; right: 0; bottom: -10px; }
 /* The opponent's hand is drawn in the air in 3D (bodies.ts); its flat backs on the mat go. */
 .table3d-plane .enemy-hand { opacity: 0; }
 /* As in the mockup: both rows close to the middle line, clear of the Wardens. */
