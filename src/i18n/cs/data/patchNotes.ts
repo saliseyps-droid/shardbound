@@ -1,6 +1,20 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.72.0': {
+    title: 'Karty jako v náhledu',
+    summary: 'Karty na 3D stole i v ruce teď vypadají jako v prvním náhledu stolu.',
+    sections: [
+      [
+        '3D stůl: jednotky jsou karty tvarované jako skutečné, s celým obrázkem ve zlatém rámu, ikonkami schopností dole a vystouplými drahokamy Útoku a Životů; připravené, vybrané a zaměřitelné jednotky září rámečkem kolem karty.',
+        '3D stůl: ruka je ze skutečných 3D karet s celým textem, drahokamem ceny a drahokamy Útoku a Životů; naklánějí se dozadu ke stolu a narovnají se, když na některou najedeš.',
+      ],
+      [
+        '3D stůl: Warden s koupeným rámečkem se zvedá na podstavec i s rámečkem a žetony schopností Wardena už za ikonkou neukazují čtverec.',
+        '3D stůl: balíčky leží o kousek víc vpravo; karty na stole mají mezi sebou víc místa pro své drahokamy.',
+      ],
+    ],
+  },
   '0.71.2': {
     title: 'Wardeni ve 3D',
     summary: 'Wardeni, jejich schopnosti, balíčky i ruka vypadají na 3D stole plastičtěji.',

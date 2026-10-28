@@ -9,6 +9,7 @@ import { createBoardLife } from './boardLife';
 import { createFpsWatch } from './fpsWatch';
 import { createBodies } from './bodies';
 import { createEffects } from './effects';
+import { createHandCards } from './handCards';
 import { ZOOM, clampRoomPan, isEmptyTable, orbitTo, pinchZoom, zoomsTable } from './tableInput';
 import { MAT, PLANE, TILT, cameraCss, placeCamera, planeCss, type CameraState } from './tableCamera';
 import '@/ui/styles/table3d.css';
@@ -98,6 +99,8 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
     );
     const effects = createEffects(table.scene);
     const bodies = createBodies(table.scene, effects);
+    // The hand is drawn with the effects, over the table's DOM (its own DOM stays as the hit target).
+    const hand = createHandCards(effects.scene);
     // Dev server only: lets a browser check fire effects on demand.
     if (import.meta.env.DEV) Object.assign(window, { __table3d: { useMatch, useSettings, scene: table.scene } });
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 600);
@@ -329,6 +332,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       const m = useMatch.getState();
       bodies.update(planeRef.current!, matPoint, m.game, clock.elapsedTime, toScreen);
       effects.update(planeRef.current!, matPoint, m.fx, dt, bodies.lastAt);
+      hand.update(camera, rootRect, dt, clock.elapsedTime);
       table.update(clock.elapsedTime, dt);
       life.update(clock.elapsedTime, dt);
       renderer.render(table.scene, camera);
@@ -353,6 +357,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       match.removeEventListener('contextmenu', onMenu);
       match.classList.remove('is-moving-view');
       bodies.dispose();
+      hand.dispose();
       life.dispose();
       effects.dispose();
       table.dispose();

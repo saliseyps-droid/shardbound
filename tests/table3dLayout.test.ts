@@ -29,16 +29,19 @@ describe('3D table layout', () => {
     expect(decl('.table3d-plane .draw-pile-count', 'transform')).toBe('translate(calc(-50% + var(--pile-side, 0px)), calc(-50% - var(--pile-rise, 0px)))');
   });
 
-  it('leans the cards in your hand back towards the table, upright when pointed at', () => {
-    expect(decl('.match.is-3d .hand-card', 'perspective')).toBe('900px');
-    expect(decl('.match.is-3d .hand-card > .card', 'rotate')).toBe('x 16deg');
-    expect(decl('.match.is-3d .hand-card:hover > .card', 'rotate')).toBe('none');
+  it('draws the hand in 3D: its DOM cards stay as invisible hit targets', () => {
+    expect(decl('.match.is-3d .self-screen .hand-card > .card', 'opacity')).toBe('0');
+  });
+
+  it('fits the two rows of the mockup-sized cards (1 : 1.4) between the Warden bands', () => {
+    const w = parseFloat(decl('.table3d-plane', '--unit-w') ?? '0');
+    expect(2 * (w * 1.4 + 44)).toBeLessThanOrEqual(911 - 2 * 210);
   });
 
   it('fits three co-op rows into the middle of the plane (911 px less the two 210 px Warden bands)', () => {
     const w = parseFloat(decl('.match.is-coop .table3d-plane', '--unit-w') ?? '150');
-    // A row: the unit (1.22 × its width) plus 16 px row padding, 16 px row gap and 12 px margin; 34 px co-op padding.
-    const needed = 3 * (w * 1.22 + 44) + 34;
+    // A row: the unit (1.4 × its width, the mockup's card) plus 16 px row padding, 16 px row gap and 12 px margin; 34 px co-op padding.
+    const needed = 3 * (w * 1.4 + 44) + 34;
     expect(needed).toBeLessThanOrEqual(911 - 2 * 210);
   });
 });

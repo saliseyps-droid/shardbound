@@ -19,8 +19,9 @@
   pointer-events: auto;
   /* Two fingers pinch-zoom the table (TableView), not the page. */
   touch-action: none;
-  --unit-w: 150px;
-  --unit-h: calc(var(--unit-w) * 1.22);
+  /* Cards as in the mockup: 1 : 1.4. */
+  --unit-w: 136px;
+  --unit-h: calc(var(--unit-w) * 1.4);
   display: grid;
   grid-template-rows: 210px minmax(0, 1fr) 210px;
   padding: 0 170px;
@@ -36,7 +37,7 @@
 /* Your Warden a little further up the table, clear of the hand. */
 .table3d-plane .self-side .hero-area { top: 34%; }
 .table3d-plane .hero { width: 150px; }
-.table3d-plane .draw-pile-anchor { left: auto; right: 40px; }
+.table3d-plane .draw-pile-anchor { left: auto; right: 6px; }
 /* The opponent's hand lies on the far edge of the table, as in the mockup. */
 .table3d-plane .enemy-hand { top: -64px; }
 
@@ -49,7 +50,7 @@
 .match.is-3d > .self-screen .hand-cancel,
 .match.is-3d > .self-screen button { pointer-events: auto; }
 /* Co-op has three rows in the middle of the plane: smaller units, as on the co-op board. */
-.match.is-coop .table3d-plane { --unit-w: 88px; }
+.match.is-coop .table3d-plane { --unit-w: 76px; }
 .match.is-3d > .self-screen .hero-area,
 .match.is-3d > .self-screen .draw-pile-anchor { display: none; }
 
@@ -75,10 +76,7 @@
 .table3d-plane .unit-barrier { background: radial-gradient(ellipse 80% 70% at 50% 45%, transparent 55%, rgba(255, 226, 140, 0.35) 82%, rgba(255, 244, 200, 0.85) 100%); box-shadow: 0 0 14px rgba(255, 214, 110, 0.8); }
 .table3d-plane .unit-guard-plate { clip-path: none; background: none; border: var(--gt) solid #c9c1ad; border-radius: 11px; box-shadow: inset 0 0 0 1px #6d6656, 0 0 0 1px #6d6656; }
 .table3d-plane .unit-frost { clip-path: none; background: none; border: var(--ft) solid #bfe9ff; border-radius: 11px; box-shadow: 0 0 10px rgba(150, 220, 255, 0.85); }
-/* State glows as a ring around the card instead of a drop-shadow of the hexagon. */
-.table3d-plane .unit.is-ready .unit-body { box-shadow: 0 0 0 2px var(--heal), 0 0 14px rgba(126, 242, 154, 0.7); }
-.table3d-plane .unit.is-selected .unit-body { box-shadow: 0 0 0 2px var(--cyan), 0 0 18px var(--cyan); }
-.table3d-plane .unit.is-targetable .unit-body { box-shadow: 0 0 0 2px var(--damage), 0 0 16px rgba(255, 107, 90, 0.8); }
+/* State glows: WebGL rings around the cards (bodies.ts). */
 .match.is-targeting .table3d-plane .unit:not(.is-targetable):not(.is-selected) .unit-body { background: rgba(0, 0, 0, 0.4); }
 /* Both decks are the same real size on the table (2D draws yours bigger, as nearer). */
 .table3d-plane .draw-pile { --pile-w: 124px !important; }
@@ -115,12 +113,14 @@
 }
 .table3d-slow span { flex-basis: 100%; }
 
-/* Ability icons on the 3D cards (as in the mockup): round, gold-rimmed, a little larger, in a row
-   along the bottom of the art, between the Attack and Health gems. */
-.table3d-plane .unit-badges { top: auto; bottom: 14%; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
-.table3d-plane .unit-badge:has(.badge-icon) { min-width: 0; height: auto; padding: 0; background: none; border: 0; }
-.table3d-plane .unit-badge .badge-icon { display: block; width: 30px; height: 30px; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7)); }
+/* The cards' stats and ability icons are drawn in 3D (bodies.ts: gems and the card face); the DOM ones
+   stay invisible, keeping their tooltips. */
+.table3d-plane .unit-stat { visibility: hidden; }
+.table3d-plane .unit-badges { opacity: 0; top: auto; bottom: 8%; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
+.table3d-plane .unit-badge .badge-icon { display: block; width: 30px; height: 30px; }
 .table3d-plane .unit-badge:has(.badge-icon) .badge-glyph { display: none; }
+.table3d-plane .unit-badge:has(.badge-icon) { min-width: 0; height: auto; padding: 0; background: none; border: 0; }
+.table3d-plane .ready-mark { display: none; }
 
 /* The whole card beside a unit pointed at (FloatingPreview). */
 .table3d-preview {
@@ -129,13 +129,9 @@
   filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.6));
 }
 
-/* The hand on the 3D table: the cards lean back towards the table and stand up when pointed at or
-   chosen. Only the card inside leans, so the hover area (and its bridge, board.css) stays as it is. */
-.match.is-3d .hand-card { perspective: 900px; }
-.match.is-3d .hand-card > .card { rotate: x 16deg; transform-origin: 50% 100%; transition: rotate 0.2s var(--ease-out); filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.45)); }
-.match.is-3d .hand-card:hover > .card,
-.match.is-3d .hand-card:focus-within > .card,
-.match.is-3d .hand-card.is-selected > .card { rotate: none; }
+/* The hand on the 3D table is drawn in WebGL (handCards.ts): the DOM cards stay, invisible, for
+   pointing, dragging and playing. */
+.match.is-3d .self-screen .hand-card > .card { opacity: 0; }
 /* While a drag moves the view. */
 .match.is-moving-view, .match.is-moving-view * { cursor: grabbing !important; }
 
@@ -147,9 +143,14 @@
 /* The Warden's abilities: WebGL tokens under them; the DOM keeps the icon, cost and the click. */
 .table3d-plane .hero-power,
 .table3d-plane .hero-power.is-usable { background: none; clip-path: none; }
+.table3d-plane .hero-power::before { display: none; }
 .table3d-plane .hero-power.is-usable { filter: drop-shadow(0 0 4px rgba(126, 242, 154, 0.9)); }
 .table3d-plane .hero-power.is-used { opacity: 1; }
 .table3d-plane .hero-power-cost { top: 1px; right: 5px; font-weight: 800; text-shadow: 0 1px 2px #000; }
-
-/* Cards in the hand have a body: a gold edge under the face and a soft shadow, like the cards on the table. */
-.match.is-3d .hand-card > .card { box-shadow: 0 2px 0 #c9963a, 0 4px 0 #8a6526, 0 5px 0 #3b2a10; border-radius: 8px; }
+/* Room between the cards on the table for their stat gems (7 cards still fit a row). */
+.table3d-plane .board-row { gap: 30px; width: min(100%, calc(var(--unit-w) * 7 + 30px * 6 + 40px)); }
+.match.is-coop .table3d-plane .board-row { gap: 18px; }
+/* A card pointed at in the 3D hand rises a little higher, so its gems at the foot stay in view. */
+.match.is-3d .self-screen .hand-card:hover,
+.match.is-3d .self-screen .hand-card:focus-within,
+.match.is-3d .self-screen .hand-card.is-selected { bottom: calc(var(--card-w) * 0.3); }

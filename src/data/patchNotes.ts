@@ -19,6 +19,29 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.72.0',
+    date: '2026-10-28',
+    title: 'Cards as in the preview',
+    summary: 'The cards on the 3D table and in your hand now look as in the table’s first preview.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          '3D table: the units are cards shaped like real ones, their whole picture in a gold frame with the ability icons along the foot, and raised Attack and Health gems; ready, chosen and target units glow with a ring around the card.',
+          '3D table: your hand is real 3D cards with their full text, a cost gem and Attack and Health gems; they lean back towards the table and stand up when you point at one.',
+        ],
+      },
+      {
+        kind: 'fixed',
+        items: [
+          '3D table: a Warden with a purchased frame rises with its frame onto the plinth, and the Warden ability tokens no longer show a square behind the icon.',
+          '3D table: the decks lie a little further to the right; the cards on the table have more room between them for their gems.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.71.2',
     date: '2026-10-28',
     title: 'Wardens in 3D',

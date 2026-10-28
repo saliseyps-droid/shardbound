@@ -1,0 +1,270 @@
+import * as THREE from 'three';
+import { GLYPHS, iconColor, type AbilityIconKind } from '@/ui/components/AbilityIcon';
+
+/**
+ * The faces of the 3D cards, drawn on a canvas as in the 3D table mockup: on the table the whole
+ * art in a gold frame with the ability icons along its foot (no text), in the hand the full card
+ * (art, name banner, type line, rules text with the keywords in gold).
+ */
+
+const FW = 500;
+const FH = 700;
+const FONT_DISPLAY = "Almendra, 'Palatino Linotype', Georgia, serif";
+const FONT_BODY = "'Alegreya Sans', 'Segoe UI', sans-serif";
+const FONT_NUM = "'Alegreya Sans SC', 'Alegreya Sans', 'Segoe UI', sans-serif";
+
+function canvasTexture(w: number, h: number, draw: (g: CanvasRenderingContext2D) => void) {
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  draw(c.getContext('2d')!);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 8;
+  return t;
+}
+
+/** A round ability icon (dark disc, gold rim, coloured sign) at x, y with radius r. */
+export function drawIcon(g: CanvasRenderingContext2D, kind: AbilityIconKind, x: number, y: number, r: number) {
+  g.save();
+  g.translate(x, y);
+  g.fillStyle = 'rgba(14,10,24,.92)';
+  g.beginPath();
+  g.arc(0, 0, r, 0, Math.PI * 2);
+  g.fill();
+  g.lineWidth = r * 0.14;
+  g.strokeStyle = '#e8b04b';
+  g.stroke();
+  // The glyphs are drawn on a 20-unit box: scale it to the disc.
+  const k = r / 10;
+  g.scale(k, k);
+  const c = iconColor(kind);
+  g.lineCap = 'round';
+  g.lineJoin = 'round';
+  for (const p of GLYPHS[kind]) {
+    const path = new Path2D(p.d);
+    if (p.fill) {
+      g.fillStyle = c;
+      g.fill(path);
+    } else {
+      g.strokeStyle = c;
+      g.lineWidth = p.width ?? 1.5;
+      g.stroke(path);
+    }
+  }
+  g.restore();
+}
+
+const GOLD = ['#fff1b8', '#d39b2a', '#7a4f0e', '#f5d27a'];
+const DARK_GOLD = ['#a77b35', '#5c3d14', '#3a2508', '#8a6224'];
+
+function frame(g: CanvasRenderingContext2D, enemy: boolean) {
+  const golds = enemy ? DARK_GOLD : GOLD;
+  const fr = g.createLinearGradient(0, 0, FW, FH);
+  golds.forEach((c, i) => fr.addColorStop(i / 3, c));
+  g.fillStyle = fr;
+  g.fillRect(0, 0, FW, FH);
+  g.fillStyle = '#151226';
+  g.fillRect(14, 14, FW - 28, FH - 28);
+  return golds;
+}
+
+/** Draws `img` to cover the box, its focus (object-position %) kept in view. */
+function cover(g: CanvasRenderingContext2D, img: CanvasImageSource & { width: number; height: number }, x: number, y: number, w: number, h: number, fx = 50, fy = 40) {
+  const s = Math.max(w / img.width, h / img.height);
+  const dw = img.width * s;
+  const dh = img.height * s;
+  g.save();
+  g.beginPath();
+  g.rect(x, y, w, h);
+  g.clip();
+  g.drawImage(img, x + (w - dw) * (fx / 100), y + (h - dh) * (fy / 100), dw, dh);
+  g.restore();
+}
+
+/** A unit on the table: the whole art, no text, its lasting abilities as icons along the foot. */
+export function unitFace(img: HTMLImageElement, o: { enemy: boolean; icons: AbilityIconKind[]; fx: number; fy: number }) {
+  return canvasTexture(FW, FH, (g) => {
+    const golds = frame(g, o.enemy);
+    const iw = FW - 36;
+    const ih = FH - 36;
+    cover(g, img, 18, 18, iw, ih, o.fx, o.fy);
+    const fade = g.createLinearGradient(0, FH * 0.72, 0, FH);
+    fade.addColorStop(0, 'rgba(10,6,20,0)');
+    fade.addColorStop(1, 'rgba(10,6,20,.75)');
+    g.fillStyle = fade;
+    g.fillRect(18, 18, iw, ih);
+    g.strokeStyle = golds[0];
+    g.lineWidth = 4;
+    g.strokeRect(18, 18, iw, ih);
+    const icons = o.icons.slice(0, 4);
+    const r = icons.length > 3 ? 56 : 70;
+    const gap = 14;
+    const total = icons.length * 2 * r + (icons.length - 1) * gap;
+    icons.forEach((kind, i) => drawIcon(g, kind, FW / 2 - total / 2 + r + i * (2 * r + gap), FH - 130, r));
+  });
+}
+
+export interface HandCardData {
+  name: string;
+  type: string;
+  tag: string;
+  rarity: string;
+  /** The rules text in pieces; keywords are drawn bold and gold. */
+  rules: { text: string; kw: boolean }[];
+  fx: number;
+  fy: number;
+}
+
+/** A card in the hand: art, name banner, type line with the rarity gem, rules text (as in the mockup). */
+export function handFace(img: HTMLImageElement | null, d: HandCardData) {
+  return canvasTexture(FW, FH, (g) => {
+    const golds = frame(g, false);
+    const ah = FH * 0.5;
+    if (img) cover(g, img, 20, 20, FW - 40, ah, d.fx, d.fy);
+    // Name banner across the foot of the art.
+    const by = 20 + ah - 26;
+    const bn = g.createLinearGradient(0, by, 0, by + 58);
+    bn.addColorStop(0, '#3a2a52');
+    bn.addColorStop(1, '#1a1530');
+    g.fillStyle = bn;
+    g.beginPath();
+    g.moveTo(40, by);
+    g.lineTo(FW - 40, by);
+    g.lineTo(FW - 22, by + 29);
+    g.lineTo(FW - 40, by + 58);
+    g.lineTo(40, by + 58);
+    g.lineTo(22, by + 29);
+    g.closePath();
+    g.fill();
+    g.strokeStyle = golds[1];
+    g.lineWidth = 3;
+    g.stroke();
+    g.font = `700 40px ${FONT_DISPLAY}`;
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillStyle = '#fff6de';
+    g.shadowColor = '#000';
+    g.shadowBlur = 4;
+    g.fillText(d.name, FW / 2, by + 31, FW - 90);
+    g.shadowBlur = 0;
+    // Type line, the rarity gem in the middle.
+    const ty = by + 82;
+    g.font = `500 22px ${FONT_BODY}`;
+    g.fillStyle = '#b9ae95';
+    g.textAlign = 'left';
+    g.fillText(d.type, 42, ty);
+    g.textAlign = 'right';
+    g.fillText(d.tag, FW - 42, ty);
+    g.save();
+    g.translate(FW / 2, ty);
+    g.rotate(Math.PI / 4);
+    g.fillStyle = d.rarity;
+    g.shadowColor = d.rarity;
+    g.shadowBlur = 8;
+    g.fillRect(-8, -8, 16, 16);
+    g.restore();
+    // The rules panel.
+    const py = ty + 22;
+    const ph = FH - py - 70;
+    g.fillStyle = 'rgba(80,60,120,.28)';
+    g.strokeStyle = 'rgba(160,130,200,.45)';
+    g.lineWidth = 2;
+    g.beginPath();
+    g.roundRect(34, py, FW - 68, ph, 10);
+    g.fill();
+    g.stroke();
+    const words = d.rules.flatMap((p) => p.text.split(/\s+/).filter(Boolean).map((w) => ({ w, kw: p.kw })));
+    let size = 30;
+    const wordW = (x: { w: string; kw: boolean }) => {
+      g.font = `${x.kw ? 800 : 500} ${size}px ${FONT_BODY}`;
+      return g.measureText(x.w + ' ').width;
+    };
+    const layout = () => {
+      const lines: { w: string; kw: boolean }[][] = [[]];
+      let lw = 0;
+      for (const x of words) {
+        const ww = wordW(x);
+        if (lw + ww > FW - 100 && lines[lines.length - 1].length) {
+          lines.push([]);
+          lw = 0;
+        }
+        lines[lines.length - 1].push(x);
+        lw += ww;
+      }
+      return lines;
+    };
+    let lines = layout();
+    while (lines.length * size * 1.18 > ph - 24 && size > 16) {
+      size -= 2;
+      lines = layout();
+    }
+    let y = py + ph / 2 - ((lines.length - 1) * size * 1.18) / 2;
+    g.textAlign = 'left';
+    for (const line of lines) {
+      const lineW = line.reduce((a, x) => a + wordW(x), 0);
+      let x = FW / 2 - lineW / 2;
+      for (const word of line) {
+        g.font = `${word.kw ? 800 : 500} ${size}px ${FONT_BODY}`;
+        g.fillStyle = word.kw ? '#ffd27a' : '#efe4c8';
+        g.fillText(word.w, x, y);
+        x += g.measureText(word.w + ' ').width;
+      }
+      y += size * 1.18;
+    }
+  });
+}
+
+/** A white number with a black outline, for the stat gems (cached per number and colour). */
+const numbers = new Map<string, THREE.CanvasTexture>();
+export function numberTexture(n: string, color = '#ffffff') {
+  const key = `${n}|${color}`;
+  let t = numbers.get(key);
+  if (!t) {
+    t = canvasTexture(128, 128, (g) => {
+      g.font = `800 ${n.length > 2 ? 64 : 88}px ${FONT_NUM}`;
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.lineWidth = 12;
+      g.strokeStyle = '#000';
+      g.strokeText(n, 64, 70);
+      g.fillStyle = color;
+      g.fillText(n, 64, 70);
+    });
+    numbers.set(key, t);
+  }
+  return t;
+}
+
+/** A soft glowing rounded rectangle (ready / selected / target ring), white: tinted by the material. */
+export const rectGlowTexture = () =>
+  canvasTexture(260, 340, (g) => {
+    g.strokeStyle = '#fff';
+    g.shadowColor = '#fff';
+    for (const [bl, lw, al] of [
+      [30, 12, 0.35],
+      [14, 6, 0.6],
+      [4, 3, 1],
+    ]) {
+      g.globalAlpha = al;
+      g.shadowBlur = bl;
+      g.lineWidth = lw;
+      g.beginPath();
+      g.roundRect(40, 40, 180, 260, 14);
+      g.stroke();
+    }
+  });
+
+/** Raised stat gems for a card w×h (world units, card face at z): attack octahedron, health hexagon, cost hexagon. */
+export function makeGem(kind: 'atk' | 'hp' | 'cost', scale: number) {
+  const color = kind === 'atk' ? '#e89a2a' : kind === 'hp' ? '#c8322a' : '#3aa6d8';
+  const mat = new THREE.MeshStandardMaterial({ color, metalness: 0.35, roughness: 0.22, emissive: color, emissiveIntensity: 0.2 });
+  const m = new THREE.Mesh(kind === 'atk' ? new THREE.OctahedronGeometry(0.27 * scale, 0) : new THREE.CylinderGeometry(0.24 * scale, 0.24 * scale, 0.12 * scale, 6), mat);
+  if (kind === 'atk') m.scale.set(1, 1, 0.4);
+  else m.rotation.x = Math.PI / 2;
+  m.castShadow = true;
+  const num = new THREE.Sprite(new THREE.SpriteMaterial({ map: numberTexture('0'), transparent: true, depthWrite: false }));
+  num.scale.set(0.46 * scale, 0.46 * scale, 1);
+  num.renderOrder = 2;
+  return { gem: m, num, value: '', color: '' };
+}

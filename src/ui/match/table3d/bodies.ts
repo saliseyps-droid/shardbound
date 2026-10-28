@@ -5,6 +5,8 @@ import { MAT, PLANE } from './tableCamera';
 import { approach, cardsDrawn, coverUv, energyColors, isEnemyUnit, ownerOf, pileCards, riseShift } from './bodyRules';
 import { arcHeight } from './effectRules';
 import type { Effects } from './effects';
+import { makeGem, numberTexture, rectGlowTexture, unitFace } from './cardFaces';
+import type { AbilityIconKind } from '@/ui/components/AbilityIcon';
 
 /**
  * The 3D bodies on the table (WebGL), following the match DOM laid onto the mat: a thick card for
@@ -127,9 +129,14 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
   );
 
   // ---- Units: a card per unit element, reused while that element stays on the table.
+  type Gem = ReturnType<typeof makeGem>;
   interface UnitBody {
     g: THREE.Group;
     face: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshPhysicalMaterial>;
+    atk: Gem;
+    hp: Gem;
+    ring: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
+    enemy: boolean;
     shadow: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
     w: number;
     h: number;
@@ -146,8 +153,15 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
   const units = new Map<HTMLElement, UnitBody>();
   // Last positions by entity key; a killing hit's effect arrives with the unit already gone.
   const lastSeen = new Map<string, { at: THREE.Vector3; t: number }>();
+  const ringTex = keep(rectGlowTexture());
   const dropUnit = (u: UnitBody) => {
-    scene.remove(u.g, u.shadow);
+    scene.remove(u.g, u.shadow, u.ring);
+    u.ring.geometry.dispose();
+    u.ring.material.dispose();
+    for (const gm of [u.atk, u.hp]) {
+      (gm.gem.material as THREE.Material).dispose();
+      gm.num.material.dispose();
+    }
     u.g.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
     u.face.material.map?.dispose();
     u.face.material.dispose();
@@ -161,12 +175,23 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
       [backMat, enemy ? darkGold : gold],
     );
     slab.castShadow = true;
-    const face = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.05, h - 0.05), new THREE.MeshPhysicalMaterial({ roughness: 0.6, clearcoat: 0.15, clearcoatRoughness: 0.5, transparent: true }));
-    face.position.z = CT + 0.019;
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.02, h - 0.02), new THREE.MeshPhysicalMaterial({ roughness: 0.6, clearcoat: 0.15, clearcoatRoughness: 0.5, transparent: true, color: 0x2a2244 }));
+    face.position.z = CT + 0.021;
     g.add(slab, face);
+    // Raised stat gems in the bottom corners, their numbers drawn with depth (as in the mockup).
+    const k = w / 1.45;
+    const atk = makeGem('atk', k);
+    const hp = makeGem('hp', k);
+    atk.gem.position.set(-w / 2 + 0.05 * k, -h / 2 + 0.02 * k, CT + 0.09 * k);
+    hp.gem.position.set(w / 2 - 0.05 * k, -h / 2 + 0.02 * k, CT + 0.09 * k);
+    for (const gm of [atk, hp]) {
+      gm.num.position.copy(gm.gem.position).add(new THREE.Vector3(0, 0, 0.3 * k));
+      g.add(gm.gem, gm.num);
+    }
     const shadow = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.7, h * 1.6), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
-    scene.add(shadow, g);
-    return { g, face, shadow, w, h, art: '', lift: 0, drop: 0, shift: { dx: 0, dy: 0 }, key: '', at: new THREE.Vector3(), seen: true };
+    const ring = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.62, h * 1.45), new THREE.MeshBasicMaterial({ map: ringTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, toneMapped: false }));
+    scene.add(shadow, ring, g);
+    return { g, face, atk, hp, ring, enemy, shadow, w, h, art: '', lift: 0, drop: 0, shift: { dx: 0, dy: 0 }, key: '', at: new THREE.Vector3(), seen: true };
   };
 
   // ---- Wardens: a raised gold hexagon with the portrait on top (the DOM keeps Health, frame effects
@@ -292,21 +317,33 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         }
         b.seen = true;
         b.key = el.dataset.entity ?? b.key;
+        // The face (mockup): the whole art in a gold frame, the ability icons along its foot.
         const img = el.querySelector<HTMLImageElement>('.unit-art');
-        const art = img?.src ?? '';
-        const loaded = art && art !== b.art ? image(art) : null;
+        const icons = [...el.querySelectorAll<SVGElement>('.badge-icon')].map((x) => x.dataset.kind as AbilityIconKind);
+        const faceKey = `${img?.src ?? ''}|${icons.join(',')}`;
+        const loaded = img?.src && faceKey !== b.art ? image(img.src) : null;
         if (img && loaded) {
-          b.art = art;
-          const map = loaded.clone();
+          b.art = faceKey;
           const pos = getComputedStyle(img).objectPosition.split(' ');
-          const uv = coverUv(loaded.image.width, loaded.image.height, w, h, percent(pos[0], 50), percent(pos[1], 50));
-          map.repeat.set(uv.repeatX, uv.repeatY);
-          map.offset.set(uv.offsetX, uv.offsetY);
-          map.needsUpdate = true;
           b.face.material.map?.dispose();
-          b.face.material.map = map;
+          b.face.material.map = unitFace(loaded.image as HTMLImageElement, { enemy: b.enemy, icons, fx: percent(pos[0], 50), fy: percent(pos[1], 40) });
+          b.face.material.color.set(0xffffff);
           b.face.material.needsUpdate = true;
         }
+        // Stats from the DOM (current values; buffed green, hurt pale red).
+        const stat = (gm: Gem, sel: string) => {
+          const s2 = el.querySelector<HTMLElement>(sel);
+          const v = s2?.textContent?.trim() ?? '';
+          const c = s2?.classList.contains('up') ? '#7ef29a' : s2?.classList.contains('down') ? '#ffb4a8' : '#ffffff';
+          if (v !== gm.value || c !== gm.color) {
+            gm.value = v;
+            gm.color = c;
+            gm.num.material.map = numberTexture(v, c);
+            gm.num.material.needsUpdate = true;
+          }
+        };
+        stat(b.atk, '.unit-atk');
+        stat(b.hp, '.unit-hp');
         const m = b.face.material;
         const corrupt = el.classList.contains('is-corrupt');
         m.color.set(corrupt ? '#c9a2ff' : el.classList.contains('is-silenced') ? '#8a8a8a' : '#ffffff');
@@ -327,6 +364,11 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         b.at.set(p.x, p.y, z);
         if (b.key) lastSeen.set(b.key, { at: b.at.clone(), t });
         b.shadow.position.set(p.x + b.lift * 0.08, p.y + b.lift * 0.08, MAT.top + 0.004);
+        // The ring: ready to attack (green), chosen (cyan), a valid target (red).
+        const ring = el.classList.contains('is-targetable') ? '#ff6b5a' : el.classList.contains('is-selected') ? '#5fe1ff' : el.classList.contains('is-ready') ? '#1fd65a' : '';
+        b.ring.material.color.set(ring || '#ffffff');
+        b.ring.material.opacity = ring ? 0.7 + Math.sin(t * 3) * 0.3 : 0;
+        b.ring.position.set(p.x, p.y, z + CT + 0.03);
         b.shadow.scale.setScalar(1 + b.lift * 0.15);
       });
       // Units that died (the store keeps their ghosts for the death animation) shatter; others just go.
@@ -376,7 +418,8 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
           b.face.material.color.set(0xffffff);
           b.face.material.needsUpdate = true;
         }
-        b.shift = raise(el, p, HERO_D + 0.035, b.shift);
+        // A purchased frame wraps the Warden: it rises with it.
+        b.shift = raise(el.closest<HTMLElement>('.framed-slot') ?? el, p, HERO_D + 0.035, b.shift);
         b.plinth.position.set(p.x, p.y, MAT.top);
         b.face.position.set(p.x, p.y, MAT.top + HERO_D + 0.032);
         // The Final Blow shatters the Warden's portrait: its plinth goes with it.
