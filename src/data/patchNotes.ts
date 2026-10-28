@@ -34,6 +34,7 @@ export const PATCH_NOTES: PatchNote[] = [
           '3D table: the Attack and Health numbers sit right in the middle of their plates.',
           '3D table: the painted board is bigger, so your Warden stands fully on it.',
           '3D table: the walls of an opposing Guard unit no longer cover the opponent’s Warden.',
+          '3D table: both decks lie out by the edge of the board, so a full row of seven units no longer runs into them.',
         ],
       },
     ],

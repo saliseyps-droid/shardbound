@@ -39,7 +39,8 @@
 /* Your Warden a little further up the table, clear of the hand. */
 .table3d-plane .self-side .hero-area { top: 34%; }
 .table3d-plane .hero { width: 150px; }
-.table3d-plane .draw-pile-anchor { left: auto; right: 6px; }
+/* The decks out by the mat's edge, clear of a full row of seven units. */
+.table3d-plane .draw-pile-anchor { left: auto; right: -110px; }
 /* The opponent's hand lies on the far edge of the table, as in the mockup. */
 .table3d-plane .enemy-hand { top: -64px; }
 

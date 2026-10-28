@@ -13,6 +13,7 @@ const notes: PatchNotesOverlay = {
         '3D stůl: čísla Útoku a Životů sedí přesně uprostřed svých destiček.',
         '3D stůl: malovaná deska je větší, takže tvůj Warden stojí celý na ní.',
         '3D stůl: hradby soupeřovy jednotky se Stráží už nezakrývají soupeřova Wardena.',
+        '3D stůl: oba balíčky leží u okraje desky, takže do nich plná řada sedmi jednotek už nezasahuje.',
       ],
     ],
   },
