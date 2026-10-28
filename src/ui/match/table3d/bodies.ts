@@ -5,7 +5,7 @@ import { HAND, MAT, PLANE, TILT } from './tableCamera';
 import { approach, cardsDrawn, coverUv, energyColors, isEnemyUnit, ownerOf, pileCards, riseShift } from './bodyRules';
 import { arcHeight } from './effectRules';
 import type { Effects } from './effects';
-import { SNUG, makeGem, numberTexture, sheenTexture, snugGlowTexture, unitFace, type Finish } from './cardFaces';
+import { SNUG, drawIcon, makeGem, numberTexture, sheenTexture, snugGlowTexture, unitFace, type Finish } from './cardFaces';
 import type { AbilityIconKind } from '@/ui/components/AbilityIcon';
 
 /**
@@ -92,7 +92,16 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
   // A plain sheen without the varnish (a varnish hazes small, bright things like portraits and tokens).
   const satin = (p: THREE.MeshPhysicalMaterialParameters) => new THREE.MeshPhysicalMaterial({ roughness: 0.4, metalness: 0, specularIntensity: 0.35, envMap: env ?? null, envMapIntensity: 0.06, ...p });
   // Guard: a slim bezel of dark steel round the card.
-  const stoneMat = keep(new THREE.MeshStandardMaterial({ color: 0x8e98a8, roughness: 0.32, metalness: 0.85 }));
+  const stoneMat = keep(new THREE.MeshStandardMaterial({ color: 0xc9d3e2, roughness: 0.28, metalness: 0.8, emissive: 0x3a5a8a, emissiveIntensity: 0.35 }));
+  // Guard's badge: a shield on the card's top edge.
+  const guardBadge = keep(
+    canvasTexture(
+      128,
+      (g, sz) => drawIcon(g, 'guard', sz / 2, sz / 2, sz * 0.44),
+      true,
+    ),
+  );
+  const guardBadgeMat = keep(new THREE.MeshBasicMaterial({ map: guardBadge, transparent: true, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -3 }));
   const iceMat = keep(new THREE.MeshPhysicalMaterial({ color: 0xbfe9ff, emissive: 0x5fb8ff, emissiveIntensity: 0.35, roughness: 0.1, transmission: 0, transparent: true, opacity: 0.85, clearcoat: 1 }));
   // The cards' edges: a satin, antique gold (the bright metal gold read as a cheap yellow band).
   const cardEdge = keep(new THREE.MeshStandardMaterial({ color: 0xa87a34, metalness: 0.75, roughness: 0.42 }));
@@ -245,7 +254,11 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
       shape.holes.push(roundedRect(w - pad * 0.4, h - pad * 0.4, Math.min(w, h) * 0.06));
       return new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01, bevelSegments: 2 });
     };
-    const guard = new THREE.Mesh(frame(0.035, CT + 0.03), stoneMat);
+    const guard = new THREE.Mesh(frame(0.045, CT + 0.035), stoneMat);
+    const shield = new THREE.Mesh(new THREE.PlaneGeometry(w * 0.52, w * 0.52), guardBadgeMat);
+    shield.position.set(0, h / 2 + w * 0.04, CT + 0.06);
+    shield.renderOrder = 5;
+    guard.add(shield);
     guard.position.z = -0.01;
     guard.castShadow = true;
     const frost = new THREE.Mesh(frame(0.04, CT + 0.045), iceMat);

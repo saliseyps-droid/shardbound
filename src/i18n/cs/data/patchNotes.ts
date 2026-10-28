@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.74.4': {
+    title: 'Stráž, kterou je vidět',
+    summary: 'Jednotky se Stráží jsou na 3D stole dobře poznat.',
+    sections: [['3D stůl: jednotka se Stráží má světlý ocelový rámeček a na horní hraně odznak se štítem.']],
+  },
   '0.74.3': {
     title: 'Čistší rámečky karet',
     summary: 'Jemnější rámečky karet na 3D stole a oprava kliknutí.',
