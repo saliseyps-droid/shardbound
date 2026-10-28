@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.75.0',
+    date: '2026-10-28',
+    title: 'New stat plates',
+    summary: 'Attack and Health on the 3D table sit on plates in the faction’s colour.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          '3D table: Attack and Health sit on small dark plates in the card’s bottom corners, rimmed in the unit’s faction colour, with a sword or a heart beside the number.',
+          '3D table: Guard is a steel frame shaped like a shield round the card, and its icon sits with the other ability icons.',
+          '3D table: the cards on the table are 10% bigger.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.74.4',
     date: '2026-10-28',
     title: 'Guard you can see',

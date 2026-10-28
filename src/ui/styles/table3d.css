@@ -20,7 +20,7 @@
   /* Two fingers pinch-zoom the table (TableView), not the page. */
   touch-action: none;
   /* Cards as in the mockup: 1 : 1.4. */
-  --unit-w: 113px;
+  --unit-w: 124px;
   --unit-h: calc(var(--unit-w) * 1.4);
   display: grid;
   grid-template-rows: 210px minmax(0, 1fr) 210px;

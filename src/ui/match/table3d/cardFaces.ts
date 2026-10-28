@@ -116,10 +116,11 @@ export function unitFace(img: HTMLImageElement, o: { enemy: boolean; icons: Abil
     g.strokeRect(14, 14, iw - 4, ih - 4);
     g.globalAlpha = 1;
     const icons = o.icons.slice(0, 4);
-    const r = icons.length > 3 ? 56 : 70;
-    const gap = 14;
+    // A row above the Attack and Health plates in the bottom corners.
+    const r = icons.length > 3 ? 44 : 52;
+    const gap = 12;
     const total = icons.length * 2 * r + (icons.length - 1) * gap;
-    icons.forEach((kind, i) => drawIcon(g, kind, FW / 2 - total / 2 + r + i * (2 * r + gap), FH - 130, r));
+    icons.forEach((kind, i) => drawIcon(g, kind, FW / 2 - total / 2 + r + i * (2 * r + gap), FH - 220, r));
   });
 }
 

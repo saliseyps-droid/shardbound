@@ -5,7 +5,7 @@ import { HAND, MAT, PLANE, TILT } from './tableCamera';
 import { approach, cardsDrawn, coverUv, energyColors, isEnemyUnit, ownerOf, pileCards, riseShift } from './bodyRules';
 import { arcHeight } from './effectRules';
 import type { Effects } from './effects';
-import { SNUG, drawIcon, makeGem, numberTexture, sheenTexture, snugGlowTexture, unitFace, type Finish } from './cardFaces';
+import { SNUG, numberTexture, sheenTexture, snugGlowTexture, unitFace, type Finish } from './cardFaces';
 import type { AbilityIconKind } from '@/ui/components/AbilityIcon';
 
 /**
@@ -93,15 +93,6 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
   const satin = (p: THREE.MeshPhysicalMaterialParameters) => new THREE.MeshPhysicalMaterial({ roughness: 0.4, metalness: 0, specularIntensity: 0.35, envMap: env ?? null, envMapIntensity: 0.06, ...p });
   // Guard: a slim bezel of dark steel round the card.
   const stoneMat = keep(new THREE.MeshStandardMaterial({ color: 0xc9d3e2, roughness: 0.28, metalness: 0.8, emissive: 0x3a5a8a, emissiveIntensity: 0.35 }));
-  // Guard's badge: a shield on the card's top edge.
-  const guardBadge = keep(
-    canvasTexture(
-      128,
-      (g, sz) => drawIcon(g, 'guard', sz / 2, sz / 2, sz * 0.44),
-      true,
-    ),
-  );
-  const guardBadgeMat = keep(new THREE.MeshBasicMaterial({ map: guardBadge, transparent: true, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -3 }));
   const iceMat = keep(new THREE.MeshPhysicalMaterial({ color: 0xbfe9ff, emissive: 0x5fb8ff, emissiveIntensity: 0.35, roughness: 0.1, transmission: 0, transparent: true, opacity: 0.85, clearcoat: 1 }));
   // The cards' edges: a satin, antique gold (the bright metal gold read as a cheap yellow band).
   const cardEdge = keep(new THREE.MeshStandardMaterial({ color: 0xa87a34, metalness: 0.75, roughness: 0.42 }));
@@ -165,7 +156,53 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
   );
 
   // ---- Units: a card per unit element, reused while that element stays on the table.
-  type Gem = ReturnType<typeof makeGem>;
+  // Stat plates (Attack / Health): geometry and icons shared, rim and number per card.
+  const plateFace = keep(new THREE.MeshStandardMaterial({ color: 0x1a1222, roughness: 0.45, metalness: 0.15 }));
+  const statIcon = (kind: 'atk' | 'hp') =>
+    keep(
+      canvasTexture(
+        128,
+        (g) => {
+          const col = kind === 'atk' ? '#f5d27a' : '#ff5a6a';
+          g.fillStyle = col;
+          g.strokeStyle = col;
+          g.lineWidth = 10;
+          g.lineCap = 'round';
+          g.translate(64, 64);
+          g.beginPath();
+          if (kind === 'atk') {
+            g.moveTo(-36, 36);
+            g.lineTo(30, -30);
+            g.moveTo(-14, 14);
+            g.lineTo(-30, -2);
+            g.moveTo(-14, 14);
+            g.lineTo(2, 30);
+            g.stroke();
+          } else {
+            g.moveTo(0, 38);
+            g.bezierCurveTo(-60, 0, -40, -46, 0, -18);
+            g.bezierCurveTo(40, -46, 60, 0, 0, 38);
+            g.fill();
+          }
+        },
+        true,
+      ),
+    );
+  const statIcons = { atk: statIcon('atk'), hp: statIcon('hp') };
+  const makePlate = (kind: 'atk' | 'hp', k: number) => {
+    const rim = cardEdge.clone();
+    const plate = new THREE.Mesh(new THREE.ExtrudeGeometry(roundedRect(0.46 * k, 0.3 * k, 0.06 * k), { depth: 0.03 * k, bevelEnabled: true, bevelThickness: 0.012 * k, bevelSize: 0.012 * k, bevelSegments: 2 }), [plateFace, rim]);
+    plate.castShadow = true;
+    const front = 0.03 * k + 0.014 * k + 0.004;
+    const icon = new THREE.Mesh(new THREE.PlaneGeometry(0.15 * k, 0.15 * k), new THREE.MeshBasicMaterial({ map: statIcons[kind], transparent: true, depthWrite: false, toneMapped: false }));
+    icon.position.set(-0.09 * k, 0, front);
+    const num = new THREE.Mesh(new THREE.PlaneGeometry(0.25 * k, 0.25 * k), new THREE.MeshBasicMaterial({ map: numberTexture('0'), transparent: true, depthWrite: false, toneMapped: false }));
+    num.position.set(0.08 * k, 0, front);
+    icon.renderOrder = num.renderOrder = 3;
+    plate.add(icon, num);
+    return { gem: plate, num, rim, value: '', color: '' };
+  };
+  type Gem = ReturnType<typeof makePlate>;
   interface UnitBody {
     g: THREE.Group;
     face: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshPhysicalMaterial>;
@@ -214,8 +251,9 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     u.ring.geometry.dispose();
     u.ring.material.dispose();
     for (const gm of [u.atk, u.hp]) {
-      (gm.gem.material as THREE.Material).dispose();
-      gm.num.material.dispose();
+      gm.rim.dispose();
+      gm.gem.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
+      (gm.gem.children as THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>[]).forEach((m) => m.material.dispose());
     }
     u.g.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
     u.face.material.map?.dispose();
@@ -233,32 +271,41 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     const face = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.02, h - 0.02), glossy({ transparent: true, color: 0x2a2244 }));
     face.position.z = CT + 0.021;
     g.add(slab, face);
-    // Raised stat gems in the bottom corners, their numbers drawn with depth (as in the mockup).
-    const k = w / 1.45;
-    const atk = makeGem('atk', k);
-    const hp = makeGem('hp', k);
-    atk.gem.position.set(-w / 2 + 0.05 * k, -h / 2 + 0.02 * k, CT + 0.09 * k);
-    hp.gem.position.set(w / 2 - 0.05 * k, -h / 2 + 0.02 * k, CT + 0.09 * k);
-    for (const gm of [atk, hp]) {
-      gm.num.position.copy(gm.gem.position).add(new THREE.Vector3(0, 0, gm.num.userData.lift));
-      g.add(gm.gem, gm.num);
-    }
+    // Attack and Health on small plates set into the bottom corners: a dark face, a rim in the
+    // faction's colour, a sword or a heart and the number.
+    // Plates sized for reading on the table (a little larger than the mockup's).
+    const k = (w / 1.45) * 1.3;
+    const atk = makePlate('atk', k);
+    const hp = makePlate('hp', k);
+    atk.gem.position.set(-w / 2 + 0.27 * k, -h / 2 + 0.2 * k, CT + 0.022);
+    hp.gem.position.set(w / 2 - 0.27 * k, -h / 2 + 0.2 * k, CT + 0.022);
+    for (const gm of [atk, hp]) g.add(gm.gem);
     const shadow = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.7, h * 1.6), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
     const ring = new THREE.Mesh(new THREE.PlaneGeometry(w * SNUG.w, h * SNUG.h), new THREE.MeshBasicMaterial({ map: ringTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, toneMapped: false }));
     const sheen = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.02, h - 0.02), new THREE.MeshBasicMaterial({ transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -1 }));
     sheen.position.z = CT + 0.024;
     g.add(sheen);
     // A frame round the card (outer rounded rect with the card's shape cut out), raised over its edge.
+    // Guard: a frame shaped like a shield round the card (flat top, sides curving to a point below it).
+    const shieldFrame = (pad: number, depth: number) => {
+      const a = w / 2 + pad;
+      const top = h / 2 + pad;
+      const shape = new THREE.Shape();
+      shape.moveTo(-a, top);
+      shape.lineTo(a, top);
+      shape.lineTo(a, -h / 2 + h * 0.08);
+      shape.quadraticCurveTo(a, -h / 2 - pad * 1.2, 0, -h / 2 - pad * 3.2);
+      shape.quadraticCurveTo(-a, -h / 2 - pad * 1.2, -a, -h / 2 + h * 0.08);
+      shape.closePath();
+      shape.holes.push(roundedRect(w - pad * 0.4, h - pad * 0.4, Math.min(w, h) * 0.06));
+      return new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01, bevelSegments: 2, curveSegments: 16 });
+    };
     const frame = (pad: number, depth: number) => {
       const shape = roundedRect(w + pad * 2, h + pad * 2, Math.min(w, h) * 0.09);
       shape.holes.push(roundedRect(w - pad * 0.4, h - pad * 0.4, Math.min(w, h) * 0.06));
       return new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01, bevelSegments: 2 });
     };
-    const guard = new THREE.Mesh(frame(0.045, CT + 0.035), stoneMat);
-    const shield = new THREE.Mesh(new THREE.PlaneGeometry(w * 0.52, w * 0.52), guardBadgeMat);
-    shield.position.set(0, h / 2 + w * 0.04, CT + 0.06);
-    shield.renderOrder = 5;
-    guard.add(shield);
+    const guard = new THREE.Mesh(shieldFrame(0.05, CT + 0.035), stoneMat);
     guard.position.z = -0.01;
     guard.castShadow = true;
     const frost = new THREE.Mesh(frame(0.04, CT + 0.045), iceMat);
@@ -428,6 +475,8 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
         // The face (mockup): the whole art in a gold frame, the ability icons along its foot.
         const img = el.querySelector<HTMLImageElement>('.unit-art');
         const icons = [...el.querySelectorAll<SVGElement>('.badge-icon')].map((x) => x.dataset.kind as AbilityIconKind);
+        // Guard has no badge in 2D (its plate shows it); on the card it is an icon like the others.
+        if (el.classList.contains('has-guard')) icons.unshift('guard');
         const finish: Finish = el.classList.contains('is-gilded') ? 'GILDED' : el.classList.contains('is-prismatic') ? 'PRISMATIC' : el.classList.contains('is-foil') ? 'FOIL' : 'NORMAL';
         const faceKey = `${img?.src ?? ''}|${icons.join(',')}|${finish}`;
         const loaded = img?.src && faceKey !== b.art ? image(img.src) : null;
@@ -480,6 +529,16 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
             gm.num.material.needsUpdate = true;
           }
         };
+        // The plates' rims in the unit's faction colour.
+        const tint = el.style.getPropertyValue('--f1');
+        if (tint && b.atk.rim.userData.tint !== tint) {
+          for (const gm of [b.atk, b.hp]) {
+            gm.rim.color.set(tint);
+            gm.rim.emissive.set(tint);
+            gm.rim.emissiveIntensity = 0.25;
+            gm.rim.userData.tint = tint;
+          }
+        }
         stat(b.atk, '.unit-atk');
         stat(b.hp, '.unit-hp');
         const m = b.face.material;
