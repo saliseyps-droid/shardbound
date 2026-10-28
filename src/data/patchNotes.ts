@@ -31,6 +31,7 @@ export const PATCH_NOTES: PatchNote[] = [
           '3D table: Guard is a steel frame shaped like a shield round the card, and its icon sits with the other ability icons.',
           '3D table: the cards on the table are 10% bigger.',
           '3D table: the Attack and Health plates are smaller, with bigger numbers.',
+          '3D table: the opponent holds cards as big as the decks on the table, fully in view behind their Warden.',
         ],
       },
     ],

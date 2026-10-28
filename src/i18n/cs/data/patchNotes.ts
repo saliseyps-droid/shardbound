@@ -10,6 +10,7 @@ const notes: PatchNotesOverlay = {
         '3D stůl: Stráž je ocelový rámeček ve tvaru štítu kolem karty a její ikonka je mezi ostatními ikonkami schopností.',
         '3D stůl: karty na stole jsou o 10 % větší.',
         '3D stůl: destičky Útoku a Životů jsou menší a čísla na nich větší.',
+        '3D stůl: soupeř drží karty stejně velké jako balíčky na stole, celé vidět za jeho Wardenem.',
       ],
     ],
   },
