@@ -34,6 +34,8 @@
 /* Side columns that never grow past their half: the bigger 3D crystals overflow to the side instead
    of pushing the Warden off the centre as the energy rises. */
 .table3d-plane .hero-area { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+/* The opponent's Warden a little further back, clear of the walls of a Guard unit in front of it. */
+.table3d-plane .enemy-side .hero-area { top: calc(50% - 12px); }
 /* Your Warden a little further up the table, clear of the hand. */
 .table3d-plane .self-side .hero-area { top: 34%; }
 .table3d-plane .hero { width: 150px; }
@@ -171,9 +173,9 @@
 .table3d-hand-plane .hand { position: absolute; left: 0; right: 0; bottom: -20px; }
 /* The opponent's hand is drawn in the air in 3D (bodies.ts); its flat backs on the mat go. */
 .table3d-plane .enemy-hand { opacity: 0; }
-/* As in the mockup: both rows close to the middle line, clear of the Wardens. */
-.table3d-plane .board-row.enemy { align-items: flex-end; padding-bottom: 26px; }
-.table3d-plane .board-row.self { align-items: flex-start; padding-top: 26px; }
+/* As in the mockup: both rows close to the middle line, clear of the Wardens (and of Guard's walls). */
+.table3d-plane .board-row.enemy { align-items: flex-end; padding-bottom: 0; }
+.table3d-plane .board-row.self { align-items: flex-start; padding-top: 0; }
 
 /* As in the mockup: a big Health gem on the Warden, a big energy count beside the crystals. */
 .table3d-plane .hero-health { min-width: 44px; height: 46px; font-size: 1.55rem; right: 6%; bottom: 6%; }

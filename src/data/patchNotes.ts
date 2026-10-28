@@ -33,6 +33,7 @@ export const PATCH_NOTES: PatchNote[] = [
           '3D table: the cards on the table lean towards you much less; the Attack and Health plates have bigger icons and numbers.',
           '3D table: the Attack and Health numbers sit right in the middle of their plates.',
           '3D table: the painted board is bigger, so your Warden stands fully on it.',
+          '3D table: the walls of an opposing Guard unit no longer cover the opponent’s Warden.',
         ],
       },
     ],
