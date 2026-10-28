@@ -34,9 +34,10 @@ import { AnimatedBoard } from './AnimatedBoard';
 import { campaignOf } from '@/data/opponents';
 import '@/ui/styles/board.css';
 import { table3dAllowed, table3dEnv } from './table3d/table3dRules';
+import { TableFallback } from './table3d/TableFallback';
 
 /** The 3D table (Three.js) loads only when it is turned on; until then, and if it fails, the board is 2D. */
-const TableView = lazy(() => import('./table3d/TableView').catch(() => ({ default: (() => null) as unknown as typeof import('./table3d/TableView').default })));
+const TableView = lazy(() => import('./table3d/TableView').catch(() => ({ default: TableFallback as unknown as typeof import('./table3d/TableView').default })));
 
 interface Drag {
   kind: 'card' | 'attack';

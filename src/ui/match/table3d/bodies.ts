@@ -15,6 +15,8 @@ import type { Effects } from './effects';
  */
 export interface Bodies {
   update(plane: HTMLElement, toMat: (x: number, y: number) => THREE.Vector3 | null, game: GameState | null, t: number): void;
+  /** Where the unit with this entity key last stood (kept a few seconds after it leaves the table). */
+  lastAt(key: string): THREE.Vector3 | undefined;
   dispose(): void;
 }
 
@@ -139,6 +141,8 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     seen: boolean;
   }
   const units = new Map<HTMLElement, UnitBody>();
+  // Last positions by entity key; a killing hit's effect arrives with the unit already gone.
+  const lastSeen = new Map<string, { at: THREE.Vector3; t: number }>();
   const dropUnit = (u: UnitBody) => {
     scene.remove(u.g, u.shadow);
     u.g.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
@@ -265,11 +269,13 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         const z = MAT.top + 0.01 + b.lift * 0.16 + b.drop * b.drop * 1.4 + arcHeight(lungeProgress(el));
         b.g.position.set(p.x, p.y, z);
         b.at.set(p.x, p.y, z);
+        if (b.key) lastSeen.set(b.key, { at: b.at.clone(), t });
         b.shadow.position.set(p.x + b.lift * 0.08, p.y + b.lift * 0.08, MAT.top + 0.004);
         b.shadow.scale.setScalar(1 + b.lift * 0.15);
       });
       // Units that died (the store keeps their ghosts for the death animation) shatter; others just go.
       const dead = new Set(useMatch.getState().ghosts.map((g) => `u:${g.unit.uid}`));
+      for (const [k, s] of lastSeen) if (t - s.t > 5) lastSeen.delete(k);
       for (const [k, u] of units)
         if (!u.seen) {
           if (dead.has(u.key)) effects.shatter(u.face.material.map, u.w, u.h, u.at);
@@ -375,6 +381,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
           crystals.delete(k);
         }
     },
+    lastAt: (key) => lastSeen.get(key)?.at,
     dispose() {
       units.forEach(dropUnit);
       piles.forEach(dropPile);

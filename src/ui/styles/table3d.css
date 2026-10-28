@@ -35,6 +35,14 @@
 
 /* The screen-space part of your side (hand, End turn) keeps its place in the grid. */
 .match.is-3d > .self-screen { grid-area: self; }
+/* It overlaps the near edge of the table: only the hand's cards and the buttons take clicks, the rest
+   lets them through to your Warden, its powers and your row. */
+.match.is-3d > .self-screen { pointer-events: none; }
+.match.is-3d > .self-screen .hand-card,
+.match.is-3d > .self-screen .hand-cancel,
+.match.is-3d > .self-screen button { pointer-events: auto; }
+/* Co-op has three rows in the middle of the plane: smaller units, as on the co-op board. */
+.match.is-coop .table3d-plane { --unit-w: 88px; }
 .match.is-3d > .self-screen .hero-area,
 .match.is-3d > .self-screen .draw-pile-anchor { display: none; }
 

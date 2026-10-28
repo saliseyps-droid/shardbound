@@ -1,6 +1,19 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.70.1': {
+    title: 'Opravy 3D stolu',
+    summary: 'Opravy 3D stolu.',
+    sections: [
+      [
+        '3D stůl: na spodní část tvého Wardena, jeho schopnosti a energii se zase dá kliknout; pruh s tvou rukou je už nezakrývá.',
+        '3D stůl: kooperativní zápasy se svými třemi řadami se na stůl vejdou.',
+        '3D stůl: zásah, který jednotku zabije, také ukáže své číslo a jiskry.',
+        '3D stůl: když se 3D stůl nemůže načíst (třeba hned po aktualizaci), zápas se přepne na 2D desku místo prázdného stolu.',
+        '3D stůl: časté přepínání mezi 2D a 3D už nevyčerpá grafickou paměť, a když grafická karta stůl zahodí, zápas se přepne na 2D.',
+      ],
+    ],
+  },
   '0.70.0': {
     title: '3D stůl hotový',
     summary: 'Poslední úpravy 3D stolu: přizpůsobí se pomalejším počítačům a funguje ve všech druzích zápasů.',

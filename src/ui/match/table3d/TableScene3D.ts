@@ -198,6 +198,9 @@ export function buildTableScene(boardUrl: string, warm: string): TableScene {
       lamp.intensity += ((lampTarget ? 10 : 0) - lamp.intensity) * 0.1;
       if (lampTarget) lamp.position.lerp(new THREE.Vector3(lampTarget.x, lampTarget.y, 3), 0.1);
     },
-    dispose: () => disposables.forEach((d) => d.dispose()),
+    dispose: () => {
+      disposables.forEach((d) => d.dispose());
+      key.shadow.dispose();
+    },
   };
 }

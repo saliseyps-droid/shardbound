@@ -19,6 +19,25 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.70.1',
+    date: '2026-10-28',
+    title: '3D table fixes',
+    summary: 'Fixes for the 3D table.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          '3D table: the lower part of your Warden, its abilities and your energy can be clicked again; the strip with your hand no longer covered them.',
+          '3D table: co-op matches fit their three rows on the table.',
+          '3D table: a hit that kills a unit shows its number and sparks too.',
+          '3D table: if the 3D table cannot load (for example right after an update), the match switches to the 2D board instead of showing an empty table.',
+          '3D table: switching between 2D and 3D many times no longer uses up graphics memory, and if the graphics card drops the table, the match switches to 2D.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.70.0',
     date: '2026-10-28',
     title: 'The 3D table, finished',

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
-import { MAT, PLANE, placeCamera, planeToWorld } from '@/ui/match/table3d/tableCamera';
+import { MAT, PLANE, cameraCss, placeCamera, planeCss, planeToWorld } from '@/ui/match/table3d/tableCamera';
 import { table3dAllowed } from '@/ui/match/table3d/table3dRules';
 
 const ok = { table3d: true, performanceMode: false, reducedMotion: false };
@@ -50,4 +50,54 @@ describe('the table camera', () => {
     expect(c.x).toBeCloseTo(0, 9);
     expect(c.y).toBeCloseTo(0, 9);
   });
+});
+
+// The CSS pipeline the browser applies to a point of the plane: the plane's own transform about its
+// centre, the camera wrapper's transform about the perspective origin, then the perspective.
+type M = number[]; // 4×4, column-major like CSS matrix3d and three's elements
+const mul = (a: M, b: M): M => {
+  const r = new Array(16).fill(0);
+  for (let c = 0; c < 4; c++) for (let row = 0; row < 4; row++) for (let k = 0; k < 4; k++) r[c * 4 + row] += a[k * 4 + row] * b[c * 4 + k];
+  return r;
+};
+const translate = (x: number, y: number, z = 0): M => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1];
+const parse = (css: string, size: { w: number; h: number }): M => {
+  let m: M = translate(0, 0);
+  for (const [, fn, args] of css.matchAll(/(\w+)\(([^)]*)\)/g)) {
+    const v = args.split(',').map((s) => s.trim());
+    const px = (s: string, of: number) => (s.endsWith('%') ? (parseFloat(s) / 100) * of : parseFloat(s));
+    if (fn === 'matrix3d') m = mul(m, v.map(Number));
+    else if (fn === 'translateZ') m = mul(m, translate(0, 0, px(v[0], 0)));
+    else if (fn === 'translate') m = mul(m, translate(px(v[0], size.w), px(v[1], size.h)));
+    else throw new Error(fn);
+  }
+  return m;
+};
+const about = (m: M, ox: number, oy: number) => mul(mul(translate(ox, oy), m), translate(-ox, -oy));
+
+describe('the plane registers with the WebGL mat', () => {
+  for (const [w, h] of [[1600, 900], [1100, 768]]) {
+    it(`a point of the plane lands where the camera draws it, within 1 px (${w}×${h}, hand strip kept free)`, () => {
+      const cam = new THREE.PerspectiveCamera(32, w / h, 0.1, 600);
+      const view = { width: w, height: h };
+      placeCamera(cam, view, { tilt: 0.62, zoom: 1.4, panX: 1, panY: -0.5, bottom: 0.2 });
+      const css = cameraCss(cam, view);
+      const [ox, oy] = css.origin.split(' ').map(parseFloat);
+      const d = parseFloat(css.perspective);
+      const persp: M = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -1 / d, 0, 0, 0, 1];
+      const plane = about(parse(planeCss(), { w: PLANE.w, h: PLANE.h }), PLANE.w / 2, PLANE.h / 2);
+      const camM = about(parse(css.transform, { w, h }), ox, oy);
+      const all = mul(about(persp, ox, oy), mul(camM, plane));
+      for (const [px, py] of [[PLANE.w / 2, PLANE.h / 2], [0, 0], [PLANE.w, PLANE.h], [300, 700]]) {
+        const v = [px, py, 0, 1];
+        const out = [0, 1, 2, 3].map((row) => v.reduce((s, x, k) => s + all[k * 4 + row] * x, 0));
+        const sx = out[0] / out[3];
+        const sy = out[1] / out[3];
+        const wp = planeToWorld(px, py);
+        const ndc = new THREE.Vector3(wp.x, wp.y, MAT.top + 0.002).project(cam);
+        expect(sx).toBeCloseTo(((ndc.x + 1) / 2) * w, -0.3);
+        expect(sy).toBeCloseTo(((1 - ndc.y) / 2) * h, -0.3);
+      }
+    });
+  }
 });

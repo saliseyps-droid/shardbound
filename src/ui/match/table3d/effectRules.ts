@@ -62,3 +62,6 @@ export function fxLabel(kind: Fx['kind'], amount: number | undefined): string {
 
 /** Height (world units) of an attacking card at progress p of its lunge: up and back down onto the table. */
 export const arcHeight = (p: number) => Math.sin(Math.min(1, Math.max(0, p)) * Math.PI) * 0.45;
+
+/** Where an effect plays: on its target, or where a unit last stood when the hit killed it (its element is gone by then). */
+export const fxAnchor = <P>(live: P | null, last: P | undefined): P | null => live ?? last ?? null;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { arcHeight, fxBurst, fxLabel } from '@/ui/match/table3d/effectRules';
+import { arcHeight, fxAnchor, fxBurst, fxLabel } from '@/ui/match/table3d/effectRules';
 
 describe('3D table effects', () => {
   it('bursts sparks for damage and rising motes for healing', () => {
@@ -32,5 +32,17 @@ describe('3D table effects', () => {
     expect(arcHeight(0)).toBeCloseTo(0);
     expect(arcHeight(1)).toBeCloseTo(0);
     expect(arcHeight(0.45)).toBeGreaterThan(0.4);
+  });
+});
+
+describe('where an effect plays', () => {
+  it('on the target when it is still on the table', () => {
+    expect(fxAnchor({ x: 1, y: 2 }, { x: 5, y: 5 })).toEqual({ x: 1, y: 2 });
+  });
+  it('where a unit last stood when the hit killed it (its element is already gone)', () => {
+    expect(fxAnchor(null, { x: 5, y: 5 })).toEqual({ x: 5, y: 5 });
+  });
+  it('nowhere when the target was never on the table', () => {
+    expect(fxAnchor(null, undefined)).toBeNull();
   });
 });

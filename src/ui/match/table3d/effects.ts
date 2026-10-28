@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type { Fx } from '@/state/matchStore';
 import { MAT } from './tableCamera';
-import { fxBurst, fxLabel } from './effectRules';
+import { fxAnchor, fxBurst, fxLabel } from './effectRules';
 
 /**
  * The 3D table's effects (WebGL), driven by the match store's fx list: sparks, motes and a flash of
@@ -13,7 +13,8 @@ import { fxBurst, fxLabel } from './effectRules';
  */
 export interface Effects {
   scene: THREE.Scene;
-  update(plane: HTMLElement, toMat: (x: number, y: number) => THREE.Vector3 | null, fx: Fx[], dt: number): void;
+  /** `lastAt`: where a unit last stood on the table (bodies.ts), for hits that killed it. */
+  update(plane: HTMLElement, toMat: (x: number, y: number) => THREE.Vector3 | null, fx: Fx[], dt: number, lastAt?: (key: string) => THREE.Vector3 | undefined): void;
   shatter(map: THREE.Texture | null, w: number, h: number, at: THREE.Vector3): void;
   flyCard(map: THREE.Texture, w: number, from: THREE.Vector3, to: THREE.Vector3): void;
   /** The current camera shake offset (world units). */
@@ -154,18 +155,17 @@ export function createEffects(table: THREE.Scene): Effects {
   };
 
   return {
-    update(plane, toMat, fx, dt) {
+    update(plane, toMat, fx, dt, lastAt) {
       // New effects in the store: a burst where their target stands.
       for (const f of fx) {
         if (seen.has(f.id)) continue;
         seen.add(f.id);
         const el = plane.querySelector<HTMLElement>(`[data-entity="${f.target}"]`);
-        if (!el) continue;
-        const r = el.getBoundingClientRect();
-        const at = toMat(r.left + r.width / 2, r.top + r.height / 2);
+        const r = el?.getBoundingClientRect();
+        const at = fxAnchor(r ? toMat(r.left + r.width / 2, r.top + r.height / 2) : null, lastAt?.(f.target)?.clone());
         if (!at) continue;
         at.z = MAT.top + 0.3;
-        spawn(at, f.kind, f.amount, f.target.startsWith('h:'), (el.offsetWidth / 1600) * MAT.w * 0.8);
+        spawn(at, f.kind, f.amount, f.target.startsWith('h:'), ((el?.offsetWidth ?? 150) / 1600) * MAT.w * 0.8);
       }
       if (seen.size > 400) for (const id of [...seen].slice(0, 200)) seen.delete(id);
 

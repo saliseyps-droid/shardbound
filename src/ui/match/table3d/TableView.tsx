@@ -36,8 +36,6 @@ const ZOOM_MAX = 3;
  */
 export default function TableView({ boardUrl, board, warm = '#ffb05a', children, onUnavailable, onSlow }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const fxCanvasRef = useRef<HTMLCanvasElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
   const camRef = useRef<HTMLDivElement>(null);
   const planeRef = useRef<HTMLDivElement>(null);
@@ -48,16 +46,36 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
 
   useEffect(() => {
     const root = rootRef.current!;
-    const canvas = canvasRef.current!;
-    let renderer: THREE.WebGLRenderer;
+    // Fresh canvases for every run: a canvas whose context was released (below) can't get a new one,
+    // and StrictMode runs this effect twice on the same elements.
+    const canvas = document.createElement('canvas');
+    const fxCanvas = document.createElement('canvas');
+    canvas.className = 'table3d-canvas';
+    fxCanvas.className = 'table3d-canvas table3d-fx';
+    canvas.setAttribute('aria-hidden', 'true');
+    fxCanvas.setAttribute('aria-hidden', 'true');
+    root.insertBefore(canvas, viewRef.current);
+    root.appendChild(fxCanvas);
+    let renderer: THREE.WebGLRenderer | undefined;
     let fxRenderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-      fxRenderer = new THREE.WebGLRenderer({ canvas: fxCanvasRef.current!, antialias: true, alpha: true });
+      fxRenderer = new THREE.WebGLRenderer({ canvas: fxCanvas, antialias: true, alpha: true });
     } catch {
+      renderer?.dispose();
+      renderer?.forceContextLoss();
+      canvas.remove();
+      fxCanvas.remove();
       failRef.current();
       return;
     }
+    // The browser may drop a context (too many open, a GPU reset): fall back to the 2D board.
+    const lost = (e: Event) => {
+      e.preventDefault();
+      failRef.current();
+    };
+    canvas.addEventListener('webglcontextlost', lost);
+    fxCanvas.addEventListener('webglcontextlost', lost);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -192,7 +210,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       // The bodies follow the plane's DOM, so they read it after this frame's camera is written.
       const m = useMatch.getState();
       bodies.update(planeRef.current!, matPoint, m.game, clock.elapsedTime);
-      effects.update(planeRef.current!, matPoint, m.fx, dt);
+      effects.update(planeRef.current!, matPoint, m.fx, dt, bodies.lastAt);
       table.update(clock.elapsedTime, dt);
       life.update(clock.elapsedTime, dt);
       renderer.render(table.scene, camera);
@@ -213,14 +231,21 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       life.dispose();
       effects.dispose();
       table.dispose();
+      canvas.removeEventListener('webglcontextlost', lost);
+      fxCanvas.removeEventListener('webglcontextlost', lost);
+      // Release the GPU contexts now (each 3D mount makes two; browsers cap the live ones).
       renderer.dispose();
       fxRenderer.dispose();
+      renderer.forceContextLoss();
+      fxRenderer.forceContextLoss();
+      canvas.remove();
+      fxCanvas.remove();
+      if (import.meta.env.DEV) delete (window as { __table3d?: unknown }).__table3d;
     };
   }, [boardUrl, board, warm]);
 
   return (
     <div className="table3d" ref={rootRef}>
-      <canvas className="table3d-canvas" ref={canvasRef} aria-hidden />
       <div className="table3d-view" ref={viewRef}>
         <div className="table3d-cam" ref={camRef}>
           <div className="table3d-plane" ref={planeRef} style={{ width: PLANE.w, height: PLANE.h }}>
@@ -228,7 +253,6 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
           </div>
         </div>
       </div>
-      <canvas className="table3d-canvas table3d-fx" ref={fxCanvasRef} aria-hidden />
     </div>
   );
 }
