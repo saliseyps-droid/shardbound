@@ -86,8 +86,8 @@
 .table3d-plane .draw-pile.is-empty .draw-pile-count { left: 50%; top: 50%; bottom: auto; transform: translate(calc(-50% + var(--pile-side, 0px)), calc(-50% - var(--pile-rise, 0px))); }
 .table3d-plane .draw-pile-card,
 .table3d-plane .draw-pile-slot { visibility: hidden; }
-.table3d-plane .energy-crystals { gap: 4px; }
-.table3d-plane .crystal { visibility: hidden; width: 22px; height: 30px; }
+.table3d-plane .energy-crystals { gap: 4px 6px; display: flex; flex-wrap: wrap; width: calc(30px * 5 + 6px * 4); flex: none; }
+.table3d-plane .crystal { visibility: hidden; width: 30px; height: 40px; }
 
 /* From 0.68.0 the effects are drawn in 3D (effects.ts): sparks, flashes and the numbers floating up
    facing the camera; the flat numbers on the plane would only lie foreshortened under them. */
@@ -172,3 +172,8 @@
 /* As in the mockup: both rows close to the middle line, clear of the Wardens. */
 .table3d-plane .board-row.enemy { align-items: flex-end; padding-bottom: 26px; }
 .table3d-plane .board-row.self { align-items: flex-start; padding-top: 26px; }
+
+/* As in the mockup: a big Health gem on the Warden, a big energy count beside the crystals. */
+.table3d-plane .hero-health { min-width: 44px; height: 46px; font-size: 1.55rem; right: 6%; bottom: 6%; }
+.table3d-plane .energy-count { font-size: 1.9rem; font-weight: 800; color: #eaf6ff; text-shadow: 0 2px 4px #000; }
+.table3d-plane .hero-side-info .energy { flex: none; }

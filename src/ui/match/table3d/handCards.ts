@@ -95,7 +95,8 @@ export function createHandCards(scene: THREE.Scene): HandCards {
   const H = 1.4;
   const slabGeo = new THREE.ExtrudeGeometry(roundedRect(W, H, 0.07), { depth: CT, bevelEnabled: true, bevelThickness: 0.015, bevelSize: 0.018, bevelSegments: 3 });
   const faceGeo = new THREE.PlaneGeometry(W - 0.015, H - 0.015);
-  const ringGeo = new THREE.PlaneGeometry(W * 1.62, H * 1.45);
+  // A snug glow just round the card's edge (the table's ring texture leaves room for a wide halo).
+  const ringGeo = new THREE.PlaneGeometry(W * 1.3, H * 1.24);
 
   const make = (): Card => {
     const g = new THREE.Group();
@@ -116,7 +117,7 @@ export function createHandCards(scene: THREE.Scene): HandCards {
       gm.num.position.copy(gm.gem.position).add(new THREE.Vector3(0, 0, 0.3 * k));
       pivot.add(gm.gem, gm.num);
     }
-    const ring = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ map: ringTex, color: '#1fd65a', blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, toneMapped: false }));
+    const ring = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ map: ringTex, color: '#3cff7a', blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, toneMapped: false }));
     ring.position.set(0, H / 2, CT + 0.03);
     pivot.add(slab, face, ring);
     g.add(pivot);
@@ -204,7 +205,7 @@ export function createHandCards(scene: THREE.Scene): HandCards {
         c.face.material.opacity = dragging ? 0.25 : 1;
         const playable = cardEl.classList.contains('is-playable');
         c.ring.material.color.set(el.classList.contains('is-selected') ? '#5fe1ff' : '#1fd65a');
-        c.ring.material.opacity = playable && !dragging ? 0.55 + Math.sin(t * 3 + i) * 0.25 : el.classList.contains('is-selected') ? 0.9 : 0;
+        c.ring.material.opacity = playable && !dragging ? 0.45 + Math.sin(t * 2.5 + i) * 0.12 : el.classList.contains('is-selected') ? 0.8 : 0;
       });
       for (const [el, c] of cards)
         if (!c.seen) {

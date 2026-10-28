@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.73.2',
+    date: '2026-10-28',
+    title: 'Wardens and energy as in the preview',
+    summary: 'On the 3D table the Wardens and the energy look as in the first preview.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          '3D table: each Warden lies in a thin gold frame on the table instead of on a tall plinth, with a bigger Health gem.',
+          '3D table: the energy crystals are bigger, in rows of five, with a big energy count beside them.',
+          '3D table: the view sits a little further back and your hand a little further from the table; playable cards in your hand have a soft green edge instead of a wide glow.',
+          '3D table: the opponent holds their cards upright at the far edge, leaning towards themselves, their backs towards you.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.73.1',
     date: '2026-10-28',
     title: 'The table, laid out as in its preview',

@@ -29,7 +29,7 @@ interface Props {
 }
 
 /** The hand's strip at the bottom of the screen, kept free of the table. */
-const BOTTOM = 0.2;
+const BOTTOM = 0.27;
 
 /**
  * The 3D table: the WebGL room behind, and `children` (plain match DOM) laid onto the mat with the

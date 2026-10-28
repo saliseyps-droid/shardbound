@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.73.2': {
+    title: 'Wardeni a energie jako v náhledu',
+    summary: 'Na 3D stole vypadají Wardeni i energie jako v prvním náhledu.',
+    sections: [
+      [
+        '3D stůl: každý Warden leží na stole v tenkém zlatém rámečku místo na vysokém podstavci a má větší drahokam Životů.',
+        '3D stůl: krystaly energie jsou větší, v řadách po pěti, a vedle nich je velké číslo energie.',
+        '3D stůl: pohled je o kousek dál a tvoje ruka trochu dál od stolu; zahratelné karty v ruce mají jemný zelený okraj místo široké záře.',
+        '3D stůl: soupeř drží karty vzpřímeně u vzdálené hrany, nakloněné k sobě, rubem k tobě.',
+      ],
+    ],
+  },
   '0.73.1': {
     title: 'Stůl rozložený jako v náhledu',
     summary: 'Karty na 3D stole i v ruce mají velikost a polohu jako v prvním náhledu.',

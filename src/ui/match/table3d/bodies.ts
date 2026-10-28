@@ -214,7 +214,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
   // and the hit target, moved up onto it).
   interface HeroBody { plinth: THREE.Mesh; face: THREE.Mesh<THREE.ShapeGeometry, THREE.MeshStandardMaterial>; w: number; h: number; art: string; shift: { dx: number; dy: number } }
   const heroes = new Map<string, HeroBody>();
-  const HERO_D = 0.22; // plinth height
+  const HERO_D = 0.07; // a thin gold frame lying on the table, as in the mockup
   const dropHero = (b: HeroBody) => {
     scene.remove(b.plinth, b.face);
     b.plinth.geometry.dispose();
@@ -223,13 +223,13 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     b.face.material.dispose();
   };
   const makeHero = (w: number, h: number): HeroBody => {
-    const plinth = new THREE.Mesh(new THREE.ExtrudeGeometry(hexShape(w * 1.08, h * 1.08), { depth: HERO_D, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: 2 }), [backMat, gold]);
+    const plinth = new THREE.Mesh(new THREE.ExtrudeGeometry(hexShape(w * 1.03, h * 1.03), { depth: HERO_D, bevelEnabled: true, bevelThickness: 0.015, bevelSize: 0.015, bevelSegments: 2 }), [backMat, gold]);
     plinth.castShadow = true;
     // The portrait: a hexagon a little inside the gold rim, its UVs spanning the hexagon's box.
-    const geo = new THREE.ShapeGeometry(hexShape(w * 0.96, h * 0.96));
+    const geo = new THREE.ShapeGeometry(hexShape(w * 0.985, h * 0.985));
     const uv = geo.attributes.uv;
     const pos = geo.attributes.position;
-    for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / (w * 0.96) + 0.5, pos.getY(i) / (h * 0.96) + 0.5);
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / (w * 0.985) + 0.5, pos.getY(i) / (h * 0.985) + 0.5);
     const face = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0x2a2244, roughness: 0.55 }));
     scene.add(plinth, face);
     return { plinth, face, w, h, art: '', shift: { dx: 0, dy: 0 } };
@@ -275,11 +275,12 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
   // ---- The opponent's hand: card backs fanned in the air over the far edge (as in the mockup).
   const foe: THREE.Mesh[] = [];
   let foeFace: THREE.Texture | null = null;
-  const foeGeo = keep(new THREE.BoxGeometry(1.45 * 0.62, 1.45 * 1.4 * 0.62, 0.035));
+  const foeGeo = keep(new THREE.BoxGeometry(1.45 * 0.52, 1.45 * 1.4 * 0.52, 0.035));
   const foeMats = new Map<THREE.Texture, THREE.MeshStandardMaterial>();
   const foeBack = (face: THREE.Texture) => {
     let m = foeMats.get(face);
-    if (!m) foeMats.set(face, (m = keep(new THREE.MeshStandardMaterial({ map: face, roughness: 0.5 }))));
+    // A little light of their own: the lamps are behind them as seen from your seat.
+    if (!m) foeMats.set(face, (m = keep(new THREE.MeshStandardMaterial({ map: face, roughness: 0.5, emissive: 0xffffff, emissiveMap: face, emissiveIntensity: 0.08 }))));
     return m;
   };
 
@@ -584,8 +585,10 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
       foe.forEach((m, i) => {
         const k = i - (foe.length - 1) / 2;
         // Their backs (the +z face, tipped towards you) show; the fan turns a half turn so it reads from their side.
-        m.position.set(k * 0.62, MAT.h / 2 + 0.35 - Math.abs(k) * 0.05, MAT.top + 0.5 + i * 0.02 + Math.sin(t * 1.1 + i) * 0.01);
-        m.rotation.set(0.35, 0, k * 0.08 + Math.PI);
+        // Held up at the far edge as the opponent holds them: standing, their backs towards you, leaning
+        // a little away (towards their holder), fanned.
+        m.position.set(k * 0.5, MAT.h / 2 + 0.02 + Math.abs(k) * 0.03, MAT.top + 0.3 - Math.abs(k) * 0.03 + Math.sin(t * 1.1 + i) * 0.01);
+        m.rotation.set(0.7, 0, -k * 0.09, 'ZXY');
       });
 
       // Energy crystals, one per DOM crystal, in the owner's faction colours.
@@ -612,7 +615,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         c.gem.rotation.z = t * 0.35 + i;
         c.g.position.set(p.x, p.y, MAT.top);
         // Sized to the DOM crystal's slot (its width plus the gap): a socket a little narrower than the slot.
-        c.g.scale.setScalar(Math.max(0.4, ((el.offsetWidth + 4) * PX) / 0.42));
+        c.g.scale.setScalar(Math.max(0.4, ((el.offsetWidth + 6) * PX) / 0.42));
       });
       for (const [k, c] of crystals)
         if (!c.seen) {
