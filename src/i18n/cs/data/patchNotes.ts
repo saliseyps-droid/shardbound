@@ -1,6 +1,14 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.74.3': {
+    title: 'Čistší rámečky karet',
+    summary: 'Jemnější rámečky karet na 3D stole a oprava kliknutí.',
+    sections: [
+      ['3D stůl: karty na stole ukazují obrázek skoro až k okraji, v tenkém rámečku ze starého zlata s rytou linkou; Stráž je úzký ocelový rámeček místo tlustého kamenného.'],
+      ['3D stůl: po otočení pohledu se už nezahodí první kliknutí na schopnost Wardena (ani na nic jiného).'],
+    ],
+  },
   '0.74.2': {
     title: 'Opravy 3D stolu',
     summary: 'Kolo oprav 3D stolu.',

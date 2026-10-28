@@ -19,6 +19,20 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.74.3',
+    date: '2026-10-28',
+    title: 'Cleaner card frames',
+    summary: 'Finer frames for the cards on the 3D table, and a click fix.',
+    sections: [
+      {
+        kind: 'improved',
+        items: ['3D table: the cards on the table show their picture almost to the edge, in a thin antique-gold frame with an engraved line; Guard is a slim steel bezel instead of a thick stone frame.'],
+      },
+      { kind: 'fixed', items: ['3D table: after turning the view, the first click on a Warden ability (or anything else) is no longer ignored.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.74.2',
     date: '2026-10-28',
     title: '3D table fixes',

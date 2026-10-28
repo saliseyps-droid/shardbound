@@ -256,10 +256,14 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       target.panY = drag.py + Math.sin(yaw) * across + Math.cos(yaw) * along;
       clampPan();
     };
-    // A drag that moved the view isn't also a click on the table (that would cancel a selection).
+    // A drag that moved the view isn't also a click on the table (that would cancel a selection): only
+    // the click the browser sends right as that drag ends is swallowed. (A right-button turn sends no
+    // click at all, and a drag let go off the table sends it elsewhere; a lasting flag would then eat
+    // the next real click, e.g. on a Warden ability.)
+    let swallowUntil = 0;
     const onClick = (e: MouseEvent) => {
-      if (!dragged) return;
-      dragged = false;
+      if (performance.now() > swallowUntil) return;
+      swallowUntil = 0;
       e.stopPropagation();
       e.preventDefault();
     };
@@ -267,6 +271,8 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       if (zoomsTable(e.target as Element, match)) e.preventDefault();
     };
     const onUp = (e: PointerEvent) => {
+      if (dragged) swallowUntil = performance.now() + 80;
+      dragged = false;
       drag = null;
       match.classList.remove('is-moving-view');
       touches.delete(e.pointerId);

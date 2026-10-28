@@ -91,10 +91,13 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     new THREE.MeshPhysicalMaterial({ roughness: 0.55, specularIntensity: 0.25, clearcoat: 0.25, clearcoatRoughness: 0.45, envMap: env ?? null, envMapIntensity: 0.06, ...p });
   // A plain sheen without the varnish (a varnish hazes small, bright things like portraits and tokens).
   const satin = (p: THREE.MeshPhysicalMaterialParameters) => new THREE.MeshPhysicalMaterial({ roughness: 0.4, metalness: 0, specularIntensity: 0.35, envMap: env ?? null, envMapIntensity: 0.06, ...p });
-  const stoneMat = keep(new THREE.MeshStandardMaterial({ color: 0xbdb5a2, roughness: 0.85, metalness: 0.05 }));
+  // Guard: a slim bezel of dark steel round the card.
+  const stoneMat = keep(new THREE.MeshStandardMaterial({ color: 0x8e98a8, roughness: 0.32, metalness: 0.85 }));
   const iceMat = keep(new THREE.MeshPhysicalMaterial({ color: 0xbfe9ff, emissive: 0x5fb8ff, emissiveIntensity: 0.35, roughness: 0.1, transmission: 0, transparent: true, opacity: 0.85, clearcoat: 1 }));
+  // The cards' edges: a satin, antique gold (the bright metal gold read as a cheap yellow band).
+  const cardEdge = keep(new THREE.MeshStandardMaterial({ color: 0xa87a34, metalness: 0.75, roughness: 0.42 }));
+  const cardEdgeDark = keep(new THREE.MeshStandardMaterial({ color: 0x6e4e22, metalness: 0.7, roughness: 0.45 }));
   const gold = keep(new THREE.MeshStandardMaterial({ color: 0xd9a63a, metalness: 0.95, roughness: 0.28 }));
-  const darkGold = keep(new THREE.MeshStandardMaterial({ color: 0x8a6526, metalness: 0.9, roughness: 0.38 }));
   const backMat = keep(new THREE.MeshStandardMaterial({ color: 0x1a1430, roughness: 0.6 }));
   const shadowTex = keep(
     canvasTexture(128, (g, s) => {
@@ -214,8 +217,8 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
   const makeUnit = (w: number, h: number, enemy: boolean): UnitBody => {
     const g = new THREE.Group();
     const slab = new THREE.Mesh(
-      new THREE.ExtrudeGeometry(roundedRect(w, h, Math.min(w, h) * 0.07), { depth: CT, bevelEnabled: true, bevelThickness: 0.018, bevelSize: 0.022, bevelSegments: 3 }),
-      [backMat, enemy ? darkGold : gold],
+      new THREE.ExtrudeGeometry(roundedRect(w, h, Math.min(w, h) * 0.05), { depth: CT, bevelEnabled: true, bevelThickness: 0.012, bevelSize: 0.012, bevelSegments: 3 }),
+      [backMat, enemy ? cardEdgeDark : cardEdge],
     );
     slab.castShadow = true;
     const face = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.02, h - 0.02), glossy({ transparent: true, color: 0x2a2244 }));
@@ -242,10 +245,10 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
       shape.holes.push(roundedRect(w - pad * 0.4, h - pad * 0.4, Math.min(w, h) * 0.06));
       return new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01, bevelSegments: 2 });
     };
-    const guard = new THREE.Mesh(frame(0.07, CT + 0.05), stoneMat);
+    const guard = new THREE.Mesh(frame(0.035, CT + 0.03), stoneMat);
     guard.position.z = -0.01;
     guard.castShadow = true;
-    const frost = new THREE.Mesh(frame(0.05, CT + 0.07), iceMat);
+    const frost = new THREE.Mesh(frame(0.04, CT + 0.045), iceMat);
     frost.position.z = -0.005;
     const barrier = new THREE.Mesh(
       new THREE.ExtrudeGeometry(roundedRect(w + 0.08, h + 0.08, Math.min(w, h) * 0.1), { depth: 0.12, bevelEnabled: true, bevelThickness: 0.08, bevelSize: 0.05, bevelSegments: 4 }),
@@ -435,7 +438,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
                 : finish === 'GILDED'
                   ? new THREE.MeshStandardMaterial({ color: 0x2a1f0c, metalness: 0.9, roughness: 0.3, emissive: 0x6b4a10, emissiveIntensity: 0.25 })
                   : null;
-          (b.slab.material as THREE.Material[])[1] = b.edge ?? (b.enemy ? darkGold : gold);
+          (b.slab.material as THREE.Material[])[1] = b.edge ?? (b.enemy ? cardEdgeDark : cardEdge);
           b.finish = finish;
           b.face.material.color.set(0xffffff);
           b.face.material.needsUpdate = true;

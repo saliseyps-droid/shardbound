@@ -55,7 +55,7 @@ export function drawIcon(g: CanvasRenderingContext2D, kind: AbilityIconKind, x: 
   g.restore();
 }
 
-const GOLD = ['#fff1b8', '#d39b2a', '#7a4f0e', '#f5d27a'];
+const GOLD = ['#f3d892', '#b3822e', '#6b4512', '#d9b25c'];
 const DARK_GOLD = ['#a77b35', '#5c3d14', '#3a2508', '#8a6224'];
 /** Card finishes (game Variant): the frame each one gets on the table. */
 export type Finish = 'NORMAL' | 'FOIL' | 'PRISMATIC' | 'GILDED';
@@ -69,8 +69,9 @@ function frame(g: CanvasRenderingContext2D, enemy: boolean, finish: Finish = 'NO
   stops.forEach((c, i) => fr.addColorStop(i / (stops.length - 1), c));
   g.fillStyle = fr;
   g.fillRect(0, 0, FW, FH);
+  // A narrow band: the picture takes nearly the whole card.
   g.fillStyle = '#151226';
-  g.fillRect(14, 14, FW - 28, FH - 28);
+  g.fillRect(9, 9, FW - 18, FH - 18);
   return golds;
 }
 
@@ -91,17 +92,29 @@ function cover(g: CanvasRenderingContext2D, img: CanvasImageSource & { width: nu
 export function unitFace(img: HTMLImageElement, o: { enemy: boolean; icons: AbilityIconKind[]; fx: number; fy: number; finish?: Finish }) {
   return canvasTexture(FW, FH, (g) => {
     const golds = frame(g, o.enemy, o.finish);
-    const iw = FW - 36;
-    const ih = FH - 36;
-    cover(g, img, 18, 18, iw, ih, o.fx, o.fy);
+    const iw = FW - 24;
+    const ih = FH - 24;
+    cover(g, img, 12, 12, iw, ih, o.fx, o.fy);
+    // A soft dark vignette at the picture's edges, so it sits in the frame instead of on it.
+    const vig = g.createRadialGradient(FW / 2, FH / 2, FH * 0.32, FW / 2, FH / 2, FH * 0.62);
+    vig.addColorStop(0, 'rgba(10,6,20,0)');
+    vig.addColorStop(1, 'rgba(10,6,20,.45)');
+    g.fillStyle = vig;
+    g.fillRect(12, 12, iw, ih);
     const fade = g.createLinearGradient(0, FH * 0.72, 0, FH);
     fade.addColorStop(0, 'rgba(10,6,20,0)');
     fade.addColorStop(1, 'rgba(10,6,20,.75)');
     g.fillStyle = fade;
-    g.fillRect(18, 18, iw, ih);
+    g.fillRect(12, 12, iw, ih);
+    // A thin bright line inside the band, a darker one outside it: an engraved edge.
+    g.strokeStyle = 'rgba(0,0,0,.55)';
+    g.lineWidth = 3;
+    g.strokeRect(10.5, 10.5, FW - 21, FH - 21);
     g.strokeStyle = golds[0];
-    g.lineWidth = 4;
-    g.strokeRect(18, 18, iw, ih);
+    g.globalAlpha = 0.8;
+    g.lineWidth = 1.5;
+    g.strokeRect(14, 14, iw - 4, ih - 4);
+    g.globalAlpha = 1;
     const icons = o.icons.slice(0, 4);
     const r = icons.length > 3 ? 56 : 70;
     const gap = 14;
