@@ -2,7 +2,10 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { useMatch } from '@/state/matchStore';
 import { useSettings } from '@/state/settingsStore';
+import { BOARD_FX } from '../boardFx';
+import { BOARD_GLOWS, BOARD_SEA, BOARD_SMOKE } from '../AnimatedBoard';
 import { buildTableScene } from './TableScene3D';
+import { createBoardLife } from './boardLife';
 import { createBodies } from './bodies';
 import { createEffects } from './effects';
 import { MAT, PLANE, cameraCss, placeCamera, planeCss, type CameraState } from './tableCamera';
@@ -10,6 +13,8 @@ import '@/ui/styles/table3d.css';
 
 interface Props {
   boardUrl: string;
+  /** The mat's key (boardFx.ts), for its particles and lights in 3D. */
+  board?: string;
   warm?: string;
   /** The on-table part of the match (hero areas, battlefield rows, draw piles), laid onto the mat. */
   children: ReactNode;
@@ -26,7 +31,7 @@ const ZOOM_MAX = 3;
  * same camera, so drag, drop and clicks keep working on the tilted board. Wheel or pinch zooms
  * towards the pointer, the middle button pans, a double click on the table resets the view.
  */
-export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnavailable }: Props) {
+export default function TableView({ boardUrl, board, warm = '#ffb05a', children, onUnavailable }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fxCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -60,10 +65,16 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
     fxRenderer.toneMappingExposure = 1.45;
     fxRenderer.setClearColor(0x000000, 0);
     const table = buildTableScene(boardUrl, warm);
+    const life = createBoardLife(
+      table.scene,
+      board ? BOARD_FX[board] : undefined,
+      board ? { glow: BOARD_GLOWS[board], smoke: BOARD_SMOKE[board], sea: BOARD_SEA[board] } : {},
+      useSettings.getState().performanceMode,
+    );
     const effects = createEffects(table.scene);
     const bodies = createBodies(table.scene, effects);
     // Dev server only: lets a browser check fire effects on demand.
-    if (import.meta.env.DEV) Object.assign(window, { __table3d: { useMatch, useSettings } });
+    if (import.meta.env.DEV) Object.assign(window, { __table3d: { useMatch, useSettings, scene: table.scene } });
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 600);
     planeRef.current!.style.transform = planeCss();
 
@@ -164,6 +175,7 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
       bodies.update(planeRef.current!, matPoint, m.game, clock.elapsedTime);
       effects.update(planeRef.current!, matPoint, m.fx, dt);
       table.update(clock.elapsedTime, dt);
+      life.update(clock.elapsedTime, dt);
       renderer.render(table.scene, camera);
       fxRenderer.render(effects.scene, camera);
     };
@@ -179,12 +191,13 @@ export default function TableView({ boardUrl, warm = '#ffb05a', children, onUnav
       window.removeEventListener('pointerup', onUp);
       match.removeEventListener('dblclick', onDbl);
       bodies.dispose();
+      life.dispose();
       effects.dispose();
       table.dispose();
       renderer.dispose();
       fxRenderer.dispose();
     };
-  }, [boardUrl, warm]);
+  }, [boardUrl, board, warm]);
 
   return (
     <div className="table3d" ref={rootRef}>

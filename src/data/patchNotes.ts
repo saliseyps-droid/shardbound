@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.69.0',
+    date: '2026-10-28',
+    title: 'Living boards on the table',
+    summary: 'The animated boards now come alive on the 3D table too.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          '3D table: the board keeps its breathing glow, flames, sunbeams, mist and smoke, and its particles now move in the air over it: embers rise off the table, snow and leaves fall onto it, dust and fireflies hover above the cards.',
+          'The flames and candles painted on a board are real lights on the 3D table and fall on the cards near them.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.68.0',
     date: '2026-10-28',
     title: 'Sparks on the table',

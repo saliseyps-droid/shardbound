@@ -755,7 +755,13 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           return (
             <>
               <Suspense fallback={null}>
-                <TableView boardUrl={boardBg!.url} onUnavailable={() => setFailed3d(true)}>
+                <TableView boardUrl={boardBg!.url} board={boardBg!.key} onUnavailable={() => setFailed3d(true)}>
+                  {/* The mat's glow, lights, mist and smoke lie on the table; its particles are 3D there (boardLife.ts). */}
+                  {boardBg?.key && (
+                    <div className="table3d-board-fx" aria-hidden>
+                      <AnimatedBoard board={boardBg.key} game={game} fit={boardBg.fit} particles={false} />
+                    </div>
+                  )}
                   {enemySide}
                   {battlefield}
                   <section className="side self-side" aria-label={t('You')} style={selfStyle}>

@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.69.0': {
+    title: 'Živé desky na stole',
+    summary: 'Animované desky teď ožívají i na 3D stole.',
+    sections: [
+      [
+        '3D stůl: deska si nechává svou dýchající záři, plameny, sluneční paprsky, mlhu i kouř a její částice se teď pohybují ve vzduchu nad ní: uhlíky stoupají ze stolu, sníh a listí na něj padají, prach a světlušky se vznášejí nad kartami.',
+        'Plameny a svíčky namalované na desce jsou na 3D stole skutečná světla a osvětlují karty v jejich blízkosti.',
+      ],
+    ],
+  },
   '0.68.0': {
     title: 'Jiskry na stole',
     summary: 'Zásahy, léčení i smrt se na 3D stole teď odehrávají ve 3D.',

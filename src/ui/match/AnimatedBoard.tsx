@@ -12,10 +12,10 @@ const glowModules = import.meta.glob('../../assets/boards/fx/*-glow.webp', { eag
 export const BOARD_GLOWS: Record<string, string> = Object.fromEntries(Object.entries(glowModules).map(([path, url]) => [path.match(/([^/]+)-glow\.webp$/)![1], url]));
 const smokeModules = import.meta.glob('../../assets/boards/fx/*-smoke.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 /** The painted smoke of a mat, alone (tools/board_glow.py), by mat name. */
-const BOARD_SMOKE: Record<string, string> = Object.fromEntries(Object.entries(smokeModules).map(([path, url]) => [path.match(/([^/]+)-smoke\.webp$/)![1], url]));
+export const BOARD_SMOKE: Record<string, string> = Object.fromEntries(Object.entries(smokeModules).map(([path, url]) => [path.match(/([^/]+)-smoke\.webp$/)![1], url]));
 const seaModules = import.meta.glob('../../assets/boards/fx/*-sea.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 /** The painted sea around a mat, alone (tools/board_glow.py), by mat name: it churns like the smoke. */
-const BOARD_SEA: Record<string, string> = Object.fromEntries(Object.entries(seaModules).map(([path, url]) => [path.match(/([^/]+)-sea\.webp$/)![1], url]));
+export const BOARD_SEA: Record<string, string> = Object.fromEntries(Object.entries(seaModules).map(([path, url]) => [path.match(/([^/]+)-sea\.webp$/)![1], url]));
 
 /** The mats' size (a few are a little less tall: BoardFx.height): the layer is laid out on a mat the way the board shows it. */
 const MAT_W = 3200;
@@ -227,7 +227,8 @@ function TurnEmblem() {
  * A mat that comes alive (src/ui/match/boardFx.ts): its glow breathes, its lights flicker and particles
  * drift over it. When your turn begins, the Shardbound emblem rises in the middle of it.
  */
-export function AnimatedBoard({ board, game, fit = 'cover' }: { board: string; game?: GameState; fit?: 'cover' | 'contain' }) {
+/** `particles={false}`: only the painted parts and smoke (the 3D table draws its own particles in 3D). */
+export function AnimatedBoard({ board, game, fit = 'cover', particles = true }: { board: string; game?: GameState; fit?: 'cover' | 'contain'; particles?: boolean }) {
   const fx = BOARD_FX[board];
   const glowUrl = BOARD_GLOWS[board];
   const reduced = useSettings((s) => s.reducedMotion);
@@ -266,7 +267,7 @@ export function AnimatedBoard({ board, game, fit = 'cover' }: { board: string; g
     if (!canvas || !ctx) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     // Each kind of particle on the mat; falling kinds start already spread over it instead of all at the top.
-    const systems = [fx.particles, ...(fx.more ? [fx.more] : [])].map((cfg) => {
+    const systems = (particles ? [fx.particles, ...(fx.more ? [fx.more] : [])] : []).map((cfg) => {
       const base = Math.max(3, Math.round(cfg.count * (lowPower ? 0.35 : usingTouch() ? 0.6 : 1)));
       const falls = FALLS.includes(cfg.kind);
       const list: Particle[] = falls ? Array.from({ length: base }, () => ({ ...spawn(cfg.kind, cfg), y: rand(0, 1), age: 1 })) : [];
@@ -341,7 +342,7 @@ export function AnimatedBoard({ board, game, fit = 'cover' }: { board: string; g
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [reduced, lowPower, fx]);
+  }, [reduced, lowPower, fx, particles]);
 
   if (!fx) return null;
   const glowStyle = {

@@ -77,3 +77,11 @@
 .table3d-plane .fx-layer { display: none; }
 /* A dead unit shatters in 3D; its flat ghost would only show under the shards. */
 .table3d-plane .unit.is-dying { visibility: hidden; }
+
+/* From 0.69.0 the mat's animation (AnimatedBoard: glow, lamps, rays, mist, smoke, the "your turn"
+   emblem) lies on the table under everything else on the plane; its particles are 3D (boardLife.ts). */
+/* z-index -1: under the plane's content, above nothing (the plane is its own stacking context). */
+.table3d-board-fx { position: absolute; inset: 0; pointer-events: none; z-index: -1; }
+/* The glow and painted smoke are black-backed masks the flat board screens over the mat; the plane
+   can't blend with the WebGL mat under it, so the 3D table draws them itself (boardLife.ts). */
+.table3d-board-fx :is(.ab-glow, .ab-smoke) { display: none; }
