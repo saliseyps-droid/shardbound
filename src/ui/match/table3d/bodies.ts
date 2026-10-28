@@ -25,7 +25,7 @@ export interface Bodies {
 
 const PX = MAT.w / PLANE.w; // world units per plane pixel
 /** Where the opponent holds their hand: over the far edge, low enough to stay in the usual view. */
-const FOE_AT = new THREE.Vector3(0, MAT.h / 2 - 0.55, MAT.top + 0.22);
+const FOE_AT = new THREE.Vector3(0, MAT.h / 2 - 0.35, MAT.top + 0.62);
 const CT = 0.06; // card thickness
 const FLOAT = 0.3; // how high the cards float above the table (the mockup's)
 
@@ -352,9 +352,9 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
   const foeGeo = keep(new THREE.BoxGeometry(1.45 * 0.52, 1.45 * 1.4 * 0.52, 0.035));
   const foeMats = new Map<THREE.Texture, THREE.MeshStandardMaterial>();
   const foeBack = (face: THREE.Texture) => {
-    let m = foeMats.get(face);
+    let m = foeMats.get(face) as THREE.MeshPhysicalMaterial | undefined;
     // A little light of their own: the lamps are behind them as seen from your seat.
-    if (!m) foeMats.set(face, (m = keep(new THREE.MeshStandardMaterial({ map: face, roughness: 0.5, emissive: 0xffffff, emissiveMap: face, emissiveIntensity: 0.08 }))));
+    if (!m) foeMats.set(face, (m = keep(glossy({ map: face, emissive: 0xffffff, emissiveMap: face, emissiveIntensity: 0.08 }))));
     return m;
   };
 

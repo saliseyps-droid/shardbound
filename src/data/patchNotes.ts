@@ -23,7 +23,10 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-28',
     title: 'Guard you can see',
     summary: 'Guard units stand out on the 3D table.',
-    sections: [{ kind: 'improved', items: ['3D table: a unit with Guard has a bright steel frame and a shield badge on its top edge.'] }],
+    sections: [
+      { kind: 'improved', items: ['3D table: a unit with Guard has a bright steel frame and a shield badge on its top edge.', '3D table: the opponent’s cards have the same glossy backs as the decks.'] },
+      { kind: 'fixed', items: ['3D table: the opponent’s cards no longer sink into the table.'] },
+    ],
     commits: [],
   },
   {

@@ -4,7 +4,10 @@ const notes: PatchNotesOverlay = {
   '0.74.4': {
     title: 'Stráž, kterou je vidět',
     summary: 'Jednotky se Stráží jsou na 3D stole dobře poznat.',
-    sections: [['3D stůl: jednotka se Stráží má světlý ocelový rámeček a na horní hraně odznak se štítem.']],
+    sections: [
+      ['3D stůl: jednotka se Stráží má světlý ocelový rámeček a na horní hraně odznak se štítem.', '3D stůl: soupeřovy karty mají stejně lesklé ruby jako balíčky.'],
+      ['3D stůl: soupeřovy karty už se nezabořují do stolu.'],
+    ],
   },
   '0.74.3': {
     title: 'Čistší rámečky karet',
