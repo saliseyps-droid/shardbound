@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import type { BoardFx, BoardParticles } from '../boardFx';
-import { MAT } from './tableCamera';
+import { MAT, MAT_ART } from './tableCamera';
 import { lampToWorld, particleMotion, rgb } from './boardLifeRules';
 
 /**
@@ -145,7 +145,7 @@ export function createBoardLife(scene: THREE.Scene, fx: BoardFx | undefined, mas
   const layer = (url: string, z: number, opacity: (t: number) => number, drift?: number) => {
     const map = loader.load(url);
     map.colorSpace = THREE.SRGBColorSpace;
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(MAT.w, MAT.h), new THREE.MeshBasicMaterial({ map, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(MAT.w * MAT_ART, MAT.h * MAT_ART), new THREE.MeshBasicMaterial({ map, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
     mesh.position.z = MAT.top + z;
     scene.add(mesh);
     layers.push({ mesh, opacity, drift });

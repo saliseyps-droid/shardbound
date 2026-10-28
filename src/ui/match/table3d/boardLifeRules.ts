@@ -1,10 +1,13 @@
 import type { ParticleKind } from '../boardFx';
-import { PLANE, planeToWorld } from './tableCamera';
+import { MAT_ART, PLANE, planeToWorld } from './tableCamera';
 
 /** Pure rules for the animated board on the 3D table (no Three.js, so they test without WebGL). */
 
 /** A point painted at x/y % of the mat, on the 3D mat (world units; the painting's top is the far edge). */
-export const lampToWorld = (x: number, y: number) => planeToWorld((x / 100) * PLANE.w, (y / 100) * PLANE.h);
+export const lampToWorld = (x: number, y: number) => {
+  const p = planeToWorld((x / 100) * PLANE.w, (y / 100) * PLANE.h);
+  return { x: p.x * MAT_ART, y: p.y * MAT_ART };
+};
 
 export type ParticleMotion = 'rise' | 'fall' | 'hover' | 'glint';
 

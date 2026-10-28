@@ -199,3 +199,6 @@
    (the flat board's draw-in starts from the pile's screen position, which is elsewhere on this plane). */
 .table3d-hand-plane .hand-card.is-new > .card { animation: hand-rise-in 0.45s var(--ease-out); }
 @keyframes hand-rise-in { from { transform: translateY(40%); opacity: 0; } }
+/* The board's painting is drawn MAT_ART (1.1×) bigger than the play area (tableCamera.ts): its flat
+   animation layer matches it. */
+.table3d-board-fx { transform: scale(1.1); }

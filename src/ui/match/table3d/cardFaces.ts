@@ -242,13 +242,17 @@ export function numberTexture(n: string, color = '#ffffff') {
   if (!t) {
     t = canvasTexture(128, 128, (g) => {
       g.font = `800 ${n.length > 2 ? 64 : 88}px ${FONT_NUM}`;
-      g.textAlign = 'center';
-      g.textBaseline = 'middle';
+      // Centred on the digits' own ink, not the font's line box, so they sit in the middle of their plate.
+      g.textAlign = 'left';
+      g.textBaseline = 'alphabetic';
+      const m = g.measureText(n);
+      const x = 64 - (m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2;
+      const y = 64 + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2;
       g.lineWidth = 12;
       g.strokeStyle = '#000';
-      g.strokeText(n, 64, 70);
+      g.strokeText(n, x, y);
       g.fillStyle = color;
-      g.fillText(n, 64, 70);
+      g.fillText(n, x, y);
     });
     numbers.set(key, t);
   }

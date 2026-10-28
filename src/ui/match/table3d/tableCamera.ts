@@ -11,6 +11,8 @@ export const FOE_TOP = { y: 1.08, z: 0.68 };
 /** The camera's tilt from looking straight down (rad). */
 export const TILT = 0.5;
 export const PLANE = { w: 1600, h: 911 };
+/** The board's painting is drawn this much bigger than the play area, evenly round it, so the Wardens at its edges sit on the painting. */
+export const MAT_ART = 1.1;
 export const MAT = { w: 16, h: (16 * 1823) / 3200, top: 0.1 };
 export const FOV = 32;
 
@@ -58,7 +60,9 @@ export function placeCamera(camera: THREE.PerspectiveCamera, view: { width: numb
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
   };
-  const corners = [[-MAT.w / 2, -MAT.h / 2], [MAT.w / 2, -MAT.h / 2], [-MAT.w / 2, MAT.h / 2], [MAT.w / 2, MAT.h / 2]];
+  const aw = (MAT.w * MAT_ART) / 2;
+  const ah = (MAT.h * MAT_ART) / 2;
+  const corners = [[-aw, -ah], [aw, -ah], [-aw, ah], [aw, ah]];
   const fits = (d: number) => {
     put(d, 0, 0, TILT, 0);
     // The opponent's hand, held up over the far edge (FOE_TOP), must fit above the mat too.

@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { lampToWorld, particleMotion, rgb } from '@/ui/match/table3d/boardLifeRules';
-import { MAT } from '@/ui/match/table3d/tableCamera';
+import { MAT, MAT_ART } from '@/ui/match/table3d/tableCamera';
 
 describe('3D table: animated boards', () => {
-  it('places a lamp painted at x/y % of the mat on the same spot of the 3D mat', () => {
+  it('places a lamp painted at x/y % of the mat on the same spot of the 3D mat (drawn MAT_ART bigger)', () => {
     expect(lampToWorld(50, 50)).toEqual({ x: 0, y: 0 });
     const c = lampToWorld(0, 0);
-    expect(c.x).toBeCloseTo(-MAT.w / 2);
-    expect(c.y).toBeCloseTo(MAT.h / 2); // the top of the painting is the far edge (+y)
-    expect(lampToWorld(100, 100).y).toBeCloseTo(-MAT.h / 2);
+    expect(c.x).toBeCloseTo((-MAT.w / 2) * MAT_ART);
+    expect(c.y).toBeCloseTo((MAT.h / 2) * MAT_ART); // the top of the painting is the far edge (+y)
+    expect(lampToWorld(100, 100).y).toBeCloseTo((-MAT.h / 2) * MAT_ART);
   });
 
   it('lets embers and steam rise, snow and leaves fall, the rest hover', () => {

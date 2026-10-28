@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { MAT } from './tableCamera';
+import { MAT, MAT_ART } from './tableCamera';
 
 /**
  * The room around the 3D table (WebGL): a stone floor, a wooden table on turned legs, the match's
@@ -151,8 +151,8 @@ export function buildTableScene(boardUrl: string, warm: string): TableScene {
   });
 
   // The table: a thick rounded top, an apron, four turned legs; a stone floor below.
-  const W = MAT.w;
-  const H = MAT.h;
+  const W = MAT.w * MAT_ART;
+  const H = MAT.h * MAT_ART;
   // The top: planks along the table (one texture spans 12 × 8 units); the edges a plainer wood, so the
   // grain doesn't stretch into streaks down the sides.
   const topWood = keep(new THREE.MeshStandardMaterial({ map: keep(plankTexture()), roughness: 0.62, metalness: 0.02 }));

@@ -10,6 +10,8 @@ const notes: PatchNotesOverlay = {
         '3D stůl: soupeřovy karty v ruce už se do sebe neprolínají.',
         '3D stůl: karty na stole se vznášejí jen kousek nad ním místo vysoko a jsou o 15 % větší; tvoje ruka je blíž ke stolu a trochu větší.',
         '3D stůl: karty na stole se k tobě naklánějí mnohem méně; destičky Útoku a Životů mají větší ikonky a čísla.',
+        '3D stůl: čísla Útoku a Životů sedí přesně uprostřed svých destiček.',
+        '3D stůl: malovaná deska je větší, takže tvůj Warden stojí celý na ní.',
       ],
     ],
   },

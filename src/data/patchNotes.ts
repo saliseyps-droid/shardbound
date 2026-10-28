@@ -31,6 +31,8 @@ export const PATCH_NOTES: PatchNote[] = [
           '3D table: the opponent’s cards in hand no longer flicker into each other.',
           '3D table: the cards on the table hover just above it instead of floating high, and are 15% bigger; your hand sits closer to the table and a little bigger.',
           '3D table: the cards on the table lean towards you much less; the Attack and Health plates have bigger icons and numbers.',
+          '3D table: the Attack and Health numbers sit right in the middle of their plates.',
+          '3D table: the painted board is bigger, so your Warden stands fully on it.',
         ],
       },
     ],

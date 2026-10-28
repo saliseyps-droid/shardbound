@@ -218,7 +218,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     const icon = new THREE.Mesh(new THREE.PlaneGeometry(0.25 * k, 0.25 * k), new THREE.MeshBasicMaterial({ map: statIcons[kind], transparent: true, depthWrite: false, toneMapped: false }));
     icon.position.set(-0.115 * k, 0, front);
     const num = new THREE.Mesh(new THREE.PlaneGeometry(0.5 * k, 0.5 * k), new THREE.MeshBasicMaterial({ map: numberTexture('0'), transparent: true, depthWrite: false, toneMapped: false }));
-    num.position.set(0.1 * k, 0.008 * k, front);
+    num.position.set(0.115 * k, 0, front);
     icon.renderOrder = num.renderOrder = 3;
     plate.add(icon, num);
     return { gem: plate, num, rim, value: '', color: '' };
