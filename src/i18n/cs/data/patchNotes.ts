@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.70.2': {
+    title: 'Drobnosti na 3D stole',
+    summary: 'Drobné opravy 3D stolu.',
+    sections: [
+      [
+        '3D stůl: tvůj Warden zůstává uprostřed, ať máš krystalů energie kolik chceš.',
+        '3D stůl: když na jednotku najedeš, její záře, čísla a ikonky se zvednou spolu s kartou.',
+        '3D stůl: počet karet v balíčku sedí přesně na vršku hromádky.',
+        '3D stůl: světla, záře a kouř všech desek sedí přesně na malbě (pirátské a hvězdná deska byly mírně vedle) a moře ani kouř už nepřetékají přes okraj desky.',
+      ],
+    ],
+  },
   '0.70.1': {
     title: 'Opravy 3D stolu',
     summary: 'Opravy 3D stolu.',

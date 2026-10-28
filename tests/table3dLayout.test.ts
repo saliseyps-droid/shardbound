@@ -19,6 +19,16 @@ describe('3D table layout', () => {
     expect(decl('.match.is-3d > .self-screen button', 'pointer-events')).toBe('auto');
   });
 
+  it('keeps the Warden centred however many energy crystals sit beside it (the side columns never grow)', () => {
+    expect(decl('.table3d-plane .hero-area', 'grid-template-columns')).toBe('minmax(0, 1fr) auto minmax(0, 1fr)');
+  });
+
+  it('puts the deck count on the middle of the top card of the 3D pile, raised by the pile height', () => {
+    expect(decl('.table3d-plane .draw-pile-count', 'left')).toBe('50%');
+    expect(decl('.table3d-plane .draw-pile-count', 'top')).toBe('50%');
+    expect(decl('.table3d-plane .draw-pile-count', 'transform')).toBe('translate(calc(-50% + var(--pile-side, 0px)), calc(-50% - var(--pile-rise, 0px)))');
+  });
+
   it('fits three co-op rows into the middle of the plane (911 px less the two 210 px Warden bands)', () => {
     const w = parseFloat(decl('.match.is-coop .table3d-plane', '--unit-w') ?? '150');
     // A row: the unit (1.22 × its width) plus 16 px row padding, 16 px row gap and 12 px margin; 34 px co-op padding.

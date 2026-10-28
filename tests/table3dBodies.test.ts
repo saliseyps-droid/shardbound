@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { coverUv, energyColors, pileCards } from '@/ui/match/table3d/bodyRules';
+import { coverUv, energyColors, pileCards, riseShift } from '@/ui/match/table3d/bodyRules';
 
 describe('3D table bodies', () => {
   it('crops a wide picture to a tall card around its centre (object-fit: cover)', () => {
@@ -33,5 +33,17 @@ describe('3D table bodies', () => {
     expect(energyColors('EMBER')).toEqual(['#e62a00', '#c41800']);
     expect(energyColors('TIDE')).toEqual(['#00b4d8', '#0088b8']);
     expect(energyColors(undefined)).toEqual(['#e8b04b', '#b07f22']);
+  });
+});
+
+describe('the DOM on a raised card or pile follows it', () => {
+  it('moves by the plane px between where the object stands and the mat point it appears over', () => {
+    // Appears 0.1 world units right and 0.2 further up the mat (+y): 10 px right, 20 px up (100 px per unit).
+    const s = riseShift({ x: 1, y: 1 }, { x: 1.1, y: 1.2 });
+    expect(s.dx).toBeCloseTo(10);
+    expect(s.dy).toBeCloseTo(-20);
+  });
+  it('stays put when the point is not on the mat', () => {
+    expect(riseShift({ x: 1, y: 1 }, null)).toEqual({ dx: 0, dy: 0 });
   });
 });

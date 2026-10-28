@@ -761,7 +761,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
                   {/* The mat's glow, lights, mist and smoke lie on the table; its particles are 3D there (boardLife.ts). */}
                   {boardBg?.key && (
                     <div className="table3d-board-fx" aria-hidden>
-                      <AnimatedBoard board={boardBg.key} game={game} fit={boardBg.fit} particles={false} />
+                      <AnimatedBoard board={boardBg.key} game={game} fit="fill" particles={false} />
                     </div>
                   )}
                   {enemySide}

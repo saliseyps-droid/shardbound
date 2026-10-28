@@ -22,3 +22,13 @@ export const ENERGY_COLORS: Record<string, [string, string]> = {
   IRON: ['#f08a00', '#d06a00'],
 };
 export const energyColors = (faction: string | null | undefined): [string, string] => (faction && ENERGY_COLORS[faction]) || ['#e8b04b', '#b07f22'];
+
+/**
+ * How far (plane px) to move DOM that belongs on a raised object: from where the object stands on the
+ * mat to the mat point its raised top appears over on screen (world units, 100 px per unit; +y is up
+ * the mat, so down the plane's px).
+ */
+export function riseShift(at: { x: number; y: number }, seen: { x: number; y: number } | null) {
+  if (!seen) return { dx: 0, dy: 0 };
+  return { dx: (seen.x - at.x) * 100, dy: -(seen.y - at.y) * 100 };
+}

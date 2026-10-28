@@ -26,6 +26,9 @@
 .table3d-plane .enemy-side { padding-top: 0; }
 .table3d-plane .self-side { justify-content: center; }
 .table3d-plane .hero-area { top: 50%; transform: translate(-50%, -50%); }
+/* Side columns that never grow past their half: the bigger 3D crystals overflow to the side instead
+   of pushing the Warden off the centre as the energy rises. */
+.table3d-plane .hero-area { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
 /* Your Warden a little further up the table, clear of the hand. */
 .table3d-plane .self-side .hero-area { top: 34%; }
 .table3d-plane .hero { width: 150px; }
@@ -75,6 +78,10 @@
 .match.is-targeting .table3d-plane .unit:not(.is-targetable):not(.is-selected) .unit-body { background: rgba(0, 0, 0, 0.4); }
 /* Both decks are the same real size on the table (2D draws yours bigger, as nearer). */
 .table3d-plane .draw-pile { --pile-w: 92px !important; }
+/* The count sits in the middle of the 3D pile's top card: centred on the stack, raised by the pile's
+   height (--pile-rise, set by bodies.ts), not shifted by the flat stack's layers. */
+.table3d-plane .draw-pile-count,
+.table3d-plane .draw-pile.is-empty .draw-pile-count { left: 50%; top: 50%; bottom: auto; transform: translate(calc(-50% + var(--pile-side, 0px)), calc(-50% - var(--pile-rise, 0px))); }
 .table3d-plane .draw-pile-card,
 .table3d-plane .draw-pile-slot { visibility: hidden; }
 .table3d-plane .energy-crystals { gap: 4px; }

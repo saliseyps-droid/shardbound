@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.70.2',
+    date: '2026-10-28',
+    title: '3D table touch-ups',
+    summary: 'Small fixes on the 3D table.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          '3D table: your Warden stays in the middle however many energy crystals you have.',
+          '3D table: when you point at a unit, its glow, numbers and icons rise with the card.',
+          '3D table: the number of cards in a deck sits right on top of its pile.',
+          '3D table: the lights, glow and smoke of every board sit exactly on its painting (the pirate and starry boards were slightly off), and the sea and smoke no longer spill over the edge of the board.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.70.1',
     date: '2026-10-28',
     title: '3D table fixes',

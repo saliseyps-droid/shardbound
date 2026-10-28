@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import type { GameState } from '@/engine/types';
 import { useMatch } from '@/state/matchStore';
 import { MAT, PLANE } from './tableCamera';
-import { coverUv, energyColors, pileCards } from './bodyRules';
+import { coverUv, energyColors, pileCards, riseShift } from './bodyRules';
 import { arcHeight } from './effectRules';
 import type { Effects } from './effects';
 
@@ -14,7 +14,8 @@ import type { Effects } from './effects';
  * hit target; these only add the bodies under it.
  */
 export interface Bodies {
-  update(plane: HTMLElement, toMat: (x: number, y: number) => THREE.Vector3 | null, game: GameState | null, t: number): void;
+  /** `toScreen`: a world point to screen px (the camera's projection). */
+  update(plane: HTMLElement, toMat: (x: number, y: number) => THREE.Vector3 | null, game: GameState | null, t: number, toScreen: (v: THREE.Vector3) => { x: number; y: number }): void;
   /** Where the unit with this entity key last stood (kept a few seconds after it leaves the table). */
   lastAt(key: string): THREE.Vector3 | undefined;
   dispose(): void;
@@ -136,6 +137,8 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     lift: number;
     /** 1 → 0 while a just-summoned card drops onto the table. */
     drop: number;
+    /** Plane px the unit's DOM is moved to stay on the risen card. */
+    shift: { dx: number; dy: number };
     key: string;
     at: THREE.Vector3;
     seen: boolean;
@@ -163,7 +166,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     g.add(slab, face);
     const shadow = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.7, h * 1.6), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
     scene.add(shadow, g);
-    return { g, face, shadow, w, h, art: '', lift: 0, drop: 0, key: '', at: new THREE.Vector3(), seen: true };
+    return { g, face, shadow, w, h, art: '', lift: 0, drop: 0, shift: { dx: 0, dy: 0 }, key: '', at: new THREE.Vector3(), seen: true };
   };
 
   // ---- Warden plinths.
@@ -224,7 +227,12 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
   let last = 0;
 
   return {
-    update(plane, toMat, game, t) {
+    update(plane, toMat, game, t, toScreen) {
+      // The mat point a raised world point appears over: DOM moved there sits on the raised object.
+      const seenAt = (v: THREE.Vector3) => {
+        const s = toScreen(v);
+        return toMat(s.x, s.y);
+      };
       const dt = Math.min(0.05, last ? t - last : 0);
       last = t;
       // Units (a dying unit's ghost keeps its flat DOM art for the death animation, so no body).
@@ -266,7 +274,15 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         const up = el.matches(':hover') || el.classList.contains('is-selected') ? 1 : 0;
         b.lift += (up - b.lift) * 0.2;
         b.drop = Math.max(0, b.drop - dt * 2.2);
-        const z = MAT.top + 0.01 + b.lift * 0.16 + b.drop * b.drop * 1.4 + arcHeight(lungeProgress(el));
+        const rise = b.lift * 0.16 + b.drop * b.drop * 1.4 + arcHeight(lungeProgress(el));
+        const z = MAT.top + 0.01 + rise;
+        // The DOM on the card (stats, icons, the ready glow) rises with it: moved up the mat by as much as
+        // the lift shows; its rect already includes last frame's move, so take that back out first.
+        p.x -= b.shift.dx * PX;
+        p.y += b.shift.dy * PX;
+        const shift = rise > 0.002 ? riseShift(p, seenAt(new THREE.Vector3(p.x, p.y, z))) : { dx: 0, dy: 0 };
+        if (Math.abs(shift.dx - b.shift.dx) + Math.abs(shift.dy - b.shift.dy) > 0.05) el.style.translate = shift.dx || shift.dy ? `${shift.dx.toFixed(2)}px ${shift.dy.toFixed(2)}px` : '';
+        b.shift = shift;
         b.g.position.set(p.x, p.y, z);
         b.at.set(p.x, p.y, z);
         if (b.key) lastSeen.set(b.key, { at: b.at.clone(), t });
@@ -337,6 +353,13 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
           piles.set(key, pile);
         }
         pile.g.position.set(p.x, p.y, MAT.top);
+        // Lift the DOM count onto the top card (the cards stack from 0.02 in 0.045 steps, 0.035 thick).
+        const top = n ? 0.02 + (n - 1) * 0.045 + 0.035 : 0;
+        const s = riseShift(p, seenAt(new THREE.Vector3(p.x, p.y, MAT.top + top)));
+        const rise = `${(-s.dy).toFixed(1)}px`;
+        const side = `${s.dx.toFixed(1)}px`;
+        if (el.style.getPropertyValue('--pile-rise') !== rise) el.style.setProperty('--pile-rise', rise);
+        if (el.style.getPropertyValue('--pile-side') !== side) el.style.setProperty('--pile-side', side);
         // A card drawn: its back flies off the pile towards the owner's hand.
         const before = deckCounts.get(key);
         deckCounts.set(key, count);

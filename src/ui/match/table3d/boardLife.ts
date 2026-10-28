@@ -159,8 +159,9 @@ export function createBoardLife(scene: THREE.Scene, fx: BoardFx | undefined, mas
   for (const url of [masks.smoke, masks.sea]) {
     if (!url) continue;
     // Two copies drifting against each other, fading in and out in turn (like .ab-smoke's two images).
-    layer(url, 0.005, (t) => wave(t, 7.5, 0.15, 0.75), 0.012);
-    layer(url, 0.006, (t) => wave(t, 9, 0.1, 0.7, 4.5), -0.016);
+    // About half the flat board's opacity: adding light is much stronger than screening it.
+    layer(url, 0.005, (t) => 0.55 * wave(t, 7.5, 0.15, 0.75), 0.012);
+    layer(url, 0.006, (t) => 0.55 * wave(t, 9, 0.1, 0.7, 4.5), -0.016);
   }
   const systems = [fx.particles, ...(fx.more ? [fx.more] : [])].map((cfg) => system(scene, cfg, dot, lowPower));
   // Flames and candles light the table; at most four lights (the strongest), so the scene stays fast.
@@ -180,10 +181,14 @@ export function createBoardLife(scene: THREE.Scene, fx: BoardFx | undefined, mas
       for (const L of layers) {
         L.mesh.material.opacity = L.opacity(t);
         if (L.drift) {
+          // Drift and swell inside the texture, so the layer never leaves the mat.
           const k = Math.sin(t * 0.7) * L.drift;
-          L.mesh.position.x = k * MAT.w;
-          L.mesh.position.y = -k * MAT.h * 0.8;
-          L.mesh.scale.setScalar(1 + Math.abs(k) * 2.5);
+          const zoom = 1 + Math.abs(k) * 2.5;
+          const map = L.mesh.material.map;
+          if (map) {
+            map.repeat.set(1 / zoom, 1 / zoom);
+            map.offset.set((1 - 1 / zoom) / 2 - k, (1 - 1 / zoom) / 2 - k * 0.8);
+          }
         }
       }
       for (const { light, base, i } of lights) light.intensity = base * (0.85 + Math.sin(t * 9 + i * 2) * 0.08 + Math.sin(t * 21 + i) * 0.06);

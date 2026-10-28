@@ -9,7 +9,7 @@ import { createBoardLife } from './boardLife';
 import { createFpsWatch } from './fpsWatch';
 import { createBodies } from './bodies';
 import { createEffects } from './effects';
-import { MAT, PLANE, cameraCss, placeCamera, planeCss, type CameraState } from './tableCamera';
+import { MAT, PLANE, TILT, cameraCss, placeCamera, planeCss, type CameraState } from './tableCamera';
 import '@/ui/styles/table3d.css';
 
 interface Props {
@@ -24,7 +24,6 @@ interface Props {
   onSlow?: () => void;
 }
 
-export const TILT = 0.62;
 /** The hand's strip at the bottom of the screen, kept free of the table. */
 const BOTTOM = 0.2;
 const ZOOM_MAX = 3;
@@ -121,6 +120,12 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       const hit = new THREE.Vector3();
       return ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 0, 1), -MAT.top), hit) ? hit : null;
     };
+    // A world point to screen px (for DOM that sits on raised objects).
+    const toScreen = (v: THREE.Vector3) => {
+      const r = root.getBoundingClientRect();
+      const p = v.clone().project(camera);
+      return { x: r.left + ((p.x + 1) / 2) * r.width, y: r.top + ((1 - p.y) / 2) * r.height };
+    };
     const clampPan = () => {
       const fx = (MAT.w / 2) * (1 - 1 / target.zoom);
       const fy = (MAT.h / 2) * (1 - 1 / target.zoom);
@@ -209,7 +214,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       camRef.current!.style.transform = css.transform;
       // The bodies follow the plane's DOM, so they read it after this frame's camera is written.
       const m = useMatch.getState();
-      bodies.update(planeRef.current!, matPoint, m.game, clock.elapsedTime);
+      bodies.update(planeRef.current!, matPoint, m.game, clock.elapsedTime, toScreen);
       effects.update(planeRef.current!, matPoint, m.fx, dt, bodies.lastAt);
       table.update(clock.elapsedTime, dt);
       life.update(clock.elapsedTime, dt);

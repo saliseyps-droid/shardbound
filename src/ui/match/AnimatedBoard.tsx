@@ -21,6 +21,16 @@ export const BOARD_SEA: Record<string, string> = Object.fromEntries(Object.entri
 const MAT_W = 3200;
 const MAT_H = 1823;
 
+/** fill: the 3D table's mat, which stretches every painting over the whole plane. */
+export type BoardFit = 'cover' | 'contain' | 'fill';
+
+/** Where the painted mat lies in a host of width×height: cropped to cover it, whole, or stretched over it. */
+export function stageFor(width: number, height: number, matH: number, fit: BoardFit) {
+  if (fit === 'fill') return { x: 0, y: 0, w: width, h: height };
+  const s = (fit === 'contain' ? Math.min : Math.max)(width / MAT_W, height / matH);
+  return { x: (width - MAT_W * s) / 2, y: (height - matH * s) / 2, w: MAT_W * s, h: matH * s };
+}
+
 interface Particle {
   x: number;
   y: number;
@@ -228,7 +238,7 @@ function TurnEmblem() {
  * drift over it. When your turn begins, the Shardbound emblem rises in the middle of it.
  */
 /** `particles={false}`: only the painted parts and smoke (the 3D table draws its own particles in 3D). */
-export function AnimatedBoard({ board, game, fit = 'cover', particles = true }: { board: string; game?: GameState; fit?: 'cover' | 'contain'; particles?: boolean }) {
+export function AnimatedBoard({ board, game, fit = 'cover', particles = true }: { board: string; game?: GameState; fit?: BoardFit; particles?: boolean }) {
   const fx = BOARD_FX[board];
   const glowUrl = BOARD_GLOWS[board];
   const reduced = useSettings((s) => s.reducedMotion);
@@ -248,10 +258,7 @@ export function AnimatedBoard({ board, game, fit = 'cover', particles = true }: 
     const matH = fx?.height ?? MAT_H;
     const measure = () => {
       // Layout size, not getBoundingClientRect: the match intro and the final blow scale the board.
-      const width = host.clientWidth;
-      const height = host.clientHeight;
-      const s = (fit === 'contain' ? Math.min : Math.max)(width / MAT_W, height / matH);
-      setStage({ x: (width - MAT_W * s) / 2, y: (height - matH * s) / 2, w: MAT_W * s, h: matH * s });
+      setStage(stageFor(host.clientWidth, host.clientHeight, matH, fit));
     };
     measure();
     const ro = new ResizeObserver(measure);
