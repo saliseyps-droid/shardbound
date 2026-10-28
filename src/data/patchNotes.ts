@@ -19,6 +19,14 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.74.1',
+    date: '2026-10-28',
+    title: 'Your hand, a little higher',
+    summary: 'On the 3D table your hand sits just below your Warden.',
+    sections: [{ kind: 'improved', items: ['3D table: in the usual view your hand sits just below your Warden, every card fully in view.'] }],
+    commits: [],
+  },
+  {
     version: '0.74.0',
     date: '2026-10-28',
     title: 'Finishes on the 3D table',

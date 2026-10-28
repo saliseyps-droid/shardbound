@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.74.1': {
+    title: 'Ruka o kousek výš',
+    summary: 'Na 3D stole leží tvoje ruka těsně pod tvým Wardenem.',
+    sections: [['3D stůl: ve výchozím pohledu leží tvoje ruka jen kousek pod tvým Wardenem a každá karta je celá vidět.']],
+  },
   '0.74.0': {
     title: 'Varianty karet na 3D stole',
     summary: 'Karty Foil, Prismatic a Gilded ukazují na 3D stole svou úpravu, plus spousta doladění.',
