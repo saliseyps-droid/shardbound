@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.71.2': {
+    title: 'Wardeni ve 3D',
+    summary: 'Wardeni, jejich schopnosti, balíčky i ruka vypadají na 3D stole plastičtěji.',
+    sections: [
+      [
+        '3D stůl: portrét každého Wardena stojí na vyvýšeném zlatém podstavci a schopnosti Wardena jsou žetony se zlatým okrajem (šestiúhelníkové aktivní, kulaté pasivní), které září, když je můžeš použít.',
+        '3D stůl: karty v ruce mají zlatou hranu jako karty na stole.',
+        '3D stůl: balíčky jsou větší a leží blíž ke středu stolu; soupeřova ruka leží dál vzadu a nezakrývá jeho Wardena.',
+        '3D stůl: otáčení pohledu je o polovinu méně citlivé a zastaví se před soupeřovou stranou stolu, jako v prvním náhledu.',
+      ],
+    ],
+  },
   '0.71.1': {
     title: 'Místnost kolem stolu',
     summary: 'Pohyb kolem 3D stolu funguje jako v jeho prvním náhledu a kolem stolu je místnost.',

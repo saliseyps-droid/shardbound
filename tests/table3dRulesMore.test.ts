@@ -67,10 +67,12 @@ describe('dragging on the table', () => {
   });
 
   it('turns and tilts the view with the drag, within limits', () => {
-    expect(orbitTo({ yaw: 0, tilt: 0.62 }, 100, 0)).toEqual({ yaw: -0.5, tilt: 0.62 });
-    expect(orbitTo({ yaw: 0, tilt: 0.62 }, 0, 100).tilt).toBeCloseTo(1.02);
-    // All the way around the table, as in the mockup's room.
-    expect(orbitTo({ yaw: 3, tilt: 0.62 }, -200, 0).yaw).toBeCloseTo(4 - Math.PI * 2);
+    // Half the mockup's speed: 200 px turn the view by 0.5 rad.
+    expect(orbitTo({ yaw: 0, tilt: 0.62 }, 200, 0)).toEqual({ yaw: -0.5, tilt: 0.62 });
+    expect(orbitTo({ yaw: 0, tilt: 0.62 }, 0, 200).tilt).toBeCloseTo(1.02);
+    // Never round to the opponent's side of the table (as in the mockup: ±1.2 rad).
+    expect(orbitTo({ yaw: 0, tilt: 0.62 }, -10000, 0).yaw).toBe(1.2);
+    expect(orbitTo({ yaw: 0, tilt: 0.62 }, 10000, 0).yaw).toBe(-1.2);
     expect(orbitTo({ yaw: 0, tilt: 0.62 }, 0, 10000).tilt).toBe(1.25);
     expect(orbitTo({ yaw: 0, tilt: 0.62 }, 0, -10000).tilt).toBe(0.12);
   });

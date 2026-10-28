@@ -169,8 +169,48 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     return { g, face, shadow, w, h, art: '', lift: 0, drop: 0, shift: { dx: 0, dy: 0 }, key: '', at: new THREE.Vector3(), seen: true };
   };
 
-  // ---- Warden plinths.
-  const heroes = new Map<string, THREE.Mesh>();
+  // ---- Wardens: a raised gold hexagon with the portrait on top (the DOM keeps Health, frame effects
+  // and the hit target, moved up onto it).
+  interface HeroBody { plinth: THREE.Mesh; face: THREE.Mesh<THREE.ShapeGeometry, THREE.MeshStandardMaterial>; w: number; h: number; art: string; shift: { dx: number; dy: number } }
+  const heroes = new Map<string, HeroBody>();
+  const HERO_D = 0.22; // plinth height
+  const dropHero = (b: HeroBody) => {
+    scene.remove(b.plinth, b.face);
+    b.plinth.geometry.dispose();
+    b.face.geometry.dispose();
+    b.face.material.map?.dispose();
+    b.face.material.dispose();
+  };
+  const makeHero = (w: number, h: number): HeroBody => {
+    const plinth = new THREE.Mesh(new THREE.ExtrudeGeometry(hexShape(w * 1.08, h * 1.08), { depth: HERO_D, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: 2 }), [backMat, gold]);
+    plinth.castShadow = true;
+    // The portrait: a hexagon a little inside the gold rim, its UVs spanning the hexagon's box.
+    const geo = new THREE.ShapeGeometry(hexShape(w * 0.96, h * 0.96));
+    const uv = geo.attributes.uv;
+    const pos = geo.attributes.position;
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / (w * 0.96) + 0.5, pos.getY(i) / (h * 0.96) + 0.5);
+    const face = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0x2a2244, roughness: 0.55 }));
+    scene.add(plinth, face);
+    return { plinth, face, w, h, art: '', shift: { dx: 0, dy: 0 } };
+  };
+
+  // ---- Warden abilities: gold-rimmed tokens (hexagonal when active, round when passive).
+  interface Token { m: THREE.Mesh; top: THREE.MeshStandardMaterial; passive: boolean; w: number; shift: { dx: number; dy: number }; seen: boolean }
+  const tokens = new Map<HTMLElement, Token>();
+  const TOKEN_D = 0.1;
+  const dropToken = (k: Token) => {
+    scene.remove(k.m);
+    k.m.geometry.dispose();
+    k.top.dispose();
+  };
+  const makeToken = (w: number, h: number, passive: boolean): Token => {
+    const shape = passive ? new THREE.Shape().absarc(0, 0, w / 2, 0, Math.PI * 2, false) : hexShape(w, h);
+    const top = new THREE.MeshStandardMaterial({ color: 0x3d3564, roughness: 0.5, metalness: 0.2 });
+    const m = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth: TOKEN_D, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2, curveSegments: 24 }), [top, gold]);
+    m.castShadow = true;
+    scene.add(m);
+    return { m, top, passive, w, shift: { dx: 0, dy: 0 }, seen: true };
+  };
 
   // ---- Card piles.
   interface Pile { g: THREE.Group; n: number; url: string; w: number; face: THREE.Texture }
@@ -299,38 +339,84 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
           units.delete(k);
         }
 
-      // Warden plinths: a bevelled hexagon a little larger than the portrait.
+      // Wardens: the portrait on a raised plinth; the DOM on it (Health, glows) moved up onto its top.
+      const raise = (el: HTMLElement, p: THREE.Vector3, height: number, shift: { dx: number; dy: number }) => {
+        p.x -= shift.dx * PX;
+        p.y += shift.dy * PX;
+        const next = riseShift(p, seenAt(new THREE.Vector3(p.x, p.y, MAT.top + height)));
+        if (Math.abs(next.dx - shift.dx) + Math.abs(next.dy - shift.dy) > 0.05) el.style.translate = `${next.dx.toFixed(2)}px ${next.dy.toFixed(2)}px`;
+        return next;
+      };
       const heroSeen = new Set<string>();
       plane.querySelectorAll<HTMLElement>('[data-entity^="h:"]').forEach((el) => {
         const key = el.dataset.entity!;
         const p = centre(el, toMat);
         if (!p) return;
-        const w = el.offsetWidth * PX * 1.1;
-        const h = el.offsetHeight * PX * 1.1;
         heroSeen.add(key);
-        let m = heroes.get(key);
-        if (!m || Math.abs(m.userData.w - w) > 1e-3 || Math.abs(m.userData.h - h) > 1e-3) {
-          if (m) {
-            scene.remove(m);
-            m.geometry.dispose();
-          }
-          m = new THREE.Mesh(new THREE.ExtrudeGeometry(hexShape(w, h), { depth: 0.14, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: 2 }), [backMat, gold]);
-          m.userData.w = w;
-          m.userData.h = h;
-          m.castShadow = true;
-          scene.add(m);
-          heroes.set(key, m);
+        const w = el.offsetWidth * PX;
+        const h = el.offsetHeight * PX;
+        let b = heroes.get(key);
+        if (!b || Math.abs(b.w - w) > 1e-3 || Math.abs(b.h - h) > 1e-3) {
+          if (b) dropHero(b);
+          b = makeHero(w, h);
+          heroes.set(key, b);
         }
-        m.position.set(p.x, p.y, MAT.top);
+        const img = el.querySelector<HTMLImageElement>('img');
+        const art = img?.src ?? '';
+        const loaded = art && art !== b.art ? image(art) : null;
+        if (loaded) {
+          b.art = art;
+          const map = loaded.clone();
+          const uv = coverUv(loaded.image.width, loaded.image.height, w, h, 50, 35);
+          map.repeat.set(uv.repeatX, uv.repeatY);
+          map.offset.set(uv.offsetX, uv.offsetY);
+          map.needsUpdate = true;
+          b.face.material.map?.dispose();
+          b.face.material.map = map;
+          b.face.material.color.set(0xffffff);
+          b.face.material.needsUpdate = true;
+        }
+        b.shift = raise(el, p, HERO_D + 0.035, b.shift);
+        b.plinth.position.set(p.x, p.y, MAT.top);
+        b.face.position.set(p.x, p.y, MAT.top + HERO_D + 0.032);
         // The Final Blow shatters the Warden's portrait: its plinth goes with it.
-        m.visible = !el.classList.contains('is-shattering');
+        b.plinth.visible = b.face.visible = !el.classList.contains('is-shattering');
       });
       // A Warden that left the table (a co-op ally fallen) takes its plinth along.
-      for (const [k, m] of heroes)
+      for (const [k, b] of heroes)
         if (!heroSeen.has(k)) {
-          scene.remove(m);
-          m.geometry.dispose();
+          dropHero(b);
           heroes.delete(k);
+        }
+
+      // Warden abilities: tokens under the DOM icons, lit when usable.
+      for (const k of tokens.values()) k.seen = false;
+      plane.querySelectorAll<HTMLElement>('.hero-power').forEach((el) => {
+        const p = centre(el, toMat);
+        if (!p) return;
+        const passive = el.classList.contains('is-passive');
+        const w = el.offsetWidth * PX;
+        let k = tokens.get(el);
+        if (!k || k.passive !== passive || Math.abs(k.w - w) > 1e-3) {
+          if (k) dropToken(k);
+          k = makeToken(w, el.offsetHeight * PX, passive);
+          tokens.set(el, k);
+        }
+        k.seen = true;
+        const tint = getComputedStyle(el.closest('.hero-abilities') ?? el).getPropertyValue('--ability-tint').trim() || '#e8b04b';
+        const usable = el.classList.contains('is-usable');
+        k.top.color.set(usable ? '#5a4a1c' : passive ? '#2e2648' : '#3d3564');
+        k.top.emissive.set(usable ? tint : '#000000');
+        k.top.emissiveIntensity = usable ? 0.25 + Math.sin(t * 3) * 0.1 : 0;
+        k.top.transparent = el.classList.contains('is-used');
+        k.top.opacity = k.top.transparent ? 0.5 : 1;
+        k.shift = raise(el, p, TOKEN_D + 0.02, k.shift);
+        k.m.position.set(p.x, p.y, MAT.top);
+      });
+      for (const [el, k] of tokens)
+        if (!k.seen) {
+          dropToken(k);
+          tokens.delete(el);
         }
 
       // Card piles: a stack of real card backs, thinner as the deck runs down.
@@ -419,7 +505,8 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     dispose() {
       units.forEach(dropUnit);
       piles.forEach(dropPile);
-      heroes.forEach((m) => m.geometry.dispose());
+      heroes.forEach(dropHero);
+      tokens.forEach(dropToken);
       crystals.forEach(dropCrystal);
       owned.forEach((o) => o.dispose());
     },

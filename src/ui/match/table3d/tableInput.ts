@@ -15,12 +15,16 @@ const ACTIVE = '[data-entity], .unit, .hand-card, .hand, button, a, input, selec
 /** Whether a press on `target` is on bare table (or the match background): a drag from there looks around. */
 export const isEmptyTable = (target: Element, match: Element) => zoomsTable(target, match) && !target.closest(ACTIVE);
 
-/** The view after dragging dx, dy px from `start`: sideways turns all the way around the table, up/down tilts (never under the table). */
+/**
+ * The view after dragging dx, dy px from `start`: sideways turns around the table, up/down tilts
+ * (never under it). Half the mockup's speed, and only round the sides: as in the mockup, you never
+ * get to look from the opponent's seat (±1.2 rad).
+ */
 export function orbitTo(start: { yaw: number; tilt: number }, dx: number, dy: number) {
-  let yaw = start.yaw - dx * 0.005;
-  if (yaw > Math.PI) yaw -= Math.PI * 2;
-  if (yaw < -Math.PI) yaw += Math.PI * 2;
-  return { yaw, tilt: Math.max(0.12, Math.min(1.25, start.tilt + dy * 0.004)) };
+  return {
+    yaw: Math.max(-1.2, Math.min(1.2, start.yaw - dx * 0.0025)),
+    tilt: Math.max(0.12, Math.min(1.25, start.tilt + dy * 0.002)),
+  };
 }
 
 /** How far the view may move from the board's centre (world units): around the whole room, the board being 16 × 9. */

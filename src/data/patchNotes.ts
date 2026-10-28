@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.71.2',
+    date: '2026-10-28',
+    title: 'Wardens in 3D',
+    summary: 'Wardens, their abilities, the decks and the hand look more solid on the 3D table.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          '3D table: each Warden’s portrait sits on a raised gold plinth, and the Warden abilities are gold-rimmed tokens (hexagonal when active, round when passive) that glow when you can use them.',
+          '3D table: the cards in your hand have a gold edge, like the cards on the table.',
+          '3D table: the decks are bigger and lie closer to the middle of the table; the opponent’s hand lies further back, clear of their Warden.',
+          '3D table: turning the view is half as sensitive, and it stops before the opponent’s side of the table, as in the first preview.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.71.1',
     date: '2026-10-28',
     title: 'The room around the table',

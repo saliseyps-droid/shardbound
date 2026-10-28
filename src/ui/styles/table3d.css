@@ -36,9 +36,9 @@
 /* Your Warden a little further up the table, clear of the hand. */
 .table3d-plane .self-side .hero-area { top: 34%; }
 .table3d-plane .hero { width: 150px; }
-.table3d-plane .draw-pile-anchor { left: auto; right: -110px; }
+.table3d-plane .draw-pile-anchor { left: auto; right: 40px; }
 /* The opponent's hand lies on the far edge of the table, as in the mockup. */
-.table3d-plane .enemy-hand { top: -18px; }
+.table3d-plane .enemy-hand { top: -64px; }
 
 /* The screen-space part of your side (hand, End turn) keeps its place in the grid. */
 .match.is-3d > .self-screen { grid-area: self; }
@@ -81,7 +81,7 @@
 .table3d-plane .unit.is-targetable .unit-body { box-shadow: 0 0 0 2px var(--damage), 0 0 16px rgba(255, 107, 90, 0.8); }
 .match.is-targeting .table3d-plane .unit:not(.is-targetable):not(.is-selected) .unit-body { background: rgba(0, 0, 0, 0.4); }
 /* Both decks are the same real size on the table (2D draws yours bigger, as nearer). */
-.table3d-plane .draw-pile { --pile-w: 92px !important; }
+.table3d-plane .draw-pile { --pile-w: 124px !important; }
 /* The count sits in the middle of the 3D pile's top card: centred on the stack, raised by the pile's
    height (--pile-rise, set by bodies.ts), not shifted by the flat stack's layers. */
 .table3d-plane .draw-pile-count,
@@ -138,3 +138,18 @@
 .match.is-3d .hand-card.is-selected > .card { rotate: none; }
 /* While a drag moves the view. */
 .match.is-moving-view, .match.is-moving-view * { cursor: grabbing !important; }
+
+/* The Warden on the 3D table: WebGL draws the portrait on a raised gold plinth (bodies.ts); the DOM
+   keeps Health, armour, glows and the hit target, laid on top of it. */
+.table3d-plane .hero { background: none; transition: none; }
+.table3d-plane .hero::after { display: none; }
+.table3d-plane .hero > img { visibility: hidden; }
+/* The Warden's abilities: WebGL tokens under them; the DOM keeps the icon, cost and the click. */
+.table3d-plane .hero-power,
+.table3d-plane .hero-power.is-usable { background: none; clip-path: none; }
+.table3d-plane .hero-power.is-usable { filter: drop-shadow(0 0 4px rgba(126, 242, 154, 0.9)); }
+.table3d-plane .hero-power.is-used { opacity: 1; }
+.table3d-plane .hero-power-cost { top: 1px; right: 5px; font-weight: 800; text-shadow: 0 1px 2px #000; }
+
+/* Cards in the hand have a body: a gold edge under the face and a soft shadow, like the cards on the table. */
+.match.is-3d .hand-card > .card { box-shadow: 0 2px 0 #c9963a, 0 4px 0 #8a6526, 0 5px 0 #3b2a10; border-radius: 8px; }
