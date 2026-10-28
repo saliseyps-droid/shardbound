@@ -263,8 +263,9 @@ export function makeGem(kind: 'atk' | 'hp' | 'cost', scale: number) {
   if (kind === 'atk') m.scale.set(1, 1, 0.4);
   else m.rotation.x = Math.PI / 2;
   m.castShadow = true;
-  const num = new THREE.Sprite(new THREE.SpriteMaterial({ map: numberTexture('0'), transparent: true, depthWrite: false }));
-  num.scale.set(0.46 * scale, 0.46 * scale, 1);
-  num.renderOrder = 2;
+  // The number lies on the gem's top, turning with the card (so it never slides off it or shows through
+  // another card).
+  const num = new THREE.Mesh(new THREE.PlaneGeometry(0.46 * scale, 0.46 * scale), new THREE.MeshBasicMaterial({ map: numberTexture('0'), transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, toneMapped: false }));
+  num.userData.lift = (kind === 'atk' ? 0.12 : 0.07) * scale;
   return { gem: m, num, value: '', color: '' };
 }

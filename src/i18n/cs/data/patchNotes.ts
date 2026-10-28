@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.73.3': {
+    title: 'Čísla na svých drahokamech',
+    summary: 'Opravy karet na 3D stole i v ruce.',
+    sections: [
+      [
+        '3D stůl: čísla ceny, Útoku a Životů leží přímo na svých drahokamech a natáčejí se s kartou, místo aby se od nich vznášela nebo prosvítala jinými kartami.',
+        '3D stůl: zahratelná karta v ruce má měkkou zelenou záři těsně kolem okraje místo tvrdého rámu.',
+      ],
+    ],
+  },
   '0.73.2': {
     title: 'Wardeni a energie jako v náhledu',
     summary: 'Na 3D stole vypadají Wardeni i energie jako v prvním náhledu.',

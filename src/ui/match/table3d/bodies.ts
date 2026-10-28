@@ -201,7 +201,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     atk.gem.position.set(-w / 2 + 0.05 * k, -h / 2 + 0.02 * k, CT + 0.09 * k);
     hp.gem.position.set(w / 2 - 0.05 * k, -h / 2 + 0.02 * k, CT + 0.09 * k);
     for (const gm of [atk, hp]) {
-      gm.num.position.copy(gm.gem.position).add(new THREE.Vector3(0, 0, 0.3 * k));
+      gm.num.position.copy(gm.gem.position).add(new THREE.Vector3(0, 0, gm.num.userData.lift));
       g.add(gm.gem, gm.num);
     }
     const shadow = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.7, h * 1.6), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));

@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.73.3',
+    date: '2026-10-28',
+    title: 'Numbers on their gems',
+    summary: 'Fixes for the cards on the 3D table and in your hand.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          '3D table: the cost, Attack and Health numbers lie right on their gems and turn with the card, instead of floating off them or showing through other cards.',
+          '3D table: a playable card in your hand has a soft green glow hugging its edge instead of a hard frame.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.73.2',
     date: '2026-10-28',
     title: 'Wardens and energy as in the preview',

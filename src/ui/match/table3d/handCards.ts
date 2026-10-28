@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { handFace, makeGem, numberTexture, rectGlowTexture, type HandCardData } from './cardFaces';
+import { handFace, makeGem, numberTexture, type HandCardData } from './cardFaces';
 
 /**
  * Your hand on the 3D table, as in the mockup: real cards (a gold-edged slab, the full card face,
@@ -89,14 +89,33 @@ export function createHandCards(scene: THREE.Scene): HandCards {
   };
   const edge = new THREE.MeshStandardMaterial({ color: 0xc9952f, metalness: 0.9, roughness: 0.3 });
   const back = new THREE.MeshStandardMaterial({ color: 0x1a1430, roughness: 0.6 });
-  const ringTex = rectGlowTexture();
+  // A soft glow hugging the card's edge: the card fills the inner 220 × 308 of the 256 × 344 texture.
+  const ringTex = (() => {
+    const c = document.createElement('canvas');
+    c.width = 256;
+    c.height = 344;
+    const g = c.getContext('2d')!;
+    g.strokeStyle = '#fff';
+    g.shadowColor = '#fff';
+    for (const [blur, width, alpha] of [
+      [16, 6, 0.55],
+      [6, 3, 0.9],
+    ]) {
+      g.globalAlpha = alpha;
+      g.shadowBlur = blur;
+      g.lineWidth = width;
+      g.beginPath();
+      g.roundRect(18, 18, 220, 308, 12);
+      g.stroke();
+    }
+    return new THREE.CanvasTexture(c);
+  })();
   // A card one world unit wide; scaled to the DOM card's size each frame.
   const W = 1;
   const H = 1.4;
   const slabGeo = new THREE.ExtrudeGeometry(roundedRect(W, H, 0.07), { depth: CT, bevelEnabled: true, bevelThickness: 0.015, bevelSize: 0.018, bevelSegments: 3 });
   const faceGeo = new THREE.PlaneGeometry(W - 0.015, H - 0.015);
-  // A snug glow just round the card's edge (the table's ring texture leaves room for a wide halo).
-  const ringGeo = new THREE.PlaneGeometry(W * 1.3, H * 1.24);
+  const ringGeo = new THREE.PlaneGeometry((W * 256) / 220, (H * 344) / 308);
 
   const make = (): Card => {
     const g = new THREE.Group();
@@ -114,7 +133,7 @@ export function createHandCards(scene: THREE.Scene): HandCards {
     atk.gem.position.set(-W / 2 + 0.05 * k, 0.02 * k, CT + 0.09 * k);
     hp.gem.position.set(W / 2 - 0.05 * k, 0.02 * k, CT + 0.09 * k);
     for (const gm of [cost, atk, hp]) {
-      gm.num.position.copy(gm.gem.position).add(new THREE.Vector3(0, 0, 0.3 * k));
+      gm.num.position.copy(gm.gem.position).add(new THREE.Vector3(0, 0, gm.num.userData.lift));
       pivot.add(gm.gem, gm.num);
     }
     const ring = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ map: ringTex, color: '#3cff7a', blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, toneMapped: false }));
@@ -131,6 +150,7 @@ export function createHandCards(scene: THREE.Scene): HandCards {
     c.ring.material.dispose();
     for (const gm of [c.cost, c.atk, c.hp]) {
       gm.gem.geometry.dispose();
+      gm.num.geometry.dispose();
       (gm.gem.material as THREE.Material).dispose();
       gm.num.material.dispose();
     }
