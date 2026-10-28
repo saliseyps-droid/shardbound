@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.73.1',
+    date: '2026-10-28',
+    title: 'The table, laid out as in its preview',
+    summary: 'The cards on the 3D table and in your hand are sized and placed as in the first preview.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          '3D table: your hand lies lower and smaller at the near edge of the table, so your Warden, its abilities and energy are always in view.',
+          '3D table: the cards on the table are the preview’s size, and both rows sit close to the middle line, clear of the Wardens.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.73.0',
     date: '2026-10-28',
     title: 'The table as in its preview',

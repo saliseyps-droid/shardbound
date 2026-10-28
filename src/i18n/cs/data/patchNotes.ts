@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.73.1': {
+    title: 'Stůl rozložený jako v náhledu',
+    summary: 'Karty na 3D stole i v ruce mají velikost a polohu jako v prvním náhledu.',
+    sections: [
+      [
+        '3D stůl: tvoje ruka leží níž a je menší u přední hrany stolu, takže tvůj Warden, jeho schopnosti i energie jsou pořád vidět.',
+        '3D stůl: karty na stole mají velikost jako v náhledu a obě řady leží blízko středové čáry, s odstupem od Wardenů.',
+      ],
+    ],
+  },
   '0.73.0': {
     title: 'Stůl jako v náhledu',
     summary: '3D stůl se teď hraje jako v prvním náhledu: karty se vznášejí a ruce se drží u stolu.',

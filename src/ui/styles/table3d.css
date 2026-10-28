@@ -20,7 +20,7 @@
   /* Two fingers pinch-zoom the table (TableView), not the page. */
   touch-action: none;
   /* Cards as in the mockup: 1 : 1.4. */
-  --unit-w: 136px;
+  --unit-w: 113px;
   --unit-h: calc(var(--unit-w) * 1.4);
   display: grid;
   grid-template-rows: 210px minmax(0, 1fr) 210px;
@@ -148,7 +148,7 @@
 .table3d-plane .hero-power.is-used { opacity: 1; }
 .table3d-plane .hero-power-cost { top: 1px; right: 5px; font-weight: 800; text-shadow: 0 1px 2px #000; }
 /* Room between the cards on the table for their stat gems (7 cards still fit a row). */
-.table3d-plane .board-row { gap: 44px; width: min(100%, calc(var(--unit-w) * 7 + 44px * 6 + 20px)); }
+.table3d-plane .board-row { gap: 34px; width: min(100%, calc(var(--unit-w) * 7 + 34px * 6 + 20px)); }
 .match.is-coop .table3d-plane .board-row { gap: 18px; }
 /* A card pointed at in the 3D hand rises a little higher, so its gems at the foot stay in view. */
 .table3d-hand-plane .hand-card:hover,
@@ -166,6 +166,9 @@
 /* The hand's plane at the near edge of the table (TableView, HAND): fixed card size in its own px,
    the cards along its foot; only the cards take the pointer. */
 .table3d-hand-plane { position: absolute; left: 0; top: 0; pointer-events: none; }
-.table3d-hand-plane .hand { position: absolute; left: 0; right: 0; bottom: 70px; --card-w: 150px !important; }
+.table3d-hand-plane .hand { position: absolute; left: 0; right: 0; bottom: 20px; --card-w: 150px !important; }
 /* The opponent's hand is drawn in the air in 3D (bodies.ts); its flat backs on the mat go. */
 .table3d-plane .enemy-hand { opacity: 0; }
+/* As in the mockup: both rows close to the middle line, clear of the Wardens. */
+.table3d-plane .board-row.enemy { align-items: flex-end; padding-bottom: 26px; }
+.table3d-plane .board-row.self { align-items: flex-start; padding-top: 26px; }
