@@ -44,7 +44,7 @@ export function fxLabel(kind: Fx['kind'], amount: number | undefined): string {
     case 'armor':
       return `+${amount}`;
     case 'buff':
-      return '▲';
+      return '✦';
     case 'shield':
       return '◈';
     case 'freeze':

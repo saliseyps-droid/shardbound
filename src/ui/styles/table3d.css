@@ -195,3 +195,7 @@
 /* Guard, Freeze, Barrier and Corrupt are drawn on the 3D card itself (bodies.ts), so they float and
    tilt with it; their flat DOM layers would lie on the mat apart from it. */
 .table3d-plane :is(.unit-guard-plate, .unit-frost, .unit-barrier, .unit-ice, .unit-corrupt) { display: none; }
+/* A drawn card: the 3D table flies its back from the deck (bodies.ts); in the hand it just rises in
+   (the flat board's draw-in starts from the pile's screen position, which is elsewhere on this plane). */
+.table3d-hand-plane .hand-card.is-new > .card { animation: hand-rise-in 0.45s var(--ease-out); }
+@keyframes hand-rise-in { from { transform: translateY(40%); opacity: 0; } }

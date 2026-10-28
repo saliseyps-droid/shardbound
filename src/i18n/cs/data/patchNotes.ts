@@ -1,6 +1,19 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.74.2': {
+    title: 'Opravy 3D stolu',
+    summary: 'Kolo oprav 3D stolu.',
+    sections: [
+      [
+        '3D stůl: líznuté karty, tvoje i soupeřovy, letí z balíčku do správné ruky (občas mířily jinam).',
+        '3D stůl: soupeřova ruka je u vzdálené hrany stolu celá vidět.',
+        '3D stůl: posílená jednotka ukáže zlatou jiskru místo velkého žlutého trojúhelníku, který vypadal jako varování.',
+        '3D stůl: líznutá karta do ruky vyjede zdola místo letu ze špatné strany.',
+        '3D stůl: karty na stole a balíčky odrážejí světla mnohem méně.',
+      ],
+    ],
+  },
   '0.74.1': {
     title: 'Ruka o kousek výš',
     summary: 'Na 3D stole leží tvoje ruka těsně pod tvým Wardenem.',

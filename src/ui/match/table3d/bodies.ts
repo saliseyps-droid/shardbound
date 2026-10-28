@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type { GameState } from '@/engine/types';
 import { useMatch } from '@/state/matchStore';
-import { MAT, PLANE, TILT } from './tableCamera';
+import { HAND, MAT, PLANE, TILT } from './tableCamera';
 import { approach, cardsDrawn, coverUv, energyColors, isEnemyUnit, ownerOf, pileCards, riseShift } from './bodyRules';
 import { arcHeight } from './effectRules';
 import type { Effects } from './effects';
@@ -24,6 +24,8 @@ export interface Bodies {
 }
 
 const PX = MAT.w / PLANE.w; // world units per plane pixel
+/** Where the opponent holds their hand: over the far edge, low enough to stay in the usual view. */
+const FOE_AT = new THREE.Vector3(0, MAT.h / 2 - 0.55, MAT.top + 0.22);
 const CT = 0.06; // card thickness
 const FLOAT = 0.3; // how high the cards float above the table (the mockup's)
 
@@ -86,7 +88,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
   // Glossy, as varnished cards: the room reflects in them, while the lamps leave only a soft sheen
   // (sharp highlights from the candles washed the pictures out).
   const glossy = (p: THREE.MeshPhysicalMaterialParameters) =>
-    new THREE.MeshPhysicalMaterial({ roughness: 0.5, clearcoat: 0.6, clearcoatRoughness: 0.28, envMap: env ?? null, envMapIntensity: 0.12, ...p });
+    new THREE.MeshPhysicalMaterial({ roughness: 0.55, specularIntensity: 0.25, clearcoat: 0.25, clearcoatRoughness: 0.45, envMap: env ?? null, envMapIntensity: 0.06, ...p });
   // A plain sheen without the varnish (a varnish hazes small, bright things like portraits and tokens).
   const satin = (p: THREE.MeshPhysicalMaterialParameters) => new THREE.MeshPhysicalMaterial({ roughness: 0.4, metalness: 0, specularIntensity: 0.35, envMap: env ?? null, envMapIntensity: 0.06, ...p });
   const stoneMat = keep(new THREE.MeshStandardMaterial({ color: 0xbdb5a2, roughness: 0.85, metalness: 0.05 }));
@@ -663,10 +665,9 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
         deckCounts.set(key, now);
         const drawn = before ? cardsDrawn(before, now) : 0;
         if (drawn > 0) {
-          const handEl = document.querySelector(key === '0' ? '.match .self-screen .hand' : '.table3d-plane .enemy-hand');
-          const r = handEl?.getBoundingClientRect();
-          const to = r && toMat(r.left + r.width / 2, r.top + r.height / 2);
-          if (to) for (let i = 0; i < drawn; i++) effects.flyCard(pile.face, w, new THREE.Vector3(p.x, p.y, MAT.top + 0.06 + n * 0.045), to.clone().setZ(MAT.top + (key === '0' ? 1.5 : 0.3)), i * 0.14);
+          // To your hand's plane at the near edge, or the opponent's fan over the far edge.
+          const to = key === '0' ? HAND.at.clone() : FOE_AT.clone();
+          for (let i = 0; i < drawn; i++) effects.flyCard(pile.face, w, new THREE.Vector3(p.x, p.y, MAT.top + 0.06 + n * 0.045), to, i * 0.14);
         }
       });
 
@@ -689,7 +690,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
         // Their backs (the +z face, tipped towards you) show; the fan turns a half turn so it reads from their side.
         // Held up at the far edge as the opponent holds them: standing, their backs towards you, leaning
         // a little away (towards their holder), fanned.
-        m.position.set(k * 0.5, MAT.h / 2 + 0.02 + Math.abs(k) * 0.03, MAT.top + 0.3 - Math.abs(k) * 0.03 + Math.sin(t * 1.1 + i) * 0.01);
+        m.position.set(FOE_AT.x + k * 0.5, FOE_AT.y + Math.abs(k) * 0.03, FOE_AT.z - Math.abs(k) * 0.03 + Math.sin(t * 1.1 + i) * 0.01);
         m.rotation.set(0.7, 0, -k * 0.09, 'ZXY');
       });
 

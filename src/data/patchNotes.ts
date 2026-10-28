@@ -19,6 +19,25 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.74.2',
+    date: '2026-10-28',
+    title: '3D table fixes',
+    summary: 'A round of fixes on the 3D table.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          '3D table: cards drawn by you or your opponent fly from the deck to the right hand (they sometimes headed for the wrong place).',
+          '3D table: the opponent’s hand is fully in view at the far edge of the table.',
+          '3D table: a buffed unit shows a golden sparkle instead of a big yellow triangle that looked like a warning.',
+          '3D table: a card you draw rises into your hand instead of flying in from the wrong side.',
+          '3D table: the cards on the table and the decks reflect the lights much less.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.74.1',
     date: '2026-10-28',
     title: 'Your hand, a little higher',
