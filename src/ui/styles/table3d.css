@@ -179,3 +179,11 @@
 .table3d-plane .hero-health { min-width: 44px; height: 46px; font-size: 1.55rem; right: 6%; bottom: 6%; }
 .table3d-plane .energy-count { font-size: 1.9rem; font-weight: 800; color: #eaf6ff; text-shadow: 0 2px 4px #000; }
 .table3d-plane .hero-side-info .energy { flex: none; }
+
+/* The flat board effects lie over the whole 3D scene, so they would shine through the cards: on the
+   table only the 3D ones stay (glow and smoke on the mat, flame lights, particles: boardLife.ts). */
+.table3d-board-fx :is(.ab-lamp, .ab-rays, .ab-mist, .ab-haze) { display: none; }
+.table3d-plane .battle-divider { visibility: hidden; }
+/* A playable card in the hand: a tight, saturated green glow round its own edge (it is part of the
+   card, so the cards in front of it cover it). */
+.table3d-hand-plane .hand-card > .card.is-playable { filter: drop-shadow(0 0 2px #3cff7a) drop-shadow(0 0 5px #19d35a) drop-shadow(0 3px 0 #b8862c) drop-shadow(0 6px 6px rgba(0, 0, 0, 0.55)); }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
-import { HAND, MAT, PLANE, cameraCss, handCss, handMatrix, placeCamera, planeCss, planeToWorld } from '@/ui/match/table3d/tableCamera';
+import { HAND, MAT, PLANE, TILT, cameraCss, handCss, handMatrix, placeCamera, planeCss, planeToWorld } from '@/ui/match/table3d/tableCamera';
 import { table3dAllowed, table3dBlocker } from '@/ui/match/table3d/table3dRules';
 
 const ok = { table3d: true, performanceMode: false, reducedMotion: false };
@@ -23,7 +23,7 @@ describe('the table camera', () => {
   for (const [w, h] of [[1600, 900], [1000, 800]]) {
     it(`frames the whole mat, filling the view (${w}×${h})`, () => {
       const cam = new THREE.PerspectiveCamera(32, w / h, 0.1, 600);
-      placeCamera(cam, { width: w, height: h }, { tilt: 0.62, zoom: 1, panX: 0, panY: 0 });
+      placeCamera(cam, { width: w, height: h }, { tilt: TILT, zoom: 1, panX: 0, panY: 0 });
       const corners = [[-MAT.w / 2, -MAT.h / 2], [MAT.w / 2, -MAT.h / 2], [-MAT.w / 2, MAT.h / 2], [MAT.w / 2, MAT.h / 2]].map(([x, y]) => project(cam, x, y));
       for (const c of corners) {
         expect(Math.abs(c.x)).toBeLessThanOrEqual(1.02);

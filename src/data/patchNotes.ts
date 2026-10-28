@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.73.5',
+    date: '2026-10-28',
+    title: 'A clearer view of the cards',
+    summary: 'The 3D table looks down a little more, and the board no longer shines through the cards.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          '3D table: the usual view looks down on the table a little more, so the cards read better.',
+          '3D table: the board’s light effects and the middle line no longer shine through the cards on it.',
+          '3D table: playable cards in your hand glow green again, tight round their edge; the cards on the table and the decks have a glossy finish.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.73.4',
     date: '2026-10-28',
     title: 'Your hand, sharp again',

@@ -191,7 +191,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
       [backMat, enemy ? darkGold : gold],
     );
     slab.castShadow = true;
-    const face = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.02, h - 0.02), new THREE.MeshPhysicalMaterial({ roughness: 0.6, clearcoat: 0.15, clearcoatRoughness: 0.5, transparent: true, color: 0x2a2244 }));
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.02, h - 0.02), new THREE.MeshPhysicalMaterial({ roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.08, transparent: true, color: 0x2a2244 }));
     face.position.z = CT + 0.021;
     g.add(slab, face);
     // Raised stat gems in the bottom corners, their numbers drawn with depth (as in the mockup).
@@ -536,7 +536,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
           const g = new THREE.Group();
           const face = backTex ?? defaultBack;
           for (let i = 0; i < n; i++) {
-            const c = new THREE.Mesh(new THREE.BoxGeometry(w, w * 1.4, 0.035), [gold, gold, gold, gold, new THREE.MeshStandardMaterial({ map: face, roughness: 0.5 }), backMat]);
+            const c = new THREE.Mesh(new THREE.BoxGeometry(w, w * 1.4, 0.035), [gold, gold, gold, gold, new THREE.MeshPhysicalMaterial({ map: face, roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.08 }), backMat]);
             c.castShadow = true;
             // A small, stable jitter so the pile looks stacked by hand.
             c.position.set(Math.sin(i * 12.9898) * 0.012, Math.sin(i * 78.233) * 0.012, 0.02 + i * 0.045);

@@ -7,7 +7,7 @@ import * as THREE from 'three';
  * +y runs away from the player. The DOM plane is PLANE.w × PLANE.h px (the mat's aspect).
  */
 /** The camera's tilt from looking straight down (rad). */
-export const TILT = 0.62;
+export const TILT = 0.52;
 export const PLANE = { w: 1600, h: 911 };
 export const MAT = { w: 16, h: (16 * 1823) / 3200, top: 0.1 };
 export const FOV = 32;

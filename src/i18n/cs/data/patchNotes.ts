@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.73.5': {
+    title: 'Lepší pohled na karty',
+    summary: '3D stůl se dívá víc shora a deska už neprosvítá kartami.',
+    sections: [
+      [
+        '3D stůl: výchozí pohled se dívá na stůl o kousek víc shora, takže jsou karty líp čitelné.',
+        '3D stůl: světelné efekty desky a středová čára už neprosvítají kartami, které na ní leží.',
+        '3D stůl: zahratelné karty v ruce zase září zeleně, těsně kolem okraje; karty na stole a balíčky mají lesklý povrch.',
+      ],
+    ],
+  },
   '0.73.4': {
     title: 'Ostrá ruka',
     summary: 'Karty v ruce na 3D stole jsou zase skutečné karty hry.',
