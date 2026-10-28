@@ -83,7 +83,8 @@ function normalMapFrom(img: HTMLImageElement): HTMLCanvasElement {
 export function buildTableScene(boardUrl: string, warm: string): TableScene {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#0c0910');
-  scene.fog = new THREE.Fog('#0c0910', 24, 60);
+  // Far enough that the room stays visible when zoomed out to see it.
+  scene.fog = new THREE.Fog('#0c0910', 45, 150);
   const disposables: { dispose(): void }[] = [];
   const keep = <T extends { dispose(): void }>(x: T) => (disposables.push(x), x);
 
@@ -166,6 +167,85 @@ export function buildTableScene(boardUrl: string, warm: string): TableScene {
   floor.receiveShadow = true;
   scene.add(floor);
 
+  // The room: stone walls all around, a rug under the table, two torches on the walls.
+  const ROOM_X = 36;
+  const ROOM_Y = 30;
+  const WALL_H = 34;
+  const wallTex = keep(
+    canvasTexture(512, 512, (g) => {
+      g.fillStyle = '#211a22';
+      g.fillRect(0, 0, 512, 512);
+      // Rough stone blocks in staggered courses.
+      for (let row = 0; row < 8; row++)
+        for (let col = -1; col < 5; col++) {
+          const v = 44 + Math.random() * 18;
+          g.fillStyle = `rgb(${v},${v - 6},${v - 2})`;
+          const x = col * 128 + (row % 2) * 64 + 3;
+          g.fillRect(x, row * 64 + 3, 122, 58);
+        }
+    }),
+  );
+  wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
+  const wallMat = keep(new THREE.MeshStandardMaterial({ map: wallTex, roughness: 0.95 }));
+  const wall = (len: number, x: number, y: number, rot: number) => {
+    const g = keep(new THREE.PlaneGeometry(len, WALL_H));
+    const m = new THREE.Mesh(g, wallMat.clone());
+    (m.material as THREE.MeshStandardMaterial).map = wallTex.clone();
+    (m.material as THREE.MeshStandardMaterial).map!.repeat.set(len / 8, WALL_H / 8);
+    (m.material as THREE.MeshStandardMaterial).map!.needsUpdate = true;
+    keep(m.material as THREE.Material);
+    keep((m.material as THREE.MeshStandardMaterial).map!);
+    // Stand it up on the floor, facing into the room.
+    m.rotation.set(Math.PI / 2, rot, 0);
+    m.position.set(x, y, -9 + WALL_H / 2);
+    m.receiveShadow = true;
+    scene.add(m);
+  };
+  wall(ROOM_X * 2, 0, ROOM_Y, 0);
+  wall(ROOM_X * 2, 0, -ROOM_Y, Math.PI);
+  wall(ROOM_Y * 2, ROOM_X, 0, -Math.PI / 2);
+  wall(ROOM_Y * 2, -ROOM_X, 0, Math.PI / 2);
+  const rug = new THREE.Mesh(
+    keep(new THREE.PlaneGeometry(W + 14, H + 12)),
+    keep(
+      new THREE.MeshStandardMaterial({
+        map: keep(
+          canvasTexture(512, 512, (g) => {
+            // An old, worn rug: deep wine with a faded gold border.
+            g.fillStyle = '#2e0e12';
+            g.fillRect(0, 0, 512, 512);
+            g.strokeStyle = '#6e5124';
+            g.lineWidth = 8;
+            g.strokeRect(22, 22, 468, 468);
+            g.lineWidth = 3;
+            g.strokeRect(44, 44, 424, 424);
+            g.fillStyle = '#3a1418';
+            g.fillRect(58, 58, 396, 396);
+          }),
+        ),
+        roughness: 1,
+      }),
+    ),
+  );
+  rug.position.z = -8.98;
+  rug.receiveShadow = true;
+  scene.add(rug);
+  const torches = [
+    [-ROOM_X + 0.6, 8],
+    [ROOM_X - 0.6, -8],
+  ].map(([x, y]) => {
+    const holder = new THREE.Mesh(keep(new THREE.CylinderGeometry(0.25, 0.15, 2.2, 8)), keep(new THREE.MeshStandardMaterial({ color: '#3a2a1a', metalness: 0.6, roughness: 0.5 })));
+    holder.rotation.x = Math.PI / 2;
+    holder.position.set(x, y, 8);
+    const flame = new THREE.Mesh(keep(new THREE.SphereGeometry(0.45, 12, 8)), keep(new THREE.MeshBasicMaterial({ color: '#ffb35a', toneMapped: false })));
+    flame.scale.set(1, 1, 1.6);
+    flame.position.set(x, y, 9.5);
+    const light = new THREE.PointLight(0xffa64a, 30, 45, 1.6);
+    light.position.set(x + Math.sign(-x) * 1.5, y, 10);
+    scene.add(holder, flame, light);
+    return light;
+  });
+
   // The mat: the board image with its relief, a thin dark edge.
   const matMat = keep(new THREE.MeshStandardMaterial({ roughness: 0.78, metalness: 0.05 }));
   const edge = keep(new THREE.MeshStandardMaterial({ color: '#1a1220', roughness: 0.95 }));
@@ -200,6 +280,7 @@ export function buildTableScene(boardUrl: string, warm: string): TableScene {
     scene,
     mat,
     update(t) {
+      torches.forEach((l, i) => (l.intensity = 28 + Math.sin(t * 9 + i * 4) * 3 + Math.sin(t * 17 + i) * 2));
       candles.forEach((l, i) => (l.intensity = 9 + Math.sin(t * 11 + i * 3) * 1.4 + Math.sin(t * 23 + i) * 1 + Math.sin(t * 3.1 + i * 2) * 1.8));
     },
     dispose: () => {

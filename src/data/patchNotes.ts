@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.71.1',
+    date: '2026-10-28',
+    title: 'The room around the table',
+    summary: 'Moving around the 3D table works as in its first preview, and there is a room around it.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          '3D table: drag the bare table (or the room) to move around the room; drag with the right mouse button (or with Shift) to turn the view, all the way around the table and up or down.',
+          '3D table: zoom out with the mouse wheel to see the whole room: the table on its rug, stone walls and torches. The usual view stays as it was; double-click the table to get back to it.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.71.0',
     date: '2026-10-28',
     title: 'Look around the table',

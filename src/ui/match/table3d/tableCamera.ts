@@ -80,7 +80,7 @@ export function placeCamera(camera: THREE.PerspectiveCamera, view: { width: numb
     fitCache.set(key, hi);
     fit = hi;
   }
-  put(fit / Math.max(1, s.zoom), s.panX, s.panY, s.tilt, s.yaw ?? 0);
+  put(fit / Math.max(0.1, s.zoom), s.panX, s.panY, s.tilt, s.yaw ?? 0);
 }
 
 const eps = (v: number) => (Math.abs(v) < 1e-10 ? 0 : v);

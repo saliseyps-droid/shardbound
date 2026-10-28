@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.71.1': {
+    title: 'Místnost kolem stolu',
+    summary: 'Pohyb kolem 3D stolu funguje jako v jeho prvním náhledu a kolem stolu je místnost.',
+    sections: [
+      [
+        '3D stůl: tažením po volném stole (nebo po místnosti) se posouváš po místnosti; tažením pravým tlačítkem myši (nebo se Shiftem) otáčíš pohled, kolem celého stolu i nahoru a dolů.',
+        '3D stůl: kolečkem myši můžeš oddálit a uvidíš celou místnost: stůl na koberci, kamenné stěny a pochodně. Výchozí pohled zůstává stejný; dvojklikem na stůl se do něj vrátíš.',
+      ],
+    ],
+  },
   '0.71.0': {
     title: 'Rozhlédni se po stole',
     summary: 'Na 3D stole se teď můžeš rozhlížet a karty jsou čitelnější.',

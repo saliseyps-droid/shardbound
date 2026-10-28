@@ -133,3 +133,14 @@ describe('looking around the table', () => {
     expect(Math.abs(steep.position.y) / steep.position.z).toBeLessThan(Math.abs(flat.position.y) / flat.position.z);
   });
 });
+
+describe('zooming out into the room', () => {
+  it('moves the camera further back below zoom 1', () => {
+    const cam = (zoom: number) => {
+      const c = new THREE.PerspectiveCamera(32, 16 / 9, 0.1, 600);
+      placeCamera(c, { width: 1600, height: 900 }, { tilt: 0.62, zoom, panX: 0, panY: 0, bottom: 0.2 });
+      return c.position.length();
+    };
+    expect(cam(0.5)).toBeGreaterThan(cam(1) * 1.8);
+  });
+});

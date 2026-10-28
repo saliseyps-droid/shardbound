@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 import { approach, cardsDrawn, isEnemyUnit, ownerOf } from '@/ui/match/table3d/bodyRules';
-import { isEmptyTable, orbitTo, pinchZoom, zoomsTable } from '@/ui/match/table3d/tableInput';
+import { ROOM, ZOOM, clampRoomPan, isEmptyTable, orbitTo, pinchZoom, zoomsTable } from '@/ui/match/table3d/tableInput';
 
 const dom = (html: string) => {
   document.body.innerHTML = html;
@@ -45,10 +45,12 @@ describe('3D table input', () => {
     expect(zoomsTable(document.getElementById('o')!, match)).toBe(false);
   });
 
-  it('pinches to zoom in proportion to the finger spread, within 1–3×', () => {
+  it('pinches to zoom in proportion to the finger spread, out far enough to see the room, in up to 3×', () => {
     expect(pinchZoom(100, 200, 1)).toBeCloseTo(2);
-    expect(pinchZoom(100, 50, 1)).toBe(1);
+    expect(pinchZoom(100, 50, 1)).toBe(0.5);
+    expect(pinchZoom(100, 10, 1)).toBe(ZOOM.min);
     expect(pinchZoom(100, 900, 1.5)).toBe(3);
+    expect(ZOOM.min).toBeLessThanOrEqual(0.45); // as far out as the mockup
   });
 });
 
@@ -67,7 +69,15 @@ describe('dragging on the table', () => {
   it('turns and tilts the view with the drag, within limits', () => {
     expect(orbitTo({ yaw: 0, tilt: 0.62 }, 100, 0)).toEqual({ yaw: -0.5, tilt: 0.62 });
     expect(orbitTo({ yaw: 0, tilt: 0.62 }, 0, 100).tilt).toBeCloseTo(1.02);
-    expect(orbitTo({ yaw: 0, tilt: 0.62 }, -10000, 10000)).toEqual({ yaw: 1.2, tilt: 1.1 });
+    // All the way around the table, as in the mockup's room.
+    expect(orbitTo({ yaw: 3, tilt: 0.62 }, -200, 0).yaw).toBeCloseTo(4 - Math.PI * 2);
+    expect(orbitTo({ yaw: 0, tilt: 0.62 }, 0, 10000).tilt).toBe(1.25);
     expect(orbitTo({ yaw: 0, tilt: 0.62 }, 0, -10000).tilt).toBe(0.12);
+  });
+
+  it('moves around the room, not only over the board, at any zoom', () => {
+    expect(clampRoomPan(3, -2)).toEqual({ x: 3, y: -2 });
+    expect(clampRoomPan(100, -100)).toEqual({ x: ROOM.x, y: -ROOM.y });
+    expect(ROOM.x).toBeGreaterThan(8); // beyond the board's half width (8)
   });
 });

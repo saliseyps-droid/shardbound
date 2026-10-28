@@ -9,7 +9,7 @@ import { createBoardLife } from './boardLife';
 import { createFpsWatch } from './fpsWatch';
 import { createBodies } from './bodies';
 import { createEffects } from './effects';
-import { isEmptyTable, orbitTo, pinchZoom, zoomsTable } from './tableInput';
+import { ZOOM, clampRoomPan, isEmptyTable, orbitTo, pinchZoom, zoomsTable } from './tableInput';
 import { MAT, PLANE, TILT, cameraCss, placeCamera, planeCss, type CameraState } from './tableCamera';
 import '@/ui/styles/table3d.css';
 
@@ -27,15 +27,14 @@ interface Props {
 
 /** The hand's strip at the bottom of the screen, kept free of the table. */
 const BOTTOM = 0.2;
-const ZOOM_MAX = 3;
 
 /**
  * The 3D table: the WebGL room behind, and `children` (plain match DOM) laid onto the mat with the
- * same camera, so drag, drop and clicks keep working on the tilted board. Dragging bare table (or
- * with the right button anywhere over it) looks around: sideways turns around the table, up/down
- * tilts the view; zoomed in, a drag on bare table moves across it instead, as do the middle button
- * and a drag with Space held. Wheel or pinch zooms towards the pointer; a double click on the table
- * goes back to the usual view.
+ * same camera, so drag, drop and clicks keep working on the tilted board. As in the mockup: dragging
+ * bare table (or the room) moves around the room, the right button (or Shift) turns and tilts the
+ * view; the middle button and a drag with Space held move too. Wheel or pinch zooms towards the
+ * pointer, from the usual view in to 3× or out to 0.4× to see the room; a double click on the
+ * table goes back to the usual view.
  */
 export default function TableView({ boardUrl, board, warm = '#ffb05a', children, onUnavailable, onSlow }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -134,18 +133,18 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       const p = v.clone().project(camera);
       return { x: r.left + ((p.x + 1) / 2) * r.width, y: r.top + ((1 - p.y) / 2) * r.height };
     };
+    // The view moves around the whole room, not only over the board (as in the mockup).
     const clampPan = () => {
-      const fx = (MAT.w / 2) * (1 - 1 / target.zoom);
-      const fy = (MAT.h / 2) * (1 - 1 / target.zoom);
-      target.panX = Math.max(-fx, Math.min(fx, target.panX));
-      target.panY = Math.max(-fy, Math.min(fy, target.panY));
+      const p = clampRoomPan(target.panX, target.panY);
+      target.panX = p.x;
+      target.panY = p.y;
     };
     const match = root.parentElement!;
     // Zoom to `nz`, keeping the mat point under (cx, cy) where it is.
     const zoomAt = (nz: number, cx: number, cy: number) => {
       rootRect = root.getBoundingClientRect();
       const p = matPoint(cx, cy);
-      nz = Math.max(1, Math.min(ZOOM_MAX, nz));
+      nz = Math.max(ZOOM.min, Math.min(ZOOM.max, nz));
       if (p) {
         // Keep the point under the pointer where it is.
         const k = 1 - target.zoom / nz;
@@ -172,11 +171,11 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
     };
     const onBlur = () => (space = false);
     // A drag that moves the view: 'maybe' until it has moved a few px (a plain click still clicks).
-    type Drag = { mode: 'maybe' | 'pan' | 'orbit'; x: number; y: number; px: number; py: number; yaw: number; tilt: number };
+    type Drag = { mode: 'maybe' | 'pan' | 'orbit'; x: number; y: number; px: number; py: number; yaw: number; tilt: number; shift: boolean };
     let drag: Drag | null = null;
     let dragged = false;
     const startDrag = (e: PointerEvent, mode: Drag['mode']) => {
-      drag = { mode, x: e.clientX, y: e.clientY, px: target.panX, py: target.panY, yaw: target.yaw ?? 0, tilt: target.tilt };
+      drag = { mode, x: e.clientX, y: e.clientY, px: target.panX, py: target.panY, yaw: target.yaw ?? 0, tilt: target.tilt, shift: e.shiftKey };
       dragged = false;
     };
     // Two fingers on the table pinch-zoom (one still drags cards).
@@ -221,7 +220,8 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       const dy = e.clientY - drag.y;
       if (drag.mode === 'maybe') {
         if (Math.hypot(dx, dy) < 5) return;
-        drag.mode = target.zoom > 1.01 ? 'pan' : 'orbit';
+        // As in the mockup: a drag moves around the room, with Shift it turns the view (as the right button does).
+        drag.mode = drag.shift ? 'orbit' : 'pan';
       }
       dragged = true;
       match.classList.add('is-moving-view');
