@@ -14,6 +14,7 @@ const notes: PatchNotesOverlay = {
         '3D stůl: malovaná deska je větší, takže tvůj Warden stojí celý na ní.',
         '3D stůl: hradby soupeřovy jednotky se Stráží už nezakrývají soupeřova Wardena.',
         '3D stůl: oba balíčky leží u okraje desky, takže do nich plná řada sedmi jednotek už nezasahuje.',
+        'Otevírání packů: záře vzácnosti kolem karty lícem dolů se teď hýbe s ní, zvedne se, když na ni najedeš, a otočí se s ní, když ji odhalíš.',
       ],
     ],
   },

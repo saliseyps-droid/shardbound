@@ -104,7 +104,8 @@ export function PackOpening({ setId, onClose, onOpenAnother }: { setId: PackId; 
   const ready3d = useCallback(() => setScene3d((s) => (s === 'pending' ? 'ready' : s)), []);
   const off3d = useCallback(() => setScene3d('off'), []);
   const packRect = useCallback(() => openBtn.current?.getBoundingClientRect() ?? null, []);
-  const slotRects = useCallback(() => slotRefs.current.map((el) => el?.getBoundingClientRect() ?? null), []);
+  // The turning face, not the button: the rims rise with it on hover and narrow with it as it is turned.
+  const slotRects = useCallback(() => slotRefs.current.map((el) => (el?.querySelector('.flip-inner') ?? el)?.getBoundingClientRect() ?? null), []);
   const with3d = scene3d === 'ready';
   // With 3D the card row is laid out (hidden) while the cards fly, so they can land on it.
   const showRow = phase === 'reveal' || phase === 'summary' || (with3d && phase === 'opening');

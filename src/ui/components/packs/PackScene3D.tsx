@@ -410,7 +410,8 @@ export default function PackScene3D(props: Props) {
           if (r) {
             const w = world(r, CARD_PLANE_Z);
             f.holder.position.set(w.x, w.y, CARD_PLANE_Z);
-            f.holder.scale.setScalar(w.width / CW);
+            // Width and height apart: the rim narrows with the card as it is turned.
+            f.holder.scale.set(w.width / CW, w.height / CH, w.height / CH);
             f.holder.rotation.set(0, 0, 0);
           }
           f.fade = Math.max(0, f.fade - (p.revealed[i] ? dt * 2.5 : 0));
@@ -427,7 +428,7 @@ export default function PackScene3D(props: Props) {
             sp.material.opacity = Math.min(1, kd * 2) * f.fade;
             if (Math.random() < 0.7 * f.fade) emit({ pos: f.holder.localToWorld(sp.position.clone()), vel: new THREE.Vector3(), color: f.color, life: 0.45, age: 0, drag: 0.985 });
           });
-          const s = f.holder.scale.x;
+          const s = f.holder.scale.y;
           if (f.rarity === 'EPIC' && Math.random() < 0.5 * f.fade) {
             emit({ pos: f.holder.position.clone().add(new THREE.Vector3((Math.random() - 0.5) * CW * s, (-CH / 2) * s, 0)), vel: new THREE.Vector3(0, (0.5 + Math.random() * 0.6) * s, 0), color: f.color, life: 1.3, age: 0, drag: 0.995 });
           }
