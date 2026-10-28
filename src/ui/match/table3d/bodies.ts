@@ -28,7 +28,7 @@ const PX = MAT.w / PLANE.w; // world units per plane pixel
 // Its top (half a card up the lean) is FOE_TOP, which the camera keeps in view.
 const FOE_AT = new THREE.Vector3(0, MAT.h / 2 + 0.25, MAT.top + 0.5);
 const CT = 0.06; // card thickness
-const FLOAT = 0.3; // how high the cards float above the table (the mockup's)
+const FLOAT = 0.1; // how high the cards float above the table (the mockup's)
 
 function roundedRect(w: number, h: number, r: number): THREE.Shape {
   const s = new THREE.Shape();
