@@ -297,6 +297,8 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
           heroes.set(key, m);
         }
         m.position.set(p.x, p.y, MAT.top);
+        // The Final Blow shatters the Warden's portrait: its plinth goes with it.
+        m.visible = !el.classList.contains('is-shattering');
       });
 
       // Card piles: a stack of real card backs, thinner as the deck runs down.

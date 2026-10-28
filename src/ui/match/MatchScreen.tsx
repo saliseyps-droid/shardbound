@@ -169,6 +169,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const confirmEnd = useSettings((s) => s.confirmEndTurn);
   const want3d = useSettings((s) => table3dAllowed(s, table3dEnv()));
   const [failed3d, setFailed3d] = useState(false);
+  const [slow3d, setSlow3d] = useState(false);
   const cardW = useViewportCardWidth();
   const t = useT();
   const startedAt = useMatch((s) => s.startedAt);
@@ -755,7 +756,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           return (
             <>
               <Suspense fallback={null}>
-                <TableView boardUrl={boardBg!.url} board={boardBg!.key} onUnavailable={() => setFailed3d(true)}>
+                <TableView boardUrl={boardBg!.url} board={boardBg!.key} onUnavailable={() => setFailed3d(true)} onSlow={() => setSlow3d(true)}>
                   {/* The mat's glow, lights, mist and smoke lie on the table; its particles are 3D there (boardLife.ts). */}
                   {boardBg?.key && (
                     <div className="table3d-board-fx" aria-hidden>
@@ -772,6 +773,17 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
               <section className="side self-side self-screen" aria-label={t('Your hand')} style={selfStyle}>
                 {selfHand}
               </section>
+              {slow3d && (
+                <div className="table3d-slow" role="status">
+                  <span>{t('The 3D table runs slowly on this device.')}</span>
+                  <button className="btn btn-primary btn-sm" onClick={() => useSettings.getState().update({ table3d: false })}>
+                    {t('Switch to the 2D board')}
+                  </button>
+                  <button className="btn btn-ghost btn-sm" onClick={() => setSlow3d(false)}>
+                    {t('Keep 3D')}
+                  </button>
+                </div>
+              )}
             </>
           );
         return (

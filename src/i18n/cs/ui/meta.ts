@@ -591,6 +591,8 @@ const d: Record<string, string> = {
   '3D table': '3D stůl',
   'Switch to the 2D board': 'Přepnout na 2D desku',
   'Switch to the 3D table': 'Přepnout na 3D stůl',
+  'The 3D table runs slowly on this device.': '3D stůl na tomhle zařízení běží pomalu.',
+  'Keep 3D': 'Nechat 3D',
   'Matches stay 2D in performance mode and with reduced motion.': 'V úsporném režimu a s omezenými animacemi zůstávají zápasy ve 2D.',
   'Plays matches on a 3D table. Still in progress.': 'Zápasy se hrají na 3D stole. Zatím se na něm pracuje.',
   'Disables blur and animated foil effects.': 'Vypne rozostření a animované foil efekty.',

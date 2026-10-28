@@ -6,6 +6,7 @@ import { BOARD_FX } from '../boardFx';
 import { BOARD_GLOWS, BOARD_SEA, BOARD_SMOKE } from '../AnimatedBoard';
 import { buildTableScene } from './TableScene3D';
 import { createBoardLife } from './boardLife';
+import { createFpsWatch } from './fpsWatch';
 import { createBodies } from './bodies';
 import { createEffects } from './effects';
 import { MAT, PLANE, cameraCss, placeCamera, planeCss, type CameraState } from './tableCamera';
@@ -19,6 +20,8 @@ interface Props {
   /** The on-table part of the match (hero areas, battlefield rows, draw piles), laid onto the mat. */
   children: ReactNode;
   onUnavailable: () => void;
+  /** The table stays slow even at lower quality (fpsWatch.ts): offer the 2D board. */
+  onSlow?: () => void;
 }
 
 export const TILT = 0.62;
@@ -31,7 +34,7 @@ const ZOOM_MAX = 3;
  * same camera, so drag, drop and clicks keep working on the tilted board. Wheel or pinch zooms
  * towards the pointer, the middle button pans, a double click on the table resets the view.
  */
-export default function TableView({ boardUrl, board, warm = '#ffb05a', children, onUnavailable }: Props) {
+export default function TableView({ boardUrl, board, warm = '#ffb05a', children, onUnavailable, onSlow }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fxCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -40,6 +43,8 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
   const planeRef = useRef<HTMLDivElement>(null);
   const failRef = useRef(onUnavailable);
   failRef.current = onUnavailable;
+  const slowRef = useRef(onSlow);
+  slowRef.current = onSlow;
 
   useEffect(() => {
     const root = rootRef.current!;
@@ -148,10 +153,24 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
     match.addEventListener('dblclick', onDbl);
 
     const clock = new THREE.Clock();
+    const fps = createFpsWatch();
     let frame = 0;
     const tick = () => {
       frame = requestAnimationFrame(tick);
-      const dt = Math.min(0.05, clock.getDelta());
+      const raw = clock.getDelta();
+      const dt = Math.min(0.05, raw);
+      const verdict = fps.frame(raw);
+      if (verdict === 'degrade') {
+        // A slow device: no shadows, one pixel per CSS pixel.
+        renderer.shadowMap.enabled = false;
+        renderer.setPixelRatio(1);
+        fxRenderer.setPixelRatio(1);
+        table.scene.traverse((o) => {
+          const m = (o as THREE.Mesh).material;
+          for (const x of Array.isArray(m) ? m : m ? [m] : []) x.needsUpdate = true;
+        });
+        resize();
+      } else if (verdict === 'offer2d') slowRef.current?.();
       const k = Math.min(1, dt * 10);
       state.zoom += (target.zoom - state.zoom) * k;
       state.panX += (target.panX - state.panX) * k;

@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.70.0',
+    date: '2026-10-28',
+    title: 'The 3D table, finished',
+    summary: 'The last touches to the 3D table: it adapts to slower computers and works in every kind of match.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          '3D table: on a computer where it runs slowly it first turns off its shadows and renders at a lower resolution, and if that is not enough it offers to switch to the 2D board.',
+          'Co-op matches, puzzles and the Final Blow work on the 3D table; the plinth of a Warden shatters with its portrait.',
+          'The 3D table is still off by default: turn it on in Settings or with the 2D / 3D button in a match.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.69.0',
     date: '2026-10-28',
     title: 'Living boards on the table',

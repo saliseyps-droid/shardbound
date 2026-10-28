@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.70.0': {
+    title: '3D stůl hotový',
+    summary: 'Poslední úpravy 3D stolu: přizpůsobí se pomalejším počítačům a funguje ve všech druzích zápasů.',
+    sections: [
+      [
+        '3D stůl: na počítači, kde běží pomalu, nejdřív vypne stíny a sníží rozlišení, a když to nestačí, nabídne přepnutí na 2D desku.',
+        'Kooperativní zápasy, puzzle i Final Blow fungují na 3D stole; podstavec Wardena se roztříští spolu s jeho portrétem.',
+        '3D stůl je pořád ve výchozím stavu vypnutý: zapneš ho v Nastavení nebo tlačítkem 2D / 3D v zápase.',
+      ],
+    ],
+  },
   '0.69.0': {
     title: 'Živé desky na stole',
     summary: 'Animované desky teď ožívají i na 3D stole.',

@@ -85,3 +85,13 @@
 /* The glow and painted smoke are black-backed masks the flat board screens over the mat; the plane
    can't blend with the WebGL mat under it, so the 3D table draws them itself (boardLife.ts). */
 .table3d-board-fx :is(.ab-glow, .ab-smoke) { display: none; }
+
+/* Offered when the table stays slow at lower quality (fpsWatch.ts). */
+.table3d-slow {
+  position: absolute; left: 76px; top: 18px; z-index: 40;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px; max-width: 420px;
+  padding: 10px 14px; border-radius: 12px;
+  background: rgba(15, 12, 30, 0.92); border: 1px solid var(--gold-deep);
+  font: 600 var(--t-sm) var(--font-body); color: var(--parchment);
+}
+.table3d-slow span { flex-basis: 100%; }
