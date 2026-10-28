@@ -23,7 +23,10 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-28',
     title: 'Your hand, a little higher',
     summary: 'On the 3D table your hand sits just below your Warden.',
-    sections: [{ kind: 'improved', items: ['3D table: in the usual view your hand sits just below your Warden, every card fully in view.'] }],
+    sections: [
+      { kind: 'improved', items: ['3D table: in the usual view your hand sits just below your Warden, every card fully in view.'] },
+      { kind: 'fixed', items: ['3D table: Guard’s stone frame, Freeze’s ice and Barrier’s golden shell sit on the card itself and float and tilt with it, no longer lying on the board apart from it and over its Attack and Health.'] },
+    ],
     commits: [],
   },
   {

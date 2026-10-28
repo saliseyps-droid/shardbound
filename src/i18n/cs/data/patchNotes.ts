@@ -4,7 +4,10 @@ const notes: PatchNotesOverlay = {
   '0.74.1': {
     title: 'Ruka o kousek výš',
     summary: 'Na 3D stole leží tvoje ruka těsně pod tvým Wardenem.',
-    sections: [['3D stůl: ve výchozím pohledu leží tvoje ruka jen kousek pod tvým Wardenem a každá karta je celá vidět.']],
+    sections: [
+      ['3D stůl: ve výchozím pohledu leží tvoje ruka jen kousek pod tvým Wardenem a každá karta je celá vidět.'],
+      ['3D stůl: kamenný rám Stráže, led zmražení a zlatý obal Bariéry jsou přímo na kartě a vznášejí se a naklánějí s ní, místo aby ležely odděleně na desce přes její Útok a Životy.'],
+    ],
   },
   '0.74.0': {
     title: 'Varianty karet na 3D stole',

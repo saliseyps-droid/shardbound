@@ -89,6 +89,8 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     new THREE.MeshPhysicalMaterial({ roughness: 0.5, clearcoat: 0.6, clearcoatRoughness: 0.28, envMap: env ?? null, envMapIntensity: 0.12, ...p });
   // A plain sheen without the varnish (a varnish hazes small, bright things like portraits and tokens).
   const satin = (p: THREE.MeshPhysicalMaterialParameters) => new THREE.MeshPhysicalMaterial({ roughness: 0.4, metalness: 0, specularIntensity: 0.35, envMap: env ?? null, envMapIntensity: 0.06, ...p });
+  const stoneMat = keep(new THREE.MeshStandardMaterial({ color: 0xbdb5a2, roughness: 0.85, metalness: 0.05 }));
+  const iceMat = keep(new THREE.MeshPhysicalMaterial({ color: 0xbfe9ff, emissive: 0x5fb8ff, emissiveIntensity: 0.35, roughness: 0.1, transmission: 0, transparent: true, opacity: 0.85, clearcoat: 1 }));
   const gold = keep(new THREE.MeshStandardMaterial({ color: 0xd9a63a, metalness: 0.95, roughness: 0.28 }));
   const darkGold = keep(new THREE.MeshStandardMaterial({ color: 0x8a6526, metalness: 0.9, roughness: 0.38 }));
   const backMat = keep(new THREE.MeshStandardMaterial({ color: 0x1a1430, roughness: 0.6 }));
@@ -158,6 +160,10 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     ring: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
     /** The light sweeping over a Foil, Prismatic or Gilded card. */
     sheen: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
+    /** Statuses on the card itself, moving with it: Guard's stone frame, Frozen's ice rim, Barrier's golden shell. */
+    guard: THREE.Mesh;
+    frost: THREE.Mesh;
+    barrier: THREE.Mesh<THREE.ExtrudeGeometry, THREE.MeshPhysicalMaterial>;
     slab: THREE.Mesh;
     /** The edge's own material for a finish (silver, rainbow, black gold), else null (the shared gold). */
     edge: THREE.MeshStandardMaterial | null;
@@ -187,6 +193,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
   const dropUnit = (u: UnitBody) => {
     scene.remove(u.g, u.shadow, u.ring);
     u.edge?.dispose();
+    u.barrier.material.dispose();
     u.sheen.geometry.dispose();
     u.sheen.material.map?.dispose();
     u.sheen.material.dispose();
@@ -227,8 +234,26 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     const sheen = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.02, h - 0.02), new THREE.MeshBasicMaterial({ transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -1 }));
     sheen.position.z = CT + 0.024;
     g.add(sheen);
+    // A frame round the card (outer rounded rect with the card's shape cut out), raised over its edge.
+    const frame = (pad: number, depth: number) => {
+      const shape = roundedRect(w + pad * 2, h + pad * 2, Math.min(w, h) * 0.09);
+      shape.holes.push(roundedRect(w - pad * 0.4, h - pad * 0.4, Math.min(w, h) * 0.06));
+      return new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01, bevelSegments: 2 });
+    };
+    const guard = new THREE.Mesh(frame(0.07, CT + 0.05), stoneMat);
+    guard.position.z = -0.01;
+    guard.castShadow = true;
+    const frost = new THREE.Mesh(frame(0.05, CT + 0.07), iceMat);
+    frost.position.z = -0.005;
+    const barrier = new THREE.Mesh(
+      new THREE.ExtrudeGeometry(roundedRect(w + 0.08, h + 0.08, Math.min(w, h) * 0.1), { depth: 0.12, bevelEnabled: true, bevelThickness: 0.08, bevelSize: 0.05, bevelSegments: 4 }),
+      new THREE.MeshPhysicalMaterial({ color: 0xffd36a, emissive: 0xffc04a, emissiveIntensity: 0.4, transparent: true, opacity: 0.22, roughness: 0.1, clearcoat: 1, depthWrite: false }),
+    );
+    barrier.position.z = -0.02;
+    guard.visible = frost.visible = barrier.visible = false;
+    g.add(guard, frost, barrier);
     scene.add(shadow, ring, g);
-    return { g, face, atk, hp, ring, sheen, slab, edge: null, finish: 'NORMAL', enemy, shadow, w, h, art: '', lift: 0, drop: 0, phase: Math.random() * 6, shift: { dx: 0, dy: 0 }, key: '', at: new THREE.Vector3(), seen: true };
+    return { g, face, atk, hp, ring, sheen, guard, frost, barrier, slab, edge: null, finish: 'NORMAL', enemy, shadow, w, h, art: '', lift: 0, drop: 0, phase: Math.random() * 6, shift: { dx: 0, dy: 0 }, key: '', at: new THREE.Vector3(), seen: true };
   };
 
   // ---- Wardens: a raised gold hexagon with the portrait on top (the DOM keeps Health, frame effects
@@ -443,6 +468,12 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
         const corrupt = el.classList.contains('is-corrupt');
         m.color.set(corrupt ? '#c9a2ff' : el.classList.contains('is-silenced') ? '#8a8a8a' : '#ffffff');
         m.opacity = el.classList.contains('has-ambush') ? 0.55 : 1;
+        b.guard.visible = el.classList.contains('has-guard');
+        b.frost.visible = el.classList.contains('is-frozen');
+        b.barrier.visible = el.classList.contains('has-barrier');
+        if (b.barrier.visible) b.barrier.material.opacity = 0.18 + Math.sin(t * 2.4 + b.phase) * 0.06;
+        // Frozen: the picture goes icy.
+        if (b.frost.visible) m.color.set('#bfe4ff');
         const up = el.matches(':hover') || el.classList.contains('is-selected') ? 1 : 0;
         b.lift = approach(b.lift, up, dt, 12);
         b.drop = Math.max(0, b.drop - dt * 2.2);

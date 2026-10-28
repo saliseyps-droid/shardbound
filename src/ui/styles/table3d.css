@@ -192,3 +192,6 @@
 .table3d-hand-plane .hand-card:hover::after { height: calc(var(--card-w) * 0.7); }
 /* The 3D card draws each finish itself (bodies.ts); the flat unit body stays clear over it. */
 .table3d-plane .unit-body { background: none !important; }
+/* Guard, Freeze, Barrier and Corrupt are drawn on the 3D card itself (bodies.ts), so they float and
+   tilt with it; their flat DOM layers would lie on the mat apart from it. */
+.table3d-plane :is(.unit-guard-plate, .unit-frost, .unit-barrier, .unit-ice, .unit-corrupt) { display: none; }
