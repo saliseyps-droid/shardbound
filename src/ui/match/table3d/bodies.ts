@@ -46,6 +46,18 @@ function roundedRect(w: number, h: number, r: number): THREE.Shape {
   return s;
 }
 
+/** A small heater-shield shape of radius r (for Guard's boss). */
+function shieldShape(r: number): THREE.Shape {
+  const s = new THREE.Shape();
+  s.moveTo(-r, r * 0.9);
+  s.lineTo(r, r * 0.9);
+  s.lineTo(r, 0);
+  s.quadraticCurveTo(r * 0.85, -r * 0.8, 0, -r * 1.15);
+  s.quadraticCurveTo(-r * 0.85, -r * 0.8, -r, 0);
+  s.closePath();
+  return s;
+}
+
 /** A pointy-top hexagon w×h, like the Warden's portrait. */
 function hexShape(w: number, h: number): THREE.Shape {
   const s = new THREE.Shape();
@@ -93,7 +105,9 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
   // A plain sheen without the varnish (a varnish hazes small, bright things like portraits and tokens).
   const satin = (p: THREE.MeshPhysicalMaterialParameters) => new THREE.MeshPhysicalMaterial({ roughness: 0.4, metalness: 0, specularIntensity: 0.35, envMap: env ?? null, envMapIntensity: 0.06, ...p });
   // Guard: a slim bezel of dark steel round the card.
-  const stoneMat = keep(new THREE.MeshStandardMaterial({ color: 0xc9d3e2, roughness: 0.28, metalness: 0.8, emissive: 0x3a5a8a, emissiveIntensity: 0.35 }));
+  // Guard's metals: bright polished steel for the rim and rivets, dark hammered iron for the body.
+  const stoneMat = keep(new THREE.MeshStandardMaterial({ color: 0xdde4ee, roughness: 0.22, metalness: 0.9, emissive: 0x2a3a55, emissiveIntensity: 0.25, envMap: env ?? null, envMapIntensity: 0.6 }));
+  const ironMat = keep(new THREE.MeshStandardMaterial({ color: 0x3a4250, roughness: 0.5, metalness: 0.85, envMap: env ?? null, envMapIntensity: 0.3 }));
   const iceMat = keep(new THREE.MeshPhysicalMaterial({ color: 0xbfe9ff, emissive: 0x5fb8ff, emissiveIntensity: 0.35, roughness: 0.1, transmission: 0, transparent: true, opacity: 0.85, clearcoat: 1 }));
   // The cards' edges: a satin, antique gold (the bright metal gold read as a cheap yellow band).
   const cardEdge = keep(new THREE.MeshStandardMaterial({ color: 0xa87a34, metalness: 0.75, roughness: 0.42 }));
@@ -195,10 +209,10 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     const plate = new THREE.Mesh(new THREE.ExtrudeGeometry(roundedRect(0.46 * k, 0.3 * k, 0.06 * k), { depth: 0.03 * k, bevelEnabled: true, bevelThickness: 0.012 * k, bevelSize: 0.012 * k, bevelSegments: 2 }), [plateFace, rim]);
     plate.castShadow = true;
     const front = 0.03 * k + 0.014 * k + 0.004;
-    const icon = new THREE.Mesh(new THREE.PlaneGeometry(0.13 * k, 0.13 * k), new THREE.MeshBasicMaterial({ map: statIcons[kind], transparent: true, depthWrite: false, toneMapped: false }));
-    icon.position.set(-0.11 * k, 0, front);
-    const num = new THREE.Mesh(new THREE.PlaneGeometry(0.4 * k, 0.4 * k), new THREE.MeshBasicMaterial({ map: numberTexture('0'), transparent: true, depthWrite: false, toneMapped: false }));
-    num.position.set(0.09 * k, 0.005 * k, front);
+    const icon = new THREE.Mesh(new THREE.PlaneGeometry(0.25 * k, 0.25 * k), new THREE.MeshBasicMaterial({ map: statIcons[kind], transparent: true, depthWrite: false, toneMapped: false }));
+    icon.position.set(-0.115 * k, 0, front);
+    const num = new THREE.Mesh(new THREE.PlaneGeometry(0.5 * k, 0.5 * k), new THREE.MeshBasicMaterial({ map: numberTexture('0'), transparent: true, depthWrite: false, toneMapped: false }));
+    num.position.set(0.1 * k, 0.008 * k, front);
     icon.renderOrder = num.renderOrder = 3;
     plate.add(icon, num);
     return { gem: plate, num, rim, value: '', color: '' };
@@ -213,7 +227,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     /** The light sweeping over a Foil, Prismatic or Gilded card. */
     sheen: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
     /** Statuses on the card itself, moving with it: Guard's stone frame, Frozen's ice rim, Barrier's golden shell. */
-    guard: THREE.Mesh;
+    guard: THREE.Object3D;
     frost: THREE.Mesh;
     barrier: THREE.Mesh<THREE.ExtrudeGeometry, THREE.MeshPhysicalMaterial>;
     slab: THREE.Mesh;
@@ -288,27 +302,66 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     g.add(sheen);
     // A frame round the card (outer rounded rect with the card's shape cut out), raised over its edge.
     // Guard: a frame shaped like a shield round the card (flat top, sides curving to a point below it).
-    const shieldFrame = (pad: number, depth: number) => {
+    // The outline of a heater shield round the card: flat top with notched corners, the sides
+    // curving in to a point below the card.
+    const shieldOutline = (pad: number, tip: number) => {
       const a = w / 2 + pad;
       const top = h / 2 + pad;
-      const shape = new THREE.Shape();
-      shape.moveTo(-a, top);
-      shape.lineTo(a, top);
-      shape.lineTo(a, -h / 2 + h * 0.08);
-      shape.quadraticCurveTo(a, -h / 2 - pad * 1.2, 0, -h / 2 - pad * 3.2);
-      shape.quadraticCurveTo(-a, -h / 2 - pad * 1.2, -a, -h / 2 + h * 0.08);
-      shape.closePath();
-      shape.holes.push(roundedRect(w - pad * 0.4, h - pad * 0.4, Math.min(w, h) * 0.06));
-      return new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01, bevelSegments: 2, curveSegments: 16 });
+      const n = pad * 0.9; // the notch at the top corners
+      const sh = new THREE.Shape();
+      sh.moveTo(-a + n, top);
+      sh.lineTo(-n * 0.6, top);
+      sh.lineTo(0, top + n * 0.7);
+      sh.lineTo(n * 0.6, top);
+      sh.lineTo(a - n, top);
+      sh.lineTo(a, top - n);
+      sh.lineTo(a, -h / 2 + h * 0.12);
+      sh.bezierCurveTo(a, -h / 2 - tip * 0.3, a * 0.45, -h / 2 - tip * 0.75, 0, -h / 2 - tip);
+      sh.bezierCurveTo(-a * 0.45, -h / 2 - tip * 0.75, -a, -h / 2 - tip * 0.3, -a, -h / 2 + h * 0.12);
+      sh.lineTo(-a, top - n);
+      sh.closePath();
+      return sh;
+    };
+    const shieldFrame = (pad: number, tip: number, inner: number, depth: number, bevel: number) => {
+      const sh = shieldOutline(pad, tip);
+      sh.holes.push(roundedRect(w - inner, h - inner, Math.min(w, h) * 0.06));
+      return new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelSegments: 3, curveSegments: 20 });
     };
     const frame = (pad: number, depth: number) => {
       const shape = roundedRect(w + pad * 2, h + pad * 2, Math.min(w, h) * 0.09);
       shape.holes.push(roundedRect(w - pad * 0.4, h - pad * 0.4, Math.min(w, h) * 0.06));
       return new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01, bevelSegments: 2 });
     };
-    const guard = new THREE.Mesh(shieldFrame(0.05, CT + 0.035), stoneMat);
-    guard.position.z = -0.01;
-    guard.castShadow = true;
+    // Guard: a forged shield the card rests in. A dark iron body, a bright steel rim inlaid round its
+    // edge, rivets at the corners and a steel boss with a gold crest at the point.
+    const guard = new THREE.Group();
+    const s0 = Math.min(w, h);
+    const iron = new THREE.Mesh(shieldFrame(s0 * 0.07, s0 * 0.26, 0, CT + 0.02, s0 * 0.012), ironMat);
+    iron.position.z = -0.02;
+    iron.castShadow = true;
+    const rimGeo = (() => {
+      const outer = shieldOutline(s0 * 0.07, s0 * 0.26);
+      const hole = shieldOutline(s0 * 0.035, s0 * 0.2);
+      outer.holes.push(hole);
+      return new THREE.ExtrudeGeometry(outer, { depth: 0.012, bevelEnabled: true, bevelThickness: s0 * 0.006, bevelSize: s0 * 0.006, bevelSegments: 3, curveSegments: 20 });
+    })();
+    const rim = new THREE.Mesh(rimGeo, stoneMat);
+    rim.position.z = CT + 0.006;
+    guard.add(iron, rim);
+    const rivetGeo = new THREE.SphereGeometry(s0 * 0.022, 12, 8);
+    for (const [x, y] of [[-1, 1], [1, 1], [-1, -0.62], [1, -0.62], [-1, 0.2], [1, 0.2]]) {
+      const r = new THREE.Mesh(rivetGeo, stoneMat);
+      r.position.set(x * (w / 2 + s0 * 0.052), y * (h / 2 - s0 * 0.02), CT + 0.02);
+      r.scale.z = 0.6;
+      guard.add(r);
+    }
+    const boss = new THREE.Mesh(new THREE.ExtrudeGeometry(shieldShape(s0 * 0.11), { depth: 0.02, bevelEnabled: true, bevelThickness: s0 * 0.012, bevelSize: s0 * 0.01, bevelSegments: 3 }), [stoneMat, gold]);
+    boss.position.set(0, -h / 2 - s0 * 0.12, CT + 0.01);
+    boss.castShadow = true;
+    const crest = new THREE.Mesh(new THREE.ExtrudeGeometry(shieldShape(s0 * 0.065), { depth: 0.008, bevelEnabled: true, bevelThickness: s0 * 0.004, bevelSize: s0 * 0.004, bevelSegments: 2 }), gold);
+    crest.position.set(0, 0, 0.02 + s0 * 0.012);
+    boss.add(crest);
+    guard.add(boss);
     const frost = new THREE.Mesh(frame(0.04, CT + 0.045), iceMat);
     frost.position.z = -0.005;
     const barrier = new THREE.Mesh(
@@ -574,7 +627,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
           b.shift = shift;
         }
         b.g.position.set(p.x, p.y, z);
-        b.g.rotation.x = TILT * 0.5 + b.lift * 0.25;
+        b.g.rotation.x = TILT * 0.18 + b.lift * 0.2;
         b.at.set(p.x, p.y, z);
         if (b.key) lastSeen.set(b.key, { at: b.at.clone(), t });
         b.shadow.position.set(p.x + b.lift * 0.3 * (b.w / 1.45), p.y + b.lift * 0.3 * (b.w / 1.45), MAT.top + 0.004);

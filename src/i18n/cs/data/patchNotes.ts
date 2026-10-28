@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.75.1': {
+    title: 'Kovaná Stráž',
+    summary: 'Jednotky se Stráží leží na 3D stole v kovaném štítu.',
+    sections: [
+      [
+        '3D stůl: jednotka se Stráží leží v kovaném štítu: tmavé železné tělo, leštěný ocelový lem se zářezem nahoře, nýty a ocelový štítek se zlatým erbem ve špičce.',
+        '3D stůl: karty na stole se k tobě naklánějí mnohem méně; destičky Útoku a Životů mají větší ikonky a čísla.',
+      ],
+    ],
+  },
   '0.75.0': {
     title: 'Nové destičky Útoku a Životů',
     summary: 'Útok a Životy jsou na 3D stole na destičkách v barvě frakce.',
