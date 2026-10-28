@@ -8,7 +8,7 @@ const notes: PatchNotesOverlay = {
       [
         '3D stůl: jednotka se Stráží stojí v hradbách: kamenné zdi s cimbuřím na všech stranách a kulatá věž v každém rohu.',
         '3D stůl: soupeřovy karty v ruce už se do sebe neprolínají.',
-        '3D stůl: karty na stole se vznášejí jen kousek nad ním místo vysoko.',
+        '3D stůl: karty na stole se vznášejí jen kousek nad ním místo vysoko a jsou o 15 % větší; tvoje ruka je blíž ke stolu a trochu větší.',
         '3D stůl: karty na stole se k tobě naklánějí mnohem méně; destičky Útoku a Životů mají větší ikonky a čísla.',
       ],
     ],

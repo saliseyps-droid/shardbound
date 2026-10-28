@@ -29,7 +29,7 @@ export const PATCH_NOTES: PatchNote[] = [
         items: [
           '3D table: a unit with Guard stands inside castle walls: stone walls with merlons along every side and a round tower at each corner.',
           '3D table: the opponent’s cards in hand no longer flicker into each other.',
-          '3D table: the cards on the table hover just above it instead of floating high.',
+          '3D table: the cards on the table hover just above it instead of floating high, and are 15% bigger; your hand sits closer to the table and a little bigger.',
           '3D table: the cards on the table lean towards you much less; the Attack and Health plates have bigger icons and numbers.',
         ],
       },

@@ -119,7 +119,7 @@ export function planeCss(): string {
  * back from upright by `HAND.lean`. Its DOM (the hand's cards) is laid on it like the mat's plane.
  */
 // Twice the px of its size on screen, so the browser draws the cards' text sharp before tilting them.
-export const HAND = { w: 3200, h: 760, scale: 0.0046, at: new THREE.Vector3(0, -MAT.h / 2 - 1.8, MAT.top + 2.6), lean: 0.85 };
+export const HAND = { w: 3200, h: 760, scale: 0.0052, at: new THREE.Vector3(0, -MAT.h / 2 - 1.3, MAT.top + 2.5), lean: 0.85 };
 
 /** The hand plane's object (world) matrix. */
 export function handMatrix(): THREE.Matrix4 {
