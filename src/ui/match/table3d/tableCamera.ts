@@ -9,7 +9,7 @@ import * as THREE from 'three';
 /** The top of the opponent's hand above the mat's far edge (world units: further out, higher up). */
 export const FOE_TOP = { y: 1.08, z: 0.68 };
 /** The camera's tilt from looking straight down (rad). */
-export const TILT = 0.42;
+export const TILT = 0.5;
 export const PLANE = { w: 1600, h: 911 };
 export const MAT = { w: 16, h: (16 * 1823) / 3200, top: 0.1 };
 export const FOV = 32;
