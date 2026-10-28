@@ -32,3 +32,20 @@ export function riseShift(at: { x: number; y: number }, seen: { x: number; y: nu
   if (!seen) return { dx: 0, dy: 0 };
   return { dx: (seen.x - at.x) * 100, dy: -(seen.y - at.y) * 100 };
 }
+
+/** An enemy unit: in the enemy's row of the battlefield (or anywhere on the enemy's side). */
+export const isEnemyUnit = (el: Element) => !!el.closest('.board-row.enemy, .enemy-side');
+
+/** The player whose Warden a hero-area element (e.g. an energy crystal) belongs to, from the Warden's entity key. */
+export function ownerOf(el: Element): number {
+  const hero = el.closest('.hero-area')?.querySelector<HTMLElement>('[data-entity^="h:"]');
+  const n = Number(hero?.dataset.entity?.slice(2));
+  return Number.isFinite(n) ? n : el.closest('.self-side') ? 0 : 1;
+}
+
+/** Moves `cur` towards `target` at `rate` per second, the same at any frame rate. */
+export const approach = (cur: number, target: number, dt: number, rate: number) => target + (cur - target) * Math.exp(-rate * dt);
+
+/** Cards drawn between two moments: the deck went down and the hand went up by as much (milled or burned cards don't count); at most 5 fly. */
+export const cardsDrawn = (before: { deck: number; hand: number }, now: { deck: number; hand: number }) =>
+  Math.max(0, Math.min(before.deck - now.deck, now.hand - before.hand, 5));

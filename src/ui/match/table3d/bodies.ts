@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import type { GameState } from '@/engine/types';
 import { useMatch } from '@/state/matchStore';
 import { MAT, PLANE } from './tableCamera';
-import { coverUv, energyColors, pileCards, riseShift } from './bodyRules';
+import { approach, cardsDrawn, coverUv, energyColors, isEnemyUnit, ownerOf, pileCards, riseShift } from './bodyRules';
 import { arcHeight } from './effectRules';
 import type { Effects } from './effects';
 
@@ -174,7 +174,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
 
   // ---- Card piles.
   interface Pile { g: THREE.Group; n: number; url: string; w: number; face: THREE.Texture }
-  const deckCounts = new Map<string, number>();
+  const deckCounts = new Map<string, { deck: number; hand: number }>();
   const piles = new Map<string, Pile>();
   const dropPile = (p: Pile) => {
     scene.remove(p.g);
@@ -246,7 +246,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         if (!b || Math.abs(b.w - w) > 1e-3 || Math.abs(b.h - h) > 1e-3) {
           if (b) dropUnit(b);
           const fresh = !b;
-          b = makeUnit(w, h, !!el.closest('.enemy-side'));
+          b = makeUnit(w, h, isEnemyUnit(el));
           if (fresh && el.classList.contains('is-summoned')) b.drop = 1;
           units.set(el, b);
         }
@@ -272,7 +272,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         m.color.set(corrupt ? '#c9a2ff' : el.classList.contains('is-silenced') ? '#8a8a8a' : '#ffffff');
         m.opacity = el.classList.contains('has-ambush') ? 0.55 : 1;
         const up = el.matches(':hover') || el.classList.contains('is-selected') ? 1 : 0;
-        b.lift += (up - b.lift) * 0.2;
+        b.lift = approach(b.lift, up, dt, 12);
         b.drop = Math.max(0, b.drop - dt * 2.2);
         const rise = b.lift * 0.16 + b.drop * b.drop * 1.4 + arcHeight(lungeProgress(el));
         const z = MAT.top + 0.01 + rise;
@@ -300,20 +300,23 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         }
 
       // Warden plinths: a bevelled hexagon a little larger than the portrait.
+      const heroSeen = new Set<string>();
       plane.querySelectorAll<HTMLElement>('[data-entity^="h:"]').forEach((el) => {
         const key = el.dataset.entity!;
         const p = centre(el, toMat);
         if (!p) return;
         const w = el.offsetWidth * PX * 1.1;
         const h = el.offsetHeight * PX * 1.1;
+        heroSeen.add(key);
         let m = heroes.get(key);
-        if (!m || Math.abs(m.userData.w - w) > 1e-3) {
+        if (!m || Math.abs(m.userData.w - w) > 1e-3 || Math.abs(m.userData.h - h) > 1e-3) {
           if (m) {
             scene.remove(m);
             m.geometry.dispose();
           }
           m = new THREE.Mesh(new THREE.ExtrudeGeometry(hexShape(w, h), { depth: 0.14, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: 2 }), [backMat, gold]);
           m.userData.w = w;
+          m.userData.h = h;
           m.castShadow = true;
           scene.add(m);
           heroes.set(key, m);
@@ -322,6 +325,13 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         // The Final Blow shatters the Warden's portrait: its plinth goes with it.
         m.visible = !el.classList.contains('is-shattering');
       });
+      // A Warden that left the table (a co-op ally fallen) takes its plinth along.
+      for (const [k, m] of heroes)
+        if (!heroSeen.has(k)) {
+          scene.remove(m);
+          m.geometry.dispose();
+          heroes.delete(k);
+        }
 
       // Card piles: a stack of real card backs, thinner as the deck runs down.
       plane.querySelectorAll<HTMLElement>('[data-draw-pile]').forEach((el) => {
@@ -360,14 +370,16 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         const side = `${s.dx.toFixed(1)}px`;
         if (el.style.getPropertyValue('--pile-rise') !== rise) el.style.setProperty('--pile-rise', rise);
         if (el.style.getPropertyValue('--pile-side') !== side) el.style.setProperty('--pile-side', side);
-        // A card drawn: its back flies off the pile towards the owner's hand.
+        // Cards drawn: their backs fly off the pile towards the owner's hand, one after another.
+        const now = { deck: count, hand: game?.players[Number(key)]?.hand.length ?? 0 };
         const before = deckCounts.get(key);
-        deckCounts.set(key, count);
-        if (before !== undefined && count < before && n > 0) {
+        deckCounts.set(key, now);
+        const drawn = before ? cardsDrawn(before, now) : 0;
+        if (drawn > 0) {
           const handEl = document.querySelector(key === '0' ? '.match .self-screen .hand' : '.table3d-plane .enemy-hand');
           const r = handEl?.getBoundingClientRect();
           const to = r && toMat(r.left + r.width / 2, r.top + r.height / 2);
-          if (to) effects.flyCard(pile.face, w, new THREE.Vector3(p.x, p.y, MAT.top + 0.06 + n * 0.045), to.setZ(MAT.top + (key === '0' ? 1.5 : 0.3)));
+          if (to) for (let i = 0; i < drawn; i++) effects.flyCard(pile.face, w, new THREE.Vector3(p.x, p.y, MAT.top + 0.06 + n * 0.045), to.clone().setZ(MAT.top + (key === '0' ? 1.5 : 0.3)), i * 0.14);
         }
       });
 
@@ -382,8 +394,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
           crystals.set(el, c);
         }
         c.seen = true;
-        const side = el.closest('.self-side') ? 0 : 1;
-        const [tint, deep] = energyColors(game?.players[side]?.hero.faction);
+        const [tint, deep] = energyColors(game?.players[ownerOf(el)]?.hero.faction);
         const lit = el.classList.contains('full');
         const m = c.gem.material;
         const pulse = Math.sin(t * 2.2 + i);

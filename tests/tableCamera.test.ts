@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
 import { MAT, PLANE, cameraCss, placeCamera, planeCss, planeToWorld } from '@/ui/match/table3d/tableCamera';
-import { table3dAllowed } from '@/ui/match/table3d/table3dRules';
+import { table3dAllowed, table3dBlocker } from '@/ui/match/table3d/table3dRules';
 
 const ok = { table3d: true, performanceMode: false, reducedMotion: false };
 const env = { webgl: true, phone: false };
@@ -100,4 +100,14 @@ describe('the plane registers with the WebGL mat', () => {
       }
     });
   }
+});
+
+describe('why the 3D table cannot show', () => {
+  it('names the first thing that keeps it 2D, or nothing', () => {
+    expect(table3dBlocker(ok, env)).toBeNull();
+    expect(table3dBlocker({ ...ok, performanceMode: true }, env)).toBe('settings');
+    expect(table3dBlocker({ ...ok, reducedMotion: true }, env)).toBe('settings');
+    expect(table3dBlocker(ok, { ...env, webgl: false })).toBe('webgl');
+    expect(table3dBlocker(ok, { ...env, phone: true })).toBe('phone');
+  });
 });

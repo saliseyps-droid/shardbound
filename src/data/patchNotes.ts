@@ -19,6 +19,33 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.70.3',
+    date: '2026-10-28',
+    title: '3D table, checked over',
+    summary: 'A round of fixes and finishing touches all over the 3D table.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          '3D table: hold Space and drag to move around the zoomed table; on a touchscreen, pinch with two fingers to zoom.',
+          '3D table: when several cards are drawn at once, each flies from the deck to the hand in turn; cards milled or burned no longer fly to the hand.',
+          '3D table: Settings now say why the table stays 2D on this device (no 3D graphics, a phone).',
+          '3D table: runs lighter: the board relief is worked out once per board, the camera and the cards do less work every frame, and the table rests behind the results.',
+        ],
+      },
+      {
+        kind: 'fixed',
+        items: [
+          '3D table: the opponent’s cards have their darker gold edge again, and the energy crystals of a co-op ally glow in the ally’s colours.',
+          '3D table: the mouse wheel zooms only over the table; other panels in the match scroll normally.',
+          '3D table: a card rises when pointed at equally smoothly at any frame rate.',
+          '3D table: after the table could not start, turning 3D off and on again tries it anew.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.70.2',
     date: '2026-10-28',
     title: '3D table touch-ups',

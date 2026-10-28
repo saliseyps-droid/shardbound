@@ -171,6 +171,12 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const want3d = useSettings((s) => table3dAllowed(s, table3dEnv()));
   const [failed3d, setFailed3d] = useState(false);
   const [slow3d, setSlow3d] = useState(false);
+  // Turning 3D off and on again tries the table anew (after a lost graphics context, say).
+  useEffect(() => {
+    if (want3d) return;
+    setFailed3d(false);
+    setSlow3d(false);
+  }, [want3d]);
   const cardW = useViewportCardWidth();
   const t = useT();
   const startedAt = useMatch((s) => s.startedAt);

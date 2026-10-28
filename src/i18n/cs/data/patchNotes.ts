@@ -1,6 +1,24 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.70.3': {
+    title: '3D stůl prověřený',
+    summary: 'Kolo oprav a dodělávek po celém 3D stole.',
+    sections: [
+      [
+        '3D stůl: s podrženým mezerníkem můžeš přiblíženým stolem posouvat tažením myši; na dotykové obrazovce přibližuješ roztažením dvou prstů.',
+        '3D stůl: když si líznete víc karet najednou, každá letí z balíčku do ruky postupně; spálené a vymleté karty už do ruky nelétají.',
+        '3D stůl: Nastavení teď řekne, proč na tomhle zařízení zůstává stůl ve 2D (chybí 3D grafika, telefon).',
+        '3D stůl: běží lehčeji: reliéf desky se počítá jen jednou pro každou desku, kamera i karty dělají v každém snímku méně práce a za výsledky zápasu stůl odpočívá.',
+      ],
+      [
+        '3D stůl: soupeřovy karty mají zase svou tmavší zlatou hranu a krystaly energie spojence v co-op září v jeho barvách.',
+        '3D stůl: kolečko myši přibližuje jen nad stolem; ostatní panely v zápase se posouvají normálně.',
+        '3D stůl: karta se po najetí zvedá stejně plynule při jakékoli snímkové frekvenci.',
+        '3D stůl: když se stůl nepodařilo spustit, vypnutí a zapnutí 3D ho zkusí znovu.',
+      ],
+    ],
+  },
   '0.70.2': {
     title: 'Drobnosti na 3D stole',
     summary: 'Drobné opravy 3D stolu.',

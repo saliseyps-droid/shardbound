@@ -16,7 +16,7 @@ export interface Effects {
   /** `lastAt`: where a unit last stood on the table (bodies.ts), for hits that killed it. */
   update(plane: HTMLElement, toMat: (x: number, y: number) => THREE.Vector3 | null, fx: Fx[], dt: number, lastAt?: (key: string) => THREE.Vector3 | undefined): void;
   shatter(map: THREE.Texture | null, w: number, h: number, at: THREE.Vector3): void;
-  flyCard(map: THREE.Texture, w: number, from: THREE.Vector3, to: THREE.Vector3): void;
+  flyCard(map: THREE.Texture, w: number, from: THREE.Vector3, to: THREE.Vector3, delay?: number): void;
   /** The current camera shake offset (world units). */
   shake(): THREE.Vector2;
   dispose(): void;
@@ -25,7 +25,8 @@ export interface Effects {
 const MAX = 1600;
 
 interface Particle { p: THREE.Vector3; v: THREE.Vector3; c: THREE.Color; life: number; max: number; grav: number }
-interface Piece { m: THREE.Mesh; v: THREE.Vector3; spin: THREE.Vector3; life: number; max: number; grav: number; fadeFrom: number }
+/** `wait`: seconds before it starts (hidden until then), so several drawn cards fly one after another. */
+interface Piece { m: THREE.Mesh; v: THREE.Vector3; spin: THREE.Vector3; life: number; max: number; grav: number; fadeFrom: number; wait?: number }
 
 function glowTexture() {
   const c = document.createElement('canvas');
@@ -175,7 +176,9 @@ export function createEffects(table: THREE.Scene): Effects {
         const q = particles[i];
         q.life -= dt;
         if (q.life <= 0) {
-          particles.splice(i, 1);
+          // Swap-remove: order doesn't matter, and splicing a long list every frame is slow.
+          particles[i] = particles[particles.length - 1];
+          particles.pop();
           continue;
         }
         q.v.z += q.grav * dt;
@@ -223,6 +226,11 @@ export function createEffects(table: THREE.Scene): Effects {
 
       for (let i = pieces.length - 1; i >= 0; i--) {
         const pc = pieces[i];
+        if (pc.wait) {
+          pc.wait = Math.max(0, pc.wait - dt);
+          pc.m.visible = pc.wait === 0;
+          continue;
+        }
         pc.life -= dt;
         pc.v.z += pc.grav * dt;
         pc.m.position.addScaledVector(pc.v, dt);
@@ -274,7 +282,7 @@ export function createEffects(table: THREE.Scene): Effects {
       spawn(at, 'shield', undefined, false, w, false);
     },
 
-    flyCard(map, w, from, to) {
+    flyCard(map, w, from, to, delay = 0) {
       const m = new THREE.Mesh(new THREE.BoxGeometry(w, w * 1.4, 0.035), new THREE.MeshStandardMaterial({ map: map.clone(), roughness: 0.5, transparent: true }));
       m.position.copy(from);
       m.castShadow = true;
@@ -283,7 +291,8 @@ export function createEffects(table: THREE.Scene): Effects {
       // A lob: reaches the target in time t; the extra lift cancels the gravity (−12) over t.
       const v = to.clone().sub(from).divideScalar(t);
       v.z += 6 * t;
-      pieces.push({ m, v, spin: new THREE.Vector3(-1.2, 0, (Math.random() - 0.5) * 1.5), life: t, max: t, grav: -12, fadeFrom: 0.2 });
+      m.visible = delay === 0;
+      pieces.push({ m, v, spin: new THREE.Vector3(-1.2, 0, (Math.random() - 0.5) * 1.5), life: t, max: t, grav: -12, fadeFrom: 0.2, wait: delay });
     },
 
     scene,

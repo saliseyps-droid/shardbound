@@ -10,6 +10,7 @@ import { CloudAccountPanel } from '@/ui/components/CloudAccount';
 import '@/ui/styles/meta.css';
 
 import { currentLocale, LANGUAGES, setLanguage, t, type Locale } from '@/i18n';
+import { table3dBlocker, table3dEnv } from '@/ui/match/table3d/table3dRules';
 
 function Slider({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
   const id = `s-${label.replace(/\s/g, '')}`;
@@ -111,7 +112,13 @@ export default function SettingsScreen() {
           <Toggle label={t('Performance mode')} hint={t('Disables blur and animated foil effects.')} checked={s.performanceMode} onChange={(v) => set({ performanceMode: v })} />
           <Toggle
             label={t('3D table')}
-            hint={s.performanceMode || s.reducedMotion ? t('Matches stay 2D in performance mode and with reduced motion.') : t('Plays matches on a 3D table. Still in progress.')}
+            hint={(() => {
+              const why = table3dBlocker(s, table3dEnv());
+              if (why === 'settings') return t('Matches stay 2D in performance mode and with reduced motion.');
+              if (why === 'webgl') return t('This device has no 3D graphics (WebGL), so matches stay 2D.');
+              if (why === 'phone') return t('On phones matches stay 2D: the 3D table needs a larger screen.');
+              return t('Plays matches on a 3D table.');
+            })()}
             checked={s.table3d}
             onChange={(v) => set({ table3d: v })}
           />

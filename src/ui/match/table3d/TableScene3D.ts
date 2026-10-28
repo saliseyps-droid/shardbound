@@ -45,8 +45,11 @@ const woodTexture = (base: string, dark: string) => {
   return t;
 };
 
+/** Normal maps already made, by board image (making one takes a moment; every 2D→3D switch would redo it). */
+const normalCache = new Map<string, HTMLCanvasElement>();
+
 /** Bright = raised, dark = sunken: a normal map from the board image, so its carving catches the light. */
-function normalMapFrom(img: HTMLImageElement): THREE.CanvasTexture {
+function normalMapFrom(img: HTMLImageElement): HTMLCanvasElement {
   const w = 1600;
   const h = Math.round((w * img.height) / img.width);
   const c = document.createElement('canvas');
@@ -75,7 +78,7 @@ function normalMapFrom(img: HTMLImageElement): THREE.CanvasTexture {
     }
   g.filter = 'none';
   g.putImageData(out, 0, 0);
-  return new THREE.CanvasTexture(c);
+  return c;
 }
 
 export function buildTableScene(boardUrl: string, warm: string): TableScene {
@@ -175,15 +178,24 @@ export function buildTableScene(boardUrl: string, warm: string): TableScene {
   mat.position.z = MAT.top - 0.05;
   mat.receiveShadow = true;
   scene.add(mat);
+  let disposed = false;
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload = () => {
+    // The table may have closed while the picture loaded.
+    if (disposed) return;
     const t = keep(new THREE.Texture(img));
     t.colorSpace = THREE.SRGBColorSpace;
     t.anisotropy = 16;
     t.needsUpdate = true;
     matMat.map = t;
-    matMat.normalMap = keep(normalMapFrom(img));
+    let normals = normalCache.get(boardUrl);
+    if (!normals) {
+      normals = normalMapFrom(img);
+      if (normalCache.size >= 3) normalCache.delete(normalCache.keys().next().value!);
+      normalCache.set(boardUrl, normals);
+    }
+    matMat.normalMap = keep(new THREE.CanvasTexture(normals));
     matMat.normalScale.setScalar(1.4);
     matMat.needsUpdate = true;
   };
@@ -199,6 +211,8 @@ export function buildTableScene(boardUrl: string, warm: string): TableScene {
       if (lampTarget) lamp.position.lerp(new THREE.Vector3(lampTarget.x, lampTarget.y, 3), 0.1);
     },
     dispose: () => {
+      disposed = true;
+      img.onload = null;
       disposables.forEach((d) => d.dispose());
       key.shadow.dispose();
     },

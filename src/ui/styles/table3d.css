@@ -3,11 +3,13 @@
    plane's matrix on .table3d-plane). Only the plane takes pointer events. */
 .table3d {
   position: absolute; inset: 0 var(--sidebar-w) 0 0; z-index: 0;
-  overflow: hidden;
+  /* clip, not hidden: a hidden box can still be scrolled (Tab focus on a unit while zoomed), which
+     would slide the DOM plane off the WebGL mat. */
+  overflow: clip;
   pointer-events: none;
 }
 .table3d-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.table3d-view { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.table3d-view { position: absolute; inset: 0; overflow: clip; pointer-events: none; }
 .table3d-cam { position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; }
 
 /* The plane: fixed pixel sizes (the board's own px, not the window's), laid out like the mockup:
@@ -15,6 +17,8 @@
 .table3d-plane {
   position: absolute; left: 0; top: 0;
   pointer-events: auto;
+  /* Two fingers pinch-zoom the table (TableView), not the page. */
+  touch-action: none;
   --unit-w: 150px;
   --unit-h: calc(var(--unit-w) * 1.22);
   display: grid;

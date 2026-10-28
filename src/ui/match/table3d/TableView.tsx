@@ -9,6 +9,7 @@ import { createBoardLife } from './boardLife';
 import { createFpsWatch } from './fpsWatch';
 import { createBodies } from './bodies';
 import { createEffects } from './effects';
+import { pinchZoom, zoomsTable } from './tableInput';
 import { MAT, PLANE, TILT, cameraCss, placeCamera, planeCss, type CameraState } from './tableCamera';
 import '@/ui/styles/table3d.css';
 
@@ -31,7 +32,8 @@ const ZOOM_MAX = 3;
 /**
  * The 3D table: the WebGL room behind, and `children` (plain match DOM) laid onto the mat with the
  * same camera, so drag, drop and clicks keep working on the tilted board. Wheel or pinch zooms
- * towards the pointer, the middle button pans, a double click on the table resets the view.
+ * towards the pointer, the middle button (or a drag with Space held) pans, a double click on the
+ * table resets the view.
  */
 export default function TableView({ boardUrl, board, warm = '#ffb05a', children, onUnavailable, onSlow }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -114,15 +116,19 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
 
     // The point of the mat under a screen point (camera space), for zooming towards it and the lamp.
     const ray = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    const matPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -MAT.top);
+    // The root's rect, read once per frame (the bodies ask for dozens of points).
+    let rootRect = root.getBoundingClientRect();
     const matPoint = (cx: number, cy: number) => {
-      const r = root.getBoundingClientRect();
-      ray.setFromCamera(new THREE.Vector2(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1), camera);
+      const r = rootRect;
+      ray.setFromCamera(ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1), camera);
       const hit = new THREE.Vector3();
-      return ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 0, 1), -MAT.top), hit) ? hit : null;
+      return ray.ray.intersectPlane(matPlane, hit) ? hit : null;
     };
     // A world point to screen px (for DOM that sits on raised objects).
     const toScreen = (v: THREE.Vector3) => {
-      const r = root.getBoundingClientRect();
+      const r = rootRect;
       const p = v.clone().project(camera);
       return { x: r.left + ((p.x + 1) / 2) * r.width, y: r.top + ((1 - p.y) / 2) * r.height };
     };
@@ -133,11 +139,11 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       target.panY = Math.max(-fy, Math.min(fy, target.panY));
     };
     const match = root.parentElement!;
-    const onWheel = (e: WheelEvent) => {
-      if ((e.target as HTMLElement).closest('.match-sidebar, .modal-backdrop, .battle-log')) return;
-      e.preventDefault();
-      const p = matPoint(e.clientX, e.clientY);
-      const nz = Math.max(1, Math.min(ZOOM_MAX, target.zoom * Math.exp(-e.deltaY * 0.0015)));
+    // Zoom to `nz`, keeping the mat point under (cx, cy) where it is.
+    const zoomAt = (nz: number, cx: number, cy: number) => {
+      rootRect = root.getBoundingClientRect();
+      const p = matPoint(cx, cy);
+      nz = Math.max(1, Math.min(ZOOM_MAX, nz));
       if (p) {
         // Keep the point under the pointer where it is.
         const k = 1 - target.zoom / nz;
@@ -147,13 +153,53 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       target.zoom = nz;
       clampPan();
     };
-    let pan: { x: number; y: number; px: number; py: number } | null = null;
-    const onDown = (e: PointerEvent) => {
-      if (e.button !== 1) return;
+    const onWheel = (e: WheelEvent) => {
+      // Only over the table: other panels in the match keep scrolling.
+      if (!zoomsTable(e.target as Element, match)) return;
       e.preventDefault();
+      zoomAt(target.zoom * Math.exp(-e.deltaY * 0.0015), e.clientX, e.clientY);
+    };
+    // Panning: the middle button, or the left one with Space held (it then doesn't pick up cards).
+    let space = false;
+    const typing = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+    const onKey = (e: KeyboardEvent) => {
+      if (e.code !== 'Space' || typing(e.target)) return;
+      space = e.type === 'keydown';
+      // Keep the page from scrolling, but let Space still press a focused button or unit.
+      if (space && e.target === document.body) e.preventDefault();
+    };
+    const onBlur = () => (space = false);
+    let pan: { x: number; y: number; px: number; py: number } | null = null;
+    // Two fingers on the table pinch-zoom (one still drags cards).
+    const touches = new Map<number, { x: number; y: number }>();
+    let pinch: { dist: number; zoom: number } | null = null;
+    const spread = () => {
+      const [a, b] = [...touches.values()];
+      return Math.hypot(a.x - b.x, a.y - b.y);
+    };
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType === 'touch' && zoomsTable(e.target as Element, match)) {
+        touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (touches.size === 2) {
+          pinch = { dist: spread(), zoom: target.zoom };
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        return;
+      }
+      if (e.button !== 1 && !(e.button === 0 && space)) return;
+      e.preventDefault();
+      e.stopPropagation();
       pan = { x: e.clientX, y: e.clientY, px: target.panX, py: target.panY };
     };
     const onMove = (e: PointerEvent) => {
+      if (touches.has(e.pointerId)) {
+        touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (pinch && touches.size === 2) {
+          const [a, b] = [...touches.values()];
+          zoomAt(pinchZoom(pinch.dist, spread(), pinch.zoom), (a.x + b.x) / 2, (a.y + b.y) / 2);
+        }
+      }
       const p = matPoint(e.clientX, e.clientY);
       table.setPointer(p && Math.abs(p.x) <= MAT.w / 2 && Math.abs(p.y) <= MAT.h / 2 ? { x: p.x, y: p.y } : null);
       if (!pan) return;
@@ -162,7 +208,11 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       target.panY = pan.py + ((e.clientY - pan.y) * per) / Math.cos(TILT);
       clampPan();
     };
-    const onUp = () => (pan = null);
+    const onUp = (e: PointerEvent) => {
+      pan = null;
+      touches.delete(e.pointerId);
+      if (touches.size < 2) pinch = null;
+    };
     const onDbl = (e: MouseEvent) => {
       const el = e.target as HTMLElement;
       if (el.closest('[data-entity], [data-hand-uid], button, .match-sidebar')) return;
@@ -170,16 +220,29 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       target.panX = target.panY = 0;
     };
     match.addEventListener('wheel', onWheel, { passive: false });
-    match.addEventListener('pointerdown', onDown);
+    // Capture: a pan or pinch must start before the board picks up a card or an attacker.
+    match.addEventListener('pointerdown', onDown, true);
     window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('keyup', onKey);
+    window.addEventListener('blur', onBlur);
     match.addEventListener('dblclick', onDbl);
 
     const clock = new THREE.Clock();
     const fps = createFpsWatch();
     let frame = 0;
+    let idle = 0;
     const tick = () => {
       frame = requestAnimationFrame(tick);
+      // Behind the results the table only needs to look alive: a few frames a second (the overlay
+      // blurs it, and blurring a canvas that redraws every frame is costly).
+      if (useMatch.getState().phase === 'ended') {
+        idle += clock.getDelta();
+        if (idle < 0.25) return;
+        idle = 0;
+      }
       const raw = clock.getDelta();
       const dt = Math.min(0.05, raw);
       const verdict = fps.frame(raw);
@@ -213,6 +276,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       camRef.current!.style.transformOrigin = css.origin;
       camRef.current!.style.transform = css.transform;
       // The bodies follow the plane's DOM, so they read it after this frame's camera is written.
+      rootRect = root.getBoundingClientRect();
       const m = useMatch.getState();
       bodies.update(planeRef.current!, matPoint, m.game, clock.elapsedTime, toScreen);
       effects.update(planeRef.current!, matPoint, m.fx, dt, bodies.lastAt);
@@ -228,9 +292,13 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       cancelAnimationFrame(frame);
       ro.disconnect();
       match.removeEventListener('wheel', onWheel);
-      match.removeEventListener('pointerdown', onDown);
+      match.removeEventListener('pointerdown', onDown, true);
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('keyup', onKey);
+      window.removeEventListener('blur', onBlur);
       match.removeEventListener('dblclick', onDbl);
       bodies.dispose();
       life.dispose();

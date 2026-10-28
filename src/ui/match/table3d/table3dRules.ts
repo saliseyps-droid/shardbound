@@ -12,3 +12,11 @@ export function isPhone(): boolean {
 }
 
 export const table3dEnv = () => ({ webgl: hasWebGL(), phone: isPhone() });
+
+/** What keeps the 3D table from showing although it is on (for the Settings hint), or null. */
+export function table3dBlocker(s: { performanceMode: boolean; reducedMotion: boolean }, env: { webgl: boolean; phone: boolean }): 'settings' | 'webgl' | 'phone' | null {
+  if (s.performanceMode || s.reducedMotion) return 'settings';
+  if (!env.webgl) return 'webgl';
+  if (env.phone) return 'phone';
+  return null;
+}

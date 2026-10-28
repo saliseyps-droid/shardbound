@@ -30,6 +30,8 @@ export interface CameraState {
  * Places the camera so the mat fills the view at zoom 1 (the near edge reaching the sides or the
  * bottom), leaning back by `tilt` radians; zoom moves it in, pan shifts what it looks at.
  */
+const fitCache = new Map<string, number>();
+
 export function placeCamera(camera: THREE.PerspectiveCamera, view: { width: number; height: number }, s: CameraState): void {
   camera.fov = FOV;
   camera.aspect = view.width / view.height;
@@ -54,15 +56,23 @@ export function placeCamera(camera: THREE.PerspectiveCamera, view: { width: numb
       return Math.abs(p.x) <= 1 && p.y <= 1 && p.y >= -1 + 2 * (s.bottom ?? 0);
     });
   };
-  // The nearest distance at which the whole mat fits (it only fits better further away).
-  let lo = 1;
-  let hi = 400;
-  for (let i = 0; i < 40; i++) {
-    const mid = (lo + hi) / 2;
-    if (fits(mid)) hi = mid;
-    else lo = mid;
+  // The nearest distance at which the whole mat fits (it only fits better further away); the search
+  // runs only when the view, tilt or free strip change, not every frame.
+  const key = `${view.width}x${view.height}|${s.tilt}|${b}`;
+  let fit = fitCache.get(key);
+  if (fit === undefined) {
+    let lo = 1;
+    let hi = 400;
+    for (let i = 0; i < 40; i++) {
+      const mid: number = (lo + hi) / 2;
+      if (fits(mid)) hi = mid;
+      else lo = mid;
+    }
+    if (fitCache.size > 32) fitCache.clear();
+    fitCache.set(key, hi);
+    fit = hi;
   }
-  put(hi / Math.max(1, s.zoom), s.panX, s.panY);
+  put(fit / Math.max(1, s.zoom), s.panX, s.panY);
 }
 
 const eps = (v: number) => (Math.abs(v) < 1e-10 ? 0 : v);
