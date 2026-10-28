@@ -26,7 +26,7 @@ export interface Bodies {
 const PX = MAT.w / PLANE.w; // world units per plane pixel
 /** Where the opponent holds their hand: over the far edge, low enough to stay in the usual view. */
 // Its top (half a card up the lean) is FOE_TOP, which the camera keeps in view.
-const FOE_AT = new THREE.Vector3(0, MAT.h / 2 + 0.38, MAT.top + 0.62);
+const FOE_AT = new THREE.Vector3(0, MAT.h / 2 + 0.25, MAT.top + 0.5);
 const CT = 0.06; // card thickness
 const FLOAT = 0.3; // how high the cards float above the table (the mockup's)
 
@@ -768,7 +768,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
         // Held up at the far edge as the opponent holds them: standing, their backs towards you, leaning
         // a little away (towards their holder), fanned.
         m.position.set(FOE_AT.x + k * 0.7, FOE_AT.y + Math.abs(k) * 0.03, FOE_AT.z - Math.abs(k) * 0.03 + Math.sin(t * 1.1 + i) * 0.01);
-        m.rotation.set(0.55, 0, -k * 0.08, 'ZXY');
+        m.rotation.set(0.3, 0, -k * 0.08, 'ZXY');
       });
 
       // Energy crystals, one per DOM crystal, in the owner's faction colours.

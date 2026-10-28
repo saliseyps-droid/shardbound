@@ -29,7 +29,7 @@ interface Props {
 }
 
 /** The hand's strip at the bottom of the screen, kept free of the table. */
-const BOTTOM = 0.27;
+const BOTTOM = 0.23;
 
 /**
  * The 3D table: the WebGL room behind, and `children` (plain match DOM) laid onto the mat with the
@@ -110,8 +110,8 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
     pmrem.dispose();
     const bodies = createBodies(table.scene, effects, env);
     // Dev server only: lets a browser check fire effects on demand.
-    if (import.meta.env.DEV) Object.assign(window, { __table3d: { useMatch, useSettings, scene: table.scene } });
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 600);
+    if (import.meta.env.DEV) Object.assign(window, { __table3d: { useMatch, useSettings, scene: table.scene, camera } });
     planeRef.current!.style.transform = planeCss();
     if (handRef.current) handRef.current.style.transform = handCss();
 

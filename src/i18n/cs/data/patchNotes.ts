@@ -11,6 +11,7 @@ const notes: PatchNotesOverlay = {
         '3D stůl: karty na stole jsou o 10 % větší.',
         '3D stůl: destičky Útoku a Životů jsou menší a čísla na nich větší.',
         '3D stůl: soupeř drží karty stejně velké jako balíčky na stole, celé vidět za jeho Wardenem.',
+        '3D stůl: výchozí pohled je o kousek blíž a dívá se na stůl víc shora.',
       ],
     ],
   },

@@ -7,9 +7,9 @@ import * as THREE from 'three';
  * +y runs away from the player. The DOM plane is PLANE.w × PLANE.h px (the mat's aspect).
  */
 /** The top of the opponent's hand above the mat's far edge (world units: further out, higher up). */
-export const FOE_TOP = { y: 1.12, z: 1.1 };
+export const FOE_TOP = { y: 1.08, z: 0.68 };
 /** The camera's tilt from looking straight down (rad). */
-export const TILT = 0.52;
+export const TILT = 0.42;
 export const PLANE = { w: 1600, h: 911 };
 export const MAT = { w: 16, h: (16 * 1823) / 3200, top: 0.1 };
 export const FOV = 32;
@@ -64,7 +64,7 @@ export function placeCamera(camera: THREE.PerspectiveCamera, view: { width: numb
     // The opponent's hand, held up over the far edge (FOE_TOP), must fit above the mat too.
     const foeTop = new THREE.Vector3(0, MAT.h / 2 + FOE_TOP.y, MAT.top + FOE_TOP.z).project(camera);
     return (
-      foeTop.y <= 0.98 &&
+      foeTop.y <= 0.96 &&
       corners.every(([x, y]) => {
         const p = new THREE.Vector3(x, y, MAT.top).project(camera);
         return Math.abs(p.x) <= 1 && p.y <= 1 && p.y >= -1 + 2 * (s.bottom ?? 0);
