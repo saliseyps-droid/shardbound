@@ -161,7 +161,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
       [backMat, enemy ? darkGold : gold],
     );
     slab.castShadow = true;
-    const face = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.05, h - 0.05), new THREE.MeshPhysicalMaterial({ roughness: 0.45, clearcoat: 0.6, clearcoatRoughness: 0.25, transparent: true }));
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.05, h - 0.05), new THREE.MeshPhysicalMaterial({ roughness: 0.6, clearcoat: 0.15, clearcoatRoughness: 0.5, transparent: true }));
     face.position.z = CT + 0.019;
     g.add(slab, face);
     const shadow = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.7, h * 1.6), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));

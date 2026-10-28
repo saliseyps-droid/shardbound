@@ -287,6 +287,8 @@ html:not([data-input='touch']) .hand.is-hidden-hand:has(.hand-card:hover) .hand-
   font-size: 0.75rem; background: rgba(12, 10, 26, 0.9); border: 1px solid var(--gold-deep); border-radius: 50%; color: var(--gold-bright);
 }
 .badge-burn { border-radius: 10px; color: #ffb38a; }
+/* The round ability icons are for the 3D table (table3d.css); the flat board keeps the glyphs. */
+.unit-badge .badge-icon { display: none; }
 
 /* Guard: heavy stone plate framing the unit (shape, not just colour) */
 .unit-guard-plate {

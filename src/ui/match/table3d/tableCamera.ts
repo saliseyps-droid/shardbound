@@ -24,33 +24,41 @@ export interface CameraState {
   panY: number;
   /** Share of the view's height kept free at the bottom (the hand lies there, in screen space). */
   bottom?: number;
+  /** Turned around the table (rad, about its vertical axis): looking around. */
+  yaw?: number;
 }
 
 /**
  * Places the camera so the mat fills the view at zoom 1 (the near edge reaching the sides or the
- * bottom), leaning back by `tilt` radians; zoom moves it in, pan shifts what it looks at.
+ * bottom), leaning back by `tilt` radians and turned by `yaw` around the table; zoom moves it in, pan
+ * shifts what it looks at. The distance is fitted at the default tilt, so looking around turns the
+ * camera about the same point instead of pulling it in and out.
  */
 const fitCache = new Map<string, number>();
 
 export function placeCamera(camera: THREE.PerspectiveCamera, view: { width: number; height: number }, s: CameraState): void {
   camera.fov = FOV;
   camera.aspect = view.width / view.height;
-  camera.up.set(0, 1, 0);
   // A free strip at the bottom: render the lower part of a taller image, so the view's centre (and the
   // table) moves up into the rest of the screen.
   const b = s.bottom ?? 0;
   if (b > 0) camera.setViewOffset(view.width, view.height * (1 + b), 0, view.height * b, view.width, view.height);
   else camera.clearViewOffset();
-  const lookY = 0.35 * Math.sin(s.tilt);
-  const put = (d: number, panX: number, panY: number) => {
-    camera.position.set(panX, panY + lookY - Math.sin(s.tilt) * d, Math.cos(s.tilt) * d);
+  const lookY = 0.35 * Math.sin(TILT);
+  const put = (d: number, panX: number, panY: number, tilt: number, yaw: number) => {
+    // Behind the look point by the tilt, then turned around the table's vertical axis.
+    const back = Math.sin(tilt) * d;
+    camera.position.set(panX + Math.sin(yaw) * back, panY + lookY - Math.cos(yaw) * back, Math.cos(tilt) * d);
+    // Up is the table's normal (no roll); straight down it is the turned "far" direction instead.
+    if (tilt < 0.02) camera.up.set(-Math.sin(yaw), Math.cos(yaw), 0);
+    else camera.up.set(0, 0, 1);
     camera.lookAt(panX, panY + lookY, 0);
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
   };
   const corners = [[-MAT.w / 2, -MAT.h / 2], [MAT.w / 2, -MAT.h / 2], [-MAT.w / 2, MAT.h / 2], [MAT.w / 2, MAT.h / 2]];
   const fits = (d: number) => {
-    put(d, 0, 0);
+    put(d, 0, 0, TILT, 0);
     return corners.every(([x, y]) => {
       const p = new THREE.Vector3(x, y, MAT.top).project(camera);
       return Math.abs(p.x) <= 1 && p.y <= 1 && p.y >= -1 + 2 * (s.bottom ?? 0);
@@ -58,7 +66,7 @@ export function placeCamera(camera: THREE.PerspectiveCamera, view: { width: numb
   };
   // The nearest distance at which the whole mat fits (it only fits better further away); the search
   // runs only when the view, tilt or free strip change, not every frame.
-  const key = `${view.width}x${view.height}|${s.tilt}|${b}`;
+  const key = `${view.width}x${view.height}|${b}`;
   let fit = fitCache.get(key);
   if (fit === undefined) {
     let lo = 1;
@@ -72,7 +80,7 @@ export function placeCamera(camera: THREE.PerspectiveCamera, view: { width: numb
     fitCache.set(key, hi);
     fit = hi;
   }
-  put(fit / Math.max(1, s.zoom), s.panX, s.panY);
+  put(fit / Math.max(1, s.zoom), s.panX, s.panY, s.tilt, s.yaw ?? 0);
 }
 
 const eps = (v: number) => (Math.abs(v) < 1e-10 ? 0 : v);

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 import { approach, cardsDrawn, isEnemyUnit, ownerOf } from '@/ui/match/table3d/bodyRules';
-import { pinchZoom, zoomsTable } from '@/ui/match/table3d/tableInput';
+import { isEmptyTable, orbitTo, pinchZoom, zoomsTable } from '@/ui/match/table3d/tableInput';
 
 const dom = (html: string) => {
   document.body.innerHTML = html;
@@ -49,5 +49,25 @@ describe('3D table input', () => {
     expect(pinchZoom(100, 200, 1)).toBeCloseTo(2);
     expect(pinchZoom(100, 50, 1)).toBe(1);
     expect(pinchZoom(100, 900, 1.5)).toBe(3);
+  });
+});
+
+describe('dragging on the table', () => {
+  it('looks around from empty table, never from a unit, a Warden, a card in hand or a button', () => {
+    dom('<div class="match"><div class="table3d"><div class="table3d-plane"><div class="battlefield" id="bf"><div class="unit" data-entity="u:1"><span id="stat"></span></div></div><div data-entity="h:1" id="h"></div><button id="b"></button></div></div><div class="hand"><div class="hand-card" id="c"></div></div></div>');
+    const match = document.querySelector('.match')!;
+    expect(isEmptyTable(document.getElementById('bf')!, match)).toBe(true);
+    expect(isEmptyTable(match, match)).toBe(true);
+    expect(isEmptyTable(document.getElementById('stat')!, match)).toBe(false);
+    expect(isEmptyTable(document.getElementById('h')!, match)).toBe(false);
+    expect(isEmptyTable(document.getElementById('b')!, match)).toBe(false);
+    expect(isEmptyTable(document.getElementById('c')!, match)).toBe(false);
+  });
+
+  it('turns and tilts the view with the drag, within limits', () => {
+    expect(orbitTo({ yaw: 0, tilt: 0.62 }, 100, 0)).toEqual({ yaw: -0.5, tilt: 0.62 });
+    expect(orbitTo({ yaw: 0, tilt: 0.62 }, 0, 100).tilt).toBeCloseTo(1.02);
+    expect(orbitTo({ yaw: 0, tilt: 0.62 }, -10000, 10000)).toEqual({ yaw: 1.2, tilt: 1.1 });
+    expect(orbitTo({ yaw: 0, tilt: 0.62 }, 0, -10000).tilt).toBe(0.12);
   });
 });

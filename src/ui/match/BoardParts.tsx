@@ -1,5 +1,6 @@
 import { memo, useEffect, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from 'react';
 import { getCardSafe } from '@/data/cards';
+import { AbilityIcon, iconForKeyword, iconForTriggers, type AbilityIconKind } from '@/ui/components/AbilityIcon';
 import { FACTIONS } from '@/data/factions';
 import { RANK_LABEL, getTalent } from '@/data/wardenTalents';
 import { KEYWORDS } from '@/data/keywords';
@@ -62,6 +63,16 @@ function useFreezeChange(frozen: boolean): 'in' | 'out' | null {
 // ---------------------------------------------------------------------------
 // Units
 // ---------------------------------------------------------------------------
+
+/** A badge's face: the keyword glyph (2D board) and its round icon (shown instead on the 3D table, table3d.css). */
+function BadgeFace({ glyph, icon }: { glyph: string; icon: AbilityIconKind | null }) {
+  return (
+    <>
+      <span className="badge-glyph">{glyph}</span>
+      {icon && <AbilityIcon kind={icon} className="badge-icon" />}
+    </>
+  );
+}
 
 const KEYWORD_BADGES: StaticKeyword[] = ['DRAIN', 'VENOM', 'FRENZY', 'WARD', 'REGENERATE', 'EMPOWER', 'RUSH', 'SWIFT'];
 
@@ -166,17 +177,17 @@ export const UnitView = memo(function UnitView({
       <div className="unit-badges">
         {badges.map((k) => (
           <Tip key={k} title={KEYWORDS[k].name} body={KEYWORDS[k].definition} className="unit-badge">
-            {KEYWORDS[k].icon}
+            <BadgeFace glyph={KEYWORDS[k].icon} icon={iconForKeyword(k)} />
           </Tip>
         ))}
         {hasLastBreath && (
           <Tip title={KEYWORDS.LAST_BREATH.name} body={KEYWORDS.LAST_BREATH.definition} className="unit-badge">
-            ✝
+            <BadgeFace glyph="✝" icon="lastbreath" />
           </Tip>
         )}
         {hasTrigger && (
           <Tip title={t('Triggered ability')} body={card.description ?? ''} className="unit-badge">
-            ϟ
+            <BadgeFace glyph="ϟ" icon={iconForTriggers(unit.abilities.map((a) => a.trigger))} />
           </Tip>
         )}
         {unit.corrupt && (

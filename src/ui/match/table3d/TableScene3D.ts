@@ -4,15 +4,14 @@ import { MAT } from './tableCamera';
 /**
  * The room around the 3D table (WebGL): a stone floor, a wooden table on turned legs, the match's
  * board lying on it as a mat with relief (a normal map from the image's brightness), a hanging
- * lantern, two flickering candles and a lamp that follows the pointer. The camera is owned by
+ * lantern and two flickering candles (no light follows the pointer: its glare on the board made the
+ * cards and the painting harder to read). The camera is owned by
  * TableView; this only builds and animates the scene.
  */
 export interface TableScene {
   scene: THREE.Scene;
   /** The mat mesh (for picking the point under the pointer). */
   mat: THREE.Mesh;
-  /** Moves the pointer lamp over a point of the mat (world units), or hides it. */
-  setPointer(p: { x: number; y: number } | null): void;
   update(t: number, dt: number): void;
   dispose(): void;
 }
@@ -107,10 +106,6 @@ export function buildTableScene(boardUrl: string, warm: string): TableScene {
     scene.add(l);
     return l;
   });
-  const lamp = new THREE.PointLight(0xfff0d0, 0, 10, 1.4);
-  lamp.position.set(0, 0, 3);
-  scene.add(lamp);
-  let lampTarget: { x: number; y: number } | null = null;
 
   // The table: a thick rounded top, an apron, four turned legs; a stone floor below.
   const W = MAT.w;
@@ -204,11 +199,8 @@ export function buildTableScene(boardUrl: string, warm: string): TableScene {
   return {
     scene,
     mat,
-    setPointer: (p) => (lampTarget = p),
     update(t) {
       candles.forEach((l, i) => (l.intensity = 9 + Math.sin(t * 11 + i * 3) * 1.4 + Math.sin(t * 23 + i) * 1 + Math.sin(t * 3.1 + i * 2) * 1.8));
-      lamp.intensity += ((lampTarget ? 10 : 0) - lamp.intensity) * 0.1;
-      if (lampTarget) lamp.position.lerp(new THREE.Vector3(lampTarget.x, lampTarget.y, 3), 0.1);
     },
     dispose: () => {
       disposed = true;

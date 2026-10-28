@@ -76,11 +76,11 @@ const parse = (css: string, size: { w: number; h: number }): M => {
 const about = (m: M, ox: number, oy: number) => mul(mul(translate(ox, oy), m), translate(-ox, -oy));
 
 describe('the plane registers with the WebGL mat', () => {
-  for (const [w, h] of [[1600, 900], [1100, 768]]) {
-    it(`a point of the plane lands where the camera draws it, within 1 px (${w}×${h}, hand strip kept free)`, () => {
+  for (const [w, h, tilt, yaw] of [[1600, 900, 0.62, 0], [1100, 768, 0.62, 0], [1400, 900, 0.9, 0.7], [1400, 900, 0.3, -1.1]]) {
+    it(`a point of the plane lands where the camera draws it, within 1 px (${w}×${h}, tilt ${tilt}, turned ${yaw}, hand strip kept free)`, () => {
       const cam = new THREE.PerspectiveCamera(32, w / h, 0.1, 600);
       const view = { width: w, height: h };
-      placeCamera(cam, view, { tilt: 0.62, zoom: 1.4, panX: 1, panY: -0.5, bottom: 0.2 });
+      placeCamera(cam, view, { tilt, yaw, zoom: 1.4, panX: 1, panY: -0.5, bottom: 0.2 });
       const css = cameraCss(cam, view);
       const [ox, oy] = css.origin.split(' ').map(parseFloat);
       const d = parseFloat(css.perspective);
@@ -109,5 +109,27 @@ describe('why the 3D table cannot show', () => {
     expect(table3dBlocker({ ...ok, reducedMotion: true }, env)).toBe('settings');
     expect(table3dBlocker(ok, { ...env, webgl: false })).toBe('webgl');
     expect(table3dBlocker(ok, { ...env, phone: true })).toBe('phone');
+  });
+});
+
+describe('looking around the table', () => {
+  const at = (tilt: number, yaw: number) => {
+    const cam = new THREE.PerspectiveCamera(32, 16 / 9, 0.1, 600);
+    placeCamera(cam, { width: 1600, height: 900 }, { tilt, yaw, zoom: 1, panX: 0, panY: 0, bottom: 0.2 });
+    return cam;
+  };
+  it('turns around the table at the same distance, keeping the table level (no roll)', () => {
+    const a = at(0.62, 0);
+    const b = at(0.62, 0.8);
+    expect(b.position.length()).toBeCloseTo(a.position.length(), 1);
+    expect(Math.atan2(-b.position.x, -b.position.y)).toBeCloseTo(-0.8, 1);
+    // The camera's right-hand side stays parallel to the table.
+    const right = new THREE.Vector3(1, 0, 0).applyQuaternion(b.quaternion);
+    expect(right.z).toBeCloseTo(0, 5);
+  });
+  it('looks down more steeply as the tilt goes to 0', () => {
+    const steep = at(0.2, 0);
+    const flat = at(1, 0);
+    expect(Math.abs(steep.position.y) / steep.position.z).toBeLessThan(Math.abs(flat.position.y) / flat.position.z);
   });
 });

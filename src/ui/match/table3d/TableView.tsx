@@ -9,7 +9,7 @@ import { createBoardLife } from './boardLife';
 import { createFpsWatch } from './fpsWatch';
 import { createBodies } from './bodies';
 import { createEffects } from './effects';
-import { pinchZoom, zoomsTable } from './tableInput';
+import { isEmptyTable, orbitTo, pinchZoom, zoomsTable } from './tableInput';
 import { MAT, PLANE, TILT, cameraCss, placeCamera, planeCss, type CameraState } from './tableCamera';
 import '@/ui/styles/table3d.css';
 
@@ -31,9 +31,11 @@ const ZOOM_MAX = 3;
 
 /**
  * The 3D table: the WebGL room behind, and `children` (plain match DOM) laid onto the mat with the
- * same camera, so drag, drop and clicks keep working on the tilted board. Wheel or pinch zooms
- * towards the pointer, the middle button (or a drag with Space held) pans, a double click on the
- * table resets the view.
+ * same camera, so drag, drop and clicks keep working on the tilted board. Dragging bare table (or
+ * with the right button anywhere over it) looks around: sideways turns around the table, up/down
+ * tilts the view; zoomed in, a drag on bare table moves across it instead, as do the middle button
+ * and a drag with Space held. Wheel or pinch zooms towards the pointer; a double click on the table
+ * goes back to the usual view.
  */
 export default function TableView({ boardUrl, board, warm = '#ffb05a', children, onUnavailable, onSlow }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -103,7 +105,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
     planeRef.current!.style.transform = planeCss();
 
     let view = { width: 1, height: 1 };
-    const target: CameraState = { tilt: TILT, zoom: 1, panX: 0, panY: 0, bottom: BOTTOM };
+    const target: CameraState = { tilt: TILT, yaw: 0, zoom: 1, panX: 0, panY: 0, bottom: BOTTOM };
     const state: CameraState = { ...target };
     const resize = () => {
       view = { width: root.clientWidth || 1, height: root.clientHeight || 1 };
@@ -114,7 +116,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
     ro.observe(root);
     resize();
 
-    // The point of the mat under a screen point (camera space), for zooming towards it and the lamp.
+    // The point of the mat under a screen point (camera space), for zooming towards it.
     const ray = new THREE.Raycaster();
     const ndc = new THREE.Vector2();
     const matPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -MAT.top);
@@ -169,7 +171,14 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       if (space && e.target === document.body) e.preventDefault();
     };
     const onBlur = () => (space = false);
-    let pan: { x: number; y: number; px: number; py: number } | null = null;
+    // A drag that moves the view: 'maybe' until it has moved a few px (a plain click still clicks).
+    type Drag = { mode: 'maybe' | 'pan' | 'orbit'; x: number; y: number; px: number; py: number; yaw: number; tilt: number };
+    let drag: Drag | null = null;
+    let dragged = false;
+    const startDrag = (e: PointerEvent, mode: Drag['mode']) => {
+      drag = { mode, x: e.clientX, y: e.clientY, px: target.panX, py: target.panY, yaw: target.yaw ?? 0, tilt: target.tilt };
+      dragged = false;
+    };
     // Two fingers on the table pinch-zoom (one still drags cards).
     const touches = new Map<number, { x: number; y: number }>();
     let pinch: { dist: number; zoom: number } | null = null;
@@ -178,19 +187,26 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       return Math.hypot(a.x - b.x, a.y - b.y);
     };
     const onDown = (e: PointerEvent) => {
-      if (e.pointerType === 'touch' && zoomsTable(e.target as Element, match)) {
+      const el = e.target as Element;
+      if (e.pointerType === 'touch' && zoomsTable(el, match)) {
         touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
         if (touches.size === 2) {
           pinch = { dist: spread(), zoom: target.zoom };
+          drag = null;
           e.preventDefault();
           e.stopPropagation();
-        }
+        } else if (isEmptyTable(el, match)) startDrag(e, 'maybe');
         return;
       }
-      if (e.button !== 1 && !(e.button === 0 && space)) return;
-      e.preventDefault();
-      e.stopPropagation();
-      pan = { x: e.clientX, y: e.clientY, px: target.panX, py: target.panY };
+      if (e.button === 1 || (e.button === 0 && space)) {
+        e.preventDefault();
+        e.stopPropagation();
+        startDrag(e, 'pan');
+      } else if (e.button === 2 && zoomsTable(el, match)) {
+        e.preventDefault();
+        e.stopPropagation();
+        startDrag(e, 'orbit');
+      } else if (e.button === 0 && isEmptyTable(el, match)) startDrag(e, 'maybe');
     };
     const onMove = (e: PointerEvent) => {
       if (touches.has(e.pointerId)) {
@@ -200,16 +216,43 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
           zoomAt(pinchZoom(pinch.dist, spread(), pinch.zoom), (a.x + b.x) / 2, (a.y + b.y) / 2);
         }
       }
-      const p = matPoint(e.clientX, e.clientY);
-      table.setPointer(p && Math.abs(p.x) <= MAT.w / 2 && Math.abs(p.y) <= MAT.h / 2 ? { x: p.x, y: p.y } : null);
-      if (!pan) return;
+      if (!drag || pinch) return;
+      const dx = e.clientX - drag.x;
+      const dy = e.clientY - drag.y;
+      if (drag.mode === 'maybe') {
+        if (Math.hypot(dx, dy) < 5) return;
+        drag.mode = target.zoom > 1.01 ? 'pan' : 'orbit';
+      }
+      dragged = true;
+      match.classList.add('is-moving-view');
+      if (drag.mode === 'orbit') {
+        const o = orbitTo(drag, dx, dy);
+        target.yaw = o.yaw;
+        target.tilt = o.tilt;
+        return;
+      }
+      // Pan: the drag in screen px, turned into the table's directions as the camera sees them.
       const per = (2 * camera.position.distanceTo(new THREE.Vector3(target.panX, target.panY, 0)) * Math.tan((camera.fov * Math.PI) / 360)) / view.height;
-      target.panX = pan.px - (e.clientX - pan.x) * per;
-      target.panY = pan.py + ((e.clientY - pan.y) * per) / Math.cos(TILT);
+      const yaw = target.yaw ?? 0;
+      const across = -dx * per;
+      const along = (dy * per) / Math.max(0.3, Math.cos(target.tilt));
+      target.panX = drag.px + Math.cos(yaw) * across - Math.sin(yaw) * along;
+      target.panY = drag.py + Math.sin(yaw) * across + Math.cos(yaw) * along;
       clampPan();
     };
+    // A drag that moved the view isn't also a click on the table (that would cancel a selection).
+    const onClick = (e: MouseEvent) => {
+      if (!dragged) return;
+      dragged = false;
+      e.stopPropagation();
+      e.preventDefault();
+    };
+    const onMenu = (e: MouseEvent) => {
+      if (zoomsTable(e.target as Element, match)) e.preventDefault();
+    };
     const onUp = (e: PointerEvent) => {
-      pan = null;
+      drag = null;
+      match.classList.remove('is-moving-view');
       touches.delete(e.pointerId);
       if (touches.size < 2) pinch = null;
     };
@@ -218,6 +261,8 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       if (el.closest('[data-entity], [data-hand-uid], button, .match-sidebar')) return;
       target.zoom = 1;
       target.panX = target.panY = 0;
+      target.yaw = 0;
+      target.tilt = TILT;
     };
     match.addEventListener('wheel', onWheel, { passive: false });
     // Capture: a pan or pinch must start before the board picks up a card or an attacker.
@@ -229,6 +274,8 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
     window.addEventListener('keyup', onKey);
     window.addEventListener('blur', onBlur);
     match.addEventListener('dblclick', onDbl);
+    match.addEventListener('click', onClick, true);
+    match.addEventListener('contextmenu', onMenu);
 
     const clock = new THREE.Clock();
     const fps = createFpsWatch();
@@ -261,6 +308,8 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       state.zoom += (target.zoom - state.zoom) * k;
       state.panX += (target.panX - state.panX) * k;
       state.panY += (target.panY - state.panY) * k;
+      state.yaw = (state.yaw ?? 0) + ((target.yaw ?? 0) - (state.yaw ?? 0)) * k;
+      state.tilt += (target.tilt - state.tilt) * k;
       placeCamera(camera, view, state);
       // Heavy hits tremble the camera (the CSS plane follows, since it is computed from the same camera).
       const shake = effects.shake();
@@ -300,6 +349,9 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       window.removeEventListener('keyup', onKey);
       window.removeEventListener('blur', onBlur);
       match.removeEventListener('dblclick', onDbl);
+      match.removeEventListener('click', onClick, true);
+      match.removeEventListener('contextmenu', onMenu);
+      match.classList.remove('is-moving-view');
       bodies.dispose();
       life.dispose();
       effects.dispose();

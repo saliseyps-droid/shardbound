@@ -1,6 +1,19 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.71.0': {
+    title: 'Rozhlédni se po stole',
+    summary: 'Na 3D stole se teď můžeš rozhlížet a karty jsou čitelnější.',
+    sections: [
+      [
+        '3D stůl: tažením po volném místě stolu (nebo pravým tlačítkem myši kdekoli nad ním) se rozhlížíš: do stran obcházíš stůl, nahoru a dolů nakláníš pohled. Při přiblížení tažením po volném stole posouváš pohled. Dvojklikem na stůl se zase posadíš.',
+        '3D stůl: když najedeš na jednotku, hned vedle ní uvidíš celou její kartu.',
+        '3D stůl: schopnosti na jednotkách jsou kulaté ikonky v barvách z návrhu (Vysátí, Ochrana, Spěch, Výpad, Jed, po kouzlu, na konci tahu…), s vysvětlením, když na ně najedeš.',
+        '3D stůl: karty v ruce se naklánějí dozadu ke stolu a narovnají se, když na ně najedeš.',
+      ],
+      ['3D stůl: už žádné světlo za kurzorem: jeho odlesky na desce zhoršovaly čitelnost karet i malby. Karty se navíc tolik nelesknou.'],
+    ],
+  },
   '0.70.3': {
     title: '3D stůl prověřený',
     summary: 'Kolo oprav a dodělávek po celém 3D stole.',

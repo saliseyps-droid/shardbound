@@ -35,6 +35,7 @@ import { campaignOf } from '@/data/opponents';
 import '@/ui/styles/board.css';
 import { table3dAllowed, table3dEnv } from './table3d/table3dRules';
 import { TableFallback } from './table3d/TableFallback';
+import { FloatingPreview } from './table3d/FloatingPreview';
 
 /** The 3D table (Three.js) loads only when it is turned on; until then, and if it fails, the board is 2D. */
 const TableView = lazy(() => import('./table3d/TableView').catch(() => ({ default: TableFallback as unknown as typeof import('./table3d/TableView').default })));
@@ -780,6 +781,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
               <section className="side self-side self-screen" aria-label={t('Your hand')} style={selfStyle}>
                 {selfHand}
               </section>
+              {hover?.uid !== undefined && hoverCard && !drag?.active && <FloatingPreview key={hover.uid} uid={hover.uid} cardId={hoverCard} variant={hoverVariant} silenced={hoverSilenced} />}
               {slow3d && (
                 <div className="table3d-slow" role="status">
                   <span>{t('The 3D table runs slowly on this device.')}</span>

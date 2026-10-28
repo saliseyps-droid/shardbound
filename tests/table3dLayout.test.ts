@@ -29,6 +29,12 @@ describe('3D table layout', () => {
     expect(decl('.table3d-plane .draw-pile-count', 'transform')).toBe('translate(calc(-50% + var(--pile-side, 0px)), calc(-50% - var(--pile-rise, 0px)))');
   });
 
+  it('leans the cards in your hand back towards the table, upright when pointed at', () => {
+    expect(decl('.match.is-3d .hand-card', 'perspective')).toBe('900px');
+    expect(decl('.match.is-3d .hand-card > .card', 'rotate')).toBe('x 16deg');
+    expect(decl('.match.is-3d .hand-card:hover > .card', 'rotate')).toBe('none');
+  });
+
   it('fits three co-op rows into the middle of the plane (911 px less the two 210 px Warden bands)', () => {
     const w = parseFloat(decl('.match.is-coop .table3d-plane', '--unit-w') ?? '150');
     // A row: the unit (1.22 × its width) plus 16 px row padding, 16 px row gap and 12 px margin; 34 px co-op padding.

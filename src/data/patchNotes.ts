@@ -19,6 +19,25 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.71.0',
+    date: '2026-10-28',
+    title: 'Look around the table',
+    summary: 'On the 3D table you can now look around, and the cards read better.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          '3D table: drag the bare table (or drag with the right mouse button anywhere over it) to look around: sideways walks you around the table, up and down tilts the view. Zoomed in, a drag on the bare table moves across it. Double-click the table to sit back down.',
+          '3D table: point at a unit to see its whole card right beside it.',
+          '3D table: the abilities on the units are round icons in the colours of the mockup (Drain, Ward, Swift, Rush, Venom, after a spell, at the end of a turn…), with their explanations when you point at them.',
+          '3D table: the cards in your hand lean back towards the table and stand up when you point at them.',
+        ],
+      },
+      { kind: 'improved', items: ['3D table: no more light following the pointer: its glare on the board made the cards and the painting harder to read. The cards also shine less.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.70.3',
     date: '2026-10-28',
     title: '3D table, checked over',

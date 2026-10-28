@@ -114,3 +114,27 @@
   font: 600 var(--t-sm) var(--font-body); color: var(--parchment);
 }
 .table3d-slow span { flex-basis: 100%; }
+
+/* Ability icons on the 3D cards (as in the mockup): round, gold-rimmed, a little larger, in a row
+   along the bottom of the art, between the Attack and Health gems. */
+.table3d-plane .unit-badges { top: auto; bottom: 14%; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
+.table3d-plane .unit-badge:has(.badge-icon) { min-width: 0; height: auto; padding: 0; background: none; border: 0; }
+.table3d-plane .unit-badge .badge-icon { display: block; width: 30px; height: 30px; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7)); }
+.table3d-plane .unit-badge:has(.badge-icon) .badge-glyph { display: none; }
+
+/* The whole card beside a unit pointed at (FloatingPreview). */
+.table3d-preview {
+  position: fixed; left: 0; top: 0; z-index: 60; pointer-events: none; opacity: 0;
+  transition: opacity 0.12s;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.6));
+}
+
+/* The hand on the 3D table: the cards lean back towards the table and stand up when pointed at or
+   chosen. Only the card inside leans, so the hover area (and its bridge, board.css) stays as it is. */
+.match.is-3d .hand-card { perspective: 900px; }
+.match.is-3d .hand-card > .card { rotate: x 16deg; transform-origin: 50% 100%; transition: rotate 0.2s var(--ease-out); filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.45)); }
+.match.is-3d .hand-card:hover > .card,
+.match.is-3d .hand-card:focus-within > .card,
+.match.is-3d .hand-card.is-selected > .card { rotate: none; }
+/* While a drag moves the view. */
+.match.is-moving-view, .match.is-moving-view * { cursor: grabbing !important; }
