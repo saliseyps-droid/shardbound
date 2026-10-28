@@ -3,18 +3,18 @@ import { handFace, makeGem, numberTexture, rectGlowTexture, type HandCardData } 
 
 /**
  * Your hand on the 3D table, as in the mockup: real cards (a gold-edged slab, the full card face,
- * raised cost / Attack / Health gems) held in front of the camera and leaning back towards the
- * table; the one you point at stands up. They follow the hand's DOM cards (still there, invisible,
- * for pointing, dragging and playing), so the hand behaves exactly as before.
+ * raised cost / Attack / Health gems) fanned at the near edge of the table, leaning up towards you;
+ * the one you point at stands up and comes forward. They follow the hand's DOM cards, laid on the
+ * hand's own plane there (HAND, tableCamera.ts) and still the hit targets for pointing, dragging and
+ * playing, so the hand behaves exactly as before and stays with the table as the view moves.
  */
 export interface HandCards {
-  update(camera: THREE.PerspectiveCamera, rootRect: DOMRect, dt: number, t: number): void;
+  update(plane: HTMLElement | null, toHand: (x: number, y: number) => THREE.Vector3 | null, handWorld: THREE.Matrix4, dt: number, t: number): void;
   dispose(): void;
 }
 
-const CT = 0.035; // card thickness (world units, at the hand's distance)
-const DIST = 6; // how far in front of the camera the hand is held
-const LEAN = 0.5; // lean back towards the table (rad)
+const CT = 0.035; // card thickness (world units, at the hand's size)
+const STAND = 0.35; // how much further up a card pointed at stands (rad)
 
 type Gem = ReturnType<typeof makeGem>;
 interface Card {
@@ -121,7 +121,7 @@ export function createHandCards(scene: THREE.Scene): HandCards {
     pivot.add(slab, face, ring);
     g.add(pivot);
     scene.add(g);
-    return { g, pivot, face, cost, atk, hp, ring, key: '', lean: LEAN, seen: true };
+    return { g, pivot, face, cost, atk, hp, ring, key: '', lean: 0, seen: true };
   };
   const drop = (c: Card) => {
     scene.remove(c.g);
@@ -145,21 +145,18 @@ export function createHandCards(scene: THREE.Scene): HandCards {
     }
   };
 
-  const ray = new THREE.Raycaster();
-  const fwd = new THREE.Vector3();
-  const ndc = new THREE.Vector2();
-  const q = new THREE.Quaternion();
-  const tmp = new THREE.Quaternion();
+  const handQuat = new THREE.Quaternion();
+  const handScale = new THREE.Vector3();
+  const tmpPos = new THREE.Vector3();
+  const zAxis = new THREE.Vector3(0, 0, 1);
+  const turn = new THREE.Quaternion();
 
   return {
-    update(camera, root, dt, t) {
+    update(plane, toHand, handWorld, dt, t) {
       for (const c of cards.values()) c.seen = false;
-      // World units per screen px at the hand's distance (the camera renders a taller image when it
-      // keeps the hand's strip free, see placeCamera).
-      const full = camera.view?.enabled ? camera.view.fullHeight : root.height;
-      const perPx = (2 * DIST * Math.tan((camera.fov * Math.PI) / 360)) / full;
-      camera.getWorldDirection(fwd);
-      const hand = [...document.querySelectorAll<HTMLElement>('.match.is-3d .self-screen .hand-card')];
+      handWorld.decompose(tmpPos, handQuat, handScale);
+      const perPx = handScale.x;
+      const hand = plane ? [...plane.querySelectorAll<HTMLElement>('.hand-card')] : [];
       hand.forEach((el, i) => {
         const cardEl = el.querySelector<HTMLElement>(':scope > .card');
         if (!cardEl) return;
@@ -183,32 +180,28 @@ export function createHandCards(scene: THREE.Scene): HandCards {
         setNum(c.cost, costEl, costEl?.classList.contains('cheaper') ? '#7ef29a' : costEl?.classList.contains('pricier') ? '#ffb4a8' : '#ffffff');
         setNum(c.atk, cardEl.querySelector('.stat-attack'));
         setNum(c.hp, cardEl.querySelector('.stat-health'));
-        // Where the DOM card is: its transform's scale and turn, its box's centre.
-        const m = new DOMMatrixReadOnly(getComputedStyle(el).transform === 'none' ? undefined : getComputedStyle(el).transform);
+        // Where the DOM card is on the hand's plane: its transform's scale and turn, its centre.
+        const tr = getComputedStyle(el).transform;
+        const m = new DOMMatrixReadOnly(tr === 'none' ? undefined : tr);
         const scale = Math.hypot(m.a, m.b);
         const angle = Math.atan2(m.b, m.a);
         const r = el.getBoundingClientRect();
-        const wPx = el.offsetWidth * scale;
-        const hPx = el.offsetHeight * scale;
-        // The bottom-centre of the card on screen (it leans back from there).
-        const bx = r.left + r.width / 2 - (Math.sin(angle) * hPx) / 2;
-        const by = r.top + r.height / 2 + (Math.cos(angle) * hPx) / 2;
-        ray.setFromCamera(ndc.set(((bx - root.left) / root.width) * 2 - 1, -((by - root.top) / root.height) * 2 + 1), camera);
-        // Later cards (and the one pointed at) a little nearer, so they cover the ones before.
+        const centre = toHand(r.left + r.width / 2, r.top + r.height / 2);
+        if (!centre) return;
+        const w = el.offsetWidth * scale * perPx;
+        const h = el.offsetHeight * scale * perPx;
         const up = el.matches(':hover') || el.classList.contains('is-selected');
-        const d = DIST - i * 0.02 - (up ? 0.3 : 0);
-        const along = d / ray.ray.direction.dot(fwd);
-        c.g.position.copy(ray.ray.origin).addScaledVector(ray.ray.direction, along);
-        const k = (d / DIST) * perPx;
-        c.g.scale.set(wPx * k, hPx * k / 1.4, (wPx * k + hPx * k / 1.4) / 2);
-        // Facing the camera, turned like the fan, leaning back unless pointed at.
-        c.lean += ((up ? 0 : LEAN) - c.lean) * Math.min(1, dt * 12);
-        q.copy(camera.quaternion).multiply(tmp.setFromAxisAngle(new THREE.Vector3(0, 0, 1), -angle));
-        c.g.quaternion.copy(q);
-        c.pivot.rotation.x = -c.lean;
+        c.lean += ((up ? STAND : 0) - c.lean) * Math.min(1, dt * 12);
+        // The card hangs from its bottom edge: start from the bottom-centre on the plane.
+        const down = new THREE.Vector3(Math.sin(angle) * (h / 2), -Math.cos(angle) * (h / 2), 0).applyQuaternion(handQuat);
+        // Later cards (and the one pointed at) a little in front, so they cover the ones before.
+        const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(handQuat).multiplyScalar(i * 0.004 + (up ? 0.25 : 0));
+        c.g.position.copy(centre).add(down).add(forward);
+        c.g.quaternion.copy(handQuat).multiply(turn.setFromAxisAngle(zAxis, -angle));
+        c.g.scale.set(w, h / 1.4, (w + h / 1.4) / 2);
+        c.pivot.rotation.x = c.lean;
         const dragging = el.classList.contains('is-dragging');
         c.face.material.opacity = dragging ? 0.25 : 1;
-        c.pivot.visible = el.style.visibility !== 'hidden';
         const playable = cardEl.classList.contains('is-playable');
         c.ring.material.color.set(el.classList.contains('is-selected') ? '#5fe1ff' : '#1fd65a');
         c.ring.material.opacity = playable && !dragging ? 0.55 + Math.sin(t * 3 + i) * 0.25 : el.classList.contains('is-selected') ? 0.9 : 0;

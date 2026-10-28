@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type { GameState } from '@/engine/types';
 import { useMatch } from '@/state/matchStore';
-import { MAT, PLANE } from './tableCamera';
+import { MAT, PLANE, TILT } from './tableCamera';
 import { approach, cardsDrawn, coverUv, energyColors, isEnemyUnit, ownerOf, pileCards, riseShift } from './bodyRules';
 import { arcHeight } from './effectRules';
 import type { Effects } from './effects';
@@ -25,6 +25,7 @@ export interface Bodies {
 
 const PX = MAT.w / PLANE.w; // world units per plane pixel
 const CT = 0.06; // card thickness
+const FLOAT = 0.3; // how high the cards float above the table (the mockup's)
 
 function roundedRect(w: number, h: number, r: number): THREE.Shape {
   const s = new THREE.Shape();
@@ -95,6 +96,19 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
       g.fillRect(0, 0, s, s);
     }),
   );
+  // A thin glowing ring (white; tinted by the material).
+  const ringGlow = keep(
+    canvasTexture(128, (g, s) => {
+      const r = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+      r.addColorStop(0, 'rgba(255,255,255,0)');
+      r.addColorStop(0.5, 'rgba(255,255,255,0)');
+      r.addColorStop(0.66, 'rgba(255,255,255,1)');
+      r.addColorStop(0.78, 'rgba(255,255,255,.45)');
+      r.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = r;
+      g.fillRect(0, 0, s, s);
+    }),
+  );
   const glowTex = keep(
     canvasTexture(64, (g, s) => {
       const r = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
@@ -144,6 +158,8 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     lift: number;
     /** 1 → 0 while a just-summoned card drops onto the table. */
     drop: number;
+    /** Its own beat for the float. */
+    phase: number;
     /** Plane px the unit's DOM is moved to stay on the risen card. */
     shift: { dx: number; dy: number };
     key: string;
@@ -191,7 +207,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     const shadow = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.7, h * 1.6), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
     const ring = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.62, h * 1.45), new THREE.MeshBasicMaterial({ map: ringTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, toneMapped: false }));
     scene.add(shadow, ring, g);
-    return { g, face, atk, hp, ring, enemy, shadow, w, h, art: '', lift: 0, drop: 0, shift: { dx: 0, dy: 0 }, key: '', at: new THREE.Vector3(), seen: true };
+    return { g, face, atk, hp, ring, enemy, shadow, w, h, art: '', lift: 0, drop: 0, phase: Math.random() * 6, shift: { dx: 0, dy: 0 }, key: '', at: new THREE.Vector3(), seen: true };
   };
 
   // ---- Wardens: a raised gold hexagon with the portrait on top (the DOM keeps Health, frame effects
@@ -220,13 +236,14 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
   };
 
   // ---- Warden abilities: gold-rimmed tokens (hexagonal when active, round when passive).
-  interface Token { m: THREE.Mesh; top: THREE.MeshStandardMaterial; halo: THREE.Sprite; passive: boolean; w: number; lift: number; shift: { dx: number; dy: number }; seen: boolean }
+  interface Token { m: THREE.Mesh; top: THREE.MeshStandardMaterial; halo: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>; passive: boolean; w: number; lift: number; shift: { dx: number; dy: number }; seen: boolean }
   const tokens = new Map<HTMLElement, Token>();
   const TOKEN_D = 0.1;
   const dropToken = (k: Token) => {
     scene.remove(k.m, k.halo);
     k.m.geometry.dispose();
     k.top.dispose();
+    k.halo.geometry.dispose();
     k.halo.material.dispose();
   };
   const makeToken = (w: number, h: number, passive: boolean): Token => {
@@ -234,8 +251,10 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     const top = new THREE.MeshStandardMaterial({ color: 0x3d3564, roughness: 0.5, metalness: 0.2 });
     const m = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth: TOKEN_D, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2, curveSegments: 24 }), [top, gold]);
     m.castShadow = true;
-    // A glow under a usable ability, pulsing so it can't be missed.
-    const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0, toneMapped: false }));
+    // A bright ring lying on the table round a usable ability, pulsing so it can't be missed (flat, so it
+    // never cuts through the token).
+    const halo = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: ringGlow, color: '#4dff88', blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0, toneMapped: false }));
+    halo.renderOrder = 1;
     scene.add(m, halo);
     return { m, top, halo, passive, w, lift: 0, shift: { dx: 0, dy: 0 }, seen: true };
   };
@@ -251,6 +270,17 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
       m.geometry?.dispose();
       if (Array.isArray(m.material)) m.material[4].dispose();
     });
+  };
+
+  // ---- The opponent's hand: card backs fanned in the air over the far edge (as in the mockup).
+  const foe: THREE.Mesh[] = [];
+  let foeFace: THREE.Texture | null = null;
+  const foeGeo = keep(new THREE.BoxGeometry(1.45 * 0.62, 1.45 * 1.4 * 0.62, 0.035));
+  const foeMats = new Map<THREE.Texture, THREE.MeshStandardMaterial>();
+  const foeBack = (face: THREE.Texture) => {
+    let m = foeMats.get(face);
+    if (!m) foeMats.set(face, (m = keep(new THREE.MeshStandardMaterial({ map: face, roughness: 0.5 }))));
+    return m;
   };
 
   // ---- Energy crystals: tall cut crystals in gold sockets.
@@ -354,13 +384,17 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         const up = el.matches(':hover') || el.classList.contains('is-selected') ? 1 : 0;
         b.lift = approach(b.lift, up, dt, 12);
         b.drop = Math.max(0, b.drop - dt * 2.2);
-        const rise = b.lift * 0.16 + b.drop * b.drop * 1.4 + arcHeight(lungeProgress(el));
-        const z = MAT.top + 0.01 + rise;
+        // As in the mockup: the cards float above the table leaning towards you, breathing a little; the
+        // one pointed at comes up and stands taller. The DOM follows the float, not the pointing lift
+        // (moving the hit target with it would make the hover flicker).
+        const bob = Math.sin(t * 1.3 + b.phase) * 0.012;
+        const rise = FLOAT + bob + b.drop * b.drop * 1.4 + arcHeight(lungeProgress(el));
+        const z = MAT.top + rise + b.lift * 0.45;
         // The DOM on the card (stats, icons, the ready glow) rises with it: moved up the mat by as much as
         // the lift shows; its rect already includes last frame's move, so take that back out first.
         p.x -= b.shift.dx * PX;
         p.y += b.shift.dy * PX;
-        const shift = rise > 0.002 ? riseShift(p, seenAt(new THREE.Vector3(p.x, p.y, z))) : { dx: 0, dy: 0 };
+        const shift = riseShift(p, seenAt(new THREE.Vector3(p.x, p.y, MAT.top + rise)));
         // Only what was written counts as the shift (else a small, unwritten change would make the card
         // drift from its DOM while the camera moves).
         if (Math.abs(shift.dx - b.shift.dx) + Math.abs(shift.dy - b.shift.dy) > 0.05) {
@@ -368,15 +402,19 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
           b.shift = shift;
         }
         b.g.position.set(p.x, p.y, z);
+        b.g.rotation.x = TILT * 0.5 + b.lift * 0.25;
         b.at.set(p.x, p.y, z);
         if (b.key) lastSeen.set(b.key, { at: b.at.clone(), t });
-        b.shadow.position.set(p.x + b.lift * 0.08, p.y + b.lift * 0.08, MAT.top + 0.004);
+        b.shadow.position.set(p.x + b.lift * 0.3 * (b.w / 1.45), p.y + b.lift * 0.3 * (b.w / 1.45), MAT.top + 0.004);
+        b.shadow.material.opacity = 1 - b.lift * 0.45;
         // The ring: ready to attack (green), chosen (cyan), a valid target (red).
         const ring = el.classList.contains('is-targetable') ? '#ff6b5a' : el.classList.contains('is-selected') ? '#5fe1ff' : el.classList.contains('is-ready') ? '#1fd65a' : '';
         b.ring.material.color.set(ring || '#ffffff');
         b.ring.material.opacity = ring ? 0.7 + Math.sin(t * 3) * 0.3 : 0;
-        b.ring.position.set(p.x, p.y, z + CT + 0.03);
-        b.shadow.scale.setScalar(1 + b.lift * 0.15);
+        b.ring.position.copy(b.g.position);
+        b.ring.rotation.copy(b.g.rotation);
+        b.ring.translateZ(CT + 0.03);
+        b.shadow.scale.setScalar(1 + b.lift * 0.35);
       });
       // Units that died (the store keeps their ghosts for the death animation) shatter; others just go.
       const dead = new Set(useMatch.getState().ghosts.map((g) => `u:${g.unit.uid}`));
@@ -466,13 +504,12 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         k.top.opacity = k.top.transparent ? 0.5 : 1;
         // A usable ability rises a little off the table and glows.
         k.lift = approach(k.lift, usable ? 1 : 0, dt, 8);
-        const z = MAT.top + k.lift * 0.12;
+        const z = MAT.top + k.lift * 0.06;
         k.shift = raise(el, p, z - MAT.top + TOKEN_D + 0.02, k.shift);
         k.m.position.set(p.x, p.y, z);
-        k.halo.material.color.set(tint);
-        k.halo.material.opacity = usable ? 0.55 + pulse * 0.45 : 0;
-        k.halo.scale.setScalar(w * (2.4 + pulse * 0.4));
-        k.halo.position.set(p.x, p.y, z + TOKEN_D * 0.5);
+        k.halo.material.opacity = usable ? 0.75 + pulse * 0.25 : 0;
+        k.halo.scale.setScalar(w * (1.55 + pulse * 0.12));
+        k.halo.position.set(p.x, p.y, MAT.top + 0.006);
       });
       for (const [el, k] of tokens)
         if (!k.seen) {
@@ -530,6 +567,27 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         }
       });
 
+      // The opponent's hand, in the air: one back per card they hold.
+      const foeCount = game?.players[1]?.hand.length ?? 0;
+      const face = piles.get('1')?.face ?? defaultBack;
+      if (foe.length !== foeCount || face !== foeFace) {
+        foe.forEach((m) => scene.remove(m));
+        foe.length = 0;
+        foeFace = face;
+        for (let i = 0; i < foeCount; i++) {
+          const m = new THREE.Mesh(foeGeo, [gold, gold, gold, gold, foeBack(face), backMat]);
+          m.castShadow = true;
+          scene.add(m);
+          foe.push(m);
+        }
+      }
+      foe.forEach((m, i) => {
+        const k = i - (foe.length - 1) / 2;
+        // Their backs (the +z face, tipped towards you) show; the fan turns a half turn so it reads from their side.
+        m.position.set(k * 0.62, MAT.h / 2 + 0.35 - Math.abs(k) * 0.05, MAT.top + 0.5 + i * 0.02 + Math.sin(t * 1.1 + i) * 0.01);
+        m.rotation.set(0.35, 0, k * 0.08 + Math.PI);
+      });
+
       // Energy crystals, one per DOM crystal, in the owner's faction colours.
       for (const c of crystals.values()) c.seen = false;
       plane.querySelectorAll<HTMLElement>('.energy .crystal').forEach((el, i) => {
@@ -569,6 +627,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
       heroes.forEach(dropHero);
       tokens.forEach(dropToken);
       crystals.forEach(dropCrystal);
+      foe.forEach((m) => scene.remove(m));
       owned.forEach((o) => o.dispose());
     },
   };

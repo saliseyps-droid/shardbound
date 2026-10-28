@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
-import { MAT, PLANE, cameraCss, placeCamera, planeCss, planeToWorld } from '@/ui/match/table3d/tableCamera';
+import { HAND, MAT, PLANE, cameraCss, handCss, handMatrix, placeCamera, planeCss, planeToWorld } from '@/ui/match/table3d/tableCamera';
 import { table3dAllowed, table3dBlocker } from '@/ui/match/table3d/table3dRules';
 
 const ok = { table3d: true, performanceMode: false, reducedMotion: false };
@@ -142,5 +142,27 @@ describe('zooming out into the room', () => {
       return c.position.length();
     };
     expect(cam(0.5)).toBeGreaterThan(cam(1) * 1.8);
+  });
+});
+
+describe('the hand plane registers with its place at the near edge of the table', () => {
+  it('a point of the hand lands where the camera draws it, within 1 px', () => {
+    const [w, h] = [1600, 900];
+    const cam = new THREE.PerspectiveCamera(32, w / h, 0.1, 600);
+    const view = { width: w, height: h };
+    placeCamera(cam, view, { tilt: 0.62, yaw: 0.4, zoom: 1.2, panX: 0.5, panY: -0.3, bottom: 0.2 });
+    const css = cameraCss(cam, view);
+    const [ox, oy] = css.origin.split(' ').map(parseFloat);
+    const d = parseFloat(css.perspective);
+    const persp: M = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -1 / d, 0, 0, 0, 1];
+    const plane = about(parse(handCss(), { w: HAND.w, h: HAND.h }), HAND.w / 2, HAND.h / 2);
+    const all = mul(about(persp, ox, oy), mul(about(parse(css.transform, { w, h }), ox, oy), plane));
+    for (const [px, py] of [[HAND.w / 2, HAND.h / 2], [100, 50], [1400, 330]]) {
+      const out = [0, 1, 2, 3].map((row) => [px, py, 0, 1].reduce((s, x, k) => s + all[k * 4 + row] * x, 0));
+      const world = new THREE.Vector3(px - HAND.w / 2, HAND.h / 2 - py, 0).applyMatrix4(handMatrix());
+      const ndc = world.project(cam);
+      expect(out[0] / out[3]).toBeCloseTo(((ndc.x + 1) / 2) * w, -0.3);
+      expect(out[1] / out[3]).toBeCloseTo(((1 - ndc.y) / 2) * h, -0.3);
+    }
   });
 });

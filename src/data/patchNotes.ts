@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.73.0',
+    date: '2026-10-28',
+    title: 'The table as in its preview',
+    summary: 'The 3D table now plays like its first preview: cards float, hands are held at the table.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          '3D table: the cards on the table float above it, leaning towards you and breathing gently; the one you point at comes up and stands taller, its shadow on the table below.',
+          '3D table: your hand is fanned at the near edge of the table, leaning up towards you; it stays with the table as you zoom and look around. The opponent holds their cards in the air over the far edge.',
+          '3D table: a Warden ability you can use has a bright green ring pulsing round it on the table.',
+        ],
+      },
+      { kind: 'fixed', items: ['3D table: both decks lie the same distance from their edge of the board; the glow of a usable Warden ability no longer cuts through its token.'] },
+    ],
+    commits: [],
+  },
+  {
     version: '0.72.1',
     date: '2026-10-28',
     title: 'Back to the usual view',

@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.73.0': {
+    title: 'Stůl jako v náhledu',
+    summary: '3D stůl se teď hraje jako v prvním náhledu: karty se vznášejí a ruce se drží u stolu.',
+    sections: [
+      [
+        '3D stůl: karty na stole se vznášejí nad ním, naklánějí se k tobě a jemně se pohupují; ta, na kterou ukážeš, se zvedne a narovná a její stín zůstane dole na stole.',
+        '3D stůl: tvoje ruka je rozložená vějířem u přední hrany stolu a naklání se k tobě; při přibližování i rozhlížení zůstává u stolu. Soupeř drží své karty ve vzduchu nad vzdálenou hranou.',
+        '3D stůl: schopnost Wardena, kterou můžeš použít, má kolem sebe na stole jasný pulzující zelený kruh.',
+      ],
+      ['3D stůl: oba balíčky leží stejně daleko od svého okraje desky; záře použitelné schopnosti Wardena už neprořezává její žeton.'],
+    ],
+  },
   '0.72.1': {
     title: 'Zpátky do výchozího pohledu',
     summary: 'Tlačítko a mezerník vrátí 3D stůl do výchozího pohledu, plus pár oprav.',

@@ -11,7 +11,7 @@ import { createBodies } from './bodies';
 import { createEffects } from './effects';
 import { createHandCards } from './handCards';
 import { ZOOM, clampRoomPan, isEmptyTable, orbitTo, pinchZoom, zoomsTable } from './tableInput';
-import { MAT, PLANE, TILT, cameraCss, placeCamera, planeCss, type CameraState } from './tableCamera';
+import { HAND, MAT, PLANE, TILT, cameraCss, handCss, handMatrix, placeCamera, planeCss, type CameraState } from './tableCamera';
 import '@/ui/styles/table3d.css';
 
 interface Props {
@@ -21,6 +21,8 @@ interface Props {
   warm?: string;
   /** The on-table part of the match (hero areas, battlefield rows, draw piles), laid onto the mat. */
   children: ReactNode;
+  /** Your hand, laid on its own plane at the near edge of the table. */
+  hand?: ReactNode;
   onUnavailable: () => void;
   /** The table stays slow even at lower quality (fpsWatch.ts): offer the 2D board. */
   onSlow?: () => void;
@@ -37,11 +39,12 @@ const BOTTOM = 0.2;
  * pointer, from the usual view in to 3× or out to 0.4× to see the room; Space, the camera button
  * or a double click on the table goes back to the usual view.
  */
-export default function TableView({ boardUrl, board, warm = '#ffb05a', children, onUnavailable, onSlow }: Props) {
+export default function TableView({ boardUrl, board, warm = '#ffb05a', children, hand: handNode, onUnavailable, onSlow }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
   const camRef = useRef<HTMLDivElement>(null);
   const planeRef = useRef<HTMLDivElement>(null);
+  const handRef = useRef<HTMLDivElement>(null);
   const failRef = useRef(onUnavailable);
   failRef.current = onUnavailable;
   const slowRef = useRef(onSlow);
@@ -105,6 +108,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
     if (import.meta.env.DEV) Object.assign(window, { __table3d: { useMatch, useSettings, scene: table.scene } });
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 600);
     planeRef.current!.style.transform = planeCss();
+    if (handRef.current) handRef.current.style.transform = handCss();
 
     let view = { width: 1, height: 1 };
     const target: CameraState = { tilt: TILT, yaw: 0, zoom: 1, panX: 0, panY: 0, bottom: BOTTOM };
@@ -129,6 +133,15 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       ray.setFromCamera(ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1), camera);
       const hit = new THREE.Vector3();
       return ray.ray.intersectPlane(matPlane, hit) ? hit : null;
+    };
+    // The point of the hand's plane under a screen point (for the hand's cards).
+    const handWorld = handMatrix();
+    const handPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1).transformDirection(handWorld), HAND.at);
+    const handPoint = (cx: number, cy: number) => {
+      const r = rootRect;
+      ray.setFromCamera(ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1), camera);
+      const hit = new THREE.Vector3();
+      return ray.ray.intersectPlane(handPlane, hit) ? hit : null;
     };
     // A world point to screen px (for DOM that sits on raised objects).
     const toScreen = (v: THREE.Vector3) => {
@@ -332,7 +345,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       const m = useMatch.getState();
       bodies.update(planeRef.current!, matPoint, m.game, clock.elapsedTime, toScreen);
       effects.update(planeRef.current!, matPoint, m.fx, dt, bodies.lastAt);
-      hand.update(camera, rootRect, dt, clock.elapsedTime);
+      hand.update(handRef.current, handPoint, handWorld, dt, clock.elapsedTime);
       table.update(clock.elapsedTime, dt);
       life.update(clock.elapsedTime, dt);
       renderer.render(table.scene, camera);
@@ -380,6 +393,11 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
           <div className="table3d-plane" ref={planeRef} style={{ width: PLANE.w, height: PLANE.h }}>
             {children}
           </div>
+          {handNode && (
+            <div className="table3d-hand-plane" ref={handRef} style={{ width: HAND.w, height: HAND.h }}>
+              {handNode}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@ describe('3D table layout', () => {
   });
 
   it('draws the hand in 3D: its DOM cards stay as invisible hit targets', () => {
-    expect(decl('.match.is-3d .self-screen .hand-card > .card', 'opacity')).toBe('0');
+    expect(decl('.table3d-hand-plane .hand-card > .card', 'opacity')).toBe('0');
   });
 
   it('fits the two rows of the mockup-sized cards (1 : 1.4) between the Warden bands', () => {

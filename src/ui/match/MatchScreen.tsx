@@ -666,8 +666,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
         </div>
           </>
         );
-        const selfHand: ReactNode = (
-          <>
+        const handNode: ReactNode = (
         <div
           className={`hand ${spectating ? 'is-hidden-hand' : ''} ${handTapped === HUMAN ? 'show-count' : ''}`}
           data-tutorial="hand"
@@ -732,7 +731,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
             </span>
           )}
         </div>
-        {spectating ? (
+        );
+        const turnControls: ReactNode = spectating ? (
           <div className="turn-controls spectate-controls">
             <span className="spectate-turn">{t('{name} is playing', { name: game.players[game.activePlayer].hero.name })}</span>
             <button className="btn btn-ghost btn-sm" onClick={() => navigate(-1)}>
@@ -757,14 +757,18 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
             </button>
           </div>
         </div>
-        )}
+        );
+        const selfHand: ReactNode = (
+          <>
+            {handNode}
+            {turnControls}
           </>
         );
         if (show3d)
           return (
             <>
               <Suspense fallback={null}>
-                <TableView boardUrl={boardBg!.url} board={boardBg!.key} onUnavailable={() => setFailed3d(true)} onSlow={() => setSlow3d(true)}>
+                <TableView boardUrl={boardBg!.url} board={boardBg!.key} hand={handNode} onUnavailable={() => setFailed3d(true)} onSlow={() => setSlow3d(true)}>
                   {/* The mat's glow, lights, mist and smoke lie on the table; its particles are 3D there (boardLife.ts). */}
                   {boardBg?.key && (
                     <div className="table3d-board-fx" aria-hidden>
@@ -779,7 +783,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
                 </TableView>
               </Suspense>
               <section className="side self-side self-screen" aria-label={t('Your hand')} style={selfStyle}>
-                {selfHand}
+                {turnControls}
               </section>
               {hover?.uid !== undefined && hoverCard && !drag?.active && <FloatingPreview key={hover.uid} uid={hover.uid} cardId={hoverCard} variant={hoverVariant} silenced={hoverSilenced} />}
               {slow3d && (

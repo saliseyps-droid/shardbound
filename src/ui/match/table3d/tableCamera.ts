@@ -105,3 +105,28 @@ export function planeCss(): string {
   const m = [e[0], e[1], e[2], e[3], -e[4], -e[5], -e[6], -e[7], e[8], e[9], e[10], e[11], e[12], e[13], e[14], e[15]].map(eps).join(',');
   return `translate(-50%,-50%) matrix3d(${m})`;
 }
+
+/**
+ * Your hand lies on its own plane at the near edge of the table, standing up towards you (as in the
+ * mockup): HAND px wide and tall, `HAND.scale` world units per px, its centre at `HAND.at`, leaning
+ * back from upright by `HAND.lean`. Its DOM (the hand's cards) is laid on it like the mat's plane.
+ */
+export const HAND = { w: 1600, h: 380, scale: 0.0105, at: new THREE.Vector3(0, -MAT.h / 2 - 1.25, MAT.top + 1.9), lean: 0.55 };
+
+/** The hand plane's object (world) matrix. */
+export function handMatrix(): THREE.Matrix4 {
+  const o = new THREE.Object3D();
+  o.position.copy(HAND.at);
+  // Upright (facing −y, towards you) is a quarter turn about x; lean back by HAND.lean from it.
+  o.rotation.x = Math.PI / 2 - HAND.lean;
+  o.scale.setScalar(HAND.scale);
+  o.updateMatrixWorld();
+  return o.matrixWorld;
+}
+
+/** The CSS transform of the hand plane (like planeCss, for the hand's own plane). */
+export function handCss(): string {
+  const e = handMatrix().elements;
+  const m = [e[0], e[1], e[2], e[3], -e[4], -e[5], -e[6], -e[7], e[8], e[9], e[10], e[11], e[12], e[13], e[14], e[15]].map((v) => (Math.abs(v) < 1e-10 ? 0 : v)).join(',');
+  return `translate(-50%,-50%) matrix3d(${m})`;
+}

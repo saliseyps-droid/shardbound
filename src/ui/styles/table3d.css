@@ -131,7 +131,7 @@
 
 /* The hand on the 3D table is drawn in WebGL (handCards.ts): the DOM cards stay, invisible, for
    pointing, dragging and playing. */
-.match.is-3d .self-screen .hand-card > .card { opacity: 0; }
+.table3d-hand-plane .hand-card > .card { opacity: 0; }
 /* While a drag moves the view. */
 .match.is-moving-view, .match.is-moving-view * { cursor: grabbing !important; }
 
@@ -148,12 +148,24 @@
 .table3d-plane .hero-power.is-used { opacity: 1; }
 .table3d-plane .hero-power-cost { top: 1px; right: 5px; font-weight: 800; text-shadow: 0 1px 2px #000; }
 /* Room between the cards on the table for their stat gems (7 cards still fit a row). */
-.table3d-plane .board-row { gap: 30px; width: min(100%, calc(var(--unit-w) * 7 + 30px * 6 + 40px)); }
+.table3d-plane .board-row { gap: 44px; width: min(100%, calc(var(--unit-w) * 7 + 44px * 6 + 20px)); }
 .match.is-coop .table3d-plane .board-row { gap: 18px; }
 /* A card pointed at in the 3D hand rises a little higher, so its gems at the foot stay in view. */
-.match.is-3d .self-screen .hand-card:hover,
-.match.is-3d .self-screen .hand-card:focus-within,
-.match.is-3d .self-screen .hand-card.is-selected { bottom: calc(var(--card-w) * 0.3); }
+.table3d-hand-plane .hand-card:hover,
+.table3d-hand-plane .hand-card:focus-within,
+.table3d-hand-plane .hand-card.is-selected { bottom: calc(var(--card-w) * 0.62); }
 /* The Warden's abilities a little further from its portrait (a purchased frame reaches out over them). */
 .table3d-plane .hero-area { gap: 40px; }
 .table3d-plane .hero-abilities { gap: 14px; }
+/* Both decks the same distance from their edge of the mat (the flat stack's layer offsets don't
+   apply: WebGL draws the pile). */
+.table3d-plane .draw-pile-stack { margin: 0; }
+.table3d-plane .enemy-side > .draw-pile-anchor { top: 70px; bottom: auto; }
+.table3d-plane .self-side > .draw-pile-anchor { top: auto; bottom: 70px; }
+
+/* The hand's plane at the near edge of the table (TableView, HAND): fixed card size in its own px,
+   the cards along its foot; only the cards take the pointer. */
+.table3d-hand-plane { position: absolute; left: 0; top: 0; pointer-events: none; }
+.table3d-hand-plane .hand { position: absolute; left: 0; right: 0; bottom: 70px; --card-w: 150px !important; }
+/* The opponent's hand is drawn in the air in 3D (bodies.ts); its flat backs on the mat go. */
+.table3d-plane .enemy-hand { opacity: 0; }
