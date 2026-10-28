@@ -820,7 +820,9 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
         // Their backs (the +z face, tipped towards you) show; the fan turns a half turn so it reads from their side.
         // Held up at the far edge as the opponent holds them: standing, their backs towards you, leaning
         // a little away (towards their holder), fanned.
-        m.position.set(FOE_AT.x + k * 0.7, FOE_AT.y + Math.abs(k) * 0.03, FOE_AT.z - Math.abs(k) * 0.03 + Math.sin(t * 1.1 + i) * 0.01);
+        // Each card a clear step in front of the one before (towards you along its tilt), so the fan
+        // never fights over which card is on top; no bobbing, which made neighbours cross.
+        m.position.set(FOE_AT.x + k * 0.7, FOE_AT.y - i * 0.05, FOE_AT.z - Math.abs(k) * 0.03 + i * 0.03);
         m.rotation.set(0.3, 0, -k * 0.08, 'ZXY');
       });
 
