@@ -57,11 +57,16 @@ export function drawIcon(g: CanvasRenderingContext2D, kind: AbilityIconKind, x: 
 
 const GOLD = ['#fff1b8', '#d39b2a', '#7a4f0e', '#f5d27a'];
 const DARK_GOLD = ['#a77b35', '#5c3d14', '#3a2508', '#8a6224'];
+/** Card finishes (game Variant): the frame each one gets on the table. */
+export type Finish = 'NORMAL' | 'FOIL' | 'PRISMATIC' | 'GILDED';
+const RAINBOW = ['#ff6b8a', '#ffd36a', '#7ef29a', '#5fd8ff', '#b38cff', '#ff6b8a'];
+const BLACK_GOLD = ['#f5d27a', '#1a1408', '#0a0806', '#e8b04b'];
 
-function frame(g: CanvasRenderingContext2D, enemy: boolean) {
-  const golds = enemy ? DARK_GOLD : GOLD;
+function frame(g: CanvasRenderingContext2D, enemy: boolean, finish: Finish = 'NORMAL') {
+  const golds = finish === 'GILDED' ? BLACK_GOLD : enemy ? DARK_GOLD : GOLD;
+  const stops = finish === 'PRISMATIC' ? RAINBOW : golds;
   const fr = g.createLinearGradient(0, 0, FW, FH);
-  golds.forEach((c, i) => fr.addColorStop(i / 3, c));
+  stops.forEach((c, i) => fr.addColorStop(i / (stops.length - 1), c));
   g.fillStyle = fr;
   g.fillRect(0, 0, FW, FH);
   g.fillStyle = '#151226';
@@ -83,9 +88,9 @@ function cover(g: CanvasRenderingContext2D, img: CanvasImageSource & { width: nu
 }
 
 /** A unit on the table: the whole art, no text, its lasting abilities as icons along the foot. */
-export function unitFace(img: HTMLImageElement, o: { enemy: boolean; icons: AbilityIconKind[]; fx: number; fy: number }) {
+export function unitFace(img: HTMLImageElement, o: { enemy: boolean; icons: AbilityIconKind[]; fx: number; fy: number; finish?: Finish }) {
   return canvasTexture(FW, FH, (g) => {
-    const golds = frame(g, o.enemy);
+    const golds = frame(g, o.enemy, o.finish);
     const iw = FW - 36;
     const ih = FH - 36;
     cover(g, img, 18, 18, iw, ih, o.fx, o.fy);
@@ -236,25 +241,6 @@ export function numberTexture(n: string, color = '#ffffff') {
   return t;
 }
 
-/** A soft glowing rounded rectangle (ready / selected / target ring), white: tinted by the material. */
-export const rectGlowTexture = () =>
-  canvasTexture(260, 340, (g) => {
-    g.strokeStyle = '#fff';
-    g.shadowColor = '#fff';
-    for (const [bl, lw, al] of [
-      [30, 12, 0.35],
-      [14, 6, 0.6],
-      [4, 3, 1],
-    ]) {
-      g.globalAlpha = al;
-      g.shadowBlur = bl;
-      g.lineWidth = lw;
-      g.beginPath();
-      g.roundRect(40, 40, 180, 260, 14);
-      g.stroke();
-    }
-  });
-
 /** Raised stat gems for a card w×h (world units, card face at z): attack octahedron, health hexagon, cost hexagon. */
 export function makeGem(kind: 'atk' | 'hp' | 'cost', scale: number) {
   const color = kind === 'atk' ? '#e89a2a' : kind === 'hp' ? '#c8322a' : '#3aa6d8';
@@ -268,4 +254,52 @@ export function makeGem(kind: 'atk' | 'hp' | 'cost', scale: number) {
   const num = new THREE.Mesh(new THREE.PlaneGeometry(0.46 * scale, 0.46 * scale), new THREE.MeshBasicMaterial({ map: numberTexture('0'), transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, toneMapped: false }));
   num.userData.lift = (kind === 'atk' ? 0.12 : 0.07) * scale;
   return { gem: m, num, value: '', color: '' };
+}
+
+/** A tight glow hugging a card's edge (white; tinted by the material): the card fills the inner 220 × 308 of its 256 × 344. */
+export const SNUG = { w: 256 / 220, h: 344 / 308 };
+export const snugGlowTexture = () => {
+  const c = document.createElement('canvas');
+  c.width = 256;
+  c.height = 344;
+  const g = c.getContext('2d')!;
+  g.strokeStyle = '#fff';
+  g.shadowColor = '#fff';
+  for (const [blur, width, alpha] of [
+    [14, 5, 0.6],
+    [5, 3, 1],
+  ]) {
+    g.globalAlpha = alpha;
+    g.shadowBlur = blur;
+    g.lineWidth = width;
+    g.beginPath();
+    g.roundRect(18, 18, 220, 308, 12);
+    g.stroke();
+  }
+  return new THREE.CanvasTexture(c);
+};
+
+/**
+ * A diagonal band of light that sweeps across a card's face (Foil, Prismatic, Gilded), for additive
+ * blending: opaque black (adds nothing) with the band in white, or the rainbow for Prismatic.
+ */
+export function sheenTexture(rainbow: boolean) {
+  const c = document.createElement('canvas');
+  c.width = 256;
+  c.height = 256;
+  const g = c.getContext('2d')!;
+  g.fillStyle = '#000';
+  g.fillRect(0, 0, 256, 256);
+  // Across x only (black at both edges), so the texture tiles without seams; it is turned diagonal.
+  const grad = g.createLinearGradient(0, 0, 256, 0);
+  const band = rainbow ? ['#000000', '#7a2a3a', '#806a2a', '#2a7a40', '#2a6a80', '#5a3a80', '#000000'] : ['#000000', '#9a9a9a', '#000000'];
+  band.forEach((col, k) => grad.addColorStop(0.32 + (k / (band.length - 1)) * 0.36, col));
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 256, 256);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.center.set(0.5, 0.5);
+  t.rotation = Math.PI / 4;
+  return t;
 }

@@ -19,6 +19,29 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.74.0',
+    date: '2026-10-28',
+    title: 'Finishes on the 3D table',
+    summary: 'Foil, Prismatic and Gilded cards show their finish on the 3D table, and much more polish.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          '3D table: Foil cards have a silver edge and a sweep of light across the picture, Prismatic cards a rainbow edge and a rainbow sweep, Gilded cards a black-gold frame with a golden sweep.',
+          '3D table: a Warden ability you can use burns at its rim in the Warden’s colour, with three sparks circling it.',
+        ],
+      },
+      {
+        kind: 'improved',
+        items: [
+          '3D table: the cards on the table and the decks have a soft gloss, the room reflecting in them, without hard highlights washing the pictures out; Wardens and their abilities have a satin sheen.',
+          '3D table: the cards in your hand are sharper, and a card held near its lower edge no longer bobs; the glow of a unit ready to attack hugs its card.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.73.5',
     date: '2026-10-28',
     title: 'A clearer view of the cards',

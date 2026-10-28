@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { useMatch } from '@/state/matchStore';
 import { useSettings } from '@/state/settingsStore';
 import { BOARD_FX } from '../boardFx';
@@ -100,7 +101,14 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       useSettings.getState().performanceMode,
     );
     const effects = createEffects(table.scene);
-    const bodies = createBodies(table.scene, effects);
+    // A soft room to reflect in: the glossy cards and decks shine with it (scene lights alone leave
+    // little to see in a gloss).
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const room = new RoomEnvironment();
+    const env = pmrem.fromScene(room, 0.04).texture;
+    room.dispose();
+    pmrem.dispose();
+    const bodies = createBodies(table.scene, effects, env);
     // Dev server only: lets a browser check fire effects on demand.
     if (import.meta.env.DEV) Object.assign(window, { __table3d: { useMatch, useSettings, scene: table.scene } });
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 600);
@@ -356,6 +364,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       match.removeEventListener('contextmenu', onMenu);
       match.classList.remove('is-moving-view');
       bodies.dispose();
+      env.dispose();
       life.dispose();
       effects.dispose();
       table.dispose();

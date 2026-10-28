@@ -168,7 +168,7 @@
 /* The hand's plane at the near edge of the table (TableView, HAND): fixed card size in its own px,
    the cards along its foot; only the cards take the pointer. */
 .table3d-hand-plane { position: absolute; left: 0; top: 0; pointer-events: none; }
-.table3d-hand-plane .hand { position: absolute; left: 0; right: 0; bottom: -10px; }
+.table3d-hand-plane .hand { position: absolute; left: 0; right: 0; bottom: -20px; }
 /* The opponent's hand is drawn in the air in 3D (bodies.ts); its flat backs on the mat go. */
 .table3d-plane .enemy-hand { opacity: 0; }
 /* As in the mockup: both rows close to the middle line, clear of the Wardens. */
@@ -187,3 +187,8 @@
 /* A playable card in the hand: a tight, saturated green glow round its own edge (it is part of the
    card, so the cards in front of it cover it). */
 .table3d-hand-plane .hand-card > .card.is-playable { filter: drop-shadow(0 0 2px #3cff7a) drop-shadow(0 0 5px #19d35a) drop-shadow(0 3px 0 #b8862c) drop-shadow(0 6px 6px rgba(0, 0, 0, 0.55)); }
+/* A card pointed at in the 3D hand rises high: the hover bridge reaches all the way down to where it
+   rested, so pointing at its lower edge doesn't make it drop and rise again. */
+.table3d-hand-plane .hand-card:hover::after { height: calc(var(--card-w) * 0.7); }
+/* The 3D card draws each finish itself (bodies.ts); the flat unit body stays clear over it. */
+.table3d-plane .unit-body { background: none !important; }

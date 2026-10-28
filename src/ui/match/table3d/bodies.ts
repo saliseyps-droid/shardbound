@@ -5,7 +5,7 @@ import { MAT, PLANE, TILT } from './tableCamera';
 import { approach, cardsDrawn, coverUv, energyColors, isEnemyUnit, ownerOf, pileCards, riseShift } from './bodyRules';
 import { arcHeight } from './effectRules';
 import type { Effects } from './effects';
-import { makeGem, numberTexture, rectGlowTexture, unitFace } from './cardFaces';
+import { SNUG, makeGem, numberTexture, sheenTexture, snugGlowTexture, unitFace, type Finish } from './cardFaces';
 import type { AbilityIconKind } from '@/ui/components/AbilityIcon';
 
 /**
@@ -66,7 +66,7 @@ const percent = (v: string | undefined, fallback: number) => {
   return Number.isFinite(n) ? n : fallback;
 };
 
-export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
+export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.Texture): Bodies {
   const owned: { dispose(): void }[] = [];
   const keep = <T extends { dispose(): void }>(x: T) => (owned.push(x), x);
   // One texture per picture (from the browser cache, as the DOM already shows it); null until loaded.
@@ -83,6 +83,12 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     return e.ready ? e.tex : null;
   };
 
+  // Glossy, as varnished cards: the room reflects in them, while the lamps leave only a soft sheen
+  // (sharp highlights from the candles washed the pictures out).
+  const glossy = (p: THREE.MeshPhysicalMaterialParameters) =>
+    new THREE.MeshPhysicalMaterial({ roughness: 0.5, clearcoat: 0.6, clearcoatRoughness: 0.28, envMap: env ?? null, envMapIntensity: 0.12, ...p });
+  // A plain sheen without the varnish (a varnish hazes small, bright things like portraits and tokens).
+  const satin = (p: THREE.MeshPhysicalMaterialParameters) => new THREE.MeshPhysicalMaterial({ roughness: 0.4, metalness: 0, specularIntensity: 0.35, envMap: env ?? null, envMapIntensity: 0.06, ...p });
   const gold = keep(new THREE.MeshStandardMaterial({ color: 0xd9a63a, metalness: 0.95, roughness: 0.28 }));
   const darkGold = keep(new THREE.MeshStandardMaterial({ color: 0x8a6526, metalness: 0.9, roughness: 0.38 }));
   const backMat = keep(new THREE.MeshStandardMaterial({ color: 0x1a1430, roughness: 0.6 }));
@@ -150,6 +156,12 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     atk: Gem;
     hp: Gem;
     ring: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
+    /** The light sweeping over a Foil, Prismatic or Gilded card. */
+    sheen: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
+    slab: THREE.Mesh;
+    /** The edge's own material for a finish (silver, rainbow, black gold), else null (the shared gold). */
+    edge: THREE.MeshStandardMaterial | null;
+    finish: Finish;
     enemy: boolean;
     shadow: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
     w: number;
@@ -169,9 +181,15 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
   const units = new Map<HTMLElement, UnitBody>();
   // Last positions by entity key; a killing hit's effect arrives with the unit already gone.
   const lastSeen = new Map<string, { at: THREE.Vector3; t: number }>();
-  const ringTex = keep(rectGlowTexture());
+  const ringTex = keep(snugGlowTexture());
+  const sheenWhite = keep(sheenTexture(false));
+  const sheenRainbow = keep(sheenTexture(true));
   const dropUnit = (u: UnitBody) => {
     scene.remove(u.g, u.shadow, u.ring);
+    u.edge?.dispose();
+    u.sheen.geometry.dispose();
+    u.sheen.material.map?.dispose();
+    u.sheen.material.dispose();
     u.ring.geometry.dispose();
     u.ring.material.dispose();
     for (const gm of [u.atk, u.hp]) {
@@ -191,7 +209,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
       [backMat, enemy ? darkGold : gold],
     );
     slab.castShadow = true;
-    const face = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.02, h - 0.02), new THREE.MeshPhysicalMaterial({ roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.08, transparent: true, color: 0x2a2244 }));
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.02, h - 0.02), glossy({ transparent: true, color: 0x2a2244 }));
     face.position.z = CT + 0.021;
     g.add(slab, face);
     // Raised stat gems in the bottom corners, their numbers drawn with depth (as in the mockup).
@@ -205,14 +223,17 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
       g.add(gm.gem, gm.num);
     }
     const shadow = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.7, h * 1.6), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
-    const ring = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.62, h * 1.45), new THREE.MeshBasicMaterial({ map: ringTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, toneMapped: false }));
+    const ring = new THREE.Mesh(new THREE.PlaneGeometry(w * SNUG.w, h * SNUG.h), new THREE.MeshBasicMaterial({ map: ringTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, toneMapped: false }));
+    const sheen = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.02, h - 0.02), new THREE.MeshBasicMaterial({ transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -1 }));
+    sheen.position.z = CT + 0.024;
+    g.add(sheen);
     scene.add(shadow, ring, g);
-    return { g, face, atk, hp, ring, enemy, shadow, w, h, art: '', lift: 0, drop: 0, phase: Math.random() * 6, shift: { dx: 0, dy: 0 }, key: '', at: new THREE.Vector3(), seen: true };
+    return { g, face, atk, hp, ring, sheen, slab, edge: null, finish: 'NORMAL', enemy, shadow, w, h, art: '', lift: 0, drop: 0, phase: Math.random() * 6, shift: { dx: 0, dy: 0 }, key: '', at: new THREE.Vector3(), seen: true };
   };
 
   // ---- Wardens: a raised gold hexagon with the portrait on top (the DOM keeps Health, frame effects
   // and the hit target, moved up onto it).
-  interface HeroBody { plinth: THREE.Mesh; face: THREE.Mesh<THREE.ShapeGeometry, THREE.MeshStandardMaterial>; w: number; h: number; art: string; shift: { dx: number; dy: number } }
+  interface HeroBody { plinth: THREE.Mesh; face: THREE.Mesh<THREE.ShapeGeometry, THREE.MeshPhysicalMaterial>; w: number; h: number; art: string; shift: { dx: number; dy: number } }
   const heroes = new Map<string, HeroBody>();
   const HERO_D = 0.07; // a thin gold frame lying on the table, as in the mockup
   const dropHero = (b: HeroBody) => {
@@ -230,33 +251,43 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
     const uv = geo.attributes.uv;
     const pos = geo.attributes.position;
     for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / (w * 0.985) + 0.5, pos.getY(i) / (h * 0.985) + 0.5);
-    const face = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0x2a2244, roughness: 0.55 }));
+    const face = new THREE.Mesh(geo, satin({ color: 0x2a2244 }));
     scene.add(plinth, face);
     return { plinth, face, w, h, art: '', shift: { dx: 0, dy: 0 } };
   };
 
   // ---- Warden abilities: gold-rimmed tokens (hexagonal when active, round when passive).
-  interface Token { m: THREE.Mesh; top: THREE.MeshStandardMaterial; halo: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>; passive: boolean; w: number; lift: number; shift: { dx: number; dy: number }; seen: boolean }
+  interface Token { m: THREE.Mesh; top: THREE.MeshPhysicalMaterial; rim: THREE.MeshStandardMaterial; motes: THREE.Sprite[]; halo: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>; passive: boolean; w: number; lift: number; shift: { dx: number; dy: number }; seen: boolean }
   const tokens = new Map<HTMLElement, Token>();
   const TOKEN_D = 0.1;
   const dropToken = (k: Token) => {
-    scene.remove(k.m, k.halo);
+    scene.remove(k.m, k.halo, ...k.motes);
     k.m.geometry.dispose();
     k.top.dispose();
+    k.rim.dispose();
+    k.motes.forEach((s) => s.material.dispose());
     k.halo.geometry.dispose();
     k.halo.material.dispose();
   };
   const makeToken = (w: number, h: number, passive: boolean): Token => {
     const shape = passive ? new THREE.Shape().absarc(0, 0, w / 2, 0, Math.PI * 2, false) : hexShape(w, h);
-    const top = new THREE.MeshStandardMaterial({ color: 0x3d3564, roughness: 0.5, metalness: 0.2 });
-    const m = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth: TOKEN_D, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2, curveSegments: 24 }), [top, gold]);
+    const top = satin({ color: 0x3d3564 });
+    // Its own gold rim, so a usable ability can light it up in the Warden's colour.
+    const rim = gold.clone();
+    const m = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth: TOKEN_D, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2, curveSegments: 24 }), [top, rim]);
     m.castShadow = true;
     // A bright ring lying on the table round a usable ability, pulsing so it can't be missed (flat, so it
     // never cuts through the token).
     const halo = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: ringGlow, color: '#4dff88', blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0, toneMapped: false }));
     halo.renderOrder = 1;
-    scene.add(m, halo);
-    return { m, top, halo, passive, w, lift: 0, shift: { dx: 0, dy: 0 }, seen: true };
+    // Three sparks circling a usable ability.
+    const motes = Array.from({ length: 3 }, () => {
+      const s2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0, toneMapped: false }));
+      s2.scale.setScalar(w * 0.6);
+      return s2;
+    });
+    scene.add(m, halo, ...motes);
+    return { m, top, rim, motes, halo, passive, w, lift: 0, shift: { dx: 0, dy: 0 }, seen: true };
   };
 
   // ---- Card piles.
@@ -354,16 +385,46 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         // The face (mockup): the whole art in a gold frame, the ability icons along its foot.
         const img = el.querySelector<HTMLImageElement>('.unit-art');
         const icons = [...el.querySelectorAll<SVGElement>('.badge-icon')].map((x) => x.dataset.kind as AbilityIconKind);
-        const faceKey = `${img?.src ?? ''}|${icons.join(',')}`;
+        const finish: Finish = el.classList.contains('is-gilded') ? 'GILDED' : el.classList.contains('is-prismatic') ? 'PRISMATIC' : el.classList.contains('is-foil') ? 'FOIL' : 'NORMAL';
+        const faceKey = `${img?.src ?? ''}|${icons.join(',')}|${finish}`;
         const loaded = img?.src && faceKey !== b.art ? image(img.src) : null;
         if (img && loaded) {
           b.art = faceKey;
           const pos = getComputedStyle(img).objectPosition.split(' ');
           b.face.material.map?.dispose();
-          b.face.material.map = unitFace(loaded.image as HTMLImageElement, { enemy: b.enemy, icons, fx: percent(pos[0], 50), fy: percent(pos[1], 40) });
+          b.face.material.map = unitFace(loaded.image as HTMLImageElement, { enemy: b.enemy, icons, fx: percent(pos[0], 50), fy: percent(pos[1], 40), finish });
+          // The finish's sweeping light (its own copy, so each card sweeps on its own beat).
+          b.sheen.material.map?.dispose();
+          b.sheen.material.map = finish === 'NORMAL' ? null : (finish === 'PRISMATIC' ? sheenRainbow : sheenWhite).clone();
+          b.sheen.material.color.set(finish === 'GILDED' ? '#ffcf6a' : '#ffffff');
+          b.sheen.material.needsUpdate = true;
+          // The card's edge in its finish.
+          b.edge?.dispose();
+          b.edge =
+            finish === 'FOIL'
+              ? new THREE.MeshStandardMaterial({ color: 0xe9ecf5, metalness: 1, roughness: 0.18 })
+              : finish === 'PRISMATIC'
+                ? new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.7, roughness: 0.2, emissive: 0xffffff, emissiveIntensity: 0.35 })
+                : finish === 'GILDED'
+                  ? new THREE.MeshStandardMaterial({ color: 0x2a1f0c, metalness: 0.9, roughness: 0.3, emissive: 0x6b4a10, emissiveIntensity: 0.25 })
+                  : null;
+          (b.slab.material as THREE.Material[])[1] = b.edge ?? (b.enemy ? darkGold : gold);
+          b.finish = finish;
           b.face.material.color.set(0xffffff);
           b.face.material.needsUpdate = true;
         }
+        // Foil, Prismatic and Gilded cards: a band of light sweeps across the face now and then.
+        // A Prismatic edge runs through the rainbow.
+        if (b.finish === 'PRISMATIC' && b.edge) {
+          b.edge.color.setHSL((t * 0.12 + b.phase) % 1, 0.85, 0.6);
+          b.edge.emissive.copy(b.edge.color);
+        }
+        const sm = b.sheen.material;
+        if (sm.map) {
+          const phase = ((t * 0.35 + b.phase) % 2.2) - 1.1;
+          sm.map.offset.set(-phase, 0);
+          sm.opacity = 1;
+        } else sm.opacity = 0;
         // Stats from the DOM (current values; buffed green, hurt pale red).
         const stat = (gm: Gem, sel: string) => {
           const s2 = el.querySelector<HTMLElement>(sel);
@@ -497,10 +558,12 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         const tint = getComputedStyle(el.closest('.hero-abilities') ?? el).getPropertyValue('--ability-tint').trim() || '#e8b04b';
         const usable = el.classList.contains('is-usable');
         const pulse = 0.5 + 0.5 * Math.sin(t * 3.2);
-        k.top.color.set(usable ? '#5e4614' : passive ? '#2e2648' : '#3d3564');
+        k.top.color.set(usable ? '#241a10' : passive ? '#2e2648' : '#3d3564');
         k.top.emissive.set(usable ? tint : '#000000');
-        // Bright enough to catch the eye, not so bright the icon on it washes out.
-        k.top.emissiveIntensity = usable ? 0.2 + pulse * 0.2 : 0;
+        k.top.emissiveIntensity = usable ? 0.08 + pulse * 0.08 : 0;
+        // Usable: the gold rim burns in the Warden's colour, sparks circle it, a faint ring lies under it.
+        k.rim.emissive.set(usable ? tint : '#000000');
+        k.rim.emissiveIntensity = usable ? 0.9 + pulse * 0.8 : 0;
         k.top.transparent = el.classList.contains('is-used');
         k.top.opacity = k.top.transparent ? 0.5 : 1;
         // A usable ability rises a little off the table and glows.
@@ -508,9 +571,17 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
         const z = MAT.top + k.lift * 0.06;
         k.shift = raise(el, p, z - MAT.top + TOKEN_D + 0.02, k.shift);
         k.m.position.set(p.x, p.y, z);
-        k.halo.material.opacity = usable ? 0.75 + pulse * 0.25 : 0;
-        k.halo.scale.setScalar(w * (1.55 + pulse * 0.12));
+        k.halo.material.color.set(tint);
+        k.halo.material.opacity = usable ? 0.35 + pulse * 0.25 : 0;
+        k.halo.scale.setScalar(w * 1.45);
         k.halo.position.set(p.x, p.y, MAT.top + 0.006);
+        k.motes.forEach((s2, j) => {
+          const a = t * 2.2 + (j * Math.PI * 2) / 3;
+          const r = w * 0.68;
+          s2.position.set(p.x + Math.cos(a) * r, p.y + Math.sin(a) * r * 0.85, z + TOKEN_D * 0.6 + Math.sin(t * 3 + j) * 0.03);
+          s2.material.color.set(tint);
+          s2.material.opacity = usable ? 1 : 0;
+        });
       });
       for (const [el, k] of tokens)
         if (!k.seen) {
@@ -536,7 +607,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects): Bodies {
           const g = new THREE.Group();
           const face = backTex ?? defaultBack;
           for (let i = 0; i < n; i++) {
-            const c = new THREE.Mesh(new THREE.BoxGeometry(w, w * 1.4, 0.035), [gold, gold, gold, gold, new THREE.MeshPhysicalMaterial({ map: face, roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.08 }), backMat]);
+            const c = new THREE.Mesh(new THREE.BoxGeometry(w, w * 1.4, 0.035), [gold, gold, gold, gold, glossy({ map: face }), backMat]);
             c.castShadow = true;
             // A small, stable jitter so the pile looks stacked by hand.
             c.position.set(Math.sin(i * 12.9898) * 0.012, Math.sin(i * 78.233) * 0.012, 0.02 + i * 0.045);

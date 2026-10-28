@@ -667,7 +667,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           </>
         );
         // On the 3D table the hand lies on its own plane of fixed size: fixed cards (sized for it).
-        const handCardW = show3d ? 150 : cardW;
+        const handCardW = show3d ? 300 : cardW;
         const handNode: ReactNode = (
         <div
           className={`hand ${spectating ? 'is-hidden-hand' : ''} ${handTapped === HUMAN ? 'show-count' : ''}`}

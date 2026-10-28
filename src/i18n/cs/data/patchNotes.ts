@@ -1,6 +1,20 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.74.0': {
+    title: 'Varianty karet na 3D stole',
+    summary: 'Karty Foil, Prismatic a Gilded ukazují na 3D stole svou úpravu, plus spousta doladění.',
+    sections: [
+      [
+        '3D stůl: karty Foil mají stříbrnou hranu a přes obrázek jim přejíždí pruh světla, Prismatic duhovou hranu a duhový pruh, Gilded černozlatý rám se zlatým pruhem.',
+        '3D stůl: schopnost Wardena, kterou můžeš použít, žhne na okraji barvou Wardena a kolem ní krouží tři jiskry.',
+      ],
+      [
+        '3D stůl: karty na stole a balíčky mají jemný lesk, ve kterém se odráží místnost, bez ostrých odlesků, které přepalovaly obrázky; Wardeni a jejich schopnosti mají saténový lesk.',
+        '3D stůl: karty v ruce jsou ostřejší a karta držená u spodního okraje už necuká; záře jednotky připravené k útoku těsně obepíná kartu.',
+      ],
+    ],
+  },
   '0.73.5': {
     title: 'Lepší pohled na karty',
     summary: '3D stůl se dívá víc shora a deska už neprosvítá kartami.',
