@@ -2,11 +2,12 @@ import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
   '0.75.1': {
-    title: 'Kovaná Stráž',
-    summary: 'Jednotky se Stráží leží na 3D stole v kovaném štítu.',
+    title: 'Stráž za hradbami',
+    summary: 'Jednotky se Stráží stojí na 3D stole v hradbách.',
     sections: [
       [
-        '3D stůl: jednotka se Stráží leží v kovaném štítu: tmavé železné tělo, leštěný ocelový lem se zářezem nahoře, nýty a ocelový štítek se zlatým erbem ve špičce.',
+        '3D stůl: jednotka se Stráží stojí v hradbách: kamenné zdi s cimbuřím na všech stranách a kulatá věž v každém rohu.',
+        '3D stůl: soupeřovy karty v ruce už se do sebe neprolínají.',
         '3D stůl: karty na stole se k tobě naklánějí mnohem méně; destičky Útoku a Životů mají větší ikonky a čísla.',
       ],
     ],

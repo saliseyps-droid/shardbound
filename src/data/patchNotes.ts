@@ -21,13 +21,14 @@ export const PATCH_NOTES: PatchNote[] = [
   {
     version: '0.75.1',
     date: '2026-10-28',
-    title: 'A forged Guard',
-    summary: 'Guard units on the 3D table rest in a forged shield.',
+    title: 'Guard behind walls',
+    summary: 'Guard units on the 3D table stand inside castle walls.',
     sections: [
       {
         kind: 'improved',
         items: [
-          '3D table: a unit with Guard rests in a forged shield: a dark iron body, a polished steel rim notched at the top, rivets, and a steel boss with a gold crest at its point.',
+          '3D table: a unit with Guard stands inside castle walls: stone walls with merlons along every side and a round tower at each corner.',
+          '3D table: the opponent’s cards in hand no longer flicker into each other.',
           '3D table: the cards on the table lean towards you much less; the Attack and Health plates have bigger icons and numbers.',
         ],
       },
