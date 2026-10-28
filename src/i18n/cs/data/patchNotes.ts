@@ -9,6 +9,7 @@ const notes: PatchNotesOverlay = {
         '3D stůl: Útok a Životy jsou na malých tmavých destičkách ve spodních rozích karty, s okrajem v barvě frakce jednotky a mečem nebo srdcem vedle čísla.',
         '3D stůl: Stráž je ocelový rámeček ve tvaru štítu kolem karty a její ikonka je mezi ostatními ikonkami schopností.',
         '3D stůl: karty na stole jsou o 10 % větší.',
+        '3D stůl: destičky Útoku a Životů jsou menší a čísla na nich větší.',
       ],
     ],
   },

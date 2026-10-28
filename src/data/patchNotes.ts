@@ -30,6 +30,7 @@ export const PATCH_NOTES: PatchNote[] = [
           '3D table: Attack and Health sit on small dark plates in the card’s bottom corners, rimmed in the unit’s faction colour, with a sword or a heart beside the number.',
           '3D table: Guard is a steel frame shaped like a shield round the card, and its icon sits with the other ability icons.',
           '3D table: the cards on the table are 10% bigger.',
+          '3D table: the Attack and Health plates are smaller, with bigger numbers.',
         ],
       },
     ],

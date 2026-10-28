@@ -194,10 +194,10 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     const plate = new THREE.Mesh(new THREE.ExtrudeGeometry(roundedRect(0.46 * k, 0.3 * k, 0.06 * k), { depth: 0.03 * k, bevelEnabled: true, bevelThickness: 0.012 * k, bevelSize: 0.012 * k, bevelSegments: 2 }), [plateFace, rim]);
     plate.castShadow = true;
     const front = 0.03 * k + 0.014 * k + 0.004;
-    const icon = new THREE.Mesh(new THREE.PlaneGeometry(0.15 * k, 0.15 * k), new THREE.MeshBasicMaterial({ map: statIcons[kind], transparent: true, depthWrite: false, toneMapped: false }));
-    icon.position.set(-0.09 * k, 0, front);
-    const num = new THREE.Mesh(new THREE.PlaneGeometry(0.25 * k, 0.25 * k), new THREE.MeshBasicMaterial({ map: numberTexture('0'), transparent: true, depthWrite: false, toneMapped: false }));
-    num.position.set(0.08 * k, 0, front);
+    const icon = new THREE.Mesh(new THREE.PlaneGeometry(0.13 * k, 0.13 * k), new THREE.MeshBasicMaterial({ map: statIcons[kind], transparent: true, depthWrite: false, toneMapped: false }));
+    icon.position.set(-0.11 * k, 0, front);
+    const num = new THREE.Mesh(new THREE.PlaneGeometry(0.4 * k, 0.4 * k), new THREE.MeshBasicMaterial({ map: numberTexture('0'), transparent: true, depthWrite: false, toneMapped: false }));
+    num.position.set(0.09 * k, 0.005 * k, front);
     icon.renderOrder = num.renderOrder = 3;
     plate.add(icon, num);
     return { gem: plate, num, rim, value: '', color: '' };
@@ -273,12 +273,12 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     g.add(slab, face);
     // Attack and Health on small plates set into the bottom corners: a dark face, a rim in the
     // faction's colour, a sword or a heart and the number.
-    // Plates sized for reading on the table (a little larger than the mockup's).
-    const k = (w / 1.45) * 1.3;
+    // Plates a little under the mockup's size, leaving the picture free.
+    const k = (w / 1.45) * 0.95;
     const atk = makePlate('atk', k);
     const hp = makePlate('hp', k);
-    atk.gem.position.set(-w / 2 + 0.27 * k, -h / 2 + 0.2 * k, CT + 0.022);
-    hp.gem.position.set(w / 2 - 0.27 * k, -h / 2 + 0.2 * k, CT + 0.022);
+    atk.gem.position.set(-w / 2 + 0.3 * k, -h / 2 + 0.22 * k, CT + 0.022);
+    hp.gem.position.set(w / 2 - 0.3 * k, -h / 2 + 0.22 * k, CT + 0.022);
     for (const gm of [atk, hp]) g.add(gm.gem);
     const shadow = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.7, h * 1.6), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
     const ring = new THREE.Mesh(new THREE.PlaneGeometry(w * SNUG.w, h * SNUG.h), new THREE.MeshBasicMaterial({ map: ringTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0, toneMapped: false }));
