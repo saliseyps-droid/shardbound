@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.76.1',
+    date: '2026-10-30',
+    title: 'New walls and a rug',
+    summary: 'Seven new walls and an old Chinese rug for the Lounge.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Lounge: new walls: Castle Walls, Castle Bricks, a Carved Hall with bands of carved wood, Whitewashed Brick, Stone Tiles, Volcanic Stone, and Tavern Panelling (planks up to a wooden rail, plaster above).',
+          'Lounge: the Cloud Rug, a photograph of a real old Chinese rug: blue clouds and a round medallion on gold.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.76.0',
     date: '2026-10-29',
     title: 'The Lounge',

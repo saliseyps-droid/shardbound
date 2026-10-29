@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.76.1': {
+    title: 'Nové zdi a koberec',
+    summary: 'Sedm nových zdí a starý čínský koberec do Lounge.',
+    sections: [
+      [
+        'Lounge: nové zdi: Hradní zdi, Hradní cihly, Vyřezávaná síň s pásy vyřezávaného dřeva, Bílené cihly, Kamenné dlaždice, Sopečný kámen a Hospodský obklad (prkna do výšky dřevěné lišty, nad ní omítka).',
+        'Lounge: Koberec s oblaky, fotografie skutečného starého čínského koberce: modrá oblaka a kulatý medailon na zlaté.',
+      ],
+    ],
+  },
   '0.76.0': {
     title: 'Lounge',
     summary: 'Zařiď si vlastní herní místnost: obklopuje 3D stůl v tvých zápasech.',

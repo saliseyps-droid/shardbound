@@ -76,11 +76,53 @@ const walls = (id: string, metres: number, tint?: string) => (_c: DecorContext, 
   return { root: g };
 };
 
+/**
+ * Panelled walls: one material up to a rail, another above it, and a wooden rail between them (the
+ * strips face into the room, like the walls, so they hide with them when the camera is outside).
+ */
+const panelled = (lower: [string, number, string?], upper: [string, number, string?], rail = '#3a2618') => (_c: DecorContext, bag: Bag): Built => {
+  const g = new THREE.Group();
+  const H = ROOM.wallH;
+  const low = 12;
+  const railMat = scanned(bag, 'weathered_brown_planks', 1, 1, { roughness: 0.7 }, rail);
+  const one = (len: number, x: number, y: number, rot: number) => {
+    const side = new THREE.Group();
+    side.rotation.set(Math.PI / 2, rot, 0);
+    side.position.set(x, y, ROOM.floor);
+    const band = ([id, metres, tint]: [string, number, string?], h: number, z: number) => {
+      const tile = metres * PER_METRE;
+      const m = new THREE.Mesh(bag.keep(new THREE.PlaneGeometry(len, h)), scanned(bag, id, len / tile, h / tile, {}, tint));
+      m.position.y = z + h / 2;
+      m.receiveShadow = true;
+      side.add(m);
+    };
+    band(lower, low, 0);
+    band(upper, H - low, low);
+    const r = new THREE.Mesh(bag.keep(new THREE.PlaneGeometry(len, 1.1)), railMat);
+    r.position.set(0, low, 0.25);
+    side.add(r);
+    g.add(side);
+  };
+  one(ROOM.x * 2, 0, ROOM.y, 0);
+  one(ROOM.x * 2, 0, -ROOM.y, Math.PI);
+  one(ROOM.y * 2, ROOM.x, 0, -Math.PI / 2);
+  one(ROOM.y * 2, -ROOM.x, 0, Math.PI / 2);
+  return { root: g };
+};
+
 export const WALLS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
   w_red_brick: walls('medieval_red_brick', 2),
   w_sandstone: walls('large_sandstone_blocks_01', 3),
   // Black stone: the sandstone blocks, darkened.
   w_black: walls('large_sandstone_blocks_01', 3, '#26242a'),
+  w_castle: walls('castle_wall_slates', 2.5),
+  w_castle_brick: walls('castle_brick_07', 2.5),
+  w_carved: walls('wood_inlaid_stone_wall', 1.3),
+  w_white_brick: walls('whitewashed_brick', 2),
+  w_stone_tile: walls('stone_tile_wall', 2, '#c4bcae'),
+  w_volcanic: walls('volcanic_rock_tiles', 1.8),
+  // Panelled: planks below a rail, plaster above.
+  w_tavern: panelled(['weathered_brown_planks', 1.8], ['plastered_wall_04', 3, '#bfae90']),
 };
 
 // ---------- Rugs: a woven field (a scanned fabric) inside a border, under the table. ----------
@@ -103,6 +145,8 @@ interface RugLook {
   round?: boolean;
   /** Lines that glow (an emissive copy of the pattern), in this colour. */
   glow?: string;
+  /** A photograph of a real rug (public/decor/rugs/<photo>.jpg, standing upright) laid as the whole rug. */
+  photo?: string;
 }
 
 /** Draws a modern pattern over the rug's field (white, for the glowing copy). */
@@ -193,7 +237,15 @@ const rug = (look: RugLook) => (ctx: DecorContext, bag: Bag): Built => {
     const g = c.getContext('2d');
     if (!g) return;
     const tile = look.metres * PER_METRE * (px / W);
-    const pat = g.createPattern(img, 'repeat');
+    const pat = look.photo ? null : g.createPattern(img, 'repeat');
+    if (look.photo) {
+      // The photograph stands upright: turned a quarter to lie along the rug.
+      g.save();
+      g.translate(c.width / 2, c.height / 2);
+      g.rotate(Math.PI / 2);
+      g.drawImage(img, -c.height / 2, -c.width / 2, c.height, c.width);
+      g.restore();
+    }
     if (pat) {
       pat.setTransform(new DOMMatrix().scale(tile / img.width, tile / img.height));
       g.fillStyle = pat;
@@ -263,7 +315,7 @@ const rug = (look: RugLook) => (ctx: DecorContext, bag: Bag): Built => {
     }
     mat.needsUpdate = true;
   };
-  img.src = texUrl(look.fabric, 'diff');
+  img.src = look.photo ? `${import.meta.env.BASE_URL}decor/rugs/${look.photo}.jpg` : texUrl(look.fabric, 'diff');
   bag.keep({ dispose: () => (img.onload = null) });
   // The weave: the fabric's normal map at the same size.
   loader.load(texUrl(look.fabric, 'nor'), (t) => {
@@ -281,4 +333,6 @@ export const RUGS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
   r_shag: rug({ fabric: 'polar_fleece', metres: 1, round: true }),
   r_round: rug({ fabric: 'knitted_fleece', metres: 0.8, round: true, pattern: { kind: 'circles', colors: ['#e8dcc0', '#c86a3a', '#2a4a5a', '#e8b04b'] } }),
   r_corduroy: rug({ fabric: 'ribbed_corduroy', metres: 0.8, pattern: { kind: 'arcs', colors: ['#e8d8b0', '#c8643a', '#2a3a2a'] } }),
+  // An old Chinese rug, photographed (The Metropolitan Museum of Art, public domain), on a woollen weave.
+  r_chinese: rug({ fabric: 'knitted_fleece', metres: 0.5, photo: 'chinese', fringe: '#d8ccb0' }),
 };
