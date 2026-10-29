@@ -105,9 +105,11 @@ export const POSTERS: Record<string, Make> = {
 // ---------- Lights: a pair on the side walls (both the same piece). ----------
 
 /** Where the two lights hang (world), facing into the room. */
+const LIGHT_SIZE = 0.8;
+
 export const LIGHT_SPOTS: { at: THREE.Vector3; face: number }[] = [
-  { at: new THREE.Vector3(-ROOM.x, 0, 8), face: Math.PI / 2 },
-  { at: new THREE.Vector3(ROOM.x, 0, 8), face: -Math.PI / 2 },
+  { at: new THREE.Vector3(-ROOM.x, 0, 12), face: Math.PI / 2 },
+  { at: new THREE.Vector3(ROOM.x, 0, 12), face: -Math.PI / 2 },
 ];
 
 /** One light's look, built facing -y at the wall; returns its light so the pair can flicker. */
@@ -158,6 +160,8 @@ export const LIGHTS: Record<string, Make> = Object.fromEntries(
         const l = look(bag, i * 3.1);
         l.g.position.copy(s.at);
         l.g.rotation.z = s.face;
+        // A little smaller than life: they hang high, out of the way.
+        l.g.scale.setScalar(LIGHT_SIZE);
         root.add(l.g);
         return { ...l, flick: flame(l.light, l.base, i) };
       });

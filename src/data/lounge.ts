@@ -108,7 +108,7 @@ export const DECOR: DecorItem[] = [
   item('poster', 'fantasy', 300)('po_legend', 'Legend Poster', 'The art of a Legendary card, framed.'),
   item('poster', 'fantasy', 700)('po_shield', 'Knight’s Shield', 'A battered kite shield hung on the wall.'),
 
-  item('lights', 'general', 300)('l_lantern', 'Lanterns', 'Metal lanterns with a warm light.'),
+  item('lights', 'base', 0)('l_lantern', 'Lanterns', 'Metal lanterns with a warm light.'),
   item('lights', 'general', 400)('l_wooden_lantern', 'Wooden Lanterns', 'Old wooden lanterns on iron brackets.'),
 
   item('furniture', 'general', 250)('fu_barrels', 'Barrels', 'Old oak barrels stacked in the corner.'),
@@ -153,7 +153,7 @@ export const DECOR: DecorItem[] = [
 
   // Lights and the ceiling.
   item('lights', 'fantasy', 350)('l_wall_lantern', 'Wall Lanterns', 'Iron lanterns fixed to the walls.'),
-  item('lights', 'base', 0)('l_iron_torch', 'Iron Torches', 'Torches in iron cups.'),
+  item('lights', 'general', 250)('l_iron_torch', 'Iron Torches', 'Torches in iron cups.'),
   item('ceiling', 'fantasy', 700)('c_candle_ring', 'Candle Chandelier', 'A great ring of candles on chains.'),
 
   // Paintings: scenes from the campaigns.
@@ -169,7 +169,7 @@ export const DECOR: DecorItem[] = [
   item('floor', 'general', 400)('f_dark_planks', 'Dark Planks', 'Dark, worn planks.'),
 
   // Doors.
-  item('door', 'base', 0)('d_castle', 'Castle Door', 'A heavy wooden door bound with iron.'),
+  item('door', 'fantasy', 600)('d_castle', 'Castle Door', 'A heavy wooden door bound with iron.'),
 
   // Modern.
   item('furniture', 'modern', 700)('fu_modern_chair', 'Modern Armchair', 'Black leather on a light wooden frame.'),
@@ -183,12 +183,12 @@ export const DECOR: DecorItem[] = [
   item('ceiling', 'modern', 450)('c_industrial', 'Industrial Lamp', 'A metal factory lamp.'),
   item('ceiling', 'modern', 600)('c_fan', 'Ceiling Fan', 'A slowly turning fan with a lamp.'),
   item('table', 'modern', 1600)('t_neon', 'Neon Table', 'Black lacquer with a glowing edge.'),
-  item('door', 'modern', 600)('d_walnut', 'Walnut Door', 'A flat walnut door in a steel frame.'),
+  item('door', 'base', 0)('d_walnut', 'Walnut Door', 'A flat walnut door in a steel frame.'),
   item('floor', 'modern', 900)('f_marble', 'Marble', 'Smooth pale marble.'),
   item('floor', 'modern', 600)('f_checker', 'Checkered Tiles', 'Black and white tiles.'),
   item('rug', 'modern', 450)('r_shag', 'Round Shag Rug', 'A round, soft cream rug.'),
   item('rug', 'modern', 500)('r_round', 'Round Circles Rug', 'A round rug of coloured rings.'),
-  item('rug', 'base', 0)('r_corduroy', 'Corduroy Rug', 'Green corduroy with sweeping arcs.'),
+  item('rug', 'modern', 450)('r_corduroy', 'Corduroy Rug', 'Green corduroy with sweeping arcs.'),
   // Neon.
   item('poster', 'neon', 600)('po_neon_heart', 'Neon Heart', 'A pink neon heart.'),
   item('poster', 'neon', 600)('po_neon_bolt', 'Neon Bolt', 'A yellow neon lightning bolt.'),
@@ -212,23 +212,23 @@ export const DEFAULT_ROOM: RoomLayout = {
   table: 't_tavern',
   tableLeft: null,
   tableRight: null,
-  rug: 'r_corduroy',
+  rug: null,
   floor: 'f_dark_checker',
   walls: 'w_black',
   painting: null,
   posterLeft: null,
   posterRight: null,
-  lights: 'l_iron_torch',
+  lights: 'l_lantern',
   furnBackLeft: null,
   furnBackRight: null,
   furnLeft: null,
   furnRight: null,
   ceiling: null,
-  door: 'd_castle',
+  door: 'd_walnut',
 };
 
 /** Slots that can be left empty (the others always hold a piece: a room needs a table, a floor…). */
-export const OPTIONAL_KINDS: ReadonlySet<DecorKind> = new Set(['trinket', 'painting', 'poster', 'furniture', 'ceiling']);
+export const OPTIONAL_KINDS: ReadonlySet<DecorKind> = new Set(['trinket', 'rug', 'painting', 'poster', 'furniture', 'ceiling']);
 
 export const decorFor = (slot: SlotId) => DECOR.filter((d) => d.kind === SLOT_KIND[slot]);
 

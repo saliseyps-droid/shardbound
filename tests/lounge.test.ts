@@ -59,7 +59,7 @@ describe('sanitizeRoom', () => {
     expect(room.furnRight).toBeNull();
   });
 
-  it('empties optional slots but never the table, floor, walls, rug or lights', () => {
+  it('empties optional slots but never the table, floor, walls or lights', () => {
     const room = sanitizeRoom({ painting: null, table: null, lights: null });
     expect(room.painting).toBeNull();
     expect(room.table).toBe('t_tavern');
