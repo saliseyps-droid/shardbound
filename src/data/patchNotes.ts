@@ -19,6 +19,22 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.76.2',
+    date: '2026-10-30',
+    title: 'Modern rooms',
+    summary: 'Modern walls and rugs for the Lounge.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Lounge: modern walls: Concrete, Black Tiles, Wood Slats, White Panels, Mosaic, Long Brick, Grey Brick, a Green Wainscot (white panels below a rail, deep green above) and a Loft (wood slats below, concrete above).',
+          'Lounge: modern rugs: a Teddy Plaid Rug, a Red Velvet Rug with a gold line, a Teal Suede Rug and a grey Herringbone Rug.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.76.1',
     date: '2026-10-30',
     title: 'New walls and a rug',

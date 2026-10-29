@@ -123,6 +123,17 @@ export const WALLS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
   w_volcanic: walls('volcanic_rock_tiles', 1.8),
   // Panelled: planks below a rail, plaster above.
   w_tavern: panelled(['weathered_brown_planks', 1.8], ['plastered_wall_04', 3, '#bfae90']),
+  // Modern.
+  w_concrete: walls('concrete_slab_wall', 2.3),
+  w_black_tiles: walls('concrete_tile_facade', 2.1),
+  w_slats: walls('synthetic_wood', 2),
+  w_white_panels: walls('white_planks_clean', 1.8),
+  w_mosaic: walls('rounded_square_tiled_wall', 2),
+  w_long_brick: walls('exterior_wall_cladding_02', 2),
+  w_grey_brick: walls('brick_wall_13', 2),
+  // White panels below a white rail, deep green plaster above; wood slats below, concrete above.
+  w_green: panelled(['white_planks_clean', 1.8], ['painted_plaster_wall', 2, '#3e5a4a'], '#d8d4cc'),
+  w_loft: panelled(['synthetic_wood', 2], ['concrete_slab_wall', 2.3], '#1a1a1c'),
 };
 
 // ---------- Rugs: a woven field (a scanned fabric) inside a border, under the table. ----------
@@ -334,5 +345,10 @@ export const RUGS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
   r_round: rug({ fabric: 'knitted_fleece', metres: 0.8, round: true, pattern: { kind: 'circles', colors: ['#e8dcc0', '#c86a3a', '#2a4a5a', '#e8b04b'] } }),
   r_corduroy: rug({ fabric: 'ribbed_corduroy', metres: 0.8, pattern: { kind: 'arcs', colors: ['#e8d8b0', '#c8643a', '#2a3a2a'] } }),
   // An old Chinese rug, photographed (The Metropolitan Museum of Art, public domain), on a woollen weave.
+  // Modern: soft fabrics edged with a plain band.
+  r_teddy: rug({ fabric: 'curly_teddy_checkered', metres: 0.9 }),
+  r_velvet: rug({ fabric: 'velour_velvet', metres: 0.5, tint: 'rgba(40,0,8,.45)', band: '#1e1416', line: '#c8a050' }),
+  r_teal: rug({ fabric: 'scuba_suede', metres: 0.5, tint: 'rgba(0,16,24,.3)', band: '#e8dcc0' }),
+  r_herringbone: rug({ fabric: 'poly_wool_herringbone', metres: 1, band: '#16161a' }),
   r_chinese: rug({ fabric: 'knitted_fleece', metres: 0.5, photo: 'chinese', fringe: '#d8ccb0' }),
 };

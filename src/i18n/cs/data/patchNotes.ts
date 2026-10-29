@@ -1,6 +1,16 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.76.2': {
+    title: 'Moderní místnosti',
+    summary: 'Moderní zdi a koberce do Lounge.',
+    sections: [
+      [
+        'Lounge: moderní zdi: Beton, Černé obklady, Dřevěné lamely, Bílé panely, Mozaika, Dlouhé cihly, Šedé cihly, Zelený obklad (dole bílé panely, lišta, nahoře sytě zelená) a Loft (dole dřevěné lamely, nahoře beton).',
+        'Lounge: moderní koberce: Plyšový kostkovaný koberec, Červený sametový koberec se zlatou linkou, Tyrkysový semišový koberec a šedý Koberec rybí kost.',
+      ],
+    ],
+  },
   '0.76.1': {
     title: 'Nové zdi a koberec',
     summary: 'Sedm nových zdí a starý čínský koberec do Lounge.',
