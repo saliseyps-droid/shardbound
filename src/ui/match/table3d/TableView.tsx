@@ -129,7 +129,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', room = nu
     const bodies = createBodies(table.scene, effects, env);
     // Dev server only: lets a browser check fire effects on demand.
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 600);
-    if (import.meta.env.DEV) Object.assign(window, { __table3d: { useMatch, useSettings, scene: table.scene, camera } });
+    if (import.meta.env.DEV) Object.assign(window, { __table3d: { useMatch, useSettings, scene: table.scene, camera, renderer, decor: table.decor } });
     planeRef.current!.style.transform = planeCss();
     if (handRef.current) handRef.current.style.transform = handCss();
 
