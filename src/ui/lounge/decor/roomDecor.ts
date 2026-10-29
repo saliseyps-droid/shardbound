@@ -20,6 +20,7 @@ import { FURNITURE } from './furniture';
 import { CEILINGS } from './ceiling';
 import { TRINKETS } from './trinkets';
 import { DOORS } from './doors';
+import { ROOFS } from './roofs';
 import { NEON_CEILINGS, NEON_LIGHTS, NEON_SIGNS } from './neon';
 
 /**
@@ -28,7 +29,7 @@ import { NEON_CEILINGS, NEON_LIGHTS, NEON_SIGNS } from './neon';
  */
 
 type Make = (ctx: DecorContext, bag: Bag) => Built;
-const BUILDERS: Record<string, Make> = { ...TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS, ...DOORS, ...NEON_SIGNS, ...NEON_LIGHTS, ...NEON_CEILINGS };
+const BUILDERS: Record<string, Make> = { ...TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS, ...DOORS, ...ROOFS, ...NEON_SIGNS, ...NEON_LIGHTS, ...NEON_CEILINGS };
 
 /** Every catalogue id has a builder (checked by a test). */
 export const hasBuilder = (id: string) => id in BUILDERS;
@@ -78,6 +79,7 @@ export const SLOT_ANCHOR: Record<SlotId, THREE.Vector3> = {
   furnRight: new THREE.Vector3(ROOM.x - 5, -14, ROOM.floor + 15),
   door: new THREE.Vector3(0, -ROOM.y + 1, ROOM.floor + 14),
   ceiling: new THREE.Vector3(0, 0, 19),
+  roof: new THREE.Vector3(-16, 12, ROOM.floor + ROOM.wallH - 0.4),
 };
 
 /** Pictures the paintings and posters may hang. */

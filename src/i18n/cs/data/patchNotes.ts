@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.76.3': {
+    title: 'Strop plný hvězd',
+    summary: 'Herní místnost má strop a můžeš ho vymalovat noční oblohou.',
+    sections: [
+      [
+        'Lounge: místnost má teď strop, nové místo k zařízení. Každá místnost začíná s prostým černým; dokoupit můžeš Prkenný strop, Hvězdnou oblohu, Souhvězdí, Mlhovinu, Polární záři nebo Planety s prstencovým obrem.',
+        'Lounge: Černé obklady jsou teď zdi, se kterými začíná každá místnost, zdarma pro všechny.',
+      ],
+      ['Lounge: místo pro lustr nebo lampu se jmenuje Stropní světlo.'],
+    ],
+  },
   '0.76.2': {
     title: 'Moderní místnosti',
     summary: 'Moderní zdi a koberce do Lounge.',

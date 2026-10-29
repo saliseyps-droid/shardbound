@@ -4,7 +4,7 @@
  * the 3D table (against the AI the player's own, online the host's).
  */
 
-export type DecorKind = 'table' | 'trinket' | 'rug' | 'floor' | 'walls' | 'painting' | 'poster' | 'lights' | 'furniture' | 'ceiling' | 'door';
+export type DecorKind = 'table' | 'trinket' | 'rug' | 'floor' | 'walls' | 'painting' | 'poster' | 'lights' | 'furniture' | 'ceiling' | 'door' | 'roof';
 export type DecorStyle = 'base' | 'general' | 'fantasy' | 'faction' | 'arcade' | 'modern' | 'neon';
 
 export const SLOTS = [
@@ -24,6 +24,7 @@ export const SLOTS = [
   'furnRight',
   'ceiling',
   'door',
+  'roof',
 ] as const;
 export type SlotId = (typeof SLOTS)[number];
 
@@ -44,6 +45,7 @@ export const SLOT_KIND: Record<SlotId, DecorKind> = {
   furnRight: 'furniture',
   ceiling: 'ceiling',
   door: 'door',
+  roof: 'roof',
 };
 
 export const SLOT_NAME: Record<SlotId, string> = {
@@ -61,8 +63,9 @@ export const SLOT_NAME: Record<SlotId, string> = {
   furnBackRight: 'Back wall, right',
   furnLeft: 'Left wall',
   furnRight: 'Right wall',
-  ceiling: 'Ceiling',
+  ceiling: 'Ceiling light',
   door: 'Door',
+  roof: 'Ceiling',
 };
 
 export interface DecorItem {
@@ -198,7 +201,7 @@ export const DECOR: DecorItem[] = [
   item('walls', 'faction', 900)('w_volcanic', 'Volcanic Stone', 'A mosaic of dark lava rock.'),
   item('walls', 'general', 900)('w_tavern', 'Tavern Panelling', 'Planks to the rail, white plaster above.'),
   item('walls', 'modern', 650)('w_concrete', 'Concrete', 'Smooth cast concrete.'),
-  item('walls', 'modern', 800)('w_black_tiles', 'Black Tiles', 'Large matte black tiles.'),
+  item('walls', 'base', 0)('w_black_tiles', 'Black Tiles', 'Large matte black tiles.'),
   item('walls', 'modern', 850)('w_slats', 'Wood Slats', 'Warm vertical wooden slats.'),
   item('walls', 'modern', 600)('w_white_panels', 'White Panels', 'Clean white wall panels.'),
   item('walls', 'modern', 700)('w_mosaic', 'Mosaic', 'Small grey tiles with rounded corners.'),
@@ -222,6 +225,14 @@ export const DECOR: DecorItem[] = [
   item('lights', 'neon', 800)('l_neon_cyan', 'Cyan Neon Strips', 'Cyan light along the walls.'),
   item('lights', 'neon', 800)('l_neon_purple', 'Purple Neon Strips', 'Purple light along the walls.'),
   item('ceiling', 'neon', 900)('c_neon_ring', 'Neon Rings', 'Two glowing rings above the table.'),
+  // The ceiling itself.
+  item('roof', 'base', 0)('rf_black', 'Black Ceiling', 'A plain dark ceiling.'),
+  item('roof', 'general', 400)('rf_planks', 'Plank Ceiling', 'Dark wooden planks overhead.'),
+  item('roof', 'fantasy', 600)('rf_stars', 'Starry Sky', 'A night sky full of stars.'),
+  item('roof', 'fantasy', 900)('rf_constellations', 'Constellations', 'Stars joined into golden figures.'),
+  item('roof', 'fantasy', 1100)('rf_nebula', 'Nebula', 'Glowing clouds of violet and blue among the stars.'),
+  item('roof', 'fantasy', 1200)('rf_aurora', 'Aurora', 'Green and violet lights rippling across the night.'),
+  item('roof', 'fantasy', 1400)('rf_planets', 'Planets', 'A ringed giant, a red world and a moon among the stars.'),
 ];
 
 export const DECOR_BY_ID: Record<string, DecorItem> = Object.fromEntries(DECOR.map((d) => [d.id, d]));
@@ -235,7 +246,7 @@ export const DEFAULT_ROOM: RoomLayout = {
   tableRight: null,
   rug: null,
   floor: 'f_dark_checker',
-  walls: 'w_black',
+  walls: 'w_black_tiles',
   painting: null,
   posterLeft: null,
   posterRight: null,
@@ -246,6 +257,7 @@ export const DEFAULT_ROOM: RoomLayout = {
   furnRight: null,
   ceiling: null,
   door: 'd_walnut',
+  roof: 'rf_black',
 };
 
 /** Slots that can be left empty (the others always hold a piece: a room needs a table, a floor…). */

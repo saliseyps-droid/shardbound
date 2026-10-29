@@ -19,6 +19,26 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.76.3',
+    date: '2026-10-30',
+    title: 'A ceiling of stars',
+    summary: 'The game room has a ceiling, and you can paint it with the night sky.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Lounge: the room has a ceiling now, a new place to furnish. Every room starts with a plain black one; buy a Plank Ceiling, a Starry Sky, Constellations, a Nebula, an Aurora or Planets with a ringed giant.',
+          'Lounge: Black Tiles are the walls every room starts with now, free for everyone.',
+        ],
+      },
+      {
+        kind: 'improved',
+        items: ['Lounge: the place for a chandelier or lamp is called Ceiling light.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.76.2',
     date: '2026-10-30',
     title: 'Modern rooms',
