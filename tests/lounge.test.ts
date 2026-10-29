@@ -93,7 +93,7 @@ describe('room decor builders', () => {
       for (const d of DECOR) {
         const slot = SLOTS.find((s) => SLOT_KIND[s] === d.kind)!;
         const scene = new THREE.Scene();
-        const room = buildRoomDecor(scene, { ...DEFAULT_ROOM, [slot]: d.id }, { tableW: 20, tableH: 12.6, art: () => undefined });
+        const room = buildRoomDecor(scene, { ...DEFAULT_ROOM, [slot]: d.id }, { tableW: 26.2, tableH: 12.6, art: () => undefined });
         room.update(1, 0.016);
         room.dispose();
       }

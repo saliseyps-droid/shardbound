@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { MAT, MAT_ART } from './tableCamera';
 import { sanitizeRoom } from '@/data/lounge';
 import { buildRoomDecor, decorArt, type RoomDecor } from '@/ui/lounge/decor/roomDecor';
+import { TABLE_SIZE } from '@/ui/lounge/decor/kit';
 
 /**
  * The room around the 3D table (WebGL): the player's (or host's) room from the Lounge, the match's
@@ -90,7 +91,7 @@ export function buildTableScene(boardUrl: string, warm: string, room?: unknown, 
   // The room and its furniture: the table, floor, walls, rug, lights… from the room layout (Lounge).
   const W = MAT.w * MAT_ART;
   const H = MAT.h * MAT_ART;
-  const decor = buildRoomDecor(scene, sanitizeRoom(room), { tableW: W + 2.6, tableH: H + 2.6, portraitUrl, art: decorArt });
+  const decor = buildRoomDecor(scene, sanitizeRoom(room), { tableW: TABLE_SIZE.w, tableH: TABLE_SIZE.h, portraitUrl, art: decorArt });
 
   // The mat: the board image with its relief, a thin dark edge.
   const matMat = keep(new THREE.MeshStandardMaterial({ roughness: 0.78, metalness: 0.05 }));

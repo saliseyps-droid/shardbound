@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { MAT, MAT_ART } from '@/ui/match/table3d/tableCamera';
 
 /**
  * Shared bits for the room's decor (Lounge and the 3D table): the room's size, canvas textures,
@@ -7,6 +8,14 @@ import * as THREE from 'three';
 
 /** The room (table scene units, z up): the floor's height, half its width and depth, the walls' height. */
 export const ROOM = { floor: -9, x: 36, y: 30, wallH: 34 } as const;
+
+/**
+ * The tabletop: the board (mat) plus a rim, wider at the sides so the small things beside the board
+ * (trinkets) have room. The board itself keeps its size.
+ */
+export const TABLE_SIZE = { w: MAT.w * MAT_ART + 8.6, h: MAT.h * MAT_ART + 2.6 };
+/** Where the trinkets stand: halfway between the board's edge and the table's. */
+export const TRINKET_X = (MAT.w * MAT_ART) / 2 + (TABLE_SIZE.w - MAT.w * MAT_ART) / 4;
 
 /** One built piece of decor: its objects, a per-frame animation, and what to free. */
 export interface Piece {
