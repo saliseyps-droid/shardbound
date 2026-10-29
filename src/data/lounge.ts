@@ -84,6 +84,11 @@ export const DECOR: DecorItem[] = [
   item('table', 'base', 0)('t_tavern', 'Tavern Table', 'Planks on turned legs: the table every Warden starts with.'),
   item('table', 'faction', 1500)('t_cinder', 'Cinder Forge', 'Obsidian split by glowing seams of lava.'),
   item('table', 'faction', 1500)('t_hollow', 'Bone Table', 'Pale bones with a violet glow beneath the top.'),
+  item('table', 'general', 600)('t_trestle', 'Trestle Table', 'Thick planks on crossed trestles.'),
+  item('table', 'general', 1200)('t_poker', 'Card Table', 'Green baize in a padded rail: the oval of a card club.'),
+  item('table', 'modern', 1400)('t_octagon', 'Marble Octagon', 'White marble cut into an octagon, edged in brass.'),
+  item('table', 'fantasy', 1600)('t_rune', 'Rune Table', 'A long hexagon of slate with glowing golden runes.'),
+  item('table', 'fantasy', 2000)('t_altar', 'Stone Altar', 'A thick slab on a carved stone plinth.'),
 
   item('trinket', 'general', 200)('tr_goblets', 'Brass Goblets', 'A pair of brass goblets.'),
   item('trinket', 'general', 200)('tr_vase', 'Ceramic Vase', 'An old painted vase.'),

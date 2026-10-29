@@ -21,6 +21,7 @@ import { CEILINGS } from './ceiling';
 import { TRINKETS } from './trinkets';
 import { DOORS } from './doors';
 import { ROOFS } from './roofs';
+import { SHAPED_TABLES } from './shapedTables';
 import { NEON_CEILINGS, NEON_LIGHTS, NEON_SIGNS } from './neon';
 
 /**
@@ -29,7 +30,7 @@ import { NEON_CEILINGS, NEON_LIGHTS, NEON_SIGNS } from './neon';
  */
 
 type Make = (ctx: DecorContext, bag: Bag) => Built;
-const BUILDERS: Record<string, Make> = { ...TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS, ...DOORS, ...ROOFS, ...NEON_SIGNS, ...NEON_LIGHTS, ...NEON_CEILINGS };
+const BUILDERS: Record<string, Make> = { ...TABLES, ...SHAPED_TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS, ...DOORS, ...ROOFS, ...NEON_SIGNS, ...NEON_LIGHTS, ...NEON_CEILINGS };
 
 /** Every catalogue id has a builder (checked by a test). */
 export const hasBuilder = (id: string) => id in BUILDERS;

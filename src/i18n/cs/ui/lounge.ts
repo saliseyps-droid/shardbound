@@ -580,5 +580,15 @@ const d: Record<string, string> = {
   'Glowing clouds of violet and blue among the stars.': 'Zářící fialová a modrá oblaka mezi hvězdami.',
   'Green and violet lights rippling across the night.': 'Zelená a fialová světla vlnící se nocí.',
   'A ringed giant, a red world and a moon among the stars.': 'Obr s prstenci, rudý svět a měsíc mezi hvězdami.',
+  'Trestle Table': 'Kozlíkový stůl',
+  'Thick planks on crossed trestles.': 'Silná prkna na zkřížených kozlících.',
+  'Card Table': 'Karetní stůl',
+  'Green baize in a padded rail: the oval of a card club.': 'Zelené sukno v polstrovaném lemu: ovál karetního klubu.',
+  'Marble Octagon': 'Mramorový osmiúhelník',
+  'White marble cut into an octagon, edged in brass.': 'Bílý mramor vybroušený do osmiúhelníku s mosaznou hranou.',
+  'Rune Table': 'Runový stůl',
+  'A long hexagon of slate with glowing golden runes.': 'Dlouhý břidlicový šestiúhelník se zářícími zlatými runami.',
+  'Stone Altar': 'Kamenný oltář',
+  'A thick slab on a carved stone plinth.': 'Masivní deska na vytesaném kamenném podstavci.',
 };
 export default d;

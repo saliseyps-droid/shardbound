@@ -1,6 +1,15 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.76.4': {
+    title: 'Stoly všech tvarů',
+    summary: 'Pět nových stolů do Lounge v nových tvarech.',
+    sections: [
+      [
+        'Lounge: nové stoly: Kozlíkový stůl, oválný Karetní stůl ze zeleného sukna v polstrovaném lemu, Mramorový osmiúhelník s mosaznou hranou, protáhlý šestiúhelníkový Runový stůl se zářícími zlatými runami po celém okraji a Kamenný oltář na vytesaném podstavci.',
+      ],
+    ],
+  },
   '0.76.3': {
     title: 'Strop plný hvězd',
     summary: 'Herní místnost má strop a můžeš ho vymalovat noční oblohou.',

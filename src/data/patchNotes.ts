@@ -19,6 +19,21 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.76.4',
+    date: '2026-10-30',
+    title: 'Tables of every shape',
+    summary: 'Five new tables for the Lounge, in new shapes.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Lounge: new tables: a Trestle Table, an oval Card Table of green baize in a padded rail, a Marble Octagon edged in brass, a long hexagonal Rune Table with glowing golden runes all around its edge, and a Stone Altar on a carved plinth.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.76.3',
     date: '2026-10-30',
     title: 'A ceiling of stars',
