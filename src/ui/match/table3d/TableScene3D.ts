@@ -1,9 +1,11 @@
 import * as THREE from 'three';
 import { MAT, MAT_ART } from './tableCamera';
+import { sanitizeRoom } from '@/data/lounge';
+import { buildRoomDecor, decorArt, type RoomDecor } from '@/ui/lounge/decor/roomDecor';
 
 /**
- * The room around the 3D table (WebGL): a stone floor, a wooden table on turned legs, the match's
- * board lying on it as a mat with relief (a normal map from the image's brightness), a hanging
+ * The room around the 3D table (WebGL): the player's (or host's) room from the Lounge, the match's
+ * board lying on the table as a mat with relief (a normal map from the image's brightness), a hanging
  * lantern and two flickering candles (no light follows the pointer: its glare on the board made the
  * cards and the painting harder to read). The camera is owned by
  * TableView; this only builds and animates the scene.
@@ -12,82 +14,17 @@ export interface TableScene {
   scene: THREE.Scene;
   /** The mat mesh (for picking the point under the pointer). */
   mat: THREE.Mesh;
+  /** The room's decor (the Lounge swaps single pieces in it). */
+  decor: RoomDecor;
   update(t: number, dt: number): void;
   dispose(): void;
 }
 
-function canvasTexture(w: number, h: number, draw: (g: CanvasRenderingContext2D) => void): THREE.CanvasTexture {
-  const c = document.createElement('canvas');
-  c.width = w;
-  c.height = h;
-  draw(c.getContext('2d')!);
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  return t;
-}
 
-const woodTexture = (base: string, dark: string) => {
-  const t = canvasTexture(1024, 256, (g) => {
-    g.fillStyle = base;
-    g.fillRect(0, 0, 1024, 256);
-    for (let i = 0; i < 160; i++) {
-      const y = Math.random() * 256;
-      g.strokeStyle = `rgba(${dark},${0.08 + Math.random() * 0.22})`;
-      g.lineWidth = 0.6 + Math.random() * 2.4;
-      g.beginPath();
-      g.moveTo(0, y);
-      for (let x = 0; x <= 1024; x += 32) g.lineTo(x, y + Math.sin(x * 0.01 + i) * 3 + (Math.random() - 0.5) * 2);
-      g.stroke();
-    }
-  });
-  t.wrapS = t.wrapT = THREE.RepeatWrapping;
-  return t;
-};
 
 /** Normal maps already made, by board image (making one takes a moment; every 2D→3D switch would redo it). */
 const normalCache = new Map<string, HTMLCanvasElement>();
 
-/** A tabletop of planks running along the table: grain, a few knots, dark seams between the boards. */
-const plankTexture = () => {
-  const t = canvasTexture(1024, 1024, (g) => {
-    const planks = 6;
-    const ph = 1024 / planks;
-    for (let p = 0; p < planks; p++) {
-      const y0 = p * ph;
-      const v = 0.85 + Math.random() * 0.3;
-      g.fillStyle = `rgb(${Math.round(92 * v)},${Math.round(60 * v)},${Math.round(36 * v)})`;
-      g.fillRect(0, y0, 1024, ph);
-      // Grain: long wavy lines along the plank.
-      for (let i = 0; i < 40; i++) {
-        const y = y0 + Math.random() * ph;
-        g.strokeStyle = `rgba(30,16,6,${0.06 + Math.random() * 0.16})`;
-        g.lineWidth = 0.6 + Math.random() * 2;
-        g.beginPath();
-        g.moveTo(0, y);
-        for (let x = 0; x <= 1024; x += 32) g.lineTo(x, y + Math.sin(x * 0.006 + i + p) * 2.5);
-        g.stroke();
-      }
-      // A knot or two.
-      for (let k = 0; k < 1 + Math.floor(Math.random() * 2); k++) {
-        const x = Math.random() * 1024;
-        const y = y0 + ph * (0.3 + Math.random() * 0.4);
-        for (let r = 3; r > 0; r--) {
-          g.strokeStyle = `rgba(30,16,6,${0.25 + r * 0.08})`;
-          g.lineWidth = 2;
-          g.beginPath();
-          g.ellipse(x, y, 10 * r, 4 * r, 0, 0, Math.PI * 2);
-          g.stroke();
-        }
-      }
-      // The seam to the next plank.
-      g.fillStyle = 'rgba(20,10,4,.85)';
-      g.fillRect(0, y0 + ph - 3, 1024, 3);
-    }
-  });
-  t.wrapS = t.wrapT = THREE.RepeatWrapping;
-  t.anisotropy = 8;
-  return t;
-};
 
 /** Bright = raised, dark = sunken: a normal map from the board image, so its carving catches the light. */
 function normalMapFrom(img: HTMLImageElement): HTMLCanvasElement {
@@ -122,7 +59,7 @@ function normalMapFrom(img: HTMLImageElement): HTMLCanvasElement {
   return c;
 }
 
-export function buildTableScene(boardUrl: string, warm: string): TableScene {
+export function buildTableScene(boardUrl: string, warm: string, room?: unknown, portraitUrl?: string): TableScene {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#0c0910');
   // Far enough that the room stays visible when zoomed out to see it.
@@ -150,147 +87,10 @@ export function buildTableScene(boardUrl: string, warm: string): TableScene {
     return l;
   });
 
-  // The table: a thick rounded top, an apron, four turned legs; a stone floor below.
+  // The room and its furniture: the table, floor, walls, rug, lights… from the room layout (Lounge).
   const W = MAT.w * MAT_ART;
   const H = MAT.h * MAT_ART;
-  // The top: planks along the table (one texture spans 12 × 8 units); the edges a plainer wood, so the
-  // grain doesn't stretch into streaks down the sides.
-  const topWood = keep(new THREE.MeshStandardMaterial({ map: keep(plankTexture()), roughness: 0.62, metalness: 0.02 }));
-  topWood.map!.repeat.set(1 / 12, 1 / 8);
-  const edgeWood = keep(new THREE.MeshStandardMaterial({ map: keep(woodTexture('#4a2f1b', '25,12,4')), roughness: 0.7 }));
-  edgeWood.map!.repeat.set(0.08, 1.2);
-  const TW = W + 2.6;
-  const TH = H + 2.6;
-  const TD = 0.7;
-  const shape = new THREE.Shape();
-  {
-    const r = 0.5;
-    const a = TW / 2;
-    const b = TH / 2;
-    shape.moveTo(-a + r, -b);
-    shape.lineTo(a - r, -b);
-    shape.quadraticCurveTo(a, -b, a, -b + r);
-    shape.lineTo(a, b - r);
-    shape.quadraticCurveTo(a, b, a - r, b);
-    shape.lineTo(-a + r, b);
-    shape.quadraticCurveTo(-a, b, -a, b - r);
-    shape.lineTo(-a, -b + r);
-    shape.quadraticCurveTo(-a, -b, -a + r, -b);
-  }
-  const top = new THREE.Mesh(keep(new THREE.ExtrudeGeometry(shape, { depth: TD, bevelEnabled: true, bevelThickness: 0.12, bevelSize: 0.14, bevelSegments: 4 })), [topWood, edgeWood]);
-  top.position.z = -TD - 0.12;
-  top.castShadow = top.receiveShadow = true;
-  scene.add(top);
-  const legWood = keep(new THREE.MeshStandardMaterial({ map: keep(woodTexture('#3a2414', '15,8,3')), roughness: 0.7 }));
-  const apron = new THREE.Mesh(keep(new THREE.BoxGeometry(TW - 1.6, TH - 1.6, 0.9)), legWood);
-  apron.position.z = -TD - 0.55;
-  scene.add(apron);
-  const legPts = [[0.42, 0], [0.42, 0.5], [0.3, 0.8], [0.36, 1.4], [0.24, 2.4], [0.3, 4.8], [0.2, 6.4], [0.34, 7.2], [0.34, 7.8], [0, 7.8]].map(([r, y]) => new THREE.Vector2(r, -y));
-  const legGeo = keep(new THREE.LatheGeometry(legPts, 24));
-  legGeo.rotateX(Math.PI / 2);
-  for (const [x, y] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
-    const l = new THREE.Mesh(legGeo, legWood);
-    l.position.set(x * (TW / 2 - 1.1), y * (TH / 2 - 1.1), -TD - 0.2);
-    l.castShadow = true;
-    scene.add(l);
-  }
-  const floorTex = keep(
-    canvasTexture(512, 512, (g) => {
-      g.fillStyle = '#2b2530';
-      g.fillRect(0, 0, 512, 512);
-      for (let i = 0; i < 4; i++)
-        for (let j = 0; j < 4; j++) {
-          const v = 34 + Math.random() * 14;
-          g.fillStyle = `rgb(${v},${v - 4},${v + 4})`;
-          g.fillRect(i * 128 + 3, j * 128 + 3, 122, 122);
-        }
-    }),
-  );
-  floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping;
-  floorTex.repeat.set(10, 10);
-  const floor = new THREE.Mesh(keep(new THREE.PlaneGeometry(160, 160)), keep(new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.95 })));
-  floor.position.z = -9;
-  floor.receiveShadow = true;
-  scene.add(floor);
-
-  // The room: stone walls all around, a rug under the table, two torches on the walls.
-  const ROOM_X = 36;
-  const ROOM_Y = 30;
-  const WALL_H = 34;
-  const wallTex = keep(
-    canvasTexture(512, 512, (g) => {
-      g.fillStyle = '#211a22';
-      g.fillRect(0, 0, 512, 512);
-      // Rough stone blocks in staggered courses.
-      for (let row = 0; row < 8; row++)
-        for (let col = -1; col < 5; col++) {
-          const v = 44 + Math.random() * 18;
-          g.fillStyle = `rgb(${v},${v - 6},${v - 2})`;
-          const x = col * 128 + (row % 2) * 64 + 3;
-          g.fillRect(x, row * 64 + 3, 122, 58);
-        }
-    }),
-  );
-  wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
-  const wallMat = keep(new THREE.MeshStandardMaterial({ map: wallTex, roughness: 0.95 }));
-  const wall = (len: number, x: number, y: number, rot: number) => {
-    const g = keep(new THREE.PlaneGeometry(len, WALL_H));
-    const m = new THREE.Mesh(g, wallMat.clone());
-    (m.material as THREE.MeshStandardMaterial).map = wallTex.clone();
-    (m.material as THREE.MeshStandardMaterial).map!.repeat.set(len / 8, WALL_H / 8);
-    (m.material as THREE.MeshStandardMaterial).map!.needsUpdate = true;
-    keep(m.material as THREE.Material);
-    keep((m.material as THREE.MeshStandardMaterial).map!);
-    // Stand it up on the floor, facing into the room.
-    m.rotation.set(Math.PI / 2, rot, 0);
-    m.position.set(x, y, -9 + WALL_H / 2);
-    m.receiveShadow = true;
-    scene.add(m);
-  };
-  wall(ROOM_X * 2, 0, ROOM_Y, 0);
-  wall(ROOM_X * 2, 0, -ROOM_Y, Math.PI);
-  wall(ROOM_Y * 2, ROOM_X, 0, -Math.PI / 2);
-  wall(ROOM_Y * 2, -ROOM_X, 0, Math.PI / 2);
-  const rug = new THREE.Mesh(
-    keep(new THREE.PlaneGeometry(W + 14, H + 12)),
-    keep(
-      new THREE.MeshStandardMaterial({
-        map: keep(
-          canvasTexture(512, 512, (g) => {
-            // An old, worn rug: deep wine with a faded gold border.
-            g.fillStyle = '#2e0e12';
-            g.fillRect(0, 0, 512, 512);
-            g.strokeStyle = '#6e5124';
-            g.lineWidth = 8;
-            g.strokeRect(22, 22, 468, 468);
-            g.lineWidth = 3;
-            g.strokeRect(44, 44, 424, 424);
-            g.fillStyle = '#3a1418';
-            g.fillRect(58, 58, 396, 396);
-          }),
-        ),
-        roughness: 1,
-      }),
-    ),
-  );
-  rug.position.z = -8.98;
-  rug.receiveShadow = true;
-  scene.add(rug);
-  const torches = [
-    [-ROOM_X + 0.6, 8],
-    [ROOM_X - 0.6, -8],
-  ].map(([x, y]) => {
-    const holder = new THREE.Mesh(keep(new THREE.CylinderGeometry(0.25, 0.15, 2.2, 8)), keep(new THREE.MeshStandardMaterial({ color: '#3a2a1a', metalness: 0.6, roughness: 0.5 })));
-    holder.rotation.x = Math.PI / 2;
-    holder.position.set(x, y, 8);
-    const flame = new THREE.Mesh(keep(new THREE.SphereGeometry(0.45, 12, 8)), keep(new THREE.MeshBasicMaterial({ color: '#ffb35a', toneMapped: false })));
-    flame.scale.set(1, 1, 1.6);
-    flame.position.set(x, y, 9.5);
-    const light = new THREE.PointLight(0xffa64a, 30, 45, 1.6);
-    light.position.set(x + Math.sign(-x) * 1.5, y, 10);
-    scene.add(holder, flame, light);
-    return light;
-  });
+  const decor = buildRoomDecor(scene, sanitizeRoom(room), { tableW: W + 2.6, tableH: H + 2.6, portraitUrl, art: decorArt });
 
   // The mat: the board image with its relief, a thin dark edge.
   const matMat = keep(new THREE.MeshStandardMaterial({ roughness: 0.78, metalness: 0.05 }));
@@ -325,14 +125,16 @@ export function buildTableScene(boardUrl: string, warm: string): TableScene {
   return {
     scene,
     mat,
-    update(t) {
-      torches.forEach((l, i) => (l.intensity = 28 + Math.sin(t * 9 + i * 4) * 3 + Math.sin(t * 17 + i) * 2));
+    decor,
+    update(t, dt) {
+      decor.update(t, dt);
       candles.forEach((l, i) => (l.intensity = 9 + Math.sin(t * 11 + i * 3) * 1.4 + Math.sin(t * 23 + i) * 1 + Math.sin(t * 3.1 + i * 2) * 1.8));
     },
     dispose: () => {
       disposed = true;
       img.onload = null;
       disposables.forEach((d) => d.dispose());
+      decor.dispose();
       key.shadow.dispose();
     },
   };

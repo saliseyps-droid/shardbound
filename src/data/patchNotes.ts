@@ -19,6 +19,24 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.76.0',
+    date: '2026-10-29',
+    title: 'The Lounge',
+    summary: 'Furnish your own game room: it surrounds the 3D table in your matches.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Lounge: a new place in the menu with your game room in 3D. Look around it freely and furnish it: every numbered place takes one kind of decor.',
+          'Decor to buy with Gold: tables, rugs, floors, walls, a painting, posters and banners, lights, four places for furniture and a piece for the ceiling, from cheap to grand, classic, fantasy and faction-themed.',
+          'Try a piece on in the room before you buy it; pieces you own can be placed, moved or taken out at any time.',
+          'Your room surrounds the 3D table in your matches. Online, both players see the host’s room.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.75.1',
     date: '2026-10-28',
     title: 'Guard behind walls',

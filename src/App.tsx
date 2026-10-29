@@ -18,6 +18,7 @@ import { BootScreen, CorruptedSaveScreen, OutdatedScreen, WelcomeScreen } from '
 
 const HomeScreen = lazyWithReload(() => import('@/ui/screens/HomeScreen'));
 const PlayScreen = lazyWithReload(() => import('@/ui/screens/PlayScreen'));
+const LoungeScreen = lazyWithReload(() => import('@/ui/screens/LoungeScreen'));
 const CampaignScreen = lazyWithReload(() => import('@/ui/screens/CampaignScreen'));
 const MatchScreen = lazyWithReload(() => import('@/ui/match/MatchScreen'));
 const CollectionScreen = lazyWithReload(() => import('@/ui/screens/CollectionScreen'));
@@ -70,6 +71,7 @@ function Shell() {
               <Route path="/packs" element={<PacksScreen />} />
               <Route path="/shop" element={<ShopScreen />} />
               <Route path="/customization" element={<CardBacksScreen />} />
+              <Route path="/lounge" element={<LoungeScreen />} />
               <Route path="/card-backs" element={<Navigate to="/customization" replace />} />
               <Route path="/arena" element={<ArenaScreen />} />
               <Route path="/quests" element={<QuestsScreen />} />

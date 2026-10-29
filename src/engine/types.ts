@@ -168,6 +168,8 @@ export interface GameState {
   eventSeq: number;
   /** Rolling event log (bounded) for debugging and UI. */
   log: GameEvent[];
+  /** The room around the 3D table (Lounge slot → piece): the local player's, online the host's. Cosmetic only. */
+  room?: Record<string, string | null>;
 }
 
 // ---------------------------------------------------------------------------

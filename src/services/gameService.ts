@@ -1,3 +1,5 @@
+import { buyDecor, placeDecor } from '@/domain/lounge';
+import type { SlotId } from '@/data/lounge';
 import { createRng, randomSeed } from '@/core/rng';
 import { acknowledgeDungeonResult, pickDungeonOffer, pickDungeonTreasure, recordDungeonMatch, retireDungeon, startDungeon } from '@/domain/dungeon';
 import { err, ok, uid, type Result } from '@/core/utils';
@@ -360,6 +362,18 @@ export class GameService {
 
   chooseFrame(f: string | null): Result<GameSave> {
     const res = chooseFrame(this.require(), f);
+    if (res.ok) this.commit(res.value);
+    return res;
+  }
+
+  buyDecor(id: string): Result<GameSave> {
+    const res = buyDecor(this.require(), id, this.now());
+    if (res.ok) this.commit(res.value);
+    return res;
+  }
+
+  placeDecor(slot: SlotId, id: string | null): Result<GameSave> {
+    const res = placeDecor(this.require(), slot, id);
     if (res.ok) this.commit(res.value);
     return res;
   }

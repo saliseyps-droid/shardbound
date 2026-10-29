@@ -23,6 +23,7 @@ const NAV: { to: string; label: MessageKey; icon: string }[] = [
   { to: '/shop', label: 'nav.shop', icon: 'coin' },
   { to: '/quests', label: 'nav.quests', icon: 'scroll2' },
   { to: '/customization', label: 'nav.cardBacks', icon: 'cardback' },
+  { to: '/lounge', label: 'nav.lounge', icon: 'lounge' },
   { to: '/profile', label: 'nav.profile', icon: 'person' },
   { to: '/friends', label: 'nav.friends', icon: 'people' },
   { to: '/achievements', label: 'nav.achievements', icon: 'chalice' },

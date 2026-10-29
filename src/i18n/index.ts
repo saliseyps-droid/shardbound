@@ -29,6 +29,7 @@ const KEYS = {
   'nav.shop': 'Shop',
   'nav.arena': 'Arena',
   'nav.cardBacks': 'Customization',
+  'nav.lounge': 'Lounge',
   'nav.quests': 'Quests',
   'nav.profile': 'Profile',
   'nav.patchNotes': 'News',

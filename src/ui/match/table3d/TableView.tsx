@@ -19,6 +19,10 @@ interface Props {
   /** The mat's key (boardFx.ts), for its particles and lights in 3D. */
   board?: string;
   warm?: string;
+  /** The room around the table (Lounge layout; unknown pieces fall back to the defaults). */
+  room?: Record<string, string | null> | null;
+  /** The room owner's Warden, for a portrait painting. */
+  portraitUrl?: string;
   /** The on-table part of the match (hero areas, battlefield rows, draw piles), laid onto the mat. */
   children: ReactNode;
   /** Your hand, laid on its own plane at the near edge of the table. */
@@ -39,7 +43,13 @@ const BOTTOM = 0.23;
  * pointer, from the usual view in to 3× or out to 0.4× to see the room; Space, the camera button
  * or a double click on the table goes back to the usual view.
  */
-export default function TableView({ boardUrl, board, warm = '#ffb05a', children, hand: handNode, onUnavailable, onSlow }: Props) {
+export default function TableView({ boardUrl, board, warm = '#ffb05a', room = null, portraitUrl, children, hand: handNode, onUnavailable, onSlow }: Props) {
+  // The room rebuilds the table only when its pieces change (a new state object with the same room does not).
+  const roomKey = JSON.stringify(room);
+  const roomRef = useRef(room);
+  roomRef.current = room;
+  const portraitRef = useRef(portraitUrl);
+  portraitRef.current = portraitUrl;
   const rootRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
   const camRef = useRef<HTMLDivElement>(null);
@@ -93,7 +103,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
     fxRenderer.toneMapping = THREE.ACESFilmicToneMapping;
     fxRenderer.toneMappingExposure = 1.45;
     fxRenderer.setClearColor(0x000000, 0);
-    const table = buildTableScene(boardUrl, warm);
+    const table = buildTableScene(boardUrl, warm, roomRef.current, portraitRef.current);
     const life = createBoardLife(
       table.scene,
       board ? BOARD_FX[board] : undefined,
@@ -385,7 +395,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', children,
       fxCanvas.remove();
       if (import.meta.env.DEV) delete (window as { __table3d?: unknown }).__table3d;
     };
-  }, [boardUrl, board, warm]);
+  }, [boardUrl, board, warm, roomKey, portraitUrl]);
 
   return (
     <div className="table3d" ref={rootRef}>

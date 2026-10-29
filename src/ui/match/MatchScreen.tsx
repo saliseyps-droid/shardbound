@@ -32,6 +32,9 @@ import { enterGameFullscreen, fullscreenSupported, maybeAutoFullscreen, startMat
 import { pickBoardBackground } from './boardBackgrounds';
 import { AnimatedBoard } from './AnimatedBoard';
 import { campaignOf } from '@/data/opponents';
+import { useAccount } from '@/state/accountStore';
+import { portraitUrl } from '@/ui/components/WardenPortrait';
+import type { Faction } from '@/game/types';
 import '@/ui/styles/board.css';
 import { table3dAllowed, table3dEnv } from './table3d/table3dRules';
 import { TableFallback } from './table3d/TableFallback';
@@ -185,6 +188,11 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   // Campaign fights pick from that campaign's mats (src/ui/match/boardBackgrounds.ts).
   const boardCampaign = config?.mode === 'PVE' && config.encounterId ? campaignOf(config.encounterId).id : null;
   const boardBg = useMemo(() => pickBoardBackground({ campaign: boardCampaign }), [startedAt, boardCampaign]);
+  // The room around the 3D table: the match's (online the host's), or this player's own (puzzles).
+  const ownRoom = useAccount((s) => s.save?.profile.room);
+  const roomOwner = game ? game.players[config?.online === 'guest' ? 1 : 0]?.hero : undefined;
+  const room = game?.room ?? ownRoom ?? null;
+  const roomPortrait = roomOwner ? portraitUrl(roomOwner.faction as Faction, roomOwner.portrait) : undefined;
   const [drag, setDrag] = useState<Drag | null>(null);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [hover, setHover] = useState<{ cardId: string; uid?: number } | null>(null);
@@ -770,7 +778,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           return (
             <>
               <Suspense fallback={null}>
-                <TableView boardUrl={boardBg!.url} board={boardBg!.key} hand={handNode} onUnavailable={() => setFailed3d(true)} onSlow={() => setSlow3d(true)}>
+                <TableView boardUrl={boardBg!.url} board={boardBg!.key} room={room} portraitUrl={roomPortrait} hand={handNode} onUnavailable={() => setFailed3d(true)} onSlow={() => setSlow3d(true)}>
                   {/* The mat's glow, lights, mist and smoke lie on the table; its particles are 3D there (boardLife.ts). */}
                   {boardBg?.key && (
                     <div className="table3d-board-fx" aria-hidden>

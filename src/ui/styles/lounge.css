@@ -1,0 +1,92 @@
+/* The Lounge: the 3D room filling the screen, the furnishing panel on the right (below on phones). */
+.screen.lounge-screen {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 0;
+  padding: 0;
+  max-width: none;
+  height: calc(100dvh - var(--header-h, 64px) - var(--safe-top, 0px));
+  min-height: 420px;
+  overflow: hidden;
+}
+.lounge-stage { position: relative; min-width: 0; min-height: 0; background: #0c0910; }
+.lounge-view { position: absolute; inset: 0; overflow: hidden; touch-action: none; }
+.lounge-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.lounge-loading,
+.lounge-fallback { position: absolute; inset: 0; display: grid; place-items: center; padding: var(--space-6); text-align: center; }
+.lounge-fallback { inset: auto var(--space-6); top: 30%; }
+
+/* Numbered markers pinned to the slots (moved every frame by LoungeView). */
+.lounge-markers { position: absolute; inset: 0; pointer-events: none; }
+.lounge-marker {
+  position: absolute; left: 0; top: 0; pointer-events: auto;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px; border-radius: 999px;
+  background: rgba(14, 10, 24, 0.82); border: 1px solid rgba(232, 176, 75, 0.7);
+  color: #efe4c8; font: 600 var(--t-xs) var(--font-body); white-space: nowrap; cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.lounge-marker b {
+  display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--gold, #e8b04b); color: #1a1020; font-size: 12px;
+}
+.lounge-marker span { opacity: 0; max-width: 0; overflow: hidden; transition: opacity 0.15s, max-width 0.2s; }
+.lounge-marker:hover span,
+.lounge-marker:focus-visible span,
+.lounge-marker.is-selected span { opacity: 1; max-width: 220px; padding-right: 7px; }
+.lounge-marker:hover,
+.lounge-marker.is-selected { background: rgba(40, 28, 60, 0.95); border-color: var(--gold-bright, #ffd27a); }
+.lounge-marker.is-selected b { background: var(--cyan, #5fd3e8); }
+.lounge-home { position: absolute; left: var(--space-4); bottom: var(--space-4); }
+
+/* The panel. */
+.lounge-panel {
+  display: flex; flex-direction: column; gap: var(--space-3);
+  min-height: 0; overflow-y: auto; border-radius: 0; margin: 0;
+  padding: var(--space-5) var(--space-4);
+}
+.lounge-panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); }
+.lounge-panel-head h2 { margin: 0 0 4px; }
+.lounge-panel-head p { margin: 0; font-size: var(--t-sm); }
+.lounge-gold { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: var(--gold-bright, #ffd27a); white-space: nowrap; }
+
+.lounge-slots { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.lounge-slot {
+  width: 100%; display: grid; grid-template-columns: 26px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 10px;
+  align-items: center; text-align: left; padding: 8px 10px; border-radius: 8px; cursor: pointer;
+  background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); color: inherit; font: inherit;
+}
+.lounge-slot:hover { border-color: var(--gold, #e8b04b); }
+.lounge-slot b {
+  grid-row: span 2; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--gold, #e8b04b); color: #1a1020; font-size: 13px;
+}
+.lounge-slot-name { font-weight: 700; }
+.lounge-slot-piece { font-size: var(--t-xs); }
+
+.lounge-slot-title { display: flex; align-items: center; gap: var(--space-3); }
+.lounge-slot-title h3 { margin: 0; }
+.lounge-items { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; gap: 8px; }
+.lounge-item {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center;
+  padding: 10px 12px; border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.lounge-item.is-placed { border-color: rgba(125, 220, 90, 0.6); background: rgba(125, 220, 90, 0.06); }
+.lounge-item.is-trying { border-color: var(--cyan, #5fd3e8); }
+.lounge-item-text { display: grid; gap: 2px; min-width: 0; }
+.lounge-item-text .faint { font-size: var(--t-xs); line-height: 1.35; }
+.lounge-item-actions { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+.lounge-item-actions .btn { white-space: nowrap; gap: 4px; }
+.lounge-badge { font-size: var(--t-xs); font-weight: 700; color: #8fe0a0; white-space: nowrap; }
+.lounge-style { justify-self: start; margin-top: 3px; font-size: 11px; padding: 0 7px; border-radius: 999px; border: 1px solid currentColor; }
+.lounge-style-base { color: #8fe0a0; }
+.lounge-style-general { color: #cfc4b0; }
+.lounge-style-fantasy { color: #d7b4ff; }
+.lounge-style-faction { color: #ffb38a; }
+
+@media (max-width: 900px) {
+  .screen.lounge-screen { grid-template-columns: 1fr; grid-template-rows: minmax(260px, 55%) minmax(0, 1fr); }
+  .lounge-panel { padding: var(--space-4) 16px; }
+}

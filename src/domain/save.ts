@@ -1,3 +1,4 @@
+import type { RoomLayout } from '@/data/lounge';
 import type { ActiveMatch } from './activeMatch';
 import type { PackId } from '@/config/economy';
 import type { ArenaState } from './arena';
@@ -77,6 +78,10 @@ export interface PlayerProfile {
   wardenFrame?: string | null;
   /** Warden frames bought in the Shop (src/data/shopFrames.ts). */
   ownedFrames?: string[];
+  /** Lounge decor bought with Gold (src/data/lounge.ts); the free defaults are not listed. */
+  ownedDecor?: string[];
+  /** The Lounge room: a piece (or nothing) per slot. */
+  room?: RoomLayout;
 }
 
 export type VariantCounts = Record<Variant, number>;

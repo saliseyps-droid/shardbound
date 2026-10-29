@@ -1,6 +1,18 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.76.0': {
+    title: 'Lounge',
+    summary: 'Zařiď si vlastní herní místnost: obklopuje 3D stůl v tvých zápasech.',
+    sections: [
+      [
+        'Lounge: nové místo v menu s tvou herní místností ve 3D. Volně se v ní rozhlížej a zařizuj ji: každé očíslované místo bere jeden druh vybavení.',
+        'Vybavení za zlato: stoly, koberce, podlahy, zdi, obraz, plakáty a prapory, světla, čtyři místa pro nábytek a kus na strop, od levných po honosné, klasické, fantasy i frakční.',
+        'Kus si můžeš v místnosti vyzkoušet, než ho koupíš; vlastněné kusy kdykoli umístíš, přesuneš nebo odebereš.',
+        'Tvoje místnost obklopuje 3D stůl v tvých zápasech. Online oba hráči vidí místnost hostitele.',
+      ],
+    ],
+  },
   '0.75.1': {
     title: 'Stráž za hradbami',
     summary: 'Jednotky se Stráží stojí na 3D stole v hradbách.',

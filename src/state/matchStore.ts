@@ -1,3 +1,4 @@
+import { activeRoom } from '@/domain/lounge';
 import { arenaDeck, arenaOpponent, arenaPhase } from '@/domain/arena';
 import { createPuzzleGame, findPuzzle } from '@/domain/puzzles';
 import { dungeonDeck, dungeonOpponent, dungeonPlayerMods } from '@/domain/dungeon';
@@ -818,7 +819,7 @@ export const useMatch = create<MatchStore>((set, get) => {
           ? { seed: config.seed ?? randomSeed(), players: [me, opponent, remoteAlly ? netSession.remoteSide! : opponentSide(config.coop.ally)] as [SideSetup, SideSetup, SideSetup] }
           : { seed: config.seed ?? randomSeed(), players: [me, opponent] as [ReturnType<typeof playerSide>, ReturnType<typeof opponentSide>] };
       }
-      const state = initialState ?? createGame(setup!).state;
+      const state = initialState ?? { ...createGame(setup!).state, room: activeRoom(save.profile) };
       if (gen !== matchGen) return;
       // Matches with stakes are remembered until their result is recorded: reloading
       // or closing the app mid-match then counts as conceding (src/domain/activeMatch.ts).
