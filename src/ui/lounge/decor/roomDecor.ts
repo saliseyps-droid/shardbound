@@ -11,6 +11,7 @@ import { FLOORS, RUGS, WALLS } from './surfaces';
 import { LIGHTS, PAINTINGS, POSTERS } from './wall';
 import { FURNITURE } from './furniture';
 import { CEILINGS } from './ceiling';
+import { TRINKETS } from './trinkets';
 
 /**
  * The room's decor from a layout: one piece per slot, each in its place. Used around the 3D table and
@@ -18,7 +19,7 @@ import { CEILINGS } from './ceiling';
  */
 
 type Make = (ctx: DecorContext, bag: Bag) => Built;
-const BUILDERS: Record<string, Make> = { ...TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS };
+const BUILDERS: Record<string, Make> = { ...TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS };
 
 /** Every catalogue id has a builder (checked by a test). */
 export const hasBuilder = (id: string) => id in BUILDERS;
@@ -26,6 +27,10 @@ export const hasBuilder = (id: string) => id in BUILDERS;
 /** Where a wall or floor piece stands (world) and which way its front faces (turn about z). */
 const furn = (x: number, y: number) => ({ at: new THREE.Vector3(x, y, ROOM.floor), face: Math.atan2(-x, y) });
 export const SLOT_PLACE: Partial<Record<SlotId, { at: THREE.Vector3; face: number }>> = {
+  // The middle of the table's short sides, beside the board (the top is about 20 × 12.6, its surface at
+  // z = 0): seen from above in a match, they never stand in front of the cards.
+  tableLeft: { at: new THREE.Vector3(-9.7, -0.5, 0), face: -Math.PI / 2 },
+  tableRight: { at: new THREE.Vector3(9.7, -0.5, 0), face: Math.PI / 2 },
   painting: { at: new THREE.Vector3(0, ROOM.y, 12), face: 0 },
   posterLeft: { at: new THREE.Vector3(-ROOM.x, 8, 11), face: Math.PI / 2 },
   posterRight: { at: new THREE.Vector3(ROOM.x, 8, 11), face: -Math.PI / 2 },
@@ -38,6 +43,8 @@ export const SLOT_PLACE: Partial<Record<SlotId, { at: THREE.Vector3; face: numbe
 /** Where the Lounge pins each slot's marker. */
 export const SLOT_ANCHOR: Record<SlotId, THREE.Vector3> = {
   table: new THREE.Vector3(-8, -6.5, 0.6),
+  tableLeft: new THREE.Vector3(-9.7, -0.5, 3),
+  tableRight: new THREE.Vector3(9.7, -0.5, 3),
   rug: new THREE.Vector3(13, -9.5, ROOM.floor + 0.2),
   floor: new THREE.Vector3(-20, -20, ROOM.floor + 0.2),
   walls: new THREE.Vector3(18, ROOM.y - 0.3, 20),

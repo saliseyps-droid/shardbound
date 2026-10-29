@@ -7,8 +7,8 @@ const notes: PatchNotesOverlay = {
     sections: [
       [
         'Lounge: nové místo v menu s tvou herní místností ve 3D. Volně se v ní rozhlížej a zařizuj ji: každé očíslované místo bere jeden druh vybavení.',
-        'Vybavení za zlato: stoly, koberce, podlahy, zdi, obraz, plakáty a prapory, světla, čtyři místa pro nábytek a kus na strop, od levných po honosné, klasické, fantasy i frakční.',
-        'Kus si můžeš v místnosti vyzkoušet, než ho koupíš; vlastněné kusy kdykoli umístíš, přesuneš nebo odebereš.',
+        'Vybavení za zlato, od levného po honosné: stoly, drobnosti na stůl, koberce, podlahy, zdi, obraz, věci na zeď a prapory, světla, čtyři místa pro nábytek a lustr. Nábytek, podlahy a zdi jsou skutečné naskenované modely a materiály ve skutečné velikosti.',
+        'Kus si můžeš v místnosti vyzkoušet, než ho koupíš; vlastněné kusy kdykoli umístíš, přesuneš nebo odebereš. Po místnosti se můžeš procházet a rozhlížet kamkoli, i ke stropu.',
         'Tvoje místnost obklopuje 3D stůl v tvých zápasech. Online oba hráči vidí místnost hostitele.',
       ],
     ],

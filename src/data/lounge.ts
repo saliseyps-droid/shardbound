@@ -4,11 +4,13 @@
  * the 3D table (against the AI the player's own, online the host's).
  */
 
-export type DecorKind = 'table' | 'rug' | 'floor' | 'walls' | 'painting' | 'poster' | 'lights' | 'furniture' | 'ceiling';
+export type DecorKind = 'table' | 'trinket' | 'rug' | 'floor' | 'walls' | 'painting' | 'poster' | 'lights' | 'furniture' | 'ceiling';
 export type DecorStyle = 'base' | 'general' | 'fantasy' | 'faction';
 
 export const SLOTS = [
   'table',
+  'tableLeft',
+  'tableRight',
   'rug',
   'floor',
   'walls',
@@ -26,6 +28,8 @@ export type SlotId = (typeof SLOTS)[number];
 
 export const SLOT_KIND: Record<SlotId, DecorKind> = {
   table: 'table',
+  tableLeft: 'trinket',
+  tableRight: 'trinket',
   rug: 'rug',
   floor: 'floor',
   walls: 'walls',
@@ -42,6 +46,8 @@ export const SLOT_KIND: Record<SlotId, DecorKind> = {
 
 export const SLOT_NAME: Record<SlotId, string> = {
   table: 'Table',
+  tableLeft: 'On the table, left',
+  tableRight: 'On the table, right',
   rug: 'Rug',
   floor: 'Floor',
   walls: 'Walls',
@@ -80,28 +86,40 @@ export const DECOR: DecorItem[] = [
   item('table', 'faction', 1500)('t_lumen', 'Lumen Stone', 'White stone with golden runes that softly glow.'),
   item('table', 'faction', 1500)('t_hollow', 'Bone Table', 'Pale bones with a violet glow beneath the top.'),
 
-  item('rug', 'base', 0)('r_wine', 'Wine Rug', 'Deep wine with a faded gold border.'),
-  item('rug', 'general', 400)('r_persian', 'Eastern Rug', 'Red and blue patterns with tassels.'),
-  item('rug', 'general', 350)('r_bear', 'Bearskin', 'A brown bearskin, head and all.'),
-  item('rug', 'fantasy', 600)('r_runic', 'Rune Circle', 'A dark rug with a glowing ring of runes.'),
-  item('rug', 'fantasy', 900)('r_starmap', 'Star Map', 'The night sky with slowly twinkling constellations.'),
-  item('rug', 'faction', 700)('r_ember', 'Ember Rug', 'Black with orange sparks rising from it.'),
-  item('rug', 'faction', 700)('r_frost', 'Frost Rug', 'White rime and patterns of ice.'),
+  item('trinket', 'general', 100)('tr_jug', 'Jug', 'A clay jug of something to drink.'),
+  item('trinket', 'general', 100)('tr_bowl', 'Wooden Bowl', 'A turned wooden bowl.'),
+  item('trinket', 'general', 150)('tr_magnifier', 'Magnifying Glass', 'For reading the small print on the cards.'),
+  item('trinket', 'general', 200)('tr_goblets', 'Brass Goblets', 'A pair of brass goblets.'),
+  item('trinket', 'general', 200)('tr_vase', 'Ceramic Vase', 'An old painted vase.'),
+  item('trinket', 'general', 250)('tr_vase_brass', 'Brass Vase', 'A small brass vase.'),
+  item('trinket', 'general', 250)('tr_elephant', 'Carved Elephant', 'A little elephant carved of wood.'),
+  item('trinket', 'general', 300)('tr_books', 'Old Books', 'A row of heavy old books.'),
+  item('trinket', 'general', 300)('tr_oil_lamp', 'Oil Lamp', 'An oil lamp with a small warm flame.'),
+  item('trinket', 'general', 400)('tr_tea', 'Tea Set', 'A teapot and cups for a long match.'),
+  item('trinket', 'general', 500)('tr_clock', 'Mantel Clock', 'A small clock to keep your turns honest.'),
+  item('trinket', 'fantasy', 300)('tr_lamp', 'Brass Lamp', 'A brass lamp with a flickering flame.'),
+  item('trinket', 'fantasy', 350)('tr_compass', 'Sea Dog’s Compass', 'A brass compass that always points to the win.'),
+  item('trinket', 'fantasy', 400)('tr_horse', 'Horse Figurine', 'A little bronze horse.'),
 
-  item('floor', 'base', 0)('f_stone', 'Stone Tiles', 'Dark stone tiles.'),
-  item('floor', 'general', 300)('f_planks', 'Wooden Planks', 'A warm floor of planks.'),
-  item('floor', 'fantasy', 800)('f_checker', 'Marble Checkers', 'Polished black and white marble.'),
-  item('floor', 'faction', 900)('f_moss', 'Moss and Roots', 'Soft moss with roots and flowers.'),
-  item('floor', 'faction', 900)('f_ice', 'Frozen Lake', 'Clear ice over dark water.'),
-  item('floor', 'faction', 1000)('f_lava', 'Lava Seams', 'Basalt tiles with lava running in the seams.'),
+  item('rug', 'base', 0)('r_wine', 'Wine Rug', 'Deep red velvet with a gold-lined border.'),
+  item('rug', 'general', 400)('r_persian', 'Jacquard Rug', 'Red jacquard, a blue border and tassels.'),
+  item('rug', 'general', 450)('r_damask', 'Damask Rug', 'Dark damask with a green and gold border.'),
+  item('rug', 'general', 300)('r_tartan', 'Tartan Blanket', 'A soft checked blanket with tassels.'),
+  item('rug', 'general', 200)('r_hessian', 'Woven Mat', 'A rough woven mat.'),
 
-  item('walls', 'base', 0)('w_stone', 'Stone Walls', 'Rough dark stone.'),
-  item('walls', 'general', 400)('w_timber', 'Timber Frame', 'White plaster between dark beams.'),
-  item('walls', 'general', 600)('w_wallpaper', 'Gilded Wallpaper', 'Dark green wallpaper with a golden pattern.'),
-  item('walls', 'fantasy', 1200)('w_library', 'Library', 'Walls lined with shelves of books.'),
-  item('walls', 'fantasy', 1400)('w_crystal', 'Crystal Cave', 'Rock with glowing crystals growing through it.'),
-  item('walls', 'faction', 900)('w_brass', 'Brass Panels', 'Riveted plates, pipes and gauges.'),
-  item('walls', 'faction', 1400)('w_void', 'Starry Void', 'Walls fading into a dark full of stars and violet mist.'),
+  item('floor', 'base', 0)('f_stone', 'Stone Blocks', 'Worn blocks of grey stone.'),
+  item('floor', 'general', 300)('f_planks', 'Old Planks', 'A warm floor of old planks.'),
+  item('floor', 'general', 500)('f_cobble', 'Cobblestones', 'Rounded cobbles with moss between them.'),
+  item('floor', 'general', 600)('f_terracotta', 'Terracotta Tiles', 'Square tiles of fired clay.'),
+  item('floor', 'fantasy', 700)('f_parquet', 'Herringbone Parquet', 'Polished wood laid in a herringbone.'),
+  item('floor', 'fantasy', 800)('f_slate', 'Flagstones', 'Large flat stones fitted together.'),
+
+  item('walls', 'base', 0)('w_stone', 'Castle Bricks', 'Old castle bricks.'),
+  item('walls', 'general', 400)('w_plaster', 'Plaster and Stone', 'Stone walls with patches of plaster.'),
+  item('walls', 'general', 500)('w_slates', 'Rough Stone', 'Walls of rough stacked stone.'),
+  item('walls', 'general', 600)('w_red_brick', 'Red Brick', 'Old red bricks.'),
+  item('walls', 'fantasy', 900)('w_sandstone', 'Sandstone Blocks', 'Great blocks of pale sandstone.'),
+  item('walls', 'fantasy', 1000)('w_panel', 'Wood Panelling', 'Dark wooden panels all around.'),
 
   item('painting', 'general', 400)('p_map', 'Map of the Realm', 'An old map on parchment in a wooden frame.'),
   item('painting', 'fantasy', 500)('p_crown', 'The Sundered Crown', 'The campaign’s painting in a golden frame.'),
@@ -111,6 +129,10 @@ export const DECOR: DecorItem[] = [
 
   item('poster', 'general', 150)('po_wanted', 'Wanted', 'A faded “Wanted” poster with a reward.'),
   item('poster', 'fantasy', 300)('po_legend', 'Legend Poster', 'The art of a Legendary card, framed.'),
+  item('poster', 'fantasy', 700)('po_shield', 'Knight’s Shield', 'A battered kite shield hung on the wall.'),
+  item('poster', 'general', 600)('po_lion', 'Lion Head', 'A carved lion’s head on the wall.'),
+  item('poster', 'general', 500)('po_bull', 'Bull Head', 'A bull’s head trophy on the wall.'),
+  item('poster', 'fantasy', 800)('po_mirror', 'Ornate Mirror', 'A gilded mirror with a carved frame.'),
   item('poster', 'faction', 250)('po_cinder', 'Cinder Legion Banner', 'A hanging cloth banner of the faction.'),
   item('poster', 'faction', 250)('po_thorn', 'Thornweald Circle Banner', 'A hanging cloth banner of the faction.'),
   item('poster', 'faction', 250)('po_brass', 'Brass Dominion Banner', 'A hanging cloth banner of the faction.'),
@@ -120,33 +142,29 @@ export const DECOR: DecorItem[] = [
 
   item('lights', 'base', 0)('l_torch', 'Torches', 'Iron holders with burning torches.'),
   item('lights', 'general', 300)('l_lantern', 'Lanterns', 'Metal lanterns with a warm light.'),
-  item('lights', 'general', 400)('l_candelabra', 'Candelabra', 'Three-armed candlesticks.'),
-  item('lights', 'fantasy', 700)('l_crystal', 'Glowing Crystals', 'Blue crystals casting a cold light.'),
-  item('lights', 'faction', 600)('l_brazier', 'Braziers', 'Iron bowls with tall flames and sparks.'),
-  item('lights', 'faction', 800)('l_wisp', 'Wisps', 'Green lights drifting in slow circles.'),
+  item('lights', 'general', 400)('l_wooden_lantern', 'Wooden Lanterns', 'Old wooden lanterns on iron brackets.'),
 
   item('furniture', 'general', 250)('fu_barrels', 'Barrels', 'Old oak barrels stacked in the corner.'),
+  item('furniture', 'general', 300)('fu_wine', 'Wine Barrel', 'A wine barrel on its cradle.'),
+  item('furniture', 'general', 200)('fu_crates', 'Wooden Crates', 'Sturdy crates for the tavern’s stores.'),
   item('furniture', 'general', 200)('fu_plant', 'Potted Plant', 'A big green plant in a clay pot.'),
-  item('furniture', 'general', 500)('fu_bookshelf', 'Bookshelf', 'A tall shelf of books and scrolls.'),
-  item('furniture', 'general', 450)('fu_globe', 'Globe', 'A great globe on a wooden stand, slowly turning.'),
-  item('furniture', 'general', 900)('fu_clock', 'Grandfather Clock', 'A tall clock of dark wood, ticking away.'),
+  item('furniture', 'general', 500)('fu_bookshelf', 'Bookshelf', 'A worn wooden bookshelf.'),
+  item('furniture', 'general', 500)('fu_armchair', 'Armchair', 'A deep armchair to rest in between matches.'),
+  item('furniture', 'general', 450)('fu_rocking', 'Rocking Chair', 'A wooden rocking chair.'),
+  item('furniture', 'general', 400)('fu_spinning', 'Spinning Wheel', 'An old spinning wheel.'),
+  item('furniture', 'fantasy', 600)('fu_chest', 'Treasure Chest', 'A chest of gold and treasure.'),
   item('furniture', 'fantasy', 800)('fu_cabinet', 'Gothic Cabinet', 'A carved cabinet with pointed arches.'),
-  item('furniture', 'fantasy', 600)('fu_chest', 'Treasure Chest', 'A chest left ajar, gold glowing inside.'),
-  item('furniture', 'fantasy', 700)('fu_armor', 'Armour Stand', 'Plate armour, a shield and a sword.'),
-  item('furniture', 'fantasy', 1000)('fu_trophy', 'Trophy Cabinet', 'A glass cabinet of cups and medals.'),
-  item('furniture', 'fantasy', 1200)('fu_statue', 'Warden Statue', 'A weathered gothic figure of stone.'),
-  item('furniture', 'fantasy', 1500)('fu_dragon_skull', 'Dragon Skull', 'A huge horned skull on a stone plinth.'),
-  item('furniture', 'faction', 800)('fu_anvil', 'Anvil and Forge', 'An anvil, a hammer and glowing coals.'),
-  item('furniture', 'faction', 900)('fu_tree', 'Little Thornweald Tree', 'A twisted tree shedding leaves.'),
-  item('furniture', 'faction', 1800)('fu_golem', 'Brass Golem', 'A dormant golem whose eyes now and then flicker.'),
-  item('furniture', 'faction', 1000)('fu_altar', 'Lumen Altar', 'A white altar under a holy light.'),
-  item('furniture', 'faction', 900)('fu_harp', 'Haunted Harp', 'A harp played by an unseen hand.'),
-  item('furniture', 'faction', 1200)('fu_ice_statue', 'Ice Statue', 'A clear statue of ice.'),
+  item('furniture', 'fantasy', 700)('fu_commode', 'Gothic Chest of Drawers', 'Dark carved drawers with gothic arches.'),
+  item('furniture', 'fantasy', 900)('fu_bust', 'Marble Bust', 'A marble bust on a plinth.'),
+  item('furniture', 'fantasy', 1000)('fu_horse', 'Bronze Horse', 'A bronze horse on a marble plinth.'),
+  item('furniture', 'fantasy', 1200)('fu_statue', 'Gothic Statue', 'A weathered gothic figure of stone.'),
+  item('furniture', 'fantasy', 1200)('fu_cannon', 'Ship’s Cannon', 'A ship’s cannon on its wooden carriage.'),
+  item('furniture', 'fantasy', 1500)('fu_stove', 'Tiled Stove', 'A tall stove of glazed tiles.'),
 
-  item('ceiling', 'general', 300)('c_lantern', 'Hanging Lantern', 'A lantern on a chain.'),
-  item('ceiling', 'general', 600)('c_chandelier', 'Iron Chandelier', 'A ring of candles on chains.'),
-  item('ceiling', 'fantasy', 500)('c_banners', 'Ceiling Banners', 'A row of faction banners above the table.'),
-  item('ceiling', 'fantasy', 1100)('c_orb', 'Floating Orb', 'A glowing orb circled by runes.'),
+  item('ceiling', 'general', 300)('c_lantern', 'Lantern Chandelier', 'A ring of lanterns on chains.'),
+  item('ceiling', 'general', 600)('c_chandelier', 'Iron Chandelier', 'A wrought iron chandelier.'),
+  item('ceiling', 'fantasy', 900)('c_chandelier_brass', 'Brass Chandelier', 'A brass chandelier with curling arms.'),
+  item('ceiling', 'fantasy', 1200)('c_chandelier_crystal', 'Crystal Chandelier', 'A chandelier hung with crystals.'),
 ];
 
 export const DECOR_BY_ID: Record<string, DecorItem> = Object.fromEntries(DECOR.map((d) => [d.id, d]));
@@ -156,6 +174,8 @@ export type RoomLayout = Record<SlotId, string | null>;
 /** Today's room: what every player has from the start. Empty slots hold nothing. */
 export const DEFAULT_ROOM: RoomLayout = {
   table: 't_tavern',
+  tableLeft: null,
+  tableRight: null,
   rug: 'r_wine',
   floor: 'f_stone',
   walls: 'w_stone',
@@ -171,7 +191,7 @@ export const DEFAULT_ROOM: RoomLayout = {
 };
 
 /** Slots that can be left empty (the others always hold a piece: a room needs a table, a floor…). */
-export const OPTIONAL_KINDS: ReadonlySet<DecorKind> = new Set(['painting', 'poster', 'furniture', 'ceiling']);
+export const OPTIONAL_KINDS: ReadonlySet<DecorKind> = new Set(['trinket', 'painting', 'poster', 'furniture', 'ceiling']);
 
 export const decorFor = (slot: SlotId) => DECOR.filter((d) => d.kind === SLOT_KIND[slot]);
 

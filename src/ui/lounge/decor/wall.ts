@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Bag, DecorContext, FACTION_COLOR, ROOM, canvasTexture, flame, glow, loadArt, mesh, rng, std, woodTexture } from './kit';
+import { Bag, DecorContext, FACTION_COLOR, ROOM, canvasTexture, flame, glow, loadArt, mesh, modelPiece, rng, std, woodTexture } from './kit';
 import type { Built } from './tables';
 
 /**
@@ -246,6 +246,11 @@ export const POSTERS: Record<string, Make> = {
     );
     return { root: framed(bag, 7, 9.3, std(bag, { color: '#3a2a1a' }), std(bag, { map, roughness: 0.95 }), 0.15) };
   },
+  // Wall pieces from Poly Haven (CC0): a knight's shield, hunting trophies, a mirror.
+  po_shield: (_c, bag) => ({ root: modelPiece(bag, 'kite_shield', { scale: 0.55, mount: 'wall' }) }),
+  po_lion: (_c, bag) => ({ root: modelPiece(bag, 'lion_head', { scale: 1.6, mount: 'wall' }) }),
+  po_bull: (_c, bag) => ({ root: modelPiece(bag, 'bull_head', { scale: 1.6, mount: 'wall' }) }),
+  po_mirror: (_c, bag) => ({ root: modelPiece(bag, 'ornate_mirror_01', { scale: 1.8, mount: 'wall' }) }),
   po_legend: (ctx, bag) => artPainting(ctx, bag, ctx.art('legend'), 7, 9.8, gilt(bag)),
   po_cinder: (_c, bag) => banner(bag, FACTION_COLOR.cinder, emblems.flame),
   po_thorn: (_c, bag) => banner(bag, FACTION_COLOR.thorn, emblems.leaf),
@@ -282,94 +287,27 @@ const LIGHT_LOOKS: Record<string, OneLight> = {
     g.add(holder, f, light);
     return { g, light, base: 30, update: (t) => f.scale.set(1, 1, 1.5 + Math.sin(t * 13 + seed) * 0.15) };
   },
-  l_lantern: (bag) => {
-    const g = new THREE.Group();
-    const arm = mesh(new THREE.BoxGeometry(0.18, 2, 0.18), iron(bag), bag, [0, -1, 2.4]);
-    const cage = mesh(new THREE.CylinderGeometry(0.6, 0.6, 1.6, 6, 1, true), std(bag, { color: '#2a1e14', metalness: 0.6, roughness: 0.5, wireframe: true }), bag, [0, -2, 1.2]);
-    cage.rotation.x = Math.PI / 2;
-    const glass = new THREE.Mesh(bag.keep(new THREE.CylinderGeometry(0.5, 0.5, 1.4, 6)), glow(bag, '#ffd27a', 0.85));
-    glass.rotation.x = Math.PI / 2;
-    glass.position.set(0, -2, 1.2);
-    const roof = mesh(new THREE.ConeGeometry(0.75, 0.6, 6), iron(bag), bag, [0, -2, 2.3]);
-    roof.rotation.x = Math.PI / 2;
-    const light = new THREE.PointLight(0xffc27a, 26, 45, 1.6);
-    light.position.set(0, -2.5, 1.2);
-    g.add(arm, cage, glass, roof, light);
-    return { g, light, base: 26 };
-  },
-  l_candelabra: (bag) => {
-    const g = new THREE.Group();
-    const brass = std(bag, { color: '#b8892e', metalness: 0.85, roughness: 0.3 });
-    g.add(mesh(new THREE.BoxGeometry(0.2, 1.4, 0.2), brass, bag, [0, -0.7, 0]));
-    g.add(mesh(new THREE.BoxGeometry(3, 0.2, 0.2), brass, bag, [0, -1.4, 0]));
-    const flames: THREE.Mesh[] = [];
-    for (const x of [-1.4, 0, 1.4]) {
-      g.add(mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.1, 10).rotateX(Math.PI / 2), std(bag, { color: '#efe6d0', roughness: 0.6 }), bag, [x, -1.4, 0.65]));
-      const f = new THREE.Mesh(bag.keep(new THREE.SphereGeometry(0.16, 8, 6)), fire(bag));
-      f.scale.set(1, 1, 1.8);
-      f.position.set(x, -1.4, 1.4);
-      g.add(f);
-      flames.push(f);
-    }
-    const light = new THREE.PointLight(0xffd08a, 24, 42, 1.6);
-    light.position.set(0, -2.2, 1.6);
-    g.add(light);
-    return { g, light, base: 24 };
-  },
-  l_crystal: (bag, seed) => {
-    const g = new THREE.Group();
-    const mat = std(bag, { color: '#7ae0ff', emissive: '#3ab8ff', emissiveIntensity: 1.4, roughness: 0.1, transparent: true, opacity: 0.9 });
-    const r = rng(231 + seed);
-    for (let i = 0; i < 4; i++) {
-      const c = mesh(new THREE.OctahedronGeometry(0.5 + r() * 0.4, 0), mat, bag, [(r() - 0.5) * 1.4, -0.5, (r() - 0.5) * 1.2]);
-      c.scale.set(0.6, 0.6, 1.6 + r());
-      c.rotation.set(r(), r(), r());
-      g.add(c);
-    }
-    const light = new THREE.PointLight(0x7ad0ff, 26, 45, 1.6);
-    light.position.set(0, -2, 0.5);
-    g.add(light);
-    return { g, light, base: 26, update: (t) => (mat.emissiveIntensity = 1.2 + Math.sin(t * 1.5 + seed) * 0.3) };
-  },
-  l_brazier: (bag, seed) => {
-    const g = new THREE.Group();
-    g.add(mesh(new THREE.BoxGeometry(0.25, 1.8, 0.25), iron(bag), bag, [0, -0.9, -0.6]));
-    const bowl = mesh(new THREE.SphereGeometry(1, 16, 8, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), iron(bag), bag, [0, -1.9, 0]);
-    bowl.rotation.x = -Math.PI / 2;
-    const f = new THREE.Mesh(bag.keep(new THREE.ConeGeometry(0.8, 2.6, 10)), glow(bag, '#ff7a20', 0.9));
-    f.rotation.x = Math.PI / 2;
-    f.position.set(0, -1.9, 1.3);
-    const light = new THREE.PointLight(0xff8a3a, 34, 48, 1.6);
-    light.position.set(0, -2.5, 2);
-    g.add(bowl, f, light);
-    return { g, light, base: 34, update: (t) => f.scale.set(1 + Math.sin(t * 11 + seed) * 0.08, 1, 1 + Math.sin(t * 15 + seed) * 0.15) };
-  },
-  l_wisp: (bag, seed) => {
-    const g = new THREE.Group();
-    const mat = glow(bag, '#9aff8a');
-    const motes = Array.from({ length: 4 }, () => {
-      const m = new THREE.Mesh(bag.keep(new THREE.SphereGeometry(0.28, 10, 8)), mat);
-      g.add(m);
-      return m;
-    });
-    const light = new THREE.PointLight(0x8aff7a, 22, 42, 1.6);
-    light.position.set(0, -2, 0);
-    g.add(light);
-    return {
-      g,
-      light,
-      base: 22,
-      update: (t) =>
-        motes.forEach((m, i) => {
-          const a = t * (0.6 + i * 0.15) + i * 1.7 + seed;
-          m.position.set(Math.cos(a) * 1.6, -1.8 + Math.sin(a * 1.3) * 0.6, Math.sin(a) * 1.2);
-        }),
-    };
-  },
+  // Lanterns (Poly Haven, CC0) hanging from an iron bracket on the wall.
+  l_lantern: (bag) => hungLantern(bag, 'Lantern_01', 3, 0xffc27a, 26),
+  l_wooden_lantern: (bag) => hungLantern(bag, 'wooden_lantern_01', 2.2, 0xffb86a, 26),
 };
 
+function hungLantern(bag: Bag, id: string, scale: number, color: number, base: number) {
+  const g = new THREE.Group();
+  const arm = mesh(new THREE.BoxGeometry(0.18, 2.4, 0.18), iron(bag), bag, [0, -1.2, 2.6]);
+  const hook = mesh(new THREE.BoxGeometry(0.12, 0.12, 0.8), iron(bag), bag, [0, -2.3, 2.2]);
+  const m = modelPiece(bag, id, { scale, mount: 'hang' });
+  m.position.set(0, -2.3, 1.9);
+  const light = new THREE.PointLight(color, base, 45, 1.6);
+  light.position.set(0, -3, 0.5);
+  g.add(arm, hook, m, light);
+  return { g, light, base };
+}
+
+const LIGHT_PIECES = LIGHT_LOOKS;
+
 export const LIGHTS: Record<string, Make> = Object.fromEntries(
-  Object.entries(LIGHT_LOOKS).map(([id, look]) => [
+  Object.entries(LIGHT_PIECES).map(([id, look]) => [
     id,
     (_c: DecorContext, bag: Bag): Built => {
       const root = new THREE.Group();

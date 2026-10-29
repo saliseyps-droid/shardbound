@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SLOTS, SLOT_NAME, type RoomLayout, type SlotId } from '@/data/lounge';
 import { buildTableScene, type TableScene } from '@/ui/match/table3d/TableScene3D';
 import { ROOM } from './decor/kit';
 import { SLOT_ANCHOR } from './decor/roomDecor';
+import { createLookControls } from './lookControls';
 import { t } from '@/i18n';
+import { usingTouch } from '@/ui/inputMode';
 
 interface Props {
   boardUrl: string;
@@ -22,8 +23,8 @@ const BOUNDS = { x: ROOM.x - 3, y: ROOM.y - 3, zMin: ROOM.floor + 2, zMax: ROOM.
 const HOME = { pos: new THREE.Vector3(0, -26, 19), target: new THREE.Vector3(0, 8, -1) };
 
 /**
- * The Lounge in 3D: the same room and table as in matches, a free camera (drag to move, right
- * button or Shift to turn, wheel or pinch to zoom, as at the 3D table) and a numbered marker on every slot.
+ * The Lounge in 3D: the same room and table as in matches, a free camera to walk and look around
+ * (lookControls.ts) and a numbered marker on every slot.
  */
 export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPick, onUnavailable }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -68,23 +69,10 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
     // A soft fill, so the corners of the room can be seen while furnishing it.
     table.scene.add(new THREE.HemisphereLight(0xfff2dd, 0x3a3048, 0.9));
 
-    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 400);
+    const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 400);
     camera.up.set(0, 0, 1);
-    camera.position.copy(HOME.pos);
-    const controls = new OrbitControls(camera, canvas);
-    controls.target.copy(HOME.target);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.08;
-    controls.rotateSpeed = 0.5;
-    controls.minDistance = 6;
-    controls.maxDistance = 48;
-    controls.maxPolarAngle = Math.PI * 0.62;
-    controls.screenSpacePanning = false;
-    // As at the 3D table: drag to move around the room, the right button (or Shift + drag) to turn the
-    // view; on touch one finger moves, two zoom and turn.
-    controls.mouseButtons = { LEFT: THREE.MOUSE.PAN, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.ROTATE };
-    controls.touches = { ONE: THREE.TOUCH.PAN, TWO: THREE.TOUCH.DOLLY_ROTATE };
-    controls.update();
+    const controls = createLookControls(canvas, camera, BOUNDS);
+    controls.view(HOME.pos, HOME.target);
 
     const resize = () => {
       const w = root.clientWidth || 1;
@@ -97,38 +85,19 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
     const ro = new ResizeObserver(resize);
     ro.observe(root);
 
-    // Easing the camera to a picked slot: it looks at the piece from the room, a little above it.
-    const goal = new THREE.Vector3();
-    const camGoal = new THREE.Vector3();
-    let easing = 0;
+    // A picked slot: the camera walks to a spot in the room and looks at the piece, a little from above.
     const focus = (slot: SlotId | null) => {
       if (!slot) return;
       const a = SLOT_ANCHOR[slot];
-      // Pieces in the middle of the room (table, rug, floor, ceiling): the overview.
-      if (Math.hypot(a.x, a.y) < 16 && slot !== 'ceiling') {
-        goal.copy(HOME.target);
-        camGoal.copy(HOME.pos);
-      } else if (slot === 'ceiling') {
-        goal.set(0, 0, 14);
-        camGoal.set(0, -24, 6);
-      } else {
-        goal.set(a.x, a.y, slot.startsWith('furn') ? ROOM.floor + 6 : a.z - 1);
-        const dir = new THREE.Vector3(-a.x, -8 - a.y, 0).normalize();
-        camGoal.copy(goal).addScaledVector(dir, slot.startsWith('furn') ? 20 : 24);
-        camGoal.z = goal.z + 6;
-      }
-      easing = 1;
+      if (slot === 'ceiling') return controls.view(new THREE.Vector3(0, -22, 4), new THREE.Vector3(0, 0, 16), true);
+      // Pieces in the middle of the room (the table and what is on it, the rug, the floor): the overview.
+      if (Math.hypot(a.x, a.y) < 16) return controls.view(HOME.pos, HOME.target, true);
+      const at = new THREE.Vector3(a.x, a.y, slot.startsWith('furn') ? ROOM.floor + 6 : a.z - 1);
+      const from = at.clone().addScaledVector(new THREE.Vector3(-a.x, -8 - a.y, 0).normalize(), slot.startsWith('furn') ? 22 : 24);
+      from.z = at.z + 6;
+      controls.view(from, at, true);
     };
     focusRef.current = null;
-    // The player takes the camera: stop easing it.
-    controls.addEventListener('start', () => (easing = 0));
-
-    const clamp = () => {
-      const p = camera.position;
-      p.set(THREE.MathUtils.clamp(p.x, -BOUNDS.x, BOUNDS.x), THREE.MathUtils.clamp(p.y, -BOUNDS.y, BOUNDS.y), THREE.MathUtils.clamp(p.z, BOUNDS.zMin, BOUNDS.zMax));
-      const g = controls.target;
-      g.set(THREE.MathUtils.clamp(g.x, -BOUNDS.x, BOUNDS.x), THREE.MathUtils.clamp(g.y, -BOUNDS.y, BOUNDS.y), THREE.MathUtils.clamp(g.z, ROOM.floor, BOUNDS.zMax));
-    };
 
     const v = new THREE.Vector3();
     const clock = new THREE.Clock();
@@ -137,14 +106,7 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
       raf = requestAnimationFrame(frame);
       const dt = Math.min(clock.getDelta(), 0.1);
       const time = clock.elapsedTime;
-      if (easing > 0) {
-        const k = Math.min(1, dt * 3.5);
-        controls.target.lerp(goal, k);
-        camera.position.lerp(camGoal, k);
-        if (controls.target.distanceTo(goal) < 0.05 && camera.position.distanceTo(camGoal) < 0.05) easing = 0;
-      }
-      controls.update();
-      clamp();
+      controls.update(dt);
       table.update(time, dt);
       renderer.render(table.scene, camera);
       const w = root.clientWidth;
@@ -162,11 +124,7 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
 
     const onFocus = (e: Event) => focus((e as CustomEvent<SlotId>).detail);
     root.addEventListener('lounge-focus', onFocus);
-    const onHome = () => {
-      camera.position.copy(HOME.pos);
-      controls.target.copy(HOME.target);
-      easing = 0;
-    };
+    const onHome = () => controls.view(HOME.pos, HOME.target, true);
     root.addEventListener('lounge-home', onHome);
 
     if (import.meta.env.DEV) Object.assign(window, { __lounge: { scene: table.scene, camera, controls, decor: table.decor } });
@@ -221,9 +179,12 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
           </button>
         ))}
       </div>
-      <button className="btn btn-ghost lounge-home" onClick={() => rootRef.current?.dispatchEvent(new Event('lounge-home'))}>
-        {t('Reset view')}
-      </button>
+      <div className="lounge-hud">
+        <button className="btn btn-ghost btn-sm" onClick={() => rootRef.current?.dispatchEvent(new Event('lounge-home'))}>
+          {t('Reset view')}
+        </button>
+        <span className="lounge-help">{usingTouch() ? t('One finger: move · two fingers: look around · pinch: step closer') : t('Drag: move · right button or Shift: look around · wheel: step closer · WASD / arrows: walk')}</span>
+      </div>
     </div>
   );
 }

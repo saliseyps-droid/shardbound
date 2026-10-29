@@ -38,7 +38,9 @@
 .lounge-marker:hover,
 .lounge-marker.is-selected { background: rgba(40, 28, 60, 0.95); border-color: var(--gold-bright, #ffd27a); }
 .lounge-marker.is-selected b { background: var(--cyan, #5fd3e8); }
-.lounge-home { position: absolute; left: var(--space-4); bottom: var(--space-4); }
+.lounge-hud { position: absolute; left: var(--space-4); right: var(--space-4); bottom: var(--space-4); display: flex; align-items: center; gap: var(--space-3); pointer-events: none; }
+.lounge-hud .btn { pointer-events: auto; }
+.lounge-help { font-size: var(--t-xs); color: rgba(239, 228, 200, 0.75); text-shadow: 0 1px 2px #000; }
 
 /* The panel. */
 .lounge-panel {

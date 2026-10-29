@@ -157,43 +157,6 @@ export const marbleTexture = (base: string, vein: string, gold?: string, seed = 
     true,
   );
 
-/** Square tiles with joints. */
-export const tileTexture = (joint: string, tone: (r: () => number) => string, n = 4, seed = 5) =>
-  canvasTexture(
-    512,
-    512,
-    (g) => {
-      const r = rng(seed);
-      g.fillStyle = joint;
-      g.fillRect(0, 0, 512, 512);
-      const s = 512 / n;
-      for (let i = 0; i < n; i++)
-        for (let j = 0; j < n; j++) {
-          g.fillStyle = tone(r);
-          g.fillRect(i * s + 3, j * s + 3, s - 6, s - 6);
-        }
-    },
-    true,
-  );
-
-/** Stone blocks in staggered courses. */
-export const blockTexture = (joint: string, tone: (r: () => number) => string, seed = 9) =>
-  canvasTexture(
-    512,
-    512,
-    (g) => {
-      const r = rng(seed);
-      g.fillStyle = joint;
-      g.fillRect(0, 0, 512, 512);
-      for (let row = 0; row < 8; row++)
-        for (let col = -1; col < 5; col++) {
-          g.fillStyle = tone(r);
-          g.fillRect(col * 128 + (row % 2) * 64 + 3, row * 64 + 3, 122, 58);
-        }
-    },
-    true,
-  );
-
 /**
  * A standard material. The room has no environment map to reflect, so fully metallic surfaces would
  * render black: metalness is capped, keeping some of the lights' colour on brass, steel and gold.
@@ -257,12 +220,25 @@ export const FACTION_COLOR = {
 /** Where the room's 3D models live (public/decor/<id>/model.gltf, from Poly Haven, CC0). */
 export const modelUrl = (id: string) => `${import.meta.env.BASE_URL}decor/${id}/model.gltf`;
 
+/** Room units per metre: the table stands 9 high, about 75 cm, so 12 to the metre. Models keep their real size. */
+export const PER_METRE = 12;
+
+export interface ModelFit {
+  /** A multiple of the model's real size (most stay 1, so they match the table). */
+  scale?: number;
+  /** Or a fixed height in room units. */
+  height?: number;
+  /** Turn about z (the model's front faces -y at 0, glTF models face +z). */
+  turn?: number;
+  /** floor: stands on z = 0; wall: its back on y = 0, centred on z = 0; hang: its top at z = 0. */
+  mount?: 'floor' | 'wall' | 'hang';
+}
+
 /**
  * A downloaded model as a piece: loaded in the background (nothing shows until it arrives), turned
- * from glTF's y-up to the room's z-up, scaled to `height` (or `width`), standing on z = 0 and centred.
- * `turn` spins it about z (its front faces -y at 0, as glTF models face +z).
+ * from glTF's y-up to the room's z-up, at its real size, centred, and set by `mount`.
  */
-export function modelPiece(bag: Bag, id: string, size: { height?: number; width?: number }, turn = 0): THREE.Group {
+export function modelPiece(bag: Bag, id: string, fit: ModelFit = {}): THREE.Group {
   const root = new THREE.Group();
   let gone = false;
   bag.keep({ dispose: () => (gone = true) });
@@ -290,12 +266,19 @@ export function modelPiece(bag: Bag, id: string, size: { height?: number; width?
       model.updateMatrixWorld(true);
       const box = new THREE.Box3().setFromObject(model);
       const dim = box.getSize(new THREE.Vector3());
-      const k = size.height ? size.height / dim.z : size.width ? size.width / Math.max(dim.x, dim.y) : 1;
+      const k = fit.height ? fit.height / dim.z : PER_METRE * (fit.scale ?? 1);
+      const cx = -(box.min.x + box.max.x) / 2;
+      const cy = -(box.min.y + box.max.y) / 2;
+      const mount = fit.mount ?? 'floor';
+      model.position.set(
+        cx,
+        mount === 'wall' ? -box.max.y : cy,
+        mount === 'floor' ? -box.min.z : mount === 'hang' ? -box.max.z : -(box.min.z + box.max.z) / 2,
+      );
       const holder = new THREE.Group();
       holder.add(model);
-      model.position.set(-(box.min.x + box.max.x) / 2, -(box.min.y + box.max.y) / 2, -box.min.z);
       holder.scale.setScalar(k);
-      holder.rotation.z = turn;
+      holder.rotation.z = fit.turn ?? 0;
       root.add(holder);
     }),
   );
