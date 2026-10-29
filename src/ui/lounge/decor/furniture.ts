@@ -79,6 +79,14 @@ export const FURNITURE: Record<string, Make> = {
   fu_apples: model('qk/Barrel_Apples'),
   fu_workbench: model('qk/Workbench'),
   fu_wood_chest: model('qk/Chest_Wood'),
+  // Modern (Poly Haven).
+  fu_lounge_chair: model('mid_century_lounge_chair'),
+  fu_modern_chair: model('modern_arm_chair_01'),
+  fu_sofa: model('sofa_02'),
+  fu_ottoman: model('Ottoman_01'),
+  fu_coffee_table: model('modern_coffee_table_02'),
+  fu_sideboard: model('modern_wooden_cabinet'),
+  fu_steel_shelf: model('steel_frame_shelves_02'),
   // Arcade (Kenney).
   fu_arcade: arcade('arcade-machine'),
   fu_pinball: arcade('pinball'),

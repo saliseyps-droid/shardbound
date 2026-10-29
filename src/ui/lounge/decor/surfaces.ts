@@ -52,6 +52,12 @@ export const FLOORS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
   f_terracotta: floor('terracotta_floor_tiles', 2.08),
   f_slate: floor('slate_floor_02', 2),
   f_dark_planks: floor('dark_wooden_planks', 2),
+  f_marble: floor('marble_01', 1.5),
+  f_terrazzo: floor('terrazzo_tiles', 2),
+  f_laminate: floor('laminate_floor_02', 1.7),
+  f_grey_tiles: floor('large_grey_tiles', 3),
+  f_checker: floor('floor_tiles_06', 3),
+  f_block_parquet: floor('rectangular_parquet', 2.25),
 };
 
 // ---------- Walls: four planes standing on the floor, facing in. ----------
@@ -82,6 +88,12 @@ export const WALLS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
   w_panel: walls('dark_paneled_wood', 1.4),
   w_plaster: walls('plaster_stone_wall_01', 2.3),
   w_beams: walls('beam_wall_01', 1),
+  w_stucco: walls('white_stucco', 2),
+  w_blue_brick: walls('painted_brick', 1.8),
+  w_concrete: walls('concrete_wall_008', 2.71),
+  w_grey: walls('plastered_wall_04', 3.2),
+  w_walnut: walls('smoked_walnut_veneer', 1),
+  w_pattern: walls('patterned_plaster_wall', 1.8),
 };
 
 // ---------- Rugs: a woven field (a scanned fabric) inside a border, under the table. ----------
@@ -98,6 +110,60 @@ interface RugLook {
   fringe?: string;
   /** An eastern medallion in the middle and ornaments in the corners: [fill, outline]. */
   medallion?: [string, string];
+  /** A modern pattern drawn over the field, in these colours. */
+  pattern?: { kind: 'stripes' | 'circles' | 'grid' | 'arcs'; colors: string[] };
+  /** A round rug instead of a rectangle. */
+  round?: boolean;
+  /** Lines that glow (an emissive copy of the pattern), in this colour. */
+  glow?: string;
+}
+
+/** Draws a modern pattern over the rug's field (white, for the glowing copy). */
+function drawPattern(g: CanvasRenderingContext2D, w: number, h: number, p: NonNullable<RugLook['pattern']>, glow = false) {
+  const c = (i: number) => (glow ? '#ffffff' : p.colors[i % p.colors.length]);
+  g.lineCap = 'round';
+  if (p.kind === 'stripes') {
+    const n = 7;
+    for (let i = 0; i < n; i++) {
+      g.fillStyle = c(i);
+      g.globalAlpha = glow ? 1 : 0.85;
+      g.fillRect(((i + 0.5) * w) / n - w * 0.025, 0, w * 0.05, h);
+    }
+  } else if (p.kind === 'circles') {
+    for (let i = 4; i > 0; i--) {
+      g.strokeStyle = c(i);
+      g.lineWidth = w * 0.035;
+      g.beginPath();
+      g.arc(w / 2, h / 2, (Math.min(w, h) * 0.47 * i) / 4, 0, Math.PI * 2);
+      g.stroke();
+    }
+  } else if (p.kind === 'grid') {
+    g.lineWidth = glow ? 4 : 6;
+    let k = 0;
+    for (let x = w / 8; x < w - 1; x += w / 8) {
+      g.strokeStyle = c(k++);
+      g.beginPath();
+      g.moveTo(x, 0);
+      g.lineTo(x, h);
+      g.stroke();
+    }
+    for (let y = h / 5; y < h - 1; y += h / 5) {
+      g.strokeStyle = c(k++);
+      g.beginPath();
+      g.moveTo(0, y);
+      g.lineTo(w, y);
+      g.stroke();
+    }
+  } else {
+    for (let i = 0; i < 5; i++) {
+      g.strokeStyle = c(i);
+      g.lineWidth = w * 0.04;
+      g.beginPath();
+      g.arc(0, h, w * (0.25 + i * 0.15), -Math.PI / 2, 0);
+      g.stroke();
+    }
+  }
+  g.globalAlpha = 1;
 }
 
 /** A stepped diamond medallion: rings of diamonds, filled and outlined. */
@@ -123,8 +189,8 @@ function medallion(g: CanvasRenderingContext2D, cx: number, cy: number, rx: numb
 }
 
 const rug = (look: RugLook) => (ctx: DecorContext, bag: Bag): Built => {
-  const W = ctx.tableW + 11.4;
-  const H = ctx.tableH + 9.4;
+  const W = look.round ? ctx.tableW + 9 : ctx.tableW + 11.4;
+  const H = look.round ? ctx.tableW + 9 : ctx.tableH + 9.4;
   const mat = std(bag, { color: '#2e0e12', roughness: 1 });
   const m = new THREE.Mesh(bag.keep(new THREE.PlaneGeometry(W, H)), mat);
   m.position.z = ROOM.floor + 0.02;
@@ -151,6 +217,15 @@ const rug = (look: RugLook) => (ctx: DecorContext, bag: Bag): Built => {
       g.fillRect(0, 0, c.width, c.height);
     }
     const fr = look.fringe ? 18 : 0;
+    if (look.pattern) drawPattern(g, c.width, c.height, look.pattern);
+    if (look.round) {
+      // Cut the round shape: outside is transparent, and alphaTest drops it.
+      g.globalCompositeOperation = 'destination-in';
+      g.beginPath();
+      g.ellipse(c.width / 2, c.height / 2, c.width / 2 - 2, c.height / 2 - 2, 0, 0, Math.PI * 2);
+      g.fill();
+      g.globalCompositeOperation = 'source-over';
+    }
     if (look.medallion) {
       const w = c.width;
       const h = c.height;
@@ -184,7 +259,21 @@ const rug = (look: RugLook) => (ctx: DecorContext, bag: Bag): Built => {
     t.anisotropy = 8;
     mat.map = t;
     mat.color.set('#ffffff');
-    if (look.fringe) mat.alphaTest = 0.5;
+    if (look.fringe || look.round) mat.alphaTest = 0.5;
+    if (look.glow && look.pattern) {
+      const e = document.createElement('canvas');
+      e.width = c.width;
+      e.height = c.height;
+      const eg = e.getContext('2d');
+      if (eg) {
+        eg.fillStyle = '#000';
+        eg.fillRect(0, 0, e.width, e.height);
+        drawPattern(eg, e.width, e.height, look.pattern, true);
+        mat.emissiveMap = bag.keep(new THREE.CanvasTexture(e));
+        mat.emissive.set(look.glow);
+        mat.emissiveIntensity = 1.6;
+      }
+    }
     mat.needsUpdate = true;
   };
   img.src = texUrl(look.fabric, 'diff');
@@ -209,4 +298,12 @@ export const RUGS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
   r_hessian: rug({ fabric: 'hessian_230', metres: 0.8, band: '#3a2818' }),
   r_fur: rug({ fabric: 'faux_fur_geometric', metres: 1.2, band: '#3a1a22', line: '#a07a32' }),
   r_wool: rug({ fabric: 'poly_wool_herringbone', metres: 1, band: '#22201e', fringe: '#cfc6b4' }),
+  r_shag: rug({ fabric: 'polar_fleece', metres: 1, round: true }),
+  r_round: rug({ fabric: 'knitted_fleece', metres: 0.8, round: true, pattern: { kind: 'circles', colors: ['#e8dcc0', '#c86a3a', '#2a4a5a', '#e8b04b'] } }),
+  r_boucle: rug({ fabric: 'wool_boucle', metres: 1.2, band: '#1e1a18' }),
+  r_gingham: rug({ fabric: 'gingham_check', metres: 0.8, fringe: '#f0ece0' }),
+  r_indigo: rug({ fabric: 'denim_fabric_04', metres: 0.8, pattern: { kind: 'stripes', colors: ['#e8e4dc', '#d8b04a'] } }),
+  r_corduroy: rug({ fabric: 'ribbed_corduroy', metres: 0.8, pattern: { kind: 'arcs', colors: ['#e8d8b0', '#c8643a', '#2a3a2a'] } }),
+  r_terry: rug({ fabric: 'terry_cloth', metres: 0.9, band: '#0e1a3a' }),
+  r_neon_grid: rug({ fabric: 'denim_fabric_04', metres: 0.8, tint: 'rgba(8,4,20,.82)', pattern: { kind: 'grid', colors: ['#ff3aa8', '#3ad8ff'] }, glow: '#ffffff' }),
 };

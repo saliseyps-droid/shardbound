@@ -456,7 +456,50 @@ const scannedWood = (id: string, metres: number, legs: [number, number][] = TURN
   return { root: g };
 };
 
+/** Slim square legs of black steel (modern tables). */
+const steelLegs = (b: Bag) => {
+  const geo = b.keep(new THREE.BoxGeometry(0.42, 0.42, 7.8));
+  geo.translate(0, 0, -3.9);
+  return geo;
+};
+const blackSteel = (bag: Bag) => std(bag, { color: '#16161a', metalness: 0.5, roughness: 0.35 });
+
+/** Black lacquer on steel, an LED strip around the edge that lights the floor beneath. */
+export function neonTable(ctx: DecorContext, bag: Bag): Built {
+  const lacquer = std(bag, { color: '#0e0e12', roughness: 0.12, metalness: 0.3 });
+  const { g, TW, TH } = body(ctx, bag, { top: lacquer, edge: lacquer, leg: blackSteel(bag), legs: steelLegs });
+  // The strip: a glowing line just under the top's edge, all the way round.
+  const a = TW / 2 + 0.16;
+  const b = TH / 2 + 0.16;
+  const path = new THREE.CurvePath<THREE.Vector3>();
+  const corners = [[-a, -b], [a, -b], [a, b], [-a, b], [-a, -b]];
+  for (let i = 1; i < corners.length; i++) path.add(new THREE.LineCurve3(new THREE.Vector3(corners[i - 1][0], corners[i - 1][1], -0.55), new THREE.Vector3(corners[i][0], corners[i][1], -0.55)));
+  const strip = new THREE.Mesh(bag.keep(new THREE.TubeGeometry(path, 64, 0.07, 6, true)), bag.keep(new THREE.MeshBasicMaterial({ color: '#6ae8ff', toneMapped: false })));
+  g.add(strip);
+  for (const x of [-TW / 4, TW / 4]) {
+    const l = new THREE.PointLight('#3ad8ff', 6, 16, 1.8);
+    l.position.set(x, 0, -4);
+    g.add(l);
+  }
+  return { root: g };
+}
+
+/** A slab of white marble on black steel. */
+export function marbleSteel(ctx: DecorContext, bag: Bag): Built {
+  const r = 1 / (1.5 * PER_METRE);
+  const { g } = body(ctx, bag, {
+    top: scanned(bag, 'marble_01', r, r, { roughness: 0.2 }),
+    edge: scanned(bag, 'marble_01', 0.08, 1.2, { roughness: 0.2 }),
+    leg: blackSteel(bag),
+    apron: blackSteel(bag),
+    legs: steelLegs,
+  });
+  return { root: g };
+}
+
 export const TABLES: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
+  t_neon: neonTable,
+  t_marble_steel: marbleSteel,
   t_walnut: scannedWood('dark_wood', 2, LION),
   t_old_oak: scannedWood('medieval_wood', 2),
   t_tavern: tavern,

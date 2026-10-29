@@ -14,7 +14,7 @@ import '@/ui/styles/lounge.css';
 
 const LoungeView = lazy(() => import('@/ui/lounge/LoungeView'));
 
-const STYLE_LABEL: Record<DecorStyle, string> = { base: 'Starter', general: 'Classic', fantasy: 'Fantasy', faction: 'Faction', arcade: 'Arcade' };
+const STYLE_LABEL: Record<DecorStyle, string> = { base: 'Starter', general: 'Classic', fantasy: 'Fantasy', faction: 'Faction', arcade: 'Arcade', modern: 'Modern', neon: 'Neon' };
 
 /**
  * The Lounge: the player's game room in 3D. Every numbered place takes one kind of decor; pick a place,

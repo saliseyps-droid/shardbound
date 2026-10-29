@@ -52,6 +52,12 @@ export const TRINKETS: Record<string, Make> = {
   tr_key: small('qk/Key_Gold', { scale: 3, turn: 0.8 }),
   tr_mug: small('qk/Mug', { scale: 1.3 }),
   tr_bottles: small('qk/SmallBottles_1', { scale: 1.6 }),
+  // Modern (Poly Haven).
+  tr_succulent: small('potted_plant_04', { scale: 2 }),
+  tr_tv: small('television_02', { scale: 1.2 }),
+  tr_boombox: small('boombox'),
+  tr_console: small('gaming_console', { scale: 1.4 }),
+  tr_desk_lamp: lamp('desk_lamp_arm_01', { turn: Math.PI }, 5),
   // Arcade (Kenney).
   tr_prizes: small('arcade/prizes.glb', { scale: 0.6 }),
 };

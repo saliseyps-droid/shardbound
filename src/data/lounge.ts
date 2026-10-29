@@ -5,7 +5,7 @@
  */
 
 export type DecorKind = 'table' | 'trinket' | 'rug' | 'floor' | 'walls' | 'painting' | 'poster' | 'lights' | 'furniture' | 'ceiling' | 'door';
-export type DecorStyle = 'base' | 'general' | 'fantasy' | 'faction' | 'arcade';
+export type DecorStyle = 'base' | 'general' | 'fantasy' | 'faction' | 'arcade' | 'modern' | 'neon';
 
 export const SLOTS = [
   'table',
@@ -243,6 +243,61 @@ export const DECOR: DecorItem[] = [
 
   // Doors.
   item('door', 'base', 0)('d_castle', 'Castle Door', 'A heavy wooden door bound with iron.'),
+
+  // Modern.
+  item('furniture', 'modern', 900)('fu_lounge_chair', 'Lounge Chair', 'A leather lounge chair on a swivel foot.'),
+  item('furniture', 'modern', 700)('fu_modern_chair', 'Modern Armchair', 'Black leather on a light wooden frame.'),
+  item('furniture', 'modern', 1100)('fu_sofa', 'Leather Sofa', 'A deep buttoned leather sofa.'),
+  item('furniture', 'modern', 350)('fu_ottoman', 'Leather Ottoman', 'A soft leather footstool.'),
+  item('furniture', 'modern', 800)('fu_coffee_table', 'Sculpted Coffee Table', 'A low table of twisting copper bands.'),
+  item('furniture', 'modern', 900)('fu_sideboard', 'Sideboard', 'A long wooden sideboard with slatted doors.'),
+  item('furniture', 'modern', 500)('fu_steel_shelf', 'Steel Shelves', 'Black steel and pale wood.'),
+  item('trinket', 'modern', 200)('tr_succulent', 'Succulent', 'A spiky plant in a white pot.'),
+  item('trinket', 'modern', 450)('tr_tv', 'Retro TV', 'A little television from long ago.'),
+  item('trinket', 'modern', 400)('tr_boombox', 'Boombox', 'A cassette player for some music.'),
+  item('trinket', 'modern', 500)('tr_console', 'Game Console', 'For when the cards need a break.'),
+  item('trinket', 'modern', 350)('tr_desk_lamp', 'Desk Lamp', 'An orange lamp on a sprung arm.'),
+  item('poster', 'modern', 250)('po_clock', 'Wall Clock', 'A plain round clock.'),
+  item('lights', 'modern', 400)('l_sconce', 'Wall Sconces', 'Black lamps with a warm bulb.'),
+  item('ceiling', 'modern', 500)('c_modern_lamp', 'Pendant Lamp', 'A white pendant lamp.'),
+  item('ceiling', 'modern', 450)('c_industrial', 'Industrial Lamp', 'A metal factory lamp.'),
+  item('ceiling', 'modern', 600)('c_fan', 'Ceiling Fan', 'A slowly turning fan with a lamp.'),
+  item('table', 'modern', 1600)('t_neon', 'Neon Table', 'Black lacquer with a glowing edge.'),
+  item('table', 'modern', 1400)('t_marble_steel', 'Marble and Steel', 'White marble on black steel legs.'),
+  item('door', 'modern', 600)('d_walnut', 'Walnut Door', 'A flat walnut door in a steel frame.'),
+  item('floor', 'modern', 900)('f_marble', 'Marble', 'Smooth pale marble.'),
+  item('floor', 'modern', 700)('f_terrazzo', 'Terrazzo', 'Speckled terrazzo tiles.'),
+  item('floor', 'modern', 400)('f_laminate', 'Light Wood', 'A light wooden floor.'),
+  item('floor', 'modern', 500)('f_grey_tiles', 'Grey Tiles', 'Large grey stone tiles.'),
+  item('floor', 'modern', 600)('f_checker', 'Checkered Tiles', 'Black and white tiles.'),
+  item('floor', 'general', 600)('f_block_parquet', 'Block Parquet', 'Wooden blocks laid in squares.'),
+  item('walls', 'modern', 400)('w_stucco', 'White Walls', 'Clean white stucco.'),
+  item('walls', 'modern', 600)('w_blue_brick', 'Painted Brick', 'Bricks painted a soft blue.'),
+  item('walls', 'modern', 500)('w_concrete', 'Concrete', 'Bare smooth concrete.'),
+  item('walls', 'modern', 400)('w_grey', 'Grey Plaster', 'Calm grey plaster.'),
+  item('walls', 'modern', 900)('w_walnut', 'Walnut Panels', 'Smoked walnut all around.'),
+  item('walls', 'general', 500)('w_pattern', 'Patterned Plaster', 'Plaster pressed with a pattern.'),
+  item('rug', 'modern', 450)('r_shag', 'Round Shag Rug', 'A round, soft cream rug.'),
+  item('rug', 'modern', 500)('r_round', 'Round Circles Rug', 'A round rug of coloured rings.'),
+  item('rug', 'modern', 400)('r_boucle', 'Boucle Rug', 'A thick checked wool rug.'),
+  item('rug', 'general', 250)('r_gingham', 'Picnic Rug', 'Green and white gingham.'),
+  item('rug', 'modern', 450)('r_indigo', 'Indigo Rug', 'Denim blue with pale stripes.'),
+  item('rug', 'modern', 450)('r_corduroy', 'Corduroy Rug', 'Green corduroy with sweeping arcs.'),
+  item('rug', 'modern', 350)('r_terry', 'Blue Rug', 'A soft blue rug.'),
+  // Neon.
+  item('rug', 'neon', 900)('r_neon_grid', 'Neon Grid Rug', 'A dark rug with a glowing grid.'),
+  item('poster', 'neon', 600)('po_neon_heart', 'Neon Heart', 'A pink neon heart.'),
+  item('poster', 'neon', 600)('po_neon_bolt', 'Neon Bolt', 'A yellow neon lightning bolt.'),
+  item('poster', 'neon', 700)('po_neon_crown', 'Neon Crown', 'A purple neon crown.'),
+  item('poster', 'neon', 600)('po_neon_star', 'Neon Star', 'A blue neon star.'),
+  item('poster', 'neon', 700)('po_neon_controller', 'Neon Controller', 'A neon game controller.'),
+  item('poster', 'neon', 700)('po_neon_gg', 'Neon GG', 'Good game, in green neon.'),
+  item('poster', 'neon', 800)('po_neon_play', 'Neon PLAY', 'PLAY, in pink neon.'),
+  item('painting', 'neon', 1200)('p_neon_win', 'Neon WIN', 'A big neon WIN on the back wall.'),
+  item('lights', 'neon', 800)('l_neon_pink', 'Pink Neon Strips', 'Pink light along the walls.'),
+  item('lights', 'neon', 800)('l_neon_cyan', 'Cyan Neon Strips', 'Cyan light along the walls.'),
+  item('lights', 'neon', 800)('l_neon_purple', 'Purple Neon Strips', 'Purple light along the walls.'),
+  item('ceiling', 'neon', 900)('c_neon_ring', 'Neon Rings', 'Two glowing rings above the table.'),
 ];
 
 export const DECOR_BY_ID: Record<string, DecorItem> = Object.fromEntries(DECOR.map((d) => [d.id, d]));

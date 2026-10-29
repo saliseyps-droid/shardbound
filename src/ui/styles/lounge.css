@@ -88,6 +88,8 @@
 .lounge-style-fantasy { color: #d7b4ff; }
 .lounge-style-faction { color: #ffb38a; }
 .lounge-style-arcade { color: #6fe6ff; }
+.lounge-style-modern { color: #e8e4dc; }
+.lounge-style-neon { color: #ff6ad8; text-shadow: 0 0 6px rgba(255, 74, 216, 0.6); }
 
 @media (max-width: 900px) {
   .screen.lounge-screen { grid-template-columns: 1fr; grid-template-rows: minmax(260px, 55%) minmax(0, 1fr); }

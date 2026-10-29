@@ -20,6 +20,7 @@ import { FURNITURE } from './furniture';
 import { CEILINGS } from './ceiling';
 import { TRINKETS } from './trinkets';
 import { DOORS } from './doors';
+import { NEON_CEILINGS, NEON_LIGHTS, NEON_SIGNS } from './neon';
 
 /**
  * The room's decor from a layout: one piece per slot, each in its place. Used around the 3D table and
@@ -27,7 +28,7 @@ import { DOORS } from './doors';
  */
 
 type Make = (ctx: DecorContext, bag: Bag) => Built;
-const BUILDERS: Record<string, Make> = { ...TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS, ...DOORS };
+const BUILDERS: Record<string, Make> = { ...TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS, ...DOORS, ...NEON_SIGNS, ...NEON_LIGHTS, ...NEON_CEILINGS };
 
 /** Every catalogue id has a builder (checked by a test). */
 export const hasBuilder = (id: string) => id in BUILDERS;

@@ -272,6 +272,7 @@ export const POSTERS: Record<string, Make> = {
   po_shield_wood: onWall('qk/Shield_Wooden', { scale: 1.3 }),
   po_pegs: onWall('qk/Peg_Rack', { scale: 1.3 }),
   po_sword: onWall('qk/Sword_Bronze', { scale: 1 }),
+  po_clock: onWall('wall_clock', { scale: 2.6 }),
   po_legend: (ctx, bag) => artPainting(ctx, bag, ctx.art('legend'), 7, 9.8, gilt(bag)),
   po_cinder: (_c, bag) => banner(bag, FACTION_COLOR.cinder, emblems.flame),
   po_thorn: (_c, bag) => banner(bag, FACTION_COLOR.thorn, emblems.leaf),
@@ -314,6 +315,7 @@ const LIGHT_LOOKS: Record<string, OneLight> = {
   // Quaternius: a lantern on its own bracket, an iron torch.
   l_wall_lantern: (bag) => fixedLight(bag, 'qk/Lantern_Wall', 0.7, 0xffc27a, 26, -2.5, 0),
   l_iron_torch: (bag) => fixedLight(bag, 'qk/Torch_Metal', 1.2, 0xffa64a, 30, -1.8, 3.5),
+  l_sconce: (bag) => fixedLight(bag, 'industrial_wall_sconce', 2.6, 0xffe2b0, 26, -2.5, -1.5),
 };
 
 /** A light that comes with its own wall fixing: the model on the wall, its flame `out` from it, `up` high. */
