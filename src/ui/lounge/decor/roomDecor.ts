@@ -3,15 +3,23 @@ import { DEFAULT_ROOM, SLOTS, type RoomLayout, type SlotId } from '@/data/lounge
 import crownArt from '@/assets/cinematics/world_crown_isle.webp';
 import dragonArt from '@/assets/cinematics/inf_wyrm_hall.webp';
 import battleArt from '@/assets/cinematics/inf_legions.webp';
+import aetherArt from '@/assets/cinematics/world_aether.webp';
+import heavenArt from '@/assets/cinematics/hv_celestial_city.webp';
+import throneArt from '@/assets/cinematics/inf_throne_room.webp';
+import innArt from '@/assets/cinematics/inn_2.webp';
+import chapelArt from '@/assets/cinematics/lamp_chapel.webp';
+import cathedralArt from '@/assets/cinematics/bs_cathedral.webp';
+import gladeArt from '@/assets/cinematics/aethra_glade.webp';
 import { getCard } from '@/data/cards';
 import { cardArtUri } from '@/ui/components/cardArt';
-import { Bag, ROOM, TRINKET_X, type DecorContext } from './kit';
+import { Bag, ROOM, TRINKET_X, type DecorContext, type Limit } from './kit';
 import { TABLES, type Built } from './tables';
 import { FLOORS, RUGS, WALLS } from './surfaces';
 import { LIGHTS, PAINTINGS, POSTERS } from './wall';
 import { FURNITURE } from './furniture';
 import { CEILINGS } from './ceiling';
 import { TRINKETS } from './trinkets';
+import { DOORS } from './doors';
 
 /**
  * The room's decor from a layout: one piece per slot, each in its place. Used around the 3D table and
@@ -19,50 +27,62 @@ import { TRINKETS } from './trinkets';
  */
 
 type Make = (ctx: DecorContext, bag: Bag) => Built;
-const BUILDERS: Record<string, Make> = { ...TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS };
+const BUILDERS: Record<string, Make> = { ...TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS, ...DOORS };
 
 /** Every catalogue id has a builder (checked by a test). */
 export const hasBuilder = (id: string) => id in BUILDERS;
 
-/** Where a wall or floor piece stands (world) and which way its front faces (turn about z). */
-const furn = (x: number, y: number) => ({ at: new THREE.Vector3(x, y, ROOM.floor), face: Math.atan2(-x, y) });
-export const SLOT_PLACE: Partial<Record<SlotId, { at: THREE.Vector3; face: number }>> = {
-  // The middle of the table's short sides, beside the board (TABLE_SIZE in kit.ts; the surface at z = 0): seen from above in a match, they never stand in front of the cards.
-  tableLeft: { at: new THREE.Vector3(-TRINKET_X, -0.5, 0), face: -Math.PI / 2 },
-  tableRight: { at: new THREE.Vector3(TRINKET_X, -0.5, 0), face: Math.PI / 2 },
-  painting: { at: new THREE.Vector3(0, ROOM.y, 12), face: 0 },
-  posterLeft: { at: new THREE.Vector3(-ROOM.x, 8, 11), face: Math.PI / 2 },
-  posterRight: { at: new THREE.Vector3(ROOM.x, 8, 11), face: -Math.PI / 2 },
-  furnBackLeft: furn(-ROOM.x + 5, ROOM.y - 5),
-  furnBackRight: furn(ROOM.x - 5, ROOM.y - 5),
-  furnLeft: { at: new THREE.Vector3(-ROOM.x + 4, -10, ROOM.floor), face: Math.PI / 2 },
-  furnRight: { at: new THREE.Vector3(ROOM.x - 4, -10, ROOM.floor), face: -Math.PI / 2 },
+/**
+ * Where each placed piece stands (world), which way its front faces (a turn about z; 0 faces -y, towards
+ * the player's seat), and the most room it may take, so nothing runs into a wall or another slot:
+ * - back wall: the painting in the middle, a piece of furniture either side, backs to the wall;
+ * - side walls: furniture towards the player's end, the light in the middle, a wall piece beyond it;
+ * - front wall (behind the player): the door;
+ * - the table's short sides: small things, facing the player.
+ */
+const WALL_GAP = 0.25;
+const FLOOR_ITEM = { w: 18, d: 13, h: 28 };
+const SIDE_ITEM = { w: 16, d: 13, h: 28 };
+/** Between the board's edge and the table's (about 4.3 wide), with a little room either side. */
+const TRINKET = { w: 3.8, d: 4.5, h: 7 };
+export const SLOT_PLACE: Partial<Record<SlotId, { at: THREE.Vector3; face: number; limit?: Limit }>> = {
+  tableLeft: { at: new THREE.Vector3(-TRINKET_X, -0.5, 0), face: 0, limit: TRINKET },
+  tableRight: { at: new THREE.Vector3(TRINKET_X, -0.5, 0), face: 0, limit: TRINKET },
+  painting: { at: new THREE.Vector3(0, ROOM.y, 13), face: 0, limit: { w: 20, d: 2, h: 12 } },
+  posterLeft: { at: new THREE.Vector3(-ROOM.x, 13, 12), face: Math.PI / 2, limit: { w: 10, d: 3, h: 12 } },
+  posterRight: { at: new THREE.Vector3(ROOM.x, 13, 12), face: -Math.PI / 2, limit: { w: 10, d: 3, h: 12 } },
+  furnBackLeft: { at: new THREE.Vector3(-21, ROOM.y - WALL_GAP, ROOM.floor), face: 0, limit: FLOOR_ITEM },
+  furnBackRight: { at: new THREE.Vector3(21, ROOM.y - WALL_GAP, ROOM.floor), face: 0, limit: FLOOR_ITEM },
+  furnLeft: { at: new THREE.Vector3(-ROOM.x + WALL_GAP, -14, ROOM.floor), face: Math.PI / 2, limit: SIDE_ITEM },
+  furnRight: { at: new THREE.Vector3(ROOM.x - WALL_GAP, -14, ROOM.floor), face: -Math.PI / 2, limit: SIDE_ITEM },
+  door: { at: new THREE.Vector3(0, -ROOM.y + WALL_GAP, ROOM.floor), face: Math.PI, limit: { w: 22, d: 3, h: 28 } },
+  ceiling: { at: new THREE.Vector3(0, 0, 0), face: 0, limit: { w: 12, d: 12, h: 9 } },
 };
 
 /** Where the Lounge pins each slot's marker. */
 export const SLOT_ANCHOR: Record<SlotId, THREE.Vector3> = {
   table: new THREE.Vector3(-8, -6.5, 0.6),
-  tableLeft: new THREE.Vector3(-TRINKET_X, -0.5, 3),
-  tableRight: new THREE.Vector3(TRINKET_X, -0.5, 3),
+  tableLeft: new THREE.Vector3(-TRINKET_X, -0.5, 4),
+  tableRight: new THREE.Vector3(TRINKET_X, -0.5, 4),
   rug: new THREE.Vector3(13, -9.5, ROOM.floor + 0.2),
   floor: new THREE.Vector3(-20, -20, ROOM.floor + 0.2),
-  walls: new THREE.Vector3(18, ROOM.y - 0.3, 20),
-  painting: new THREE.Vector3(0, ROOM.y - 0.6, 12),
-  posterLeft: new THREE.Vector3(-ROOM.x + 0.6, 8, 11),
-  posterRight: new THREE.Vector3(ROOM.x - 0.6, 8, 11),
-  lights: new THREE.Vector3(-ROOM.x + 1.5, -6, 9),
-  furnBackLeft: new THREE.Vector3(-ROOM.x + 5, ROOM.y - 5, ROOM.floor + 16),
-  furnBackRight: new THREE.Vector3(ROOM.x - 5, ROOM.y - 5, ROOM.floor + 16),
-  furnLeft: new THREE.Vector3(-ROOM.x + 4, -10, ROOM.floor + 15),
-  furnRight: new THREE.Vector3(ROOM.x - 4, -10, ROOM.floor + 15),
+  walls: new THREE.Vector3(26, ROOM.y - 0.3, 20),
+  painting: new THREE.Vector3(0, ROOM.y - 0.6, 13),
+  posterLeft: new THREE.Vector3(-ROOM.x + 0.6, 13, 12),
+  posterRight: new THREE.Vector3(ROOM.x - 0.6, 13, 12),
+  lights: new THREE.Vector3(-ROOM.x + 1.5, 0, 9),
+  furnBackLeft: new THREE.Vector3(-21, ROOM.y - 5, ROOM.floor + 16),
+  furnBackRight: new THREE.Vector3(21, ROOM.y - 5, ROOM.floor + 16),
+  furnLeft: new THREE.Vector3(-ROOM.x + 5, -14, ROOM.floor + 15),
+  furnRight: new THREE.Vector3(ROOM.x - 5, -14, ROOM.floor + 15),
+  door: new THREE.Vector3(0, -ROOM.y + 1, ROOM.floor + 14),
   ceiling: new THREE.Vector3(0, 0, 19),
 };
 
 /** Pictures the paintings and posters may hang. */
-export function decorArt(key: 'crown' | 'dragon' | 'battle' | 'legend' | 'map'): string | undefined {
-  if (key === 'crown') return crownArt;
-  if (key === 'dragon') return dragonArt;
-  if (key === 'battle') return battleArt;
+const ART: Record<string, string> = { crown: crownArt, dragon: dragonArt, battle: battleArt, aether: aetherArt, heaven: heavenArt, throne: throneArt, inn: innArt, chapel: chapelArt, cathedral: cathedralArt, glade: gladeArt };
+export function decorArt(key: string): string | undefined {
+  if (ART[key]) return ART[key];
   if (key === 'legend') {
     const c = getCard('emb_pyraxis_ashen_sovereign');
     return c ? cardArtUri(c) : undefined;
@@ -94,7 +114,7 @@ export function buildRoomDecor(scene: THREE.Scene, layout: RoomLayout, ctx: Deco
     const bag = new Bag();
     let built: Built;
     try {
-      built = make(ctx, bag);
+      built = make({ ...ctx, limit: SLOT_PLACE[slot]?.limit }, bag);
     } catch (e) {
       // A piece that fails to build is left out (or the slot's default stands in): never the whole table.
       bag.dispose();

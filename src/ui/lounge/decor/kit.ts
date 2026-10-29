@@ -32,7 +32,16 @@ export interface DecorContext {
   /** The player's (or host's) Warden portrait, for the portrait painting. */
   portraitUrl?: string;
   /** Art to hang (a card's, the campaign's…), resolved by the caller. */
-  art: (key: 'crown' | 'dragon' | 'battle' | 'legend' | 'map') => string | undefined;
+  art: (key: string) => string | undefined;
+  /** The most room the slot gives (width along its wall, depth out of it, height): bigger pieces shrink. */
+  limit?: Limit;
+}
+
+/** A size in room units: width (x), depth (y), height (z), in the piece's own frame. */
+export interface Limit {
+  w: number;
+  d: number;
+  h: number;
 }
 
 /** Collects what a builder makes so a Piece can free it all at once. */
@@ -226,8 +235,11 @@ export const FACTION_COLOR = {
   rime: ['#2a6a9a', '#cfeeff'],
 } as const;
 
-/** Where the room's 3D models live (public/decor/<id>/model.gltf, from Poly Haven, CC0). */
-export const modelUrl = (id: string) => `${import.meta.env.BASE_URL}decor/${id}/model.gltf`;
+/**
+ * Where the room's 3D models live, all CC0: public/decor/<id>/model.gltf (Poly Haven),
+ * decor/qk/<Name>.gltf (Quaternius Fantasy Props), decor/arcade/<name>.glb (Kenney Mini Arcade).
+ */
+export const modelUrl = (id: string) => `${import.meta.env.BASE_URL}decor/${id.includes('/') ? (id.endsWith('.glb') ? id : `${id}.gltf`) : `${id}/model.gltf`}`;
 
 /** Room units per metre: the table stands 9 high, about 75 cm, so 12 to the metre. Models keep their real size. */
 export const PER_METRE = 12;
@@ -241,6 +253,10 @@ export interface ModelFit {
   turn?: number;
   /** floor: stands on z = 0; wall: its back on y = 0, centred on z = 0; hang: its top at z = 0. */
   mount?: 'floor' | 'wall' | 'hang';
+  /** On the floor: centred, or its back on y = 0 (standing against a wall). */
+  anchor?: 'center' | 'back';
+  /** The most room it may take: a bigger piece shrinks to fit. */
+  max?: Limit;
 }
 
 /**
@@ -271,23 +287,27 @@ export function modelPiece(bag: Bag, id: string, fit: ModelFit = {}): THREE.Grou
         bag.dispose();
         return;
       }
+      // y-up to z-up, then the turn about z: measured together, so width, depth and the back are the
+      // ones the room sees.
       model.rotation.x = Math.PI / 2;
-      model.updateMatrixWorld(true);
-      const box = new THREE.Box3().setFromObject(model);
+      const turned = new THREE.Group();
+      turned.rotation.z = fit.turn ?? 0;
+      turned.add(model);
+      turned.updateMatrixWorld(true);
+      const box = new THREE.Box3().setFromObject(turned);
       const dim = box.getSize(new THREE.Vector3());
-      const k = fit.height ? fit.height / dim.z : PER_METRE * (fit.scale ?? 1);
-      const cx = -(box.min.x + box.max.x) / 2;
-      const cy = -(box.min.y + box.max.y) / 2;
+      let k = fit.height ? fit.height / dim.z : PER_METRE * (fit.scale ?? 1);
+      if (fit.max) k = Math.min(k, fit.max.w / dim.x, fit.max.d / dim.y, fit.max.h / dim.z);
       const mount = fit.mount ?? 'floor';
-      model.position.set(
-        cx,
-        mount === 'wall' ? -box.max.y : cy,
+      const back = mount === 'wall' || fit.anchor === 'back';
+      turned.position.set(
+        -(box.min.x + box.max.x) / 2,
+        back ? -box.max.y : -(box.min.y + box.max.y) / 2,
         mount === 'floor' ? -box.min.z : mount === 'hang' ? -box.max.z : -(box.min.z + box.max.z) / 2,
       );
       const holder = new THREE.Group();
-      holder.add(model);
+      holder.add(turned);
       holder.scale.setScalar(k);
-      holder.rotation.z = fit.turn ?? 0;
       root.add(holder);
     }),
   );

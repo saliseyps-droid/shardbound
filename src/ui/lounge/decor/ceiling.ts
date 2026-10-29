@@ -25,4 +25,5 @@ export const CEILINGS: Record<string, Make> = {
   c_chandelier: hanging('Chandelier_01', { height: 7 }, 0xffc27a, 34),
   c_chandelier_brass: hanging('Chandelier_02', { height: 6 }),
   c_chandelier_crystal: hanging('Chandelier_03', { height: 7 }, 0xfff0d8, 32),
+  c_candle_ring: hanging('qk/Chandelier', { height: 8 }, 0xffc27a, 34),
 };

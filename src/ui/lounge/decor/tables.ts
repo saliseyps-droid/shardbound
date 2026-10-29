@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { Bag, DecorContext, canvasTexture, marbleTexture, mesh, plankTexture, rng, roundedRect, std, woodTexture } from './kit';
+import { Bag, DecorContext, PER_METRE, canvasTexture, marbleTexture, mesh, plankTexture, rng, roundedRect, std, woodTexture } from './kit';
+import { scanned } from './surfaces';
 
 /** The tables: a top (the mat lies on it at z ≈ 0), an apron and four legs down to the floor (z = -9). */
 
@@ -443,7 +444,21 @@ function mergeGeometries(geos: THREE.BufferGeometry[]): THREE.BufferGeometry {
   return out;
 }
 
+/** A table of scanned wood (Poly Haven, CC0): the top, its edge and the legs all of `id`, at real size. */
+const scannedWood = (id: string, metres: number, legs: [number, number][] = TURNED) => (ctx: DecorContext, bag: Bag): Built => {
+  const r = 1 / (metres * PER_METRE);
+  const { g } = body(ctx, bag, {
+    top: scanned(bag, id, r, r, { roughness: 0.6 }),
+    edge: scanned(bag, id, 0.08, 1.2, { roughness: 0.65 }),
+    leg: scanned(bag, id, 0.3, 0.3, { roughness: 0.65 }),
+    legs,
+  });
+  return { root: g };
+};
+
 export const TABLES: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
+  t_walnut: scannedWood('dark_wood', 2, LION),
+  t_old_oak: scannedWood('medieval_wood', 2),
   t_tavern: tavern,
   t_dark_oak: darkOak,
   t_marble: marble,

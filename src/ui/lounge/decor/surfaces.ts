@@ -12,7 +12,7 @@ const texUrl = (id: string, map: 'diff' | 'nor' | 'rough') => `${import.meta.env
 const loader = new THREE.TextureLoader();
 
 /** A material with a Poly Haven texture set, repeated `rx` × `ry` times; it shows once the maps load. */
-function scanned(bag: Bag, id: string, rx: number, ry: number, p: THREE.MeshStandardMaterialParameters = {}) {
+export function scanned(bag: Bag, id: string, rx: number, ry: number, p: THREE.MeshStandardMaterialParameters = {}) {
   const mat = std(bag, { color: '#3a3238', roughness: 1, ...p });
   const load = (map: 'diff' | 'nor' | 'rough', apply: (t: THREE.Texture) => void) =>
     loader.load(texUrl(id, map), (t) => {
@@ -51,6 +51,7 @@ export const FLOORS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
   f_cobble: floor('cobblestone_floor_04', 1.5),
   f_terracotta: floor('terracotta_floor_tiles', 2.08),
   f_slate: floor('slate_floor_02', 2),
+  f_dark_planks: floor('dark_wooden_planks', 2),
 };
 
 // ---------- Walls: four planes standing on the floor, facing in. ----------
@@ -80,6 +81,7 @@ export const WALLS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
   w_sandstone: walls('large_sandstone_blocks_01', 3),
   w_panel: walls('dark_paneled_wood', 1.4),
   w_plaster: walls('plaster_stone_wall_01', 2.3),
+  w_beams: walls('beam_wall_01', 1),
 };
 
 // ---------- Rugs: a woven field (a scanned fabric) inside a border, under the table. ----------
@@ -205,4 +207,6 @@ export const RUGS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
   r_damask: rug({ fabric: 'floral_jacquard', metres: 1.4, band: '#0e2a1e', line: '#b8923e' }),
   r_tartan: rug({ fabric: 'curly_teddy_checkered', metres: 2.2, tint: 'rgba(0,0,0,.15)', fringe: '#d8ccb0' }),
   r_hessian: rug({ fabric: 'hessian_230', metres: 0.8, band: '#3a2818' }),
+  r_fur: rug({ fabric: 'faux_fur_geometric', metres: 1.2, band: '#3a1a22', line: '#a07a32' }),
+  r_wool: rug({ fabric: 'poly_wool_herringbone', metres: 1, band: '#22201e', fringe: '#cfc6b4' }),
 };

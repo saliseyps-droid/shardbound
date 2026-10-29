@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { SLOTS, SLOT_NAME, type RoomLayout, type SlotId } from '@/data/lounge';
+import { DECOR, SLOTS, SLOT_KIND, SLOT_NAME, type RoomLayout, type SlotId } from '@/data/lounge';
 import { buildTableScene, type TableScene } from '@/ui/match/table3d/TableScene3D';
 import { ROOM } from './decor/kit';
-import { SLOT_ANCHOR } from './decor/roomDecor';
+import { SLOT_ANCHOR, SLOT_PLACE } from './decor/roomDecor';
 import { createLookControls } from './lookControls';
 import { t } from '@/i18n';
 import { usingTouch } from '@/ui/inputMode';
@@ -127,7 +127,7 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
     const onHome = () => controls.view(HOME.pos, HOME.target, true);
     root.addEventListener('lounge-home', onHome);
 
-    if (import.meta.env.DEV) Object.assign(window, { __lounge: { scene: table.scene, camera, controls, decor: table.decor } });
+    if (import.meta.env.DEV) Object.assign(window, { __lounge: { scene: table.scene, camera, controls, decor: table.decor, DECOR, SLOT_KIND, SLOT_PLACE, THREE } });
 
     return () => {
       cancelAnimationFrame(raf);

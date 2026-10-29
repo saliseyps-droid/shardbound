@@ -4,8 +4,8 @@
  * the 3D table (against the AI the player's own, online the host's).
  */
 
-export type DecorKind = 'table' | 'trinket' | 'rug' | 'floor' | 'walls' | 'painting' | 'poster' | 'lights' | 'furniture' | 'ceiling';
-export type DecorStyle = 'base' | 'general' | 'fantasy' | 'faction';
+export type DecorKind = 'table' | 'trinket' | 'rug' | 'floor' | 'walls' | 'painting' | 'poster' | 'lights' | 'furniture' | 'ceiling' | 'door';
+export type DecorStyle = 'base' | 'general' | 'fantasy' | 'faction' | 'arcade';
 
 export const SLOTS = [
   'table',
@@ -23,6 +23,7 @@ export const SLOTS = [
   'furnLeft',
   'furnRight',
   'ceiling',
+  'door',
 ] as const;
 export type SlotId = (typeof SLOTS)[number];
 
@@ -42,6 +43,7 @@ export const SLOT_KIND: Record<SlotId, DecorKind> = {
   furnLeft: 'furniture',
   furnRight: 'furniture',
   ceiling: 'ceiling',
+  door: 'door',
 };
 
 export const SLOT_NAME: Record<SlotId, string> = {
@@ -52,14 +54,15 @@ export const SLOT_NAME: Record<SlotId, string> = {
   floor: 'Floor',
   walls: 'Walls',
   painting: 'Painting',
-  posterLeft: 'Left poster',
-  posterRight: 'Right poster',
+  posterLeft: 'Left wall, high',
+  posterRight: 'Right wall, high',
   lights: 'Lights',
-  furnBackLeft: 'Back left corner',
-  furnBackRight: 'Back right corner',
-  furnLeft: 'By the left wall',
-  furnRight: 'By the right wall',
+  furnBackLeft: 'Back wall, left',
+  furnBackRight: 'Back wall, right',
+  furnLeft: 'Left wall',
+  furnRight: 'Right wall',
   ceiling: 'Ceiling',
+  door: 'Door',
 };
 
 export interface DecorItem {
@@ -165,6 +168,81 @@ export const DECOR: DecorItem[] = [
   item('ceiling', 'general', 600)('c_chandelier', 'Iron Chandelier', 'A wrought iron chandelier.'),
   item('ceiling', 'fantasy', 900)('c_chandelier_brass', 'Brass Chandelier', 'A brass chandelier with curling arms.'),
   item('ceiling', 'fantasy', 1200)('c_chandelier_crystal', 'Crystal Chandelier', 'A chandelier hung with crystals.'),
+
+  // Fantasy furniture (Quaternius, CC0).
+  item('furniture', 'fantasy', 900)('fu_cauldron', 'Bubbling Cauldron', 'An iron cauldron with a green brew.'),
+  item('furniture', 'fantasy', 500)('fu_dummy', 'Training Dummy', 'A straw dummy for sword practice.'),
+  item('furniture', 'fantasy', 600)('fu_lectern', 'Spellbook Lectern', 'A lectern with an open spellbook.'),
+  item('poster', 'fantasy', 800)('po_alchemy', 'Alchemist’s Shelf', 'A shelf of little bottles and potions.'),
+  item('furniture', 'fantasy', 600)('fu_anvil', 'Anvil', 'A smith’s anvil on a log.'),
+  item('furniture', 'fantasy', 700)('fu_bookcase', 'Wizard’s Bookcase', 'A tall bookcase full of tomes.'),
+  item('furniture', 'fantasy', 400)('fu_candelabra', 'Candelabrum', 'A tall iron stand of burning candles.'),
+  item('furniture', 'fantasy', 450)('fu_cage', 'Hanging Cage', 'A small iron cage on a stand.'),
+  item('furniture', 'general', 250)('fu_apples', 'Barrel of Apples', 'A barrel heaped with red apples.'),
+  item('furniture', 'general', 500)('fu_workbench', 'Workbench', 'A sturdy bench with tools.'),
+  item('furniture', 'general', 350)('fu_wood_chest', 'Wooden Chest', 'A plain chest bound with iron.'),
+  // Arcade (Kenney Mini Arcade, CC0).
+  item('furniture', 'arcade', 1500)('fu_arcade', 'Arcade Machine', 'A classic arcade cabinet with a glowing screen.'),
+  item('furniture', 'arcade', 1800)('fu_pinball', 'Pinball', 'A pinball table full of lights.'),
+  item('furniture', 'arcade', 1600)('fu_claw', 'Claw Machine', 'Try your luck at grabbing a prize.'),
+  item('furniture', 'arcade', 1400)('fu_air_hockey', 'Air Hockey', 'A table for fast air hockey.'),
+  item('furniture', 'arcade', 1200)('fu_prize_wheel', 'Prize Wheel', 'Spin the wheel and win.'),
+  item('furniture', 'arcade', 1300)('fu_slots', 'Slot Machine', 'Three reels and a lever.'),
+  item('furniture', 'arcade', 1600)('fu_dance', 'Dance Machine', 'Arrows, lights and music.'),
+  item('furniture', 'arcade', 1500)('fu_hoops', 'Basketball Game', 'Shoot hoops for tickets.'),
+  item('furniture', 'arcade', 1000)('fu_vending', 'Vending Machine', 'Snacks for a long match.'),
+  item('furniture', 'arcade', 800)('fu_tickets', 'Ticket Machine', 'Prints your winning tickets.'),
+
+  // Small things for the table.
+  item('trinket', 'fantasy', 200)('tr_potion_red', 'Red Potion', 'A round bottle of a red potion.'),
+  item('trinket', 'fantasy', 200)('tr_potion_blue', 'Blue Potion', 'A slim bottle of a blue potion.'),
+  item('trinket', 'fantasy', 300)('tr_potion_big', 'Large Potion', 'A big flask of something glowing.'),
+  item('trinket', 'fantasy', 300)('tr_coins', 'Pile of Gold', 'A pile of gold coins.'),
+  item('trinket', 'fantasy', 400)('tr_coins_big', 'Hoard of Gold', 'A heap of gold coins.'),
+  item('trinket', 'fantasy', 250)('tr_chalice', 'Golden Chalice', 'A chalice fit for a victory.'),
+  item('trinket', 'fantasy', 300)('tr_candles', 'Candlestick', 'Three candles on an iron stick.'),
+  item('trinket', 'general', 200)('tr_book_stack', 'Stack of Books', 'Old books piled up.'),
+  item('trinket', 'general', 150)('tr_scroll', 'Scroll', 'A rolled up scroll.'),
+  item('trinket', 'fantasy', 200)('tr_key', 'Golden Key', 'A big golden key.'),
+  item('trinket', 'general', 100)('tr_mug', 'Tankard', 'A wooden tankard of ale.'),
+  item('trinket', 'fantasy', 200)('tr_bottles', 'Little Bottles', 'A cluster of small bottles.'),
+  item('trinket', 'arcade', 300)('tr_prizes', 'Prizes', 'Plush toys won at the arcade.'),
+
+  // On the walls.
+  item('poster', 'fantasy', 400)('po_banner_red', 'Red Banner', 'A long red banner with a golden sign.'),
+  item('poster', 'fantasy', 400)('po_banner_blue', 'Blue Banner', 'A long blue banner with a golden sign.'),
+  item('poster', 'general', 300)('po_shield_wood', 'Wooden Shield', 'A round wooden shield.'),
+  item('poster', 'general', 300)('po_dartboard', 'Dartboard', 'A worn dartboard.'),
+  item('poster', 'fantasy', 500)('po_hammer', 'War Hammer', 'An ornate war hammer on the wall.'),
+  item('poster', 'fantasy', 600)('po_estoc', 'Antique Sword', 'A long antique sword on the wall.'),
+  item('poster', 'fantasy', 500)('po_mace', 'Ornate Mace', 'A decorated mace on the wall.'),
+  item('poster', 'general', 150)('po_pegs', 'Peg Rack', 'A rack of pegs with a few things hung on it.'),
+  item('poster', 'general', 300)('po_sword', 'Bronze Sword', 'A bronze sword hung on the wall.'),
+
+  // Lights and the ceiling.
+  item('lights', 'fantasy', 350)('l_wall_lantern', 'Wall Lanterns', 'Iron lanterns fixed to the walls.'),
+  item('lights', 'general', 250)('l_iron_torch', 'Iron Torches', 'Torches in iron cups.'),
+  item('ceiling', 'fantasy', 700)('c_candle_ring', 'Candle Chandelier', 'A great ring of candles on chains.'),
+
+  // Paintings: scenes from the campaigns.
+  item('painting', 'fantasy', 500)('p_aether', 'The Aether', 'The shining sky above the world.'),
+  item('painting', 'fantasy', 500)('p_heaven', 'The Celestial City', 'A city of light among the clouds.'),
+  item('painting', 'fantasy', 500)('p_throne', 'The Throne Room', 'A dark throne room of fire.'),
+  item('painting', 'fantasy', 400)('p_inn', 'The Inn', 'A warm inn by the road.'),
+  item('painting', 'fantasy', 500)('p_chapel', 'The Lamplit Chapel', 'A chapel lit by many lamps.'),
+  item('painting', 'fantasy', 500)('p_cathedral', 'The Cathedral', 'A great cathedral of black stone.'),
+  item('painting', 'fantasy', 400)('p_glade', 'The Glade', 'A quiet glade in the forest.'),
+
+  // More floors, walls, rugs and tables.
+  item('floor', 'general', 400)('f_dark_planks', 'Dark Planks', 'Dark, worn planks.'),
+  item('walls', 'general', 500)('w_beams', 'Log Wall', 'Walls of round wooden logs.'),
+  item('rug', 'general', 350)('r_fur', 'Patterned Rug', 'A soft rug with a woven pattern.'),
+  item('rug', 'general', 300)('r_wool', 'Wool Rug', 'A grey herringbone wool rug.'),
+  item('table', 'general', 600)('t_walnut', 'Walnut Table', 'A table of dark walnut.'),
+  item('table', 'general', 500)('t_old_oak', 'Old Oak Table', 'A heavy table of weathered oak.'),
+
+  // Doors.
+  item('door', 'base', 0)('d_castle', 'Castle Door', 'A heavy wooden door bound with iron.'),
 ];
 
 export const DECOR_BY_ID: Record<string, DecorItem> = Object.fromEntries(DECOR.map((d) => [d.id, d]));
@@ -188,6 +266,7 @@ export const DEFAULT_ROOM: RoomLayout = {
   furnLeft: null,
   furnRight: null,
   ceiling: null,
+  door: 'd_castle',
 };
 
 /** Slots that can be left empty (the others always hold a piece: a room needs a table, a floor…). */

@@ -104,8 +104,15 @@ export const PAINTINGS: Record<string, Make> = {
   },
   p_crown: (ctx, bag) => artPainting(ctx, bag, ctx.art('crown'), 17, 10.5, gilt(bag)),
   p_dragon: (ctx, bag) => artPainting(ctx, bag, ctx.art('dragon'), 17, 10.5, gilt(bag)),
-  p_battle: (ctx, bag) => artPainting(ctx, bag, ctx.art('battle'), 20, 9, woodFrame(bag)),
+  p_battle: (ctx, bag) => artPainting(ctx, bag, ctx.art('battle'), 18, 9, woodFrame(bag)),
   p_warden: (ctx, bag) => artPainting(ctx, bag, ctx.portraitUrl, 9, 12, gilt(bag)),
+  p_aether: (ctx, bag) => artPainting(ctx, bag, ctx.art('aether'), 17, 10, gilt(bag)),
+  p_heaven: (ctx, bag) => artPainting(ctx, bag, ctx.art('heaven'), 17, 10, gilt(bag)),
+  p_throne: (ctx, bag) => artPainting(ctx, bag, ctx.art('throne'), 17, 10, woodFrame(bag)),
+  p_inn: (ctx, bag) => artPainting(ctx, bag, ctx.art('inn'), 16, 10, woodFrame(bag)),
+  p_chapel: (ctx, bag) => artPainting(ctx, bag, ctx.art('chapel'), 17, 10, gilt(bag)),
+  p_cathedral: (ctx, bag) => artPainting(ctx, bag, ctx.art('cathedral'), 12, 12, woodFrame(bag)),
+  p_glade: (ctx, bag) => artPainting(ctx, bag, ctx.art('glade'), 17, 10, woodFrame(bag)),
 };
 
 /** A cloth banner on a rod: faction colours, a border, an emblem; it sways a little. */
@@ -214,6 +221,9 @@ const emblems = {
   },
 };
 
+/** A model hung on the wall: its back to the wall, centred on the slot, no bigger than the slot allows. */
+const onWall = (id: string, fit: { scale?: number; turn?: number }): Make => (ctx, bag) => ({ root: modelPiece(bag, id, { ...fit, mount: 'wall', max: ctx.limit }) });
+
 export const POSTERS: Record<string, Make> = {
   po_wanted: (_c, bag) => {
     const map = bag.keep(
@@ -247,10 +257,21 @@ export const POSTERS: Record<string, Make> = {
     return { root: framed(bag, 7, 9.3, std(bag, { color: '#3a2a1a' }), std(bag, { map, roughness: 0.95 }), 0.15) };
   },
   // Wall pieces from Poly Haven (CC0): a knight's shield, hunting trophies, a mirror.
-  po_shield: (_c, bag) => ({ root: modelPiece(bag, 'kite_shield', { scale: 0.55, mount: 'wall' }) }),
-  po_lion: (_c, bag) => ({ root: modelPiece(bag, 'lion_head', { scale: 1.6, mount: 'wall' }) }),
-  po_bull: (_c, bag) => ({ root: modelPiece(bag, 'bull_head', { scale: 1.6, mount: 'wall' }) }),
-  po_mirror: (_c, bag) => ({ root: modelPiece(bag, 'ornate_mirror_01', { scale: 1.8, mount: 'wall' }) }),
+  po_shield: onWall('kite_shield', { scale: 0.55 }),
+  po_lion: onWall('lion_head', { scale: 1.6 }),
+  po_bull: onWall('bull_head', { scale: 1.6 }),
+  po_mirror: onWall('ornate_mirror_01', { scale: 1.8 }),
+  po_dartboard: onWall('dartboard', { scale: 1.6 }),
+  po_hammer: onWall('ornate_war_hammer', { scale: 1.4 }),
+  po_estoc: onWall('antique_estoc', { scale: 0.75 }),
+  po_mace: onWall('ornate_medieval_mace', { scale: 1.5 }),
+  // Fantasy (Quaternius).
+  po_alchemy: onWall('qk/Shelf_Small_Bottles', { scale: 1.2 }),
+  po_banner_red: onWall('qk/Banner_1', { scale: 0.8 }),
+  po_banner_blue: onWall('qk/Banner_2', { scale: 0.8 }),
+  po_shield_wood: onWall('qk/Shield_Wooden', { scale: 1.3 }),
+  po_pegs: onWall('qk/Peg_Rack', { scale: 1.3 }),
+  po_sword: onWall('qk/Sword_Bronze', { scale: 1 }),
   po_legend: (ctx, bag) => artPainting(ctx, bag, ctx.art('legend'), 7, 9.8, gilt(bag)),
   po_cinder: (_c, bag) => banner(bag, FACTION_COLOR.cinder, emblems.flame),
   po_thorn: (_c, bag) => banner(bag, FACTION_COLOR.thorn, emblems.leaf),
@@ -264,8 +285,8 @@ export const POSTERS: Record<string, Make> = {
 
 /** Where the two lights hang (world), facing into the room. */
 export const LIGHT_SPOTS: { at: THREE.Vector3; face: number }[] = [
-  { at: new THREE.Vector3(-ROOM.x, -6, 8), face: Math.PI / 2 },
-  { at: new THREE.Vector3(ROOM.x, -6, 8), face: -Math.PI / 2 },
+  { at: new THREE.Vector3(-ROOM.x, 0, 8), face: Math.PI / 2 },
+  { at: new THREE.Vector3(ROOM.x, 0, 8), face: -Math.PI / 2 },
 ];
 
 /** One light's look, built facing -y at the wall; returns its light so the pair can flicker. */
@@ -290,16 +311,29 @@ const LIGHT_LOOKS: Record<string, OneLight> = {
   // Lanterns (Poly Haven, CC0) hanging from an iron bracket on the wall.
   l_lantern: (bag) => hungLantern(bag, 'Lantern_01', 3, 0xffc27a, 26),
   l_wooden_lantern: (bag) => hungLantern(bag, 'wooden_lantern_01', 2.2, 0xffb86a, 26),
+  // Quaternius: a lantern on its own bracket, an iron torch.
+  l_wall_lantern: (bag) => fixedLight(bag, 'qk/Lantern_Wall', 0.7, 0xffc27a, 26, -2.5, 0),
+  l_iron_torch: (bag) => fixedLight(bag, 'qk/Torch_Metal', 1.2, 0xffa64a, 30, -1.8, 3.5),
 };
+
+/** A light that comes with its own wall fixing: the model on the wall, its flame `out` from it, `up` high. */
+function fixedLight(bag: Bag, id: string, scale: number, color: number, base: number, out: number, up: number) {
+  const g = new THREE.Group();
+  const m = modelPiece(bag, id, { scale, mount: 'wall' });
+  const light = new THREE.PointLight(color, base, 45, 1.6);
+  light.position.set(0, out, up);
+  g.add(m, light);
+  return { g, light, base };
+}
 
 function hungLantern(bag: Bag, id: string, scale: number, color: number, base: number) {
   const g = new THREE.Group();
-  const arm = mesh(new THREE.BoxGeometry(0.18, 2.4, 0.18), iron(bag), bag, [0, -1.2, 2.6]);
-  const hook = mesh(new THREE.BoxGeometry(0.12, 0.12, 0.8), iron(bag), bag, [0, -2.3, 2.2]);
+  const arm = mesh(new THREE.BoxGeometry(0.18, 3.7, 0.18), iron(bag), bag, [0, -1.85, 2.6]);
+  const hook = mesh(new THREE.BoxGeometry(0.12, 0.12, 0.8), iron(bag), bag, [0, -3.6, 2.2]);
   const m = modelPiece(bag, id, { scale, mount: 'hang' });
-  m.position.set(0, -2.3, 1.9);
+  m.position.set(0, -3.6, 1.9);
   const light = new THREE.PointLight(color, base, 45, 1.6);
-  light.position.set(0, -3, 0.5);
+  light.position.set(0, -4.2, 0.5);
   g.add(arm, hook, m, light);
   return { g, light, base };
 }
