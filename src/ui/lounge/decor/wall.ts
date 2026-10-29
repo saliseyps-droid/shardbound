@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Bag, DecorContext, FACTION_COLOR, ROOM, canvasTexture, flame, loadArt, mesh, modelPiece, rng, std, woodTexture } from './kit';
+import { Bag, DecorContext, FACTION_COLOR, ROOM, canvasTexture, flame, loadArt, mesh, modelPiece, std, woodTexture } from './kit';
 import type { Built } from './tables';
 
 /**
@@ -174,37 +174,7 @@ const emblems = {
 const onWall = (id: string, fit: { scale?: number; turn?: number }): Make => (ctx, bag) => ({ root: modelPiece(bag, id, { ...fit, mount: 'wall', max: ctx.limit }) });
 
 export const POSTERS: Record<string, Make> = {
-  po_wanted: (_c, bag) => {
-    const map = bag.keep(
-      canvasTexture(384, 512, (g) => {
-        const r = rng(221);
-        g.fillStyle = '#d8c08a';
-        g.fillRect(0, 0, 384, 512);
-        for (let i = 0; i < 200; i++) {
-          g.fillStyle = `rgba(110,80,30,${r() * 0.1})`;
-          g.fillRect(r() * 384, r() * 512, 30, 14);
-        }
-        g.fillStyle = '#3a2410';
-        g.textAlign = 'center';
-        g.font = 'bold 64px serif';
-        g.fillText('WANTED', 192, 84);
-        g.strokeStyle = '#3a2410';
-        g.lineWidth = 4;
-        g.strokeRect(72, 112, 240, 220);
-        // A rough face.
-        g.beginPath();
-        g.arc(192, 210, 60, 0, Math.PI * 2);
-        g.moveTo(130, 330);
-        g.quadraticCurveTo(192, 260, 254, 330);
-        g.stroke();
-        g.font = 'bold 40px serif';
-        g.fillText('1000 GOLD', 192, 400);
-        g.font = '24px serif';
-        g.fillText('dead or alive', 192, 440);
-      }),
-    );
-    return { root: framed(bag, 7, 9.3, std(bag, { color: '#3a2a1a' }), std(bag, { map, roughness: 0.95 }), 0.15) };
-  },
+  po_abandoneer: (ctx, bag) => artPainting(ctx, bag, ctx.art('abandoneer'), 7, 9.8, woodFrame(bag)),
   // Wall pieces from Poly Haven (CC0): a knight's shield, hunting trophies, a mirror.
   po_shield: onWall('kite_shield', { scale: 0.55 }),
   po_lion: onWall('lion_head', { scale: 1.6 }),

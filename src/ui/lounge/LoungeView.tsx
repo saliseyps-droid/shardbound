@@ -128,7 +128,7 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
     const onHome = () => controls.view(HOME.pos, HOME.target, true);
     root.addEventListener('lounge-home', onHome);
 
-    if (import.meta.env.DEV) Object.assign(window, { __lounge: { scene: table.scene, camera, controls, decor: table.decor, DECOR, SLOT_KIND, SLOT_PLACE, THREE } });
+    if (import.meta.env.DEV) Object.assign(window, { __lounge: { scene: table.scene, camera, controls, decor: table.decor, DECOR, SLOT_KIND, SLOT_PLACE, THREE, renderer } });
 
     return () => {
       cancelAnimationFrame(raf);

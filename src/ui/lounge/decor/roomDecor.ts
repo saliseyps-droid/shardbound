@@ -84,6 +84,10 @@ export const SLOT_ANCHOR: Record<SlotId, THREE.Vector3> = {
 const ART: Record<string, string> = { crown: crownArt, dragon: dragonArt, battle: battleArt, aether: aetherArt, heaven: heavenArt, throne: throneArt, inn: innArt, chapel: chapelArt, cathedral: cathedralArt, glade: gladeArt };
 export function decorArt(key: string): string | undefined {
   if (ART[key]) return ART[key];
+  if (key === 'abandoneer') {
+    const c = getCard('neu_captain_abandoneer');
+    return c ? cardArtUri(c) : undefined;
+  }
   if (key === 'legend') {
     const c = getCard('emb_pyraxis_ashen_sovereign');
     return c ? cardArtUri(c) : undefined;

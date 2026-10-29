@@ -518,5 +518,7 @@ const d: Record<string, string> = {
   'Purple light along the walls.': 'Fialové světlo podél stěn.',
   'Neon Rings': 'Neonové kruhy',
   'Two glowing rings above the table.': 'Dva svítící kruhy nad stolem.',
+  'Captain Abandoneer': 'Kapitánka Abandoneer',
+  'A portrait of the pirate captain, wanted dead or alive.': 'Portrét pirátské kapitánky, hledané živé či mrtvé.',
 };
 export default d;

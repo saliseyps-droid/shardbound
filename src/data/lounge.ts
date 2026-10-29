@@ -102,7 +102,7 @@ export const DECOR: DecorItem[] = [
   item('painting', 'fantasy', 800)('p_warden', 'Portrait of your Warden', 'An oil portrait of the Warden you have chosen.'),
   item('painting', 'fantasy', 600)('p_battle', 'The Great Battle', 'A wide canvas of the factions at war.'),
 
-  item('poster', 'general', 150)('po_wanted', 'Wanted', 'A faded “Wanted” poster with a reward.'),
+  item('poster', 'fantasy', 300)('po_abandoneer', 'Captain Abandoneer', 'A portrait of the pirate captain, wanted dead or alive.'),
   item('poster', 'fantasy', 300)('po_legend', 'Legend Poster', 'The art of a Legendary card, framed.'),
   item('poster', 'fantasy', 700)('po_shield', 'Knight’s Shield', 'A battered kite shield hung on the wall.'),
   item('poster', 'general', 600)('po_lion', 'Lion Head', 'A carved lion’s head on the wall.'),

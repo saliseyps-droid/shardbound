@@ -1,3 +1,4 @@
+import { MAT, MAT_ART } from '@/ui/match/table3d/tableCamera';
 import * as THREE from 'three';
 import { Bag, DecorContext, canvasTexture, mesh, plankTexture, rng, roundedRect, std, woodTexture } from './kit';
 
@@ -176,24 +177,100 @@ const steelLegs = (b: Bag) => {
 };
 const blackSteel = (bag: Bag) => std(bag, { color: '#16161a', metalness: 0.5, roughness: 0.35 });
 
-/** Black lacquer on steel, an LED strip around the edge that lights the floor beneath. */
+/** A closed path along a rounded rectangle (w × h, corner r) at height z. */
+const loopCurve = (w: number, h: number, r: number, z: number) =>
+  new THREE.CatmullRomCurve3(roundedRect(w, h, r).getPoints(24).map((p) => new THREE.Vector3(p.x, p.y, z)), true, 'centripetal');
+
+/** A glowing tube: a bright core and a wider, faint halo around it (a little bloom without post-processing). */
+function neonTube(bag: Bag, curve: THREE.Curve<THREE.Vector3>, radius: number, core: THREE.Material, halo: THREE.Material, closed = true) {
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(bag.keep(new THREE.TubeGeometry(curve, 220, radius, 8, closed)), core));
+  g.add(new THREE.Mesh(bag.keep(new THREE.TubeGeometry(curve, 220, radius * 3.2, 8, closed)), halo));
+  return g;
+}
+
+/**
+ * The neon table: black lacquer with a faint grid, a pink neon line framing the board, cyan strips
+ * along both edges of the top, pink strips down the legs, and a cyan glow on the floor beneath. The
+ * light breathes softly.
+ */
 export function neonTable(ctx: DecorContext, bag: Bag): Built {
-  const lacquer = std(bag, { color: '#0e0e12', roughness: 0.12, metalness: 0.3 });
-  const { g, TW, TH } = body(ctx, bag, { top: lacquer, edge: lacquer, leg: blackSteel(bag), legs: steelLegs });
-  // The strip: a glowing line just under the top's edge, all the way round.
-  const a = TW / 2 + 0.16;
-  const b = TH / 2 + 0.16;
-  const path = new THREE.CurvePath<THREE.Vector3>();
-  const corners = [[-a, -b], [a, -b], [a, b], [-a, b], [-a, -b]];
-  for (let i = 1; i < corners.length; i++) path.add(new THREE.LineCurve3(new THREE.Vector3(corners[i - 1][0], corners[i - 1][1], -0.55), new THREE.Vector3(corners[i][0], corners[i][1], -0.55)));
-  const strip = new THREE.Mesh(bag.keep(new THREE.TubeGeometry(path, 64, 0.07, 6, true)), bag.keep(new THREE.MeshBasicMaterial({ color: '#6ae8ff', toneMapped: false })));
-  g.add(strip);
-  for (const x of [-TW / 4, TW / 4]) {
-    const l = new THREE.PointLight('#3ad8ff', 6, 16, 1.8);
-    l.position.set(x, 0, -4);
-    g.add(l);
+  const grid = bag.keep(
+    canvasTexture(
+      256,
+      256,
+      (x) => {
+        x.fillStyle = '#07070b';
+        x.fillRect(0, 0, 256, 256);
+        x.strokeStyle = 'rgba(120, 90, 255, 0.18)';
+        x.lineWidth = 2;
+        for (let i = 0; i <= 256; i += 64) {
+          x.beginPath();
+          x.moveTo(i, 0);
+          x.lineTo(i, 256);
+          x.moveTo(0, i);
+          x.lineTo(256, i);
+          x.stroke();
+        }
+      },
+      true,
+    ),
+  );
+  grid.repeat.set(1 / 3, 1 / 3);
+  const lacquer = std(bag, { map: grid, color: '#ffffff', roughness: 0.08, metalness: 0.35 });
+  const edge = std(bag, { color: '#09090d', roughness: 0.1, metalness: 0.4 });
+  const { g, TW, TH, legs } = body(ctx, bag, { top: lacquer, edge, leg: blackSteel(bag), legs: steelLegs });
+  const core = (c: string) => bag.keep(new THREE.MeshBasicMaterial({ color: c, toneMapped: false }));
+  const halo = (c: string) => bag.keep(new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  const cyanCore = core('#5ae6ff');
+  const cyanHalo = halo('#2ac8ff');
+  const pinkCore = core('#ff4ab8');
+  const pinkHalo = halo('#ff2aa0');
+  // Cyan strips along the top's upper and lower edges.
+  g.add(neonTube(bag, loopCurve(TW + 0.4, TH + 0.4, 0.62, -0.06), 0.09, cyanCore, cyanHalo));
+  g.add(neonTube(bag, loopCurve(TW + 0.4, TH + 0.4, 0.62, -0.88), 0.09, cyanCore, cyanHalo));
+  // A pink line framing the board, on the top.
+  g.add(neonTube(bag, loopCurve(MAT.w * MAT_ART + 1.1, MAT.h * MAT_ART + 1.1, 0.4, 0.05), 0.065, pinkCore, pinkHalo));
+  // Pink strips down the outer corner of each leg (the legs are 0.42 square).
+  for (const l of legs) {
+    const sx = Math.sign(l.position.x);
+    const sy = Math.sign(l.position.y);
+    const x = l.position.x + sx * 0.3;
+    const y = l.position.y + sy * 0.3;
+    g.add(neonTube(bag, new THREE.LineCurve3(new THREE.Vector3(x, y, -1.2), new THREE.Vector3(x, y, -8.5)), 0.07, pinkCore, pinkHalo, false));
   }
-  return { root: g };
+  // A cyan glow on the floor beneath.
+  const glowTex = bag.keep(
+    canvasTexture(256, 256, (x) => {
+      const r = x.createRadialGradient(128, 128, 10, 128, 128, 128);
+      r.addColorStop(0, 'rgba(255,255,255,1)');
+      r.addColorStop(0.5, 'rgba(255,255,255,0.45)');
+      r.addColorStop(1, 'rgba(255,255,255,0)');
+      x.fillStyle = r;
+      x.fillRect(0, 0, 256, 256);
+    }),
+  );
+  const glowMat = bag.keep(new THREE.MeshBasicMaterial({ map: glowTex, color: '#2ac8ff', transparent: true, opacity: 0.38, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  const glow = new THREE.Mesh(bag.keep(new THREE.PlaneGeometry(TW + 12, TH + 14)), glowMat);
+  glow.position.z = -8.85;
+  g.add(glow);
+  const lights = [-TW / 4, TW / 4].map((x) => {
+    const l = new THREE.PointLight('#2ac8ff', 6, 18, 1.8);
+    l.position.set(x, 0, -4.5);
+    g.add(l);
+    return l;
+  });
+  return {
+    root: g,
+    update: (t) => {
+      // The light breathes; the frame on the top a little out of step with the edges.
+      const k = 0.85 + Math.sin(t * 1.4) * 0.15;
+      cyanHalo.opacity = 0.22 * k;
+      pinkHalo.opacity = 0.22 * (0.85 + Math.sin(t * 1.4 + 1.6) * 0.15);
+      glowMat.opacity = 0.38 * k;
+      lights.forEach((l) => (l.intensity = 6 * k));
+    },
+  };
 }
 
 export const TABLES: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
