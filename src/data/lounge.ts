@@ -117,12 +117,8 @@ export const DECOR: DecorItem[] = [
   item('floor', 'fantasy', 700)('f_parquet', 'Herringbone Parquet', 'Polished wood laid in a herringbone.'),
   item('floor', 'fantasy', 800)('f_slate', 'Flagstones', 'Large flat stones fitted together.'),
 
-  item('walls', 'base', 0)('w_stone', 'Castle Bricks', 'Old castle bricks.'),
-  item('walls', 'general', 400)('w_plaster', 'Plaster and Stone', 'Stone walls with patches of plaster.'),
-  item('walls', 'general', 500)('w_slates', 'Rough Stone', 'Walls of rough stacked stone.'),
   item('walls', 'general', 600)('w_red_brick', 'Red Brick', 'Old red bricks.'),
-  item('walls', 'fantasy', 900)('w_sandstone', 'Sandstone Blocks', 'Great blocks of pale sandstone.'),
-  item('walls', 'fantasy', 1000)('w_panel', 'Wood Panelling', 'Dark wooden panels all around.'),
+  item('walls', 'base', 0)('w_sandstone', 'Sandstone Blocks', 'Great blocks of pale sandstone.'),
 
   item('painting', 'general', 400)('p_map', 'Map of the Realm', 'An old map on parchment in a wooden frame.'),
   item('painting', 'fantasy', 500)('p_crown', 'The Sundered Crown', 'The campaign’s painting in a golden frame.'),
@@ -235,7 +231,6 @@ export const DECOR: DecorItem[] = [
 
   // More floors, walls, rugs and tables.
   item('floor', 'general', 400)('f_dark_planks', 'Dark Planks', 'Dark, worn planks.'),
-  item('walls', 'general', 500)('w_beams', 'Log Wall', 'Walls of round wooden logs.'),
   item('rug', 'general', 350)('r_fur', 'Patterned Rug', 'A soft rug with a woven pattern.'),
   item('rug', 'general', 300)('r_wool', 'Wool Rug', 'A grey herringbone wool rug.'),
   item('table', 'general', 600)('t_walnut', 'Walnut Table', 'A table of dark walnut.'),
@@ -271,12 +266,6 @@ export const DECOR: DecorItem[] = [
   item('floor', 'modern', 500)('f_grey_tiles', 'Grey Tiles', 'Large grey stone tiles.'),
   item('floor', 'modern', 600)('f_checker', 'Checkered Tiles', 'Black and white tiles.'),
   item('floor', 'general', 600)('f_block_parquet', 'Block Parquet', 'Wooden blocks laid in squares.'),
-  item('walls', 'modern', 400)('w_stucco', 'White Walls', 'Clean white stucco.'),
-  item('walls', 'modern', 600)('w_blue_brick', 'Painted Brick', 'Bricks painted a soft blue.'),
-  item('walls', 'modern', 500)('w_concrete', 'Concrete', 'Bare smooth concrete.'),
-  item('walls', 'modern', 400)('w_grey', 'Grey Plaster', 'Calm grey plaster.'),
-  item('walls', 'modern', 900)('w_walnut', 'Walnut Panels', 'Smoked walnut all around.'),
-  item('walls', 'general', 500)('w_pattern', 'Patterned Plaster', 'Plaster pressed with a pattern.'),
   item('rug', 'modern', 450)('r_shag', 'Round Shag Rug', 'A round, soft cream rug.'),
   item('rug', 'modern', 500)('r_round', 'Round Circles Rug', 'A round rug of coloured rings.'),
   item('rug', 'modern', 400)('r_boucle', 'Boucle Rug', 'A thick checked wool rug.'),
@@ -311,7 +300,7 @@ export const DEFAULT_ROOM: RoomLayout = {
   tableRight: null,
   rug: 'r_wine',
   floor: 'f_stone',
-  walls: 'w_stone',
+  walls: 'w_sandstone',
   painting: null,
   posterLeft: null,
   posterRight: null,

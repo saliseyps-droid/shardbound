@@ -81,19 +81,8 @@ const walls = (id: string, metres: number) => (_c: DecorContext, bag: Bag): Buil
 };
 
 export const WALLS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
-  w_stone: walls('castle_brick_01', 1.5),
-  w_slates: walls('castle_wall_slates', 2.5),
   w_red_brick: walls('medieval_red_brick', 2),
   w_sandstone: walls('large_sandstone_blocks_01', 3),
-  w_panel: walls('dark_paneled_wood', 1.4),
-  w_plaster: walls('plaster_stone_wall_01', 2.3),
-  w_beams: walls('beam_wall_01', 1),
-  w_stucco: walls('white_stucco', 2),
-  w_blue_brick: walls('painted_brick', 1.8),
-  w_concrete: walls('concrete_wall_008', 2.71),
-  w_grey: walls('plastered_wall_04', 3.2),
-  w_walnut: walls('smoked_walnut_veneer', 1),
-  w_pattern: walls('patterned_plaster_wall', 1.8),
 };
 
 // ---------- Rugs: a woven field (a scanned fabric) inside a border, under the table. ----------

@@ -30,7 +30,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Lounge: a new place in the menu with your game room in 3D. Look around it freely and furnish it: every numbered place takes one kind of decor.',
           'Decor to buy with Gold, from cheap to grand: tables, small things for the table, rugs, floors, walls, a painting, wall pieces and banners, lights, four places for furniture and a chandelier, classic, fantasy (a cauldron, a weapon rack, potions, a spellbook lectern…) and arcade (an arcade machine, pinball, a claw machine, air hockey…). The classic furniture, floors and walls are real scanned models and materials at their true size.',
           'Every room has a door now, on the wall behind you.',
-          'Modern and neon looks too: designer chairs, a leather sofa, steel shelves, a retro TV, glowing neon signs, neon strips along the walls, a neon table, and marble, terrazzo, concrete and many more floors, walls and rugs.',
+          'Modern and neon looks too: designer chairs, a leather sofa, steel shelves, a retro TV, glowing neon signs, neon strips along the walls, a neon table, and marble, terrazzo and many more floors and rugs.',
           'Try a piece on in the room before you buy it; pieces you own can be placed, moved or taken out at any time. Walk around the room and look anywhere, up to the ceiling.',
           'Your room surrounds the 3D table in your matches. Online, both players see the host’s room.',
         ],
