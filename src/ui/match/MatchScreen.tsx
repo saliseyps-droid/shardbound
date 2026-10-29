@@ -172,6 +172,11 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const version = useMatch((s) => s.version);
   const config = useMatch((s) => s.config);
   const confirmEnd = useSettings((s) => s.confirmEndTurn);
+  const reducedMotion = useSettings((s) => s.reducedMotion);
+  const intro = useMatch((s) => s.intro);
+  // The 3D opening fly-through: done for this intro (or skipped), and the board fading back in after it.
+  const [flownFor, setFlownFor] = useState<number | null>(null);
+  const [landing, setLanding] = useState(false);
   const want3d = useSettings((s) => table3dAllowed(s, table3dEnv()));
   const [failed3d, setFailed3d] = useState(false);
   const [slow3d, setSlow3d] = useState(false);
@@ -494,6 +499,13 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
 
   const handCount = me.hand.length;
   const show3d = want3d && !failed3d && !!boardBg?.url;
+  // Before the Wardens' banner, a 3D match opens with the camera flying through the room.
+  const flying = show3d && intro !== null && intro !== flownFor && !reducedMotion;
+  const endFlyby = () => {
+    setFlownFor(intro);
+    setLanding(true);
+    window.setTimeout(() => setLanding(false), 800);
+  };
   const draggingCard = drag?.active && drag.kind === 'card' ? me.hand.find((c) => c.uid === drag.uid) : undefined;
   const peekCard = peek !== null && !drag?.active ? me.hand.find((c) => c.uid === peek) : undefined;
   const peekW = Math.round(Math.min(220, window.innerHeight * 0.44));
@@ -523,7 +535,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
 
   return (
     <div
-      className={`match ${myTurn ? 'my-turn' : 'their-turn'} ${selection ? 'is-targeting' : ''} ${coop ? 'is-coop' : ''} ${show3d ? 'is-3d' : ''}`}
+      className={`match ${myTurn ? 'my-turn' : 'their-turn'} ${selection ? 'is-targeting' : ''} ${coop ? 'is-coop' : ''} ${show3d ? 'is-3d' : ''} ${flying ? 'is-flyby' : ''} ${landing ? 'flyby-landing' : ''}`}
       style={boardBg ? ({ '--board-bg': `url(${boardBg.url})`, '--board-dim': boardBg.dim } as CSSProperties) : undefined}
       ref={boardRef}
       onContextMenu={(e) => {
@@ -778,7 +790,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           return (
             <>
               <Suspense fallback={null}>
-                <TableView boardUrl={boardBg!.url} board={boardBg!.key} room={room} portraitUrl={roomPortrait} hand={handNode} onUnavailable={() => setFailed3d(true)} onSlow={() => setSlow3d(true)}>
+                <TableView boardUrl={boardBg!.url} board={boardBg!.key} room={room} portraitUrl={roomPortrait} flyby={flying ? intro : null} onFlybyEnd={endFlyby} hand={handNode} onUnavailable={() => setFailed3d(true)} onSlow={() => setSlow3d(true)}>
                   {/* The mat's glow, lights, mist and smoke lie on the table; its particles are 3D there (boardLife.ts). */}
                   {boardBg?.key && (
                     <div className="table3d-board-fx" aria-hidden>
@@ -896,7 +908,12 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       )}
       <CastPreview />
       <LegendaryEntrance />
-      <MatchIntro />
+      {flying && (
+        <button className="flyby-skip" onClick={endFlyby} aria-label={t('Click to skip')}>
+          <span>{t('Click to skip')}</span>
+        </button>
+      )}
+      <MatchIntro hold={flying} />
       <SpellFlourish />
       <FinalBlow />
       <Ascension />

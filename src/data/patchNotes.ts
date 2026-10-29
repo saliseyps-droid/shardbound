@@ -33,6 +33,7 @@ export const PATCH_NOTES: PatchNote[] = [
           'Modern and neon looks too: designer chairs, a leather sofa, steel shelves, a retro TV, glowing neon signs, neon strips along the walls, a neon table, and marble, checkered tiles and many more floors and rugs.',
           'Try a piece on in the room before you buy it; pieces you own can be placed, moved or taken out at any time. Walk around the room and look anywhere, up to the ceiling.',
           'Your room surrounds the 3D table in your matches. Online, both players see the host’s room.',
+          '3D table: a match now opens with the camera flying through the room before it settles over the table and the Wardens meet. Click to skip it.',
         ],
       },
     ],

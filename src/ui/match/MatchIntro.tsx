@@ -44,18 +44,21 @@ const Versus = () => (
   </div>
 );
 
-/** Before the first card: the two Wardens meet on a banner across the board, with the kind of match. Click to skip. */
-export function MatchIntro() {
+/**
+ * Before the first card: the two Wardens meet on a banner across the board, with the kind of match.
+ * Click to skip. `hold`: not yet (the 3D fly-through comes first); its time starts when released.
+ */
+export function MatchIntro({ hold = false }: { hold?: boolean }) {
   const intro = useMatch((s) => s.intro);
   const game = useMatch((s) => s.game);
   const config = useMatch((s) => s.config);
   const watching = useMatch((s) => s.watching);
   useEffect(() => {
-    if (intro === null) return;
+    if (intro === null || hold) return;
     const id = setTimeout(() => useMatch.setState({ intro: null }), anim(INTRO_MS));
     return () => clearTimeout(id);
-  }, [intro]);
-  if (intro === null || !game) return null;
+  }, [intro, hold]);
+  if (intro === null || hold || !game) return null;
   const [a, b] = game.players;
   // A spectator sees which kind of match they are watching.
   const subtitle = config?.online === 'spectator' ? (watching ? modeLabel({ ...config, mode: watching.mode as MatchConfig['mode'], online: undefined }) : '') : introSubtitle(config);

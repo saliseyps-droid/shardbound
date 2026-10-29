@@ -205,3 +205,20 @@
 /* The board's painting is drawn MAT_ART (1.1×) bigger than the play area (tableCamera.ts): its flat
    animation layer matches it. */
 .table3d-board-fx { transform: scale(1.1); }
+
+/* The opening fly-through (tableFlyby.ts): only the room shows (the side panel stays); the board, hand
+   and overlays wait, then fade in as the camera lands. A click anywhere skips it. */
+.match.is-flyby > :not(.table3d):not(.match-sidebar):not(.flyby-skip),
+.match.is-flyby .table3d-view,
+.match.is-flyby .table3d-hand-plane { opacity: 0; pointer-events: none; }
+.match.flyby-landing > :not(.table3d):not(.match-sidebar),
+.match.flyby-landing .table3d-view,
+.match.flyby-landing .table3d-hand-plane { animation: flyby-land 0.7s ease both; }
+@keyframes flyby-land { from { opacity: 0; } to { opacity: 1; } }
+.flyby-skip {
+  position: absolute; inset: 0 var(--sidebar-w) 0 0; z-index: 50;
+  display: flex; align-items: flex-end; justify-content: center; padding-bottom: 28px;
+  background: none; border: 0; cursor: pointer; color: rgba(239, 228, 200, 0.7); font: 600 var(--t-sm) var(--font-body);
+}
+.flyby-skip span { text-shadow: 0 1px 3px #000; animation: flyby-hint 2s ease-in-out infinite; }
+@keyframes flyby-hint { 50% { opacity: 0.45; } }

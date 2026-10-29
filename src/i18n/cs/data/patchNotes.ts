@@ -12,6 +12,7 @@ const notes: PatchNotesOverlay = {
         'I moderní a neonový styl: designová křesla, kožená pohovka, ocelový regál, retro televize, svítící neonové nápisy, neonové pásky podél stěn, neonový stůl a mramor, šachovnicová dlažba a spousta dalších podlah a koberců.',
         'Kus si můžeš v místnosti vyzkoušet, než ho koupíš; vlastněné kusy kdykoli umístíš, přesuneš nebo odebereš. Po místnosti se můžeš procházet a rozhlížet kamkoli, i ke stropu.',
         'Tvoje místnost obklopuje 3D stůl v tvých zápasech. Online oba hráči vidí místnost hostitele.',
+        '3D stůl: zápas teď začíná průletem kamery místností, než se usadí nad stolem a Strážci se utkají. Kliknutím ho přeskočíš.',
       ],
     ],
   },

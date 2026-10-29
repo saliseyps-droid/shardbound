@@ -1,8 +1,9 @@
+import { FLYBY_MS, flyCamera } from './tableFlyby';
 import { useEffect, useRef, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { useMatch } from '@/state/matchStore';
-import { useSettings } from '@/state/settingsStore';
+import { anim, useSettings } from '@/state/settingsStore';
 import { BOARD_FX } from '../boardFx';
 import { BOARD_GLOWS, BOARD_SEA, BOARD_SMOKE } from '../AnimatedBoard';
 import { buildTableScene } from './TableScene3D';
@@ -23,6 +24,9 @@ interface Props {
   room?: Record<string, string | null> | null;
   /** The room owner's Warden, for a portrait painting. */
   portraitUrl?: string;
+  /** While set (the match intro's id): the camera flies through the room, then onFlybyEnd. */
+  flyby?: number | null;
+  onFlybyEnd?: () => void;
   /** The on-table part of the match (hero areas, battlefield rows, draw piles), laid onto the mat. */
   children: ReactNode;
   /** Your hand, laid on its own plane at the near edge of the table. */
@@ -43,13 +47,17 @@ const BOTTOM = 0.23;
  * pointer, from the usual view in to 3× or out to 0.4× to see the room; Space, the camera button
  * or a double click on the table goes back to the usual view.
  */
-export default function TableView({ boardUrl, board, warm = '#ffb05a', room = null, portraitUrl, children, hand: handNode, onUnavailable, onSlow }: Props) {
+export default function TableView({ boardUrl, board, warm = '#ffb05a', room = null, portraitUrl, flyby = null, onFlybyEnd, children, hand: handNode, onUnavailable, onSlow }: Props) {
   // The room rebuilds the table only when its pieces change (a new state object with the same room does not).
   const roomKey = JSON.stringify(room);
   const roomRef = useRef(room);
   roomRef.current = room;
   const portraitRef = useRef(portraitUrl);
   portraitRef.current = portraitUrl;
+  const flybyRef = useRef(flyby);
+  flybyRef.current = flyby;
+  const flybyEndRef = useRef(onFlybyEnd);
+  flybyEndRef.current = onFlybyEnd;
   const rootRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
   const camRef = useRef<HTMLDivElement>(null);
@@ -306,6 +314,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', room = nu
     match.addEventListener('contextmenu', onMenu);
 
     const clock = new THREE.Clock();
+    let flight: { id: number; t: number; dur: number; done: boolean } | null = null;
     const fps = createFpsWatch();
     let frame = 0;
     let idle = 0;
@@ -339,6 +348,20 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', room = nu
       state.yaw = (state.yaw ?? 0) + ((target.yaw ?? 0) - (state.yaw ?? 0)) * k;
       state.tilt += (target.tilt - state.tilt) * k;
       placeCamera(camera, view, state);
+      // The opening fly-through overrides the camera until it lands in the usual view.
+      const fly = flybyRef.current;
+      if (fly !== null) {
+        // Its own clock, stepped by the capped frame time: a stalled frame (the table still loading) pauses
+        // the flight instead of jumping it ahead.
+        if (flight?.id !== fly) flight = { id: fly, t: 0, dur: Math.max(0.5, anim(FLYBY_MS) / 1000), done: false };
+        flight.t += dt;
+        const u = flight.t / flight.dur;
+        flyCamera(camera, u);
+        if (u >= 1 && !flight.done) {
+          flight.done = true;
+          flybyEndRef.current?.();
+        }
+      }
       // Heavy hits tremble the camera (the CSS plane follows, since it is computed from the same camera).
       const shake = effects.shake();
       if (shake.x || shake.y) {
