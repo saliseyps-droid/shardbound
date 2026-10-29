@@ -119,21 +119,16 @@ export const DECOR: DecorItem[] = [
   item('lights', 'general', 400)('l_wooden_lantern', 'Wooden Lanterns', 'Old wooden lanterns on iron brackets.'),
 
   item('furniture', 'general', 250)('fu_barrels', 'Barrels', 'Old oak barrels stacked in the corner.'),
-  item('furniture', 'general', 300)('fu_wine', 'Wine Barrel', 'A wine barrel on its cradle.'),
-  item('furniture', 'general', 200)('fu_crates', 'Wooden Crates', 'Sturdy crates for the tavern’s stores.'),
   item('furniture', 'general', 200)('fu_plant', 'Potted Plant', 'A big green plant in a clay pot.'),
-  item('furniture', 'general', 500)('fu_bookshelf', 'Bookshelf', 'A worn wooden bookshelf.'),
   item('furniture', 'general', 500)('fu_armchair', 'Armchair', 'A deep armchair to rest in between matches.'),
   item('furniture', 'general', 450)('fu_rocking', 'Rocking Chair', 'A wooden rocking chair.'),
   item('furniture', 'general', 400)('fu_spinning', 'Spinning Wheel', 'An old spinning wheel.'),
   item('furniture', 'fantasy', 600)('fu_chest', 'Treasure Chest', 'A chest of gold and treasure.'),
-  item('furniture', 'fantasy', 800)('fu_cabinet', 'Gothic Cabinet', 'A carved cabinet with pointed arches.'),
   item('furniture', 'fantasy', 700)('fu_commode', 'Gothic Chest of Drawers', 'Dark carved drawers with gothic arches.'),
   item('furniture', 'fantasy', 900)('fu_bust', 'Marble Bust', 'A marble bust on a plinth.'),
   item('furniture', 'fantasy', 1000)('fu_horse', 'Bronze Horse', 'A bronze horse on a marble plinth.'),
   item('furniture', 'fantasy', 1200)('fu_statue', 'Gothic Statue', 'A weathered gothic figure of stone.'),
   item('furniture', 'fantasy', 1200)('fu_cannon', 'Ship’s Cannon', 'A ship’s cannon on its wooden carriage.'),
-  item('furniture', 'fantasy', 1500)('fu_stove', 'Tiled Stove', 'A tall stove of glazed tiles.'),
 
   item('ceiling', 'general', 300)('c_lantern', 'Lantern Chandelier', 'A ring of lanterns on chains.'),
   item('ceiling', 'general', 600)('c_chandelier', 'Iron Chandelier', 'A wrought iron chandelier.'),
@@ -141,28 +136,9 @@ export const DECOR: DecorItem[] = [
   item('ceiling', 'fantasy', 1200)('c_chandelier_crystal', 'Crystal Chandelier', 'A chandelier hung with crystals.'),
 
   // Fantasy furniture (Quaternius, CC0).
-  item('furniture', 'fantasy', 900)('fu_cauldron', 'Bubbling Cauldron', 'An iron cauldron with a green brew.'),
   item('furniture', 'fantasy', 500)('fu_dummy', 'Training Dummy', 'A straw dummy for sword practice.'),
-  item('furniture', 'fantasy', 600)('fu_lectern', 'Spellbook Lectern', 'A lectern with an open spellbook.'),
   item('poster', 'fantasy', 800)('po_alchemy', 'Alchemist’s Shelf', 'A shelf of little bottles and potions.'),
-  item('furniture', 'fantasy', 600)('fu_anvil', 'Anvil', 'A smith’s anvil on a log.'),
-  item('furniture', 'fantasy', 700)('fu_bookcase', 'Wizard’s Bookcase', 'A tall bookcase full of tomes.'),
   item('furniture', 'fantasy', 400)('fu_candelabra', 'Candelabrum', 'A tall iron stand of burning candles.'),
-  item('furniture', 'fantasy', 450)('fu_cage', 'Hanging Cage', 'A small iron cage on a stand.'),
-  item('furniture', 'general', 250)('fu_apples', 'Barrel of Apples', 'A barrel heaped with red apples.'),
-  item('furniture', 'general', 500)('fu_workbench', 'Workbench', 'A sturdy bench with tools.'),
-  item('furniture', 'general', 350)('fu_wood_chest', 'Wooden Chest', 'A plain chest bound with iron.'),
-  // Arcade (Kenney Mini Arcade, CC0).
-  item('furniture', 'arcade', 1500)('fu_arcade', 'Arcade Machine', 'A classic arcade cabinet with a glowing screen.'),
-  item('furniture', 'arcade', 1800)('fu_pinball', 'Pinball', 'A pinball table full of lights.'),
-  item('furniture', 'arcade', 1600)('fu_claw', 'Claw Machine', 'Try your luck at grabbing a prize.'),
-  item('furniture', 'arcade', 1400)('fu_air_hockey', 'Air Hockey', 'A table for fast air hockey.'),
-  item('furniture', 'arcade', 1200)('fu_prize_wheel', 'Prize Wheel', 'Spin the wheel and win.'),
-  item('furniture', 'arcade', 1300)('fu_slots', 'Slot Machine', 'Three reels and a lever.'),
-  item('furniture', 'arcade', 1600)('fu_dance', 'Dance Machine', 'Arrows, lights and music.'),
-  item('furniture', 'arcade', 1500)('fu_hoops', 'Basketball Game', 'Shoot hoops for tickets.'),
-  item('furniture', 'arcade', 1000)('fu_vending', 'Vending Machine', 'Snacks for a long match.'),
-  item('furniture', 'arcade', 800)('fu_tickets', 'Ticket Machine', 'Prints your winning tickets.'),
 
   // Small things for the table.
   item('trinket', 'fantasy', 400)('tr_coins_big', 'Hoard of Gold', 'A heap of gold coins.'),
@@ -204,12 +180,8 @@ export const DECOR: DecorItem[] = [
   item('door', 'base', 0)('d_castle', 'Castle Door', 'A heavy wooden door bound with iron.'),
 
   // Modern.
-  item('furniture', 'modern', 900)('fu_lounge_chair', 'Lounge Chair', 'A leather lounge chair on a swivel foot.'),
   item('furniture', 'modern', 700)('fu_modern_chair', 'Modern Armchair', 'Black leather on a light wooden frame.'),
   item('furniture', 'modern', 1100)('fu_sofa', 'Leather Sofa', 'A deep buttoned leather sofa.'),
-  item('furniture', 'modern', 350)('fu_ottoman', 'Leather Ottoman', 'A soft leather footstool.'),
-  item('furniture', 'modern', 800)('fu_coffee_table', 'Sculpted Coffee Table', 'A low table of twisting copper bands.'),
-  item('furniture', 'modern', 900)('fu_sideboard', 'Sideboard', 'A long wooden sideboard with slatted doors.'),
   item('furniture', 'modern', 500)('fu_steel_shelf', 'Steel Shelves', 'Black steel and pale wood.'),
   item('trinket', 'modern', 200)('tr_succulent', 'Succulent', 'A spiky plant in a white pot.'),
   item('trinket', 'modern', 450)('tr_tv', 'Retro TV', 'A little television from long ago.'),

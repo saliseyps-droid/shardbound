@@ -42,7 +42,7 @@ export const hasBuilder = (id: string) => id in BUILDERS;
  * - the table's short sides: small things, facing the player.
  */
 const WALL_GAP = 0.25;
-const FLOOR_ITEM = { w: 18, d: 13, h: 28 };
+const FLOOR_ITEM = { w: 22, d: 13, h: 28 };
 const SIDE_ITEM = { w: 16, d: 13, h: 28 };
 /** Between the board's edge and the table's (about 4.3 wide), with a little room either side. */
 const TRINKET = { w: 3.8, d: 4.5, h: 7 };
@@ -91,8 +91,25 @@ export function decorArt(key: string): string | undefined {
   return undefined;
 }
 
+/** The wall a slot's piece stands against: when the camera is behind that wall (it then does not draw, being one-sided), the piece hides too. */
+const SLOT_WALL: Partial<Record<SlotId, 'front' | 'back' | 'left' | 'right' | 'sides'>> = {
+  door: 'front',
+  painting: 'back',
+  furnBackLeft: 'back',
+  furnBackRight: 'back',
+  posterLeft: 'left',
+  furnLeft: 'left',
+  posterRight: 'right',
+  furnRight: 'right',
+  lights: 'sides',
+};
+const behind = (wall: 'front' | 'back' | 'left' | 'right', p: THREE.Vector3) =>
+  wall === 'front' ? p.y < -ROOM.y : wall === 'back' ? p.y > ROOM.y : wall === 'left' ? p.x < -ROOM.x : p.x > ROOM.x;
+
 export interface RoomDecor {
   update(t: number, dt: number): void;
+  /** Hides the pieces on the walls the camera is behind (as the walls themselves are). */
+  cull(camera: THREE.Vector3): void;
   /** Puts another piece (or nothing) in one slot. */
   set(slot: SlotId, id: string | null): void;
   /** The objects standing in a slot (for highlighting in the Lounge). */
@@ -143,6 +160,18 @@ export function buildRoomDecor(scene: THREE.Scene, layout: RoomLayout, ctx: Deco
 
   return {
     update: (t, dt) => placed.forEach((p) => p.built.update?.(t, dt)),
+    cull: (cam) =>
+      placed.forEach((p, slot) => {
+        const wall = SLOT_WALL[slot];
+        if (!wall) return;
+        // The lights stand on both side walls: each one goes with its own wall.
+        if (wall === 'sides') {
+          const spots = p.built.root.children;
+          for (const c of spots) c.visible = !behind(c.position.x < 0 ? 'left' : 'right', cam);
+          return;
+        }
+        p.built.root.visible = !behind(wall, cam);
+      }),
     set: (slot, id) => put(slot, id ?? DEFAULT_ROOM[slot]),
     objects: (slot) => placed.get(slot)?.built.root ?? null,
     dispose: () => {

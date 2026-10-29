@@ -358,6 +358,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', room = nu
       bodies.update(planeRef.current!, matPoint, m.game, clock.elapsedTime, toScreen);
       effects.update(planeRef.current!, matPoint, m.fx, dt, bodies.lastAt);
       table.update(clock.elapsedTime, dt);
+      table.decor.cull(camera.position);
       life.update(clock.elapsedTime, dt);
       renderer.render(table.scene, camera);
       fxRenderer.render(effects.scene, camera);

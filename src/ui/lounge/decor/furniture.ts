@@ -4,7 +4,7 @@ import type { Built } from './tables';
 
 /**
  * Furniture: models at their real size against the table (all CC0: Poly Haven, Quaternius' Fantasy
- * Props, Kenney's Mini Arcade). Each stands with its back to its slot's wall and its front to the
+ * Props). Each stands with its back to its slot's wall and its front to the
  * room, shrunk only when it would not fit the slot (ctx.limit).
  */
 
@@ -36,12 +36,7 @@ const onPlinth = (id: string, fit: ModelFit, plinthH = 9): Make => (_c, bag) => 
   return { root: g };
 };
 
-/** Kenney's arcade machines are toy-sized: 2.4 of their units make about a real machine. */
-const ARCADE = 2.4;
-const arcade = (name: string, turn = 0) => model(`arcade/${name}.glb`, { scale: ARCADE, turn });
-
 export const FURNITURE: Record<string, Make> = {
-  fu_bookshelf: model('wooden_bookshelf_worn'),
   fu_chest: model('treasure_chest'),
   fu_barrels: (_c, bag) => {
     // Three barrels: two side by side, one on top of them, against the wall.
@@ -55,47 +50,20 @@ export const FURNITURE: Record<string, Make> = {
     g.position.y = -4.9;
     return { root: g };
   },
-  fu_wine: model('wine_barrel_01'),
-  fu_crates: model('wooden_crate_02', { turn: Math.PI / 2 }),
   fu_plant: model('potted_plant_02', { scale: 1.3 }),
   fu_statue: model('gothic_statue'),
-  fu_cabinet: model('GothicCabinet_01'),
   fu_commode: model('GothicCommode_01'),
   fu_bust: onPlinth('marble_bust_01', { scale: 1.2 }),
   fu_horse: onPlinth('horse_statue_01', { scale: 3.5 }),
   fu_cannon: model('cannon_01', { turn: Math.PI / 2 }),
   fu_armchair: model('ArmChair_01'),
   fu_rocking: model('Rockingchair_01'),
-  fu_stove: model('scandinavian_masonry_heater'),
-  fu_spinning: model('spinning_wheel_01'),
+  fu_spinning: model('spinning_wheel_01', { turn: 1.3 }),
   // Fantasy (Quaternius).
-  fu_cauldron: lit('qk/Cauldron', {}, 0x7aff5a, 10, [0, -5, 9]),
   fu_dummy: model('qk/Dummy'),
-  fu_lectern: model('qk/BookStand', { turn: Math.PI / 2 }),
-  fu_anvil: model('qk/Anvil'),
-  fu_bookcase: model('qk/Bookcase_2'),
   fu_candelabra: lit('qk/CandleStick_Stand', {}, 0xffc27a, 12, [0, -4, 16]),
-  fu_cage: model('qk/Cage_Small'),
-  fu_apples: model('qk/Barrel_Apples'),
-  fu_workbench: model('qk/Workbench'),
-  fu_wood_chest: model('qk/Chest_Wood'),
   // Modern (Poly Haven).
-  fu_lounge_chair: model('mid_century_lounge_chair'),
   fu_modern_chair: model('modern_arm_chair_01'),
-  fu_sofa: model('sofa_02'),
-  fu_ottoman: model('Ottoman_01'),
-  fu_coffee_table: model('modern_coffee_table_02'),
-  fu_sideboard: model('modern_wooden_cabinet'),
+  fu_sofa: model('sofa_02', { scale: 1.15 }),
   fu_steel_shelf: model('steel_frame_shelves_02'),
-  // Arcade (Kenney).
-  fu_arcade: arcade('arcade-machine'),
-  fu_pinball: arcade('pinball'),
-  fu_claw: arcade('claw-machine'),
-  fu_air_hockey: arcade('air-hockey'),
-  fu_prize_wheel: arcade('prize-wheel'),
-  fu_slots: arcade('gambling-machine'),
-  fu_dance: arcade('dance-machine'),
-  fu_hoops: arcade('basketball-game'),
-  fu_vending: arcade('vending-machine'),
-  fu_tickets: arcade('ticket-machine'),
 };

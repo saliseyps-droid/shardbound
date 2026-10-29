@@ -108,6 +108,7 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
       const time = clock.elapsedTime;
       controls.update(dt);
       table.update(time, dt);
+      table.decor.cull(camera.position);
       renderer.render(table.scene, camera);
       const w = root.clientWidth;
       const h = root.clientHeight;

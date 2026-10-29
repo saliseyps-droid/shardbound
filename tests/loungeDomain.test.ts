@@ -46,11 +46,11 @@ describe('Lounge decor', () => {
   });
 
   it('moves a piece of furniture from one slot to another', () => {
-    let s = unwrap(buyDecor(rich(), 'fu_wine', 2));
-    s = unwrap(placeDecor(s, 'furnLeft', 'fu_wine'));
-    s = unwrap(placeDecor(s, 'furnRight', 'fu_wine'));
+    let s = unwrap(buyDecor(rich(), 'fu_rocking', 2));
+    s = unwrap(placeDecor(s, 'furnLeft', 'fu_rocking'));
+    s = unwrap(placeDecor(s, 'furnRight', 'fu_rocking'));
     expect(activeRoom(s.profile).furnLeft).toBeNull();
-    expect(activeRoom(s.profile).furnRight).toBe('fu_wine');
+    expect(activeRoom(s.profile).furnRight).toBe('fu_rocking');
   });
 
   it('empties optional slots only', () => {
@@ -64,11 +64,11 @@ describe('Lounge decor', () => {
   it('is repaired when loaded: unknown pieces dropped, unowned ones taken out of the room', () => {
     const s = createNewSave('A', 'flame', 1, 'p');
     const raw = JSON.parse(JSON.stringify(s));
-    raw.profile.ownedDecor = ['fu_wine', 'fu_wine', 'gone'];
-    raw.profile.room = { ...DEFAULT_ROOM, furnLeft: 'fu_wine', table: 't_neon' };
+    raw.profile.ownedDecor = ['fu_rocking', 'fu_rocking', 'gone'];
+    raw.profile.room = { ...DEFAULT_ROOM, furnLeft: 'fu_rocking', table: 't_neon' };
     const m = migrateSave(raw).save;
-    expect(m.profile.ownedDecor).toEqual(['fu_wine']);
-    expect(m.profile.room?.furnLeft).toBe('fu_wine');
+    expect(m.profile.ownedDecor).toEqual(['fu_rocking']);
+    expect(m.profile.room?.furnLeft).toBe('fu_rocking');
     expect(m.profile.room?.table).toBe('t_tavern');
   });
 });

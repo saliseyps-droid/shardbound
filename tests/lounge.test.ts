@@ -34,9 +34,9 @@ describe('sanitizeRoom', () => {
   });
 
   it('keeps owned pieces in their slots', () => {
-    const room = sanitizeRoom({ table: 't_cinder', furnLeft: 'fu_wine' }, ['t_cinder', 'fu_wine']);
+    const room = sanitizeRoom({ table: 't_cinder', furnLeft: 'fu_rocking' }, ['t_cinder', 'fu_rocking']);
     expect(room.table).toBe('t_cinder');
-    expect(room.furnLeft).toBe('fu_wine');
+    expect(room.furnLeft).toBe('fu_rocking');
   });
 
   it('drops pieces the player does not own', () => {
@@ -54,8 +54,8 @@ describe('sanitizeRoom', () => {
   });
 
   it('lets a piece stand in one slot only', () => {
-    const room = sanitizeRoom({ furnLeft: 'fu_wine', furnRight: 'fu_wine' }, ['fu_wine']);
-    expect(room.furnLeft).toBe('fu_wine');
+    const room = sanitizeRoom({ furnLeft: 'fu_rocking', furnRight: 'fu_rocking' }, ['fu_rocking']);
+    expect(room.furnLeft).toBe('fu_rocking');
     expect(room.furnRight).toBeNull();
   });
 
