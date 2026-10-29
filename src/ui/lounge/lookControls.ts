@@ -14,7 +14,7 @@ export interface LookBounds {
   zMax: number;
 }
 
-const LOOK = 0.0042; // radians per pixel
+const LOOK = 0.0028; // radians per pixel
 const PITCH = 1.45; // almost straight up or down
 const WALK = 22; // units per second with the keys
 
