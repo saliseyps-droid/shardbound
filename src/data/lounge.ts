@@ -79,14 +79,7 @@ const item = (kind: DecorKind, style: DecorStyle, price: number) => (id: string,
 
 export const DECOR: DecorItem[] = [
   item('table', 'base', 0)('t_tavern', 'Tavern Table', 'Planks on turned legs: the table every Warden starts with.'),
-  item('table', 'general', 400)('t_dark_oak', 'Dark Oak', 'Near-black oak with brass corners.'),
-  item('table', 'fantasy', 1200)('t_marble', 'Marble Table', 'White marble veined with gold, on column legs.'),
-  item('table', 'fantasy', 2500)('t_royal', 'Royal Table', 'Red velvet, gold inlay and carved lion legs.'),
   item('table', 'faction', 1500)('t_cinder', 'Cinder Forge', 'Obsidian split by glowing seams of lava.'),
-  item('table', 'faction', 1500)('t_thorn', 'Rootwoven Table', 'Living roots woven into a tabletop, moss on the edges.'),
-  item('table', 'faction', 1500)('t_brass', 'Brass Engine', 'Riveted plates and turning gears in the frame.'),
-  item('table', 'faction', 1500)('t_rime', 'Rimetide Ice', 'A top of blue ice with bubbles frozen inside.'),
-  item('table', 'faction', 1500)('t_lumen', 'Lumen Stone', 'White stone with golden runes that softly glow.'),
   item('table', 'faction', 1500)('t_hollow', 'Bone Table', 'Pale bones with a violet glow beneath the top.'),
 
   item('trinket', 'general', 100)('tr_jug', 'Jug', 'A clay jug of something to drink.'),
@@ -233,8 +226,6 @@ export const DECOR: DecorItem[] = [
   item('floor', 'general', 400)('f_dark_planks', 'Dark Planks', 'Dark, worn planks.'),
   item('rug', 'general', 350)('r_fur', 'Patterned Rug', 'A soft rug with a woven pattern.'),
   item('rug', 'general', 300)('r_wool', 'Wool Rug', 'A grey herringbone wool rug.'),
-  item('table', 'general', 600)('t_walnut', 'Walnut Table', 'A table of dark walnut.'),
-  item('table', 'general', 500)('t_old_oak', 'Old Oak Table', 'A heavy table of weathered oak.'),
 
   // Doors.
   item('door', 'base', 0)('d_castle', 'Castle Door', 'A heavy wooden door bound with iron.'),
@@ -258,7 +249,6 @@ export const DECOR: DecorItem[] = [
   item('ceiling', 'modern', 450)('c_industrial', 'Industrial Lamp', 'A metal factory lamp.'),
   item('ceiling', 'modern', 600)('c_fan', 'Ceiling Fan', 'A slowly turning fan with a lamp.'),
   item('table', 'modern', 1600)('t_neon', 'Neon Table', 'Black lacquer with a glowing edge.'),
-  item('table', 'modern', 1400)('t_marble_steel', 'Marble and Steel', 'White marble on black steel legs.'),
   item('door', 'modern', 600)('d_walnut', 'Walnut Door', 'A flat walnut door in a steel frame.'),
   item('floor', 'modern', 900)('f_marble', 'Marble', 'Smooth pale marble.'),
   item('floor', 'modern', 700)('f_terrazzo', 'Terrazzo', 'Speckled terrazzo tiles.'),

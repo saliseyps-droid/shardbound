@@ -20,10 +20,10 @@ describe('Lounge decor', () => {
   });
 
   it('is bought with Gold, once', () => {
-    const s = unwrap(buyDecor(rich(), 't_marble', 2));
-    expect(s.profile.gold).toBe(1800);
-    expect(s.profile.ownedDecor).toEqual(['t_marble']);
-    expect(buyDecor(s, 't_marble', 3).ok).toBe(false);
+    const s = unwrap(buyDecor(rich(), 't_cinder', 2));
+    expect(s.profile.gold).toBe(1500);
+    expect(s.profile.ownedDecor).toEqual(['t_cinder']);
+    expect(buyDecor(s, 't_cinder', 3).ok).toBe(false);
     expect(buyDecor(s, 't_tavern', 3).ok).toBe(false);
     expect(buyDecor(s, 'nope', 3).ok).toBe(false);
   });
@@ -31,16 +31,16 @@ describe('Lounge decor', () => {
   it('cannot be bought without enough Gold', () => {
     const s = createNewSave('A', 'flame', 1, 'p');
     s.profile.gold = 100;
-    expect(buyDecor(s, 't_royal', 2).ok).toBe(false);
+    expect(buyDecor(s, 't_neon', 2).ok).toBe(false);
   });
 
   it('is placed only when owned and only in a slot of its kind', () => {
     let s = rich();
-    expect(placeDecor(s, 'table', 't_marble').ok).toBe(false);
-    s = unwrap(buyDecor(s, 't_marble', 2));
-    expect(placeDecor(s, 'floor', 't_marble').ok).toBe(false);
-    s = unwrap(placeDecor(s, 'table', 't_marble'));
-    expect(activeRoom(s.profile).table).toBe('t_marble');
+    expect(placeDecor(s, 'table', 't_cinder').ok).toBe(false);
+    s = unwrap(buyDecor(s, 't_cinder', 2));
+    expect(placeDecor(s, 'floor', 't_cinder').ok).toBe(false);
+    s = unwrap(placeDecor(s, 'table', 't_cinder'));
+    expect(activeRoom(s.profile).table).toBe('t_cinder');
     s = unwrap(placeDecor(s, 'table', 't_tavern'));
     expect(activeRoom(s.profile).table).toBe('t_tavern');
   });
@@ -65,7 +65,7 @@ describe('Lounge decor', () => {
     const s = createNewSave('A', 'flame', 1, 'p');
     const raw = JSON.parse(JSON.stringify(s));
     raw.profile.ownedDecor = ['fu_wine', 'fu_wine', 'gone'];
-    raw.profile.room = { ...DEFAULT_ROOM, furnLeft: 'fu_wine', table: 't_royal' };
+    raw.profile.room = { ...DEFAULT_ROOM, furnLeft: 'fu_wine', table: 't_neon' };
     const m = migrateSave(raw).save;
     expect(m.profile.ownedDecor).toEqual(['fu_wine']);
     expect(m.profile.room?.furnLeft).toBe('fu_wine');

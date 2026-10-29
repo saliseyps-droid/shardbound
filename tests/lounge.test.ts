@@ -22,8 +22,8 @@ describe('lounge catalogue', () => {
 
   it('counts free defaults as owned', () => {
     expect(ownsDecor([], 't_tavern')).toBe(true);
-    expect(ownsDecor([], 't_marble')).toBe(false);
-    expect(ownsDecor(['t_marble'], 't_marble')).toBe(true);
+    expect(ownsDecor([], 't_cinder')).toBe(false);
+    expect(ownsDecor(['t_cinder'], 't_cinder')).toBe(true);
   });
 });
 
@@ -34,21 +34,21 @@ describe('sanitizeRoom', () => {
   });
 
   it('keeps owned pieces in their slots', () => {
-    const room = sanitizeRoom({ table: 't_marble', furnLeft: 'fu_wine' }, ['t_marble', 'fu_wine']);
-    expect(room.table).toBe('t_marble');
+    const room = sanitizeRoom({ table: 't_cinder', furnLeft: 'fu_wine' }, ['t_cinder', 'fu_wine']);
+    expect(room.table).toBe('t_cinder');
     expect(room.furnLeft).toBe('fu_wine');
   });
 
   it('drops pieces the player does not own', () => {
-    expect(sanitizeRoom({ table: 't_marble' }, []).table).toBe('t_tavern');
+    expect(sanitizeRoom({ table: 't_cinder' }, []).table).toBe('t_tavern');
   });
 
   it('checks a host room against the catalogue only', () => {
-    expect(sanitizeRoom({ table: 't_marble' }).table).toBe('t_marble');
+    expect(sanitizeRoom({ table: 't_cinder' }).table).toBe('t_cinder');
   });
 
   it('drops unknown pieces and pieces of the wrong kind', () => {
-    const room = sanitizeRoom({ table: 'x_unknown', floor: 't_marble' }, ['t_marble']);
+    const room = sanitizeRoom({ table: 'x_unknown', floor: 't_cinder' }, ['t_cinder']);
     expect(room.table).toBe('t_tavern');
     expect(room.floor).toBe('f_stone');
   });
