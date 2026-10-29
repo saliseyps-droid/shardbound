@@ -90,12 +90,14 @@ export const DECOR: DecorItem[] = [
   item('trinket', 'fantasy', 400)('tr_horse', 'Horse Figurine', 'A little bronze horse.'),
 
 
+  item('floor', 'base', 0)('f_dark_checker', 'Dark Checkered Tiles', 'Black and grey tiles.'),
   item('floor', 'general', 300)('f_planks', 'Old Planks', 'A warm floor of old planks.'),
   item('floor', 'general', 600)('f_terracotta', 'Terracotta Tiles', 'Square tiles of fired clay.'),
-  item('floor', 'base', 0)('f_slate', 'Flagstones', 'Large flat stones fitted together.'),
+  item('floor', 'fantasy', 800)('f_slate', 'Flagstones', 'Large flat stones fitted together.'),
 
+  item('walls', 'base', 0)('w_black', 'Black Stone', 'Blocks of dark stone.'),
   item('walls', 'general', 600)('w_red_brick', 'Red Brick', 'Old red bricks.'),
-  item('walls', 'base', 0)('w_sandstone', 'Sandstone Blocks', 'Great blocks of pale sandstone.'),
+  item('walls', 'fantasy', 900)('w_sandstone', 'Sandstone Blocks', 'Great blocks of pale sandstone.'),
 
   item('painting', 'fantasy', 500)('p_crown', 'The Sundered Crown', 'The campaign’s painting in a golden frame.'),
   item('painting', 'fantasy', 600)('p_dragon', 'Dragon over the Peaks', 'A great painting of a dragon.'),
@@ -211,8 +213,8 @@ export const DEFAULT_ROOM: RoomLayout = {
   tableLeft: null,
   tableRight: null,
   rug: 'r_corduroy',
-  floor: 'f_slate',
-  walls: 'w_sandstone',
+  floor: 'f_dark_checker',
+  walls: 'w_black',
   painting: null,
   posterLeft: null,
   posterRight: null,

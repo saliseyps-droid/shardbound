@@ -12,7 +12,8 @@ const texUrl = (id: string, map: 'diff' | 'nor' | 'rough') => `${import.meta.env
 const loader = new THREE.TextureLoader();
 
 /** A material with a Poly Haven texture set, repeated `rx` × `ry` times; it shows once the maps load. */
-export function scanned(bag: Bag, id: string, rx: number, ry: number, p: THREE.MeshStandardMaterialParameters = {}) {
+/** `tint` multiplies the colour map (a darker or coloured version of the same material). */
+export function scanned(bag: Bag, id: string, rx: number, ry: number, p: THREE.MeshStandardMaterialParameters = {}, tint = '#ffffff') {
   const mat = std(bag, { color: '#3a3238', roughness: 1, ...p });
   const load = (map: 'diff' | 'nor' | 'rough', apply: (t: THREE.Texture) => void) =>
     loader.load(texUrl(id, map), (t) => {
@@ -26,7 +27,7 @@ export function scanned(bag: Bag, id: string, rx: number, ry: number, p: THREE.M
   load('diff', (t) => {
     t.colorSpace = THREE.SRGBColorSpace;
     mat.map = t;
-    mat.color.set('#ffffff');
+    mat.color.set(tint);
   });
   load('nor', (t) => (mat.normalMap = t));
   load('rough', (t) => (mat.roughnessMap = t));
@@ -36,9 +37,9 @@ export function scanned(bag: Bag, id: string, rx: number, ry: number, p: THREE.M
 // ---------- Floors: a 160 × 160 plane at the floor's height (fog hides its far edge). ----------
 
 const FLOOR = 160;
-const floor = (id: string, metres: number, p?: THREE.MeshStandardMaterialParameters) => (_c: DecorContext, bag: Bag): Built => {
+const floor = (id: string, metres: number, p?: THREE.MeshStandardMaterialParameters, tint?: string) => (_c: DecorContext, bag: Bag): Built => {
   const n = FLOOR / (metres * PER_METRE);
-  const m = new THREE.Mesh(bag.keep(new THREE.PlaneGeometry(FLOOR, FLOOR)), scanned(bag, id, n, n, p));
+  const m = new THREE.Mesh(bag.keep(new THREE.PlaneGeometry(FLOOR, FLOOR)), scanned(bag, id, n, n, p, tint));
   m.position.z = ROOM.floor;
   m.receiveShadow = true;
   return { root: m };
@@ -51,16 +52,18 @@ export const FLOORS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
   f_dark_planks: floor('dark_wooden_planks', 2),
   f_marble: floor('marble_01', 1.5),
   f_checker: floor('floor_tiles_06', 3),
+  // Black and grey: the same tiles, the light squares toned down.
+  f_dark_checker: floor('floor_tiles_06', 3, { roughness: 0.6 }, '#5a5a60'),
 };
 
 // ---------- Walls: four planes standing on the floor, facing in. ----------
 
-const walls = (id: string, metres: number) => (_c: DecorContext, bag: Bag): Built => {
+const walls = (id: string, metres: number, tint?: string) => (_c: DecorContext, bag: Bag): Built => {
   const g = new THREE.Group();
   const H = ROOM.wallH;
   const tile = metres * PER_METRE;
   const one = (len: number, x: number, y: number, rot: number) => {
-    const m = new THREE.Mesh(bag.keep(new THREE.PlaneGeometry(len, H)), scanned(bag, id, len / tile, H / tile));
+    const m = new THREE.Mesh(bag.keep(new THREE.PlaneGeometry(len, H)), scanned(bag, id, len / tile, H / tile, {}, tint));
     m.rotation.set(Math.PI / 2, rot, 0);
     m.position.set(x, y, ROOM.floor + H / 2);
     m.receiveShadow = true;
@@ -76,6 +79,8 @@ const walls = (id: string, metres: number) => (_c: DecorContext, bag: Bag): Buil
 export const WALLS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
   w_red_brick: walls('medieval_red_brick', 2),
   w_sandstone: walls('large_sandstone_blocks_01', 3),
+  // Black stone: the sandstone blocks, darkened.
+  w_black: walls('large_sandstone_blocks_01', 3, '#26242a'),
 };
 
 // ---------- Rugs: a woven field (a scanned fabric) inside a border, under the table. ----------

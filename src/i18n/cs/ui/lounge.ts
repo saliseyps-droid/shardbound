@@ -522,5 +522,9 @@ const d: Record<string, string> = {
   'A portrait of the pirate captain, wanted dead or alive.': 'Portrét pirátské kapitánky, hledané živé či mrtvé.',
   'A carved lion’s head on a stand.': 'Vyřezávaná lví hlava na podstavci.',
   'A bull’s head trophy on a stand.': 'Býčí hlava jako trofej na podstavci.',
+  'Black Stone': 'Černý kámen',
+  'Blocks of dark stone.': 'Kvádry tmavého kamene.',
+  'Dark Checkered Tiles': 'Tmavá šachovnice',
+  'Black and grey tiles.': 'Černé a šedé dlaždice.',
 };
 export default d;
