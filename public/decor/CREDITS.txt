@@ -1,0 +1,2 @@
+3D models in this folder are from Poly Haven (https://polyhaven.com), released under CC0 1.0.
+Textures were downscaled to 512 px for the game. Ids match polyhaven.com/a/<id>.

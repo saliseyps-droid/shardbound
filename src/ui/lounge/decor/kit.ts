@@ -253,3 +253,51 @@ export const FACTION_COLOR = {
   hollow: ['#4a2278', '#cfa8ff'],
   rime: ['#2a6a9a', '#cfeeff'],
 } as const;
+
+/** Where the room's 3D models live (public/decor/<id>/model.gltf, from Poly Haven, CC0). */
+export const modelUrl = (id: string) => `${import.meta.env.BASE_URL}decor/${id}/model.gltf`;
+
+/**
+ * A downloaded model as a piece: loaded in the background (nothing shows until it arrives), turned
+ * from glTF's y-up to the room's z-up, scaled to `height` (or `width`), standing on z = 0 and centred.
+ * `turn` spins it about z (its front faces -y at 0, as glTF models face +z).
+ */
+export function modelPiece(bag: Bag, id: string, size: { height?: number; width?: number }, turn = 0): THREE.Group {
+  const root = new THREE.Group();
+  let gone = false;
+  bag.keep({ dispose: () => (gone = true) });
+  void import('three/examples/jsm/loaders/GLTFLoader.js').then(({ GLTFLoader }) =>
+    new GLTFLoader().load(modelUrl(id), (gltf) => {
+      const model = gltf.scene;
+      model.traverse((o) => {
+        const m = o as THREE.Mesh;
+        if (!m.isMesh) return;
+        m.castShadow = m.receiveShadow = true;
+        bag.keep(m.geometry);
+        for (const mat of Array.isArray(m.material) ? m.material : [m.material]) {
+          const s = mat as THREE.MeshStandardMaterial;
+          // No environment to reflect: full metal would render black (as std() above).
+          if (s.metalness !== undefined) s.metalness = Math.min(s.metalness, 0.5);
+          for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap'] as const) if (s[k]) bag.keep(s[k]!);
+          bag.keep(s);
+        }
+      });
+      if (gone) {
+        bag.dispose();
+        return;
+      }
+      model.rotation.x = Math.PI / 2;
+      model.updateMatrixWorld(true);
+      const box = new THREE.Box3().setFromObject(model);
+      const dim = box.getSize(new THREE.Vector3());
+      const k = size.height ? size.height / dim.z : size.width ? size.width / Math.max(dim.x, dim.y) : 1;
+      const holder = new THREE.Group();
+      holder.add(model);
+      model.position.set(-(box.min.x + box.max.x) / 2, -(box.min.y + box.max.y) / 2, -box.min.z);
+      holder.scale.setScalar(k);
+      holder.rotation.z = turn;
+      root.add(holder);
+    }),
+  );
+  return root;
+}

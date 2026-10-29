@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Bag, DecorContext, FACTION_COLOR, ROOM, glow, mesh, std } from './kit';
+import { Bag, DecorContext, FACTION_COLOR, ROOM, glow, mesh, modelPiece, std } from './kit';
 import type { Built } from './tables';
 
 /**
@@ -35,6 +35,16 @@ export const CEILINGS: Record<string, Make> = {
     return { root: g, update: (t) => (g.rotation.z = Math.sin(t * 0.6) * 0.05) };
   },
   c_chandelier: (_c, bag) => {
+    // A downloaded chandelier (Poly Haven, CC0), on a chain from the ceiling, with a warm light.
+    const g = new THREE.Group();
+    const m = modelPiece(bag, 'Chandelier_01', { width: 7 });
+    m.position.z = HANG - 2;
+    const light = new THREE.PointLight(0xffc27a, 34, 44, 1.6);
+    light.position.set(0, 0, HANG - 1);
+    g.add(m, chain(bag, 0, 0, CEIL, HANG + 2), light);
+    return { root: g, update: (t) => (light.intensity = 34 * (1 + Math.sin(t * 9) * 0.06 + Math.sin(t * 17) * 0.04)) };
+  },
+  c_chandelier_drawn: (_c, bag) => {
     const g = new THREE.Group();
     const iron = std(bag, { color: '#2a2428', metalness: 0.7, roughness: 0.45 });
     for (let i = 0; i < 3; i++) {

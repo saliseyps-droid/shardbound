@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Bag, DecorContext, canvasTexture, glow, mesh, rng, std, woodTexture } from './kit';
+import { Bag, DecorContext, canvasTexture, glow, mesh, modelPiece, rng, std, woodTexture } from './kit';
 import type { Built } from './tables';
 import { mergeGeometries } from './tables';
 
@@ -29,8 +29,18 @@ function barrel(bag: Bag, mat: THREE.Material, band: THREE.Material) {
   return g;
 }
 
+/** Furniture from downloaded models (Poly Haven, CC0): the model's id, its size in the room, a turn. */
+const model = (id: string, size: { height?: number; width?: number }, turn = 0): Make => (_c, bag) => ({ root: modelPiece(bag, id, size, turn) });
+
 export const FURNITURE: Record<string, Make> = {
-  fu_barrels: (_c, bag) => {
+  fu_bookshelf: model('wooden_bookshelf_worn', { height: 13 }),
+  fu_chest: model('treasure_chest', { width: 5 }),
+  fu_barrels: model('wooden_barrels_01', { width: 6.5 }),
+  fu_plant: model('potted_plant_02', { height: 9 }),
+  fu_statue: model('gothic_statue', { height: 13 }),
+  fu_clock: model('vintage_grandfather_clock_01', { height: 14 }),
+  fu_cabinet: model('GothicCabinet_01', { height: 11 }),
+  fu_barrels_drawn: (_c, bag) => {
     const g = new THREE.Group();
     const w = oak(bag, 302);
     const band = ironM(bag);
@@ -41,7 +51,7 @@ export const FURNITURE: Record<string, Make> = {
     }
     return { root: g };
   },
-  fu_plant: (_c, bag) => {
+  fu_plant_drawn: (_c, bag) => {
     const g = new THREE.Group();
     g.add(mesh(up(new THREE.CylinderGeometry(1.5, 1.1, 2.4, 16)), std(bag, { color: '#a85a3a', roughness: 0.9 }), bag, [0, 0, 1.2]));
     const leaf = std(bag, { color: '#3a7a2a', roughness: 0.7, side: THREE.DoubleSide });
@@ -58,7 +68,7 @@ export const FURNITURE: Record<string, Make> = {
     }
     return { root: g, update: (t) => leaves.forEach((l, i) => (l.rotation.z = Math.sin(t * 0.8 + i) * 0.05)) };
   },
-  fu_bookshelf: (_c, bag) => {
+  fu_bookshelf_drawn: (_c, bag) => {
     const g = new THREE.Group();
     const w = oak(bag, 303);
     const W = 6;
@@ -125,7 +135,7 @@ export const FURNITURE: Record<string, Make> = {
     g.add(tilt);
     return { root: g, update: (t) => (ball.rotation.y = t * 0.25) };
   },
-  fu_chest: (_c, bag) => {
+  fu_chest_drawn: (_c, bag) => {
     const g = new THREE.Group();
     const w = oak(bag, 307);
     const band = gold(bag);
@@ -191,7 +201,7 @@ export const FURNITURE: Record<string, Make> = {
     g.add(glass);
     return { root: g };
   },
-  fu_statue: (_c, bag) => {
+  fu_statue_drawn: (_c, bag) => {
     const g = new THREE.Group();
     const s = stone(bag);
     g.add(mesh(new THREE.BoxGeometry(4, 4, 2), stone(bag, '#7a746a'), bag, [0, 0, 1]));
