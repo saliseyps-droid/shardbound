@@ -105,15 +105,6 @@ export const DECOR: DecorItem[] = [
   item('poster', 'fantasy', 300)('po_abandoneer', 'Captain Abandoneer', 'A portrait of the pirate captain, wanted dead or alive.'),
   item('poster', 'fantasy', 300)('po_legend', 'Legend Poster', 'The art of a Legendary card, framed.'),
   item('poster', 'fantasy', 700)('po_shield', 'Knight’s Shield', 'A battered kite shield hung on the wall.'),
-  item('poster', 'general', 600)('po_lion', 'Lion Head', 'A carved lion’s head on the wall.'),
-  item('poster', 'general', 500)('po_bull', 'Bull Head', 'A bull’s head trophy on the wall.'),
-  item('poster', 'fantasy', 800)('po_mirror', 'Ornate Mirror', 'A gilded mirror with a carved frame.'),
-  item('poster', 'faction', 250)('po_cinder', 'Cinder Legion Banner', 'A hanging cloth banner of the faction.'),
-  item('poster', 'faction', 250)('po_thorn', 'Thornweald Circle Banner', 'A hanging cloth banner of the faction.'),
-  item('poster', 'faction', 250)('po_brass', 'Brass Dominion Banner', 'A hanging cloth banner of the faction.'),
-  item('poster', 'faction', 250)('po_lumen', 'Lumen Conclave Banner', 'A hanging cloth banner of the faction.'),
-  item('poster', 'faction', 250)('po_hollow', 'Hollow Choir Banner', 'A hanging cloth banner of the faction.'),
-  item('poster', 'faction', 250)('po_rime', 'Rimetide Court Banner', 'A hanging cloth banner of the faction.'),
 
   item('lights', 'general', 300)('l_lantern', 'Lanterns', 'Metal lanterns with a warm light.'),
   item('lights', 'general', 400)('l_wooden_lantern', 'Wooden Lanterns', 'Old wooden lanterns on iron brackets.'),
@@ -148,15 +139,14 @@ export const DECOR: DecorItem[] = [
   item('trinket', 'fantasy', 200)('tr_key', 'Golden Key', 'A big golden key.'),
   item('trinket', 'general', 100)('tr_mug', 'Tankard', 'A wooden tankard of ale.'),
 
+  item('trinket', 'general', 450)('tr_lion', 'Lion Head', 'A carved lion’s head on a stand.'),
+  item('trinket', 'general', 400)('tr_bull', 'Bull Head', 'A bull’s head trophy on a stand.'),
+
   // On the walls.
-  item('poster', 'fantasy', 400)('po_banner_red', 'Red Banner', 'A long red banner with a golden sign.'),
-  item('poster', 'fantasy', 400)('po_banner_blue', 'Blue Banner', 'A long blue banner with a golden sign.'),
   item('poster', 'general', 300)('po_shield_wood', 'Wooden Shield', 'A round wooden shield.'),
   item('poster', 'general', 300)('po_dartboard', 'Dartboard', 'A worn dartboard.'),
-  item('poster', 'fantasy', 500)('po_hammer', 'War Hammer', 'An ornate war hammer on the wall.'),
   item('poster', 'fantasy', 600)('po_estoc', 'Antique Sword', 'A long antique sword on the wall.'),
   item('poster', 'fantasy', 500)('po_mace', 'Ornate Mace', 'A decorated mace on the wall.'),
-  item('poster', 'general', 150)('po_pegs', 'Peg Rack', 'A rack of pegs with a few things hung on it.'),
   item('poster', 'general', 300)('po_sword', 'Bronze Sword', 'A bronze sword hung on the wall.'),
 
   // Lights and the ceiling.
@@ -186,7 +176,6 @@ export const DECOR: DecorItem[] = [
   item('trinket', 'modern', 200)('tr_succulent', 'Succulent', 'A spiky plant in a white pot.'),
   item('trinket', 'modern', 450)('tr_tv', 'Retro TV', 'A little television from long ago.'),
   item('trinket', 'modern', 400)('tr_boombox', 'Boombox', 'A cassette player for some music.'),
-  item('poster', 'modern', 250)('po_clock', 'Wall Clock', 'A plain round clock.'),
   item('lights', 'modern', 400)('l_sconce', 'Wall Sconces', 'Black lamps with a warm bulb.'),
   item('ceiling', 'modern', 500)('c_modern_lamp', 'Pendant Lamp', 'A white pendant lamp.'),
   item('ceiling', 'modern', 450)('c_industrial', 'Industrial Lamp', 'A metal factory lamp.'),

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Bag, DecorContext, FACTION_COLOR, ROOM, canvasTexture, flame, loadArt, mesh, modelPiece, std, woodTexture } from './kit';
+import { Bag, DecorContext, ROOM, flame, loadArt, mesh, modelPiece, std, woodTexture } from './kit';
 import type { Built } from './tables';
 
 /**
@@ -64,141 +64,42 @@ export const PAINTINGS: Record<string, Make> = {
   p_glade: (ctx, bag) => artPainting(ctx, bag, ctx.art('glade'), 17, 10, woodFrame(bag)),
 };
 
-/** A cloth banner on a rod: faction colours, a border, an emblem; it sways a little. */
-function banner(bag: Bag, [base, trim]: readonly [string, string], emblem: (g: CanvasRenderingContext2D) => void): Built {
-  const map = bag.keep(
-    canvasTexture(256, 512, (g) => {
-      g.fillStyle = base;
-      g.fillRect(0, 0, 256, 512);
-      g.fillStyle = 'rgba(0,0,0,.18)';
-      for (let x = 0; x < 256; x += 32) g.fillRect(x, 0, 12, 512);
-      g.strokeStyle = trim;
-      g.lineWidth = 12;
-      g.strokeRect(14, 14, 228, 440);
-      g.save();
-      g.translate(128, 220);
-      g.fillStyle = trim;
-      g.strokeStyle = trim;
-      emblem(g);
-      g.restore();
-      // The swallowtail cut at the foot.
-      g.globalCompositeOperation = 'destination-out';
-      g.beginPath();
-      g.moveTo(0, 512);
-      g.lineTo(128, 440);
-      g.lineTo(256, 512);
-      g.fill();
-    }),
-  );
-  const geo = bag.keep(new THREE.PlaneGeometry(6, 12, 8, 12));
-  const base0 = (geo.getAttribute('position').array as Float32Array).slice();
-  const cloth = new THREE.Mesh(geo, std(bag, { map, transparent: true, alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.9 }));
-  cloth.rotation.x = Math.PI / 2;
-  cloth.position.y = -0.4;
-  const rod = mesh(new THREE.CylinderGeometry(0.15, 0.15, 7.4, 8), std(bag, { color: '#3a2a1a', metalness: 0.5, roughness: 0.5 }), bag, [0, -0.4, 6]);
-  rod.rotation.z = Math.PI / 2;
-  const g = new THREE.Group();
-  g.add(cloth, rod);
-  const pos = geo.getAttribute('position') as THREE.BufferAttribute;
-  return {
-    root: g,
-    update: (t) => {
-      for (let i = 0; i < pos.count; i++) {
-        const y = base0[i * 3 + 1];
-        const hang = (6 - y) / 12; // 0 at the rod, 1 at the foot
-        pos.setZ(i, Math.sin(t * 1.3 + y * 0.5) * 0.25 * hang);
-      }
-      pos.needsUpdate = true;
-    },
-  };
+/** The alchemist's bottles in bright colours: each bottle (by where it stands along the shelf) its own. */
+const BOTTLE_COLORS = ['#e8102a', '#10c83a', '#1050ff', '#ffb000', '#9a10e8', '#00c8c0', '#ff5a00', '#e810b0'];
+function brightBottles(m: THREE.Mesh) {
+  const mat = m.material as THREE.MeshStandardMaterial;
+  if (!mat.name?.includes('Props')) return;
+  const pos = m.geometry.getAttribute('position') as THREE.BufferAttribute;
+  m.geometry.computeBoundingBox();
+  const box = m.geometry.boundingBox!;
+  const colors = new Float32Array(pos.count * 3);
+  const c = new THREE.Color();
+  for (let i = 0; i < pos.count; i++) {
+    const k = Math.min(BOTTLE_COLORS.length - 1, Math.floor(((pos.getX(i) - box.min.x) / (box.max.x - box.min.x || 1)) * BOTTLE_COLORS.length));
+    c.set(BOTTLE_COLORS[k]);
+    colors.set([c.r, c.g, c.b], i * 3);
+  }
+  m.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  const glass = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.12, metalness: 0 });
+  glass.name = mat.name;
+  m.material = glass;
 }
 
-const emblems = {
-  flame: (g: CanvasRenderingContext2D) => {
-    g.beginPath();
-    g.moveTo(0, -70);
-    g.bezierCurveTo(50, -10, 40, 50, 0, 60);
-    g.bezierCurveTo(-40, 50, -50, -10, 0, -70);
-    g.fill();
-  },
-  leaf: (g: CanvasRenderingContext2D) => {
-    g.beginPath();
-    g.ellipse(0, 0, 34, 70, 0.4, 0, Math.PI * 2);
-    g.fill();
-  },
-  gear: (g: CanvasRenderingContext2D) => {
-    g.lineWidth = 18;
-    g.beginPath();
-    g.arc(0, 0, 44, 0, Math.PI * 2);
-    g.stroke();
-    for (let i = 0; i < 8; i++) {
-      g.rotate(Math.PI / 4);
-      g.fillRect(-10, -72, 20, 24);
-    }
-  },
-  sun: (g: CanvasRenderingContext2D) => {
-    g.beginPath();
-    g.arc(0, 0, 30, 0, Math.PI * 2);
-    g.fill();
-    g.lineWidth = 8;
-    for (let i = 0; i < 12; i++) {
-      g.rotate(Math.PI / 6);
-      g.beginPath();
-      g.moveTo(0, 40);
-      g.lineTo(0, 70);
-      g.stroke();
-    }
-  },
-  eye: (g: CanvasRenderingContext2D) => {
-    g.lineWidth = 10;
-    g.beginPath();
-    g.ellipse(0, 0, 64, 34, 0, 0, Math.PI * 2);
-    g.stroke();
-    g.beginPath();
-    g.arc(0, 0, 18, 0, Math.PI * 2);
-    g.fill();
-  },
-  snow: (g: CanvasRenderingContext2D) => {
-    g.lineWidth = 10;
-    for (let i = 0; i < 3; i++) {
-      g.rotate(Math.PI / 3);
-      g.beginPath();
-      g.moveTo(0, -70);
-      g.lineTo(0, 70);
-      g.stroke();
-    }
-  },
-};
-
 /** A model hung on the wall: its back to the wall, centred on the slot, no bigger than the slot allows. */
-const onWall = (id: string, fit: { scale?: number; turn?: number }): Make => (ctx, bag) => ({ root: modelPiece(bag, id, { ...fit, mount: 'wall', max: ctx.limit }) });
+const onWall = (id: string, fit: { scale?: number; turn?: number; tweak?: (m: THREE.Mesh) => void }): Make => (ctx, bag) => ({ root: modelPiece(bag, id, { ...fit, mount: 'wall', max: ctx.limit }) });
 
 export const POSTERS: Record<string, Make> = {
   po_abandoneer: (ctx, bag) => artPainting(ctx, bag, ctx.art('abandoneer'), 7, 9.8, woodFrame(bag)),
   // Wall pieces from Poly Haven (CC0): a knight's shield, hunting trophies, a mirror.
-  po_shield: onWall('kite_shield', { scale: 0.55 }),
-  po_lion: onWall('lion_head', { scale: 1.6 }),
-  po_bull: onWall('bull_head', { scale: 1.6 }),
-  po_mirror: onWall('ornate_mirror_01', { scale: 1.8 }),
+  po_shield: onWall('kite_shield', { scale: 1 }),
   po_dartboard: onWall('dartboard', { scale: 1.6 }),
-  po_hammer: onWall('ornate_war_hammer', { scale: 1.4 }),
   po_estoc: onWall('antique_estoc', { scale: 0.75 }),
   po_mace: onWall('ornate_medieval_mace', { scale: 1.5 }),
   // Fantasy (Quaternius).
-  po_alchemy: onWall('qk/Shelf_Small_Bottles', { scale: 1.2 }),
-  po_banner_red: onWall('qk/Banner_1', { scale: 0.8 }),
-  po_banner_blue: onWall('qk/Banner_2', { scale: 0.8 }),
+  po_alchemy: onWall('qk/Shelf_Small_Bottles', { scale: 1.2, tweak: brightBottles }),
   po_shield_wood: onWall('qk/Shield_Wooden', { scale: 1.3 }),
-  po_pegs: onWall('qk/Peg_Rack', { scale: 1.3 }),
   po_sword: onWall('qk/Sword_Bronze', { scale: 1 }),
-  po_clock: onWall('wall_clock', { scale: 2.6 }),
   po_legend: (ctx, bag) => artPainting(ctx, bag, ctx.art('legend'), 7, 9.8, gilt(bag)),
-  po_cinder: (_c, bag) => banner(bag, FACTION_COLOR.cinder, emblems.flame),
-  po_thorn: (_c, bag) => banner(bag, FACTION_COLOR.thorn, emblems.leaf),
-  po_brass: (_c, bag) => banner(bag, FACTION_COLOR.brass, emblems.gear),
-  po_lumen: (_c, bag) => banner(bag, FACTION_COLOR.lumen, emblems.sun),
-  po_hollow: (_c, bag) => banner(bag, FACTION_COLOR.hollow, emblems.eye),
-  po_rime: (_c, bag) => banner(bag, FACTION_COLOR.rime, emblems.snow),
 };
 
 // ---------- Lights: a pair on the side walls (both the same piece). ----------

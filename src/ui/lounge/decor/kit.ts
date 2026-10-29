@@ -227,16 +227,6 @@ export function roundedRect(w: number, h: number, r: number) {
   return s;
 }
 
-/** Faction colours (banners, glows). */
-export const FACTION_COLOR = {
-  cinder: ['#c8321a', '#ffb35a'],
-  thorn: ['#2f6a24', '#cfe88a'],
-  brass: ['#a8742a', '#f0d08a'],
-  lumen: ['#efe6c8', '#c9a24a'],
-  hollow: ['#4a2278', '#cfa8ff'],
-  rime: ['#2a6a9a', '#cfeeff'],
-} as const;
-
 /**
  * Where the room's 3D models live, all CC0: public/decor/<id>/model.gltf (Poly Haven),
  * decor/qk/<Name>.gltf (Quaternius Fantasy Props), decor/arcade/<name>.glb (Kenney Mini Arcade).
@@ -259,6 +249,8 @@ export interface ModelFit {
   anchor?: 'center' | 'back';
   /** The most room it may take: a bigger piece shrinks to fit. */
   max?: Limit;
+  /** A change to each of its meshes once loaded (a colour, a material). */
+  tweak?: (m: THREE.Mesh) => void;
 }
 
 /**
@@ -276,6 +268,7 @@ export function modelPiece(bag: Bag, id: string, fit: ModelFit = {}): THREE.Grou
         const m = o as THREE.Mesh;
         if (!m.isMesh) return;
         m.castShadow = m.receiveShadow = true;
+        fit.tweak?.(m);
         bag.keep(m.geometry);
         for (const mat of Array.isArray(m.material) ? m.material : [m.material]) {
           const s = mat as THREE.MeshStandardMaterial;

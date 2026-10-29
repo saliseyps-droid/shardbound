@@ -39,6 +39,8 @@ export const TRINKETS: Record<string, Make> = {
   tr_scroll: small('qk/Scroll_1', { scale: 1.8, turn: 0.4 }),
   tr_key: small('qk/Key_Gold', { scale: 3, turn: 0.8 }),
   tr_mug: small('qk/Mug', { scale: 1.3 }),
+  tr_lion: small('lion_head', { scale: 1.3, turn: Math.PI / 2 }),
+  tr_bull: small('bull_head', { scale: 1.3, turn: Math.PI / 2 }),
   // Modern (Poly Haven).
   tr_succulent: small('potted_plant_04', { scale: 2 }),
   tr_tv: small('television_02', { scale: 1.2, turn: Math.PI / 2 }),

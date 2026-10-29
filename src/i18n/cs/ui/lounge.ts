@@ -520,5 +520,7 @@ const d: Record<string, string> = {
   'Two glowing rings above the table.': 'Dva svítící kruhy nad stolem.',
   'Captain Abandoneer': 'Kapitánka Abandoneer',
   'A portrait of the pirate captain, wanted dead or alive.': 'Portrét pirátské kapitánky, hledané živé či mrtvé.',
+  'A carved lion’s head on a stand.': 'Vyřezávaná lví hlava na podstavci.',
+  'A bull’s head trophy on a stand.': 'Býčí hlava jako trofej na podstavci.',
 };
 export default d;
