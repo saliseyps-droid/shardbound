@@ -261,6 +261,8 @@ export function modelPiece(bag: Bag, id: string, fit: ModelFit = {}): THREE.Grou
   const root = new THREE.Group();
   let gone = false;
   bag.keep({ dispose: () => (gone = true) });
+  // A model that cannot be loaded (offline, or no browser at all in tests) is simply left out.
+  const missing = () => {};
   void import('three/examples/jsm/loaders/GLTFLoader.js').then(({ GLTFLoader }) =>
     new GLTFLoader().load(modelUrl(id), (gltf) => {
       const model = gltf.scene;
@@ -304,7 +306,7 @@ export function modelPiece(bag: Bag, id: string, fit: ModelFit = {}): THREE.Grou
       holder.add(turned);
       holder.scale.setScalar(k);
       root.add(holder);
-    }),
-  );
+    }, undefined, missing),
+  ).catch(missing);
   return root;
 }
