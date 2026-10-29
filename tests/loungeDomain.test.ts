@@ -54,8 +54,8 @@ describe('Lounge decor', () => {
   });
 
   it('empties optional slots only', () => {
-    let s = unwrap(buyDecor(rich(), 'p_map', 2));
-    s = unwrap(placeDecor(s, 'painting', 'p_map'));
+    let s = unwrap(buyDecor(rich(), 'p_crown', 2));
+    s = unwrap(placeDecor(s, 'painting', 'p_crown'));
     s = unwrap(placeDecor(s, 'painting', null));
     expect(activeRoom(s.profile).painting).toBeNull();
     expect(placeDecor(s, 'table', null).ok).toBe(false);

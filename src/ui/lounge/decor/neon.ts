@@ -97,9 +97,6 @@ const LETTERS: Record<string, Stroke[]> = {
   L: [[[0, 1], [0, 0], [0.9, 0]]],
   A: [[[0, 0], [0.5, 1], [1, 0]], [[0.22, 0.42], [0.78, 0.42]]],
   Y: [[[0, 1], [0.5, 0.5], [1, 1]], [[0.5, 0.5], [0.5, 0]]],
-  W: [[[0, 1], [0.22, 0], [0.5, 0.6], [0.78, 0], [1, 1]]],
-  I: [[[0.5, 0], [0.5, 1]]],
-  N: [[[0, 0], [0, 1], [1, 0], [1, 1]]],
 };
 function word(text: string): Stroke[] {
   const n = text.length;
@@ -115,8 +112,6 @@ export const NEON_SIGNS: Record<string, Make> = {
   po_neon_controller: sign(controller, '#3affd8'),
   po_neon_gg: sign(word('GG'), '#7aff4a'),
   po_neon_play: sign(word('PLAY'), '#ff4ad8'),
-  // The big one on the back wall.
-  p_neon_win: sign(word('WIN'), '#ff6a3a', 7.5),
 };
 
 // ---------- Strips along the side walls (the lights slot). ----------

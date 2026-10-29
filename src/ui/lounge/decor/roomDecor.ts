@@ -115,7 +115,7 @@ export function buildRoomDecor(scene: THREE.Scene, layout: RoomLayout, ctx: Deco
     const bag = new Bag();
     let built: Built;
     try {
-      built = make({ ...ctx, limit: SLOT_PLACE[slot]?.limit }, bag);
+      built = make({ ...ctx, limit: SLOT_PLACE[slot]?.limit, mirror: slot === 'tableRight' }, bag);
     } catch (e) {
       // A piece that fails to build is left out (or the slot's default stands in): never the whole table.
       bag.dispose();

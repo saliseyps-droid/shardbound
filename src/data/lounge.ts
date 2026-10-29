@@ -82,38 +82,21 @@ export const DECOR: DecorItem[] = [
   item('table', 'faction', 1500)('t_cinder', 'Cinder Forge', 'Obsidian split by glowing seams of lava.'),
   item('table', 'faction', 1500)('t_hollow', 'Bone Table', 'Pale bones with a violet glow beneath the top.'),
 
-  item('trinket', 'general', 100)('tr_jug', 'Jug', 'A clay jug of something to drink.'),
-  item('trinket', 'general', 100)('tr_bowl', 'Wooden Bowl', 'A turned wooden bowl.'),
-  item('trinket', 'general', 150)('tr_magnifier', 'Magnifying Glass', 'For reading the small print on the cards.'),
   item('trinket', 'general', 200)('tr_goblets', 'Brass Goblets', 'A pair of brass goblets.'),
   item('trinket', 'general', 200)('tr_vase', 'Ceramic Vase', 'An old painted vase.'),
   item('trinket', 'general', 250)('tr_vase_brass', 'Brass Vase', 'A small brass vase.'),
   item('trinket', 'general', 250)('tr_elephant', 'Carved Elephant', 'A little elephant carved of wood.'),
-  item('trinket', 'general', 300)('tr_books', 'Old Books', 'A row of heavy old books.'),
-  item('trinket', 'general', 300)('tr_oil_lamp', 'Oil Lamp', 'An oil lamp with a small warm flame.'),
-  item('trinket', 'general', 400)('tr_tea', 'Tea Set', 'A teapot and cups for a long match.'),
-  item('trinket', 'general', 500)('tr_clock', 'Mantel Clock', 'A small clock to keep your turns honest.'),
-  item('trinket', 'fantasy', 300)('tr_lamp', 'Brass Lamp', 'A brass lamp with a flickering flame.'),
   item('trinket', 'fantasy', 350)('tr_compass', 'Sea Dog’s Compass', 'A brass compass that always points to the win.'),
   item('trinket', 'fantasy', 400)('tr_horse', 'Horse Figurine', 'A little bronze horse.'),
 
-  item('rug', 'base', 0)('r_wine', 'Wine Rug', 'Deep red velvet with a gold-lined border.'),
-  item('rug', 'general', 400)('r_persian', 'Jacquard Rug', 'Red jacquard, a blue border and tassels.'),
-  item('rug', 'general', 450)('r_damask', 'Damask Rug', 'Dark damask with a green and gold border.'),
-  item('rug', 'general', 300)('r_tartan', 'Tartan Blanket', 'A soft checked blanket with tassels.'),
-  item('rug', 'general', 200)('r_hessian', 'Woven Mat', 'A rough woven mat.'),
 
-  item('floor', 'base', 0)('f_stone', 'Stone Blocks', 'Worn blocks of grey stone.'),
   item('floor', 'general', 300)('f_planks', 'Old Planks', 'A warm floor of old planks.'),
-  item('floor', 'general', 500)('f_cobble', 'Cobblestones', 'Rounded cobbles with moss between them.'),
   item('floor', 'general', 600)('f_terracotta', 'Terracotta Tiles', 'Square tiles of fired clay.'),
-  item('floor', 'fantasy', 700)('f_parquet', 'Herringbone Parquet', 'Polished wood laid in a herringbone.'),
-  item('floor', 'fantasy', 800)('f_slate', 'Flagstones', 'Large flat stones fitted together.'),
+  item('floor', 'base', 0)('f_slate', 'Flagstones', 'Large flat stones fitted together.'),
 
   item('walls', 'general', 600)('w_red_brick', 'Red Brick', 'Old red bricks.'),
   item('walls', 'base', 0)('w_sandstone', 'Sandstone Blocks', 'Great blocks of pale sandstone.'),
 
-  item('painting', 'general', 400)('p_map', 'Map of the Realm', 'An old map on parchment in a wooden frame.'),
   item('painting', 'fantasy', 500)('p_crown', 'The Sundered Crown', 'The campaign’s painting in a golden frame.'),
   item('painting', 'fantasy', 600)('p_dragon', 'Dragon over the Peaks', 'A great painting of a dragon.'),
   item('painting', 'fantasy', 800)('p_warden', 'Portrait of your Warden', 'An oil portrait of the Warden you have chosen.'),
@@ -132,7 +115,6 @@ export const DECOR: DecorItem[] = [
   item('poster', 'faction', 250)('po_hollow', 'Hollow Choir Banner', 'A hanging cloth banner of the faction.'),
   item('poster', 'faction', 250)('po_rime', 'Rimetide Court Banner', 'A hanging cloth banner of the faction.'),
 
-  item('lights', 'base', 0)('l_torch', 'Torches', 'Iron holders with burning torches.'),
   item('lights', 'general', 300)('l_lantern', 'Lanterns', 'Metal lanterns with a warm light.'),
   item('lights', 'general', 400)('l_wooden_lantern', 'Wooden Lanterns', 'Old wooden lanterns on iron brackets.'),
 
@@ -183,19 +165,12 @@ export const DECOR: DecorItem[] = [
   item('furniture', 'arcade', 800)('fu_tickets', 'Ticket Machine', 'Prints your winning tickets.'),
 
   // Small things for the table.
-  item('trinket', 'fantasy', 200)('tr_potion_red', 'Red Potion', 'A round bottle of a red potion.'),
-  item('trinket', 'fantasy', 200)('tr_potion_blue', 'Blue Potion', 'A slim bottle of a blue potion.'),
-  item('trinket', 'fantasy', 300)('tr_potion_big', 'Large Potion', 'A big flask of something glowing.'),
-  item('trinket', 'fantasy', 300)('tr_coins', 'Pile of Gold', 'A pile of gold coins.'),
   item('trinket', 'fantasy', 400)('tr_coins_big', 'Hoard of Gold', 'A heap of gold coins.'),
-  item('trinket', 'fantasy', 250)('tr_chalice', 'Golden Chalice', 'A chalice fit for a victory.'),
   item('trinket', 'fantasy', 300)('tr_candles', 'Candlestick', 'Three candles on an iron stick.'),
   item('trinket', 'general', 200)('tr_book_stack', 'Stack of Books', 'Old books piled up.'),
   item('trinket', 'general', 150)('tr_scroll', 'Scroll', 'A rolled up scroll.'),
   item('trinket', 'fantasy', 200)('tr_key', 'Golden Key', 'A big golden key.'),
   item('trinket', 'general', 100)('tr_mug', 'Tankard', 'A wooden tankard of ale.'),
-  item('trinket', 'fantasy', 200)('tr_bottles', 'Little Bottles', 'A cluster of small bottles.'),
-  item('trinket', 'arcade', 300)('tr_prizes', 'Prizes', 'Plush toys won at the arcade.'),
 
   // On the walls.
   item('poster', 'fantasy', 400)('po_banner_red', 'Red Banner', 'A long red banner with a golden sign.'),
@@ -210,7 +185,7 @@ export const DECOR: DecorItem[] = [
 
   // Lights and the ceiling.
   item('lights', 'fantasy', 350)('l_wall_lantern', 'Wall Lanterns', 'Iron lanterns fixed to the walls.'),
-  item('lights', 'general', 250)('l_iron_torch', 'Iron Torches', 'Torches in iron cups.'),
+  item('lights', 'base', 0)('l_iron_torch', 'Iron Torches', 'Torches in iron cups.'),
   item('ceiling', 'fantasy', 700)('c_candle_ring', 'Candle Chandelier', 'A great ring of candles on chains.'),
 
   // Paintings: scenes from the campaigns.
@@ -224,8 +199,6 @@ export const DECOR: DecorItem[] = [
 
   // More floors, walls, rugs and tables.
   item('floor', 'general', 400)('f_dark_planks', 'Dark Planks', 'Dark, worn planks.'),
-  item('rug', 'general', 350)('r_fur', 'Patterned Rug', 'A soft rug with a woven pattern.'),
-  item('rug', 'general', 300)('r_wool', 'Wool Rug', 'A grey herringbone wool rug.'),
 
   // Doors.
   item('door', 'base', 0)('d_castle', 'Castle Door', 'A heavy wooden door bound with iron.'),
@@ -241,8 +214,6 @@ export const DECOR: DecorItem[] = [
   item('trinket', 'modern', 200)('tr_succulent', 'Succulent', 'A spiky plant in a white pot.'),
   item('trinket', 'modern', 450)('tr_tv', 'Retro TV', 'A little television from long ago.'),
   item('trinket', 'modern', 400)('tr_boombox', 'Boombox', 'A cassette player for some music.'),
-  item('trinket', 'modern', 500)('tr_console', 'Game Console', 'For when the cards need a break.'),
-  item('trinket', 'modern', 350)('tr_desk_lamp', 'Desk Lamp', 'An orange lamp on a sprung arm.'),
   item('poster', 'modern', 250)('po_clock', 'Wall Clock', 'A plain round clock.'),
   item('lights', 'modern', 400)('l_sconce', 'Wall Sconces', 'Black lamps with a warm bulb.'),
   item('ceiling', 'modern', 500)('c_modern_lamp', 'Pendant Lamp', 'A white pendant lamp.'),
@@ -251,20 +222,11 @@ export const DECOR: DecorItem[] = [
   item('table', 'modern', 1600)('t_neon', 'Neon Table', 'Black lacquer with a glowing edge.'),
   item('door', 'modern', 600)('d_walnut', 'Walnut Door', 'A flat walnut door in a steel frame.'),
   item('floor', 'modern', 900)('f_marble', 'Marble', 'Smooth pale marble.'),
-  item('floor', 'modern', 700)('f_terrazzo', 'Terrazzo', 'Speckled terrazzo tiles.'),
-  item('floor', 'modern', 400)('f_laminate', 'Light Wood', 'A light wooden floor.'),
-  item('floor', 'modern', 500)('f_grey_tiles', 'Grey Tiles', 'Large grey stone tiles.'),
   item('floor', 'modern', 600)('f_checker', 'Checkered Tiles', 'Black and white tiles.'),
-  item('floor', 'general', 600)('f_block_parquet', 'Block Parquet', 'Wooden blocks laid in squares.'),
   item('rug', 'modern', 450)('r_shag', 'Round Shag Rug', 'A round, soft cream rug.'),
   item('rug', 'modern', 500)('r_round', 'Round Circles Rug', 'A round rug of coloured rings.'),
-  item('rug', 'modern', 400)('r_boucle', 'Boucle Rug', 'A thick checked wool rug.'),
-  item('rug', 'general', 250)('r_gingham', 'Picnic Rug', 'Green and white gingham.'),
-  item('rug', 'modern', 450)('r_indigo', 'Indigo Rug', 'Denim blue with pale stripes.'),
-  item('rug', 'modern', 450)('r_corduroy', 'Corduroy Rug', 'Green corduroy with sweeping arcs.'),
-  item('rug', 'modern', 350)('r_terry', 'Blue Rug', 'A soft blue rug.'),
+  item('rug', 'base', 0)('r_corduroy', 'Corduroy Rug', 'Green corduroy with sweeping arcs.'),
   // Neon.
-  item('rug', 'neon', 900)('r_neon_grid', 'Neon Grid Rug', 'A dark rug with a glowing grid.'),
   item('poster', 'neon', 600)('po_neon_heart', 'Neon Heart', 'A pink neon heart.'),
   item('poster', 'neon', 600)('po_neon_bolt', 'Neon Bolt', 'A yellow neon lightning bolt.'),
   item('poster', 'neon', 700)('po_neon_crown', 'Neon Crown', 'A purple neon crown.'),
@@ -272,7 +234,6 @@ export const DECOR: DecorItem[] = [
   item('poster', 'neon', 700)('po_neon_controller', 'Neon Controller', 'A neon game controller.'),
   item('poster', 'neon', 700)('po_neon_gg', 'Neon GG', 'Good game, in green neon.'),
   item('poster', 'neon', 800)('po_neon_play', 'Neon PLAY', 'PLAY, in pink neon.'),
-  item('painting', 'neon', 1200)('p_neon_win', 'Neon WIN', 'A big neon WIN on the back wall.'),
   item('lights', 'neon', 800)('l_neon_pink', 'Pink Neon Strips', 'Pink light along the walls.'),
   item('lights', 'neon', 800)('l_neon_cyan', 'Cyan Neon Strips', 'Cyan light along the walls.'),
   item('lights', 'neon', 800)('l_neon_purple', 'Purple Neon Strips', 'Purple light along the walls.'),
@@ -288,13 +249,13 @@ export const DEFAULT_ROOM: RoomLayout = {
   table: 't_tavern',
   tableLeft: null,
   tableRight: null,
-  rug: 'r_wine',
-  floor: 'f_stone',
+  rug: 'r_corduroy',
+  floor: 'f_slate',
   walls: 'w_sandstone',
   painting: null,
   posterLeft: null,
   posterRight: null,
-  lights: 'l_torch',
+  lights: 'l_iron_torch',
   furnBackLeft: null,
   furnBackRight: null,
   furnLeft: null,

@@ -45,19 +45,12 @@ const floor = (id: string, metres: number, p?: THREE.MeshStandardMaterialParamet
 };
 
 export const FLOORS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
-  f_stone: floor('medieval_blocks_03', 2),
   f_planks: floor('old_wooden_floor_02', 2.03),
-  f_parquet: floor('herringbone_parquet', 3.4),
-  f_cobble: floor('cobblestone_floor_04', 1.5),
   f_terracotta: floor('terracotta_floor_tiles', 2.08),
   f_slate: floor('slate_floor_02', 2),
   f_dark_planks: floor('dark_wooden_planks', 2),
   f_marble: floor('marble_01', 1.5),
-  f_terrazzo: floor('terrazzo_tiles', 2),
-  f_laminate: floor('laminate_floor_02', 1.7),
-  f_grey_tiles: floor('large_grey_tiles', 3),
   f_checker: floor('floor_tiles_06', 3),
-  f_block_parquet: floor('rectangular_parquet', 2.25),
 };
 
 // ---------- Walls: four planes standing on the floor, facing in. ----------
@@ -280,19 +273,7 @@ const rug = (look: RugLook) => (ctx: DecorContext, bag: Bag): Built => {
 };
 
 export const RUGS: Record<string, (ctx: DecorContext, bag: Bag) => Built> = {
-  r_wine: rug({ fabric: 'velour_velvet', metres: 1, band: '#2a0a0e', line: '#a07a32', tint: 'rgba(40,0,8,.45)' }),
-  r_persian: rug({ fabric: 'quatrefoil_jacquard_fabric', metres: 1.4, band: '#14204a', line: '#c9a24a', tint: 'rgba(30,0,10,.35)', fringe: '#e8dcc0', medallion: ['#1c2a5c', '#c9a24a'] }),
-  r_damask: rug({ fabric: 'floral_jacquard', metres: 1.4, band: '#0e2a1e', line: '#b8923e' }),
-  r_tartan: rug({ fabric: 'curly_teddy_checkered', metres: 2.2, tint: 'rgba(0,0,0,.15)', fringe: '#d8ccb0' }),
-  r_hessian: rug({ fabric: 'hessian_230', metres: 0.8, band: '#3a2818' }),
-  r_fur: rug({ fabric: 'faux_fur_geometric', metres: 1.2, band: '#3a1a22', line: '#a07a32' }),
-  r_wool: rug({ fabric: 'poly_wool_herringbone', metres: 1, band: '#22201e', fringe: '#cfc6b4' }),
   r_shag: rug({ fabric: 'polar_fleece', metres: 1, round: true }),
   r_round: rug({ fabric: 'knitted_fleece', metres: 0.8, round: true, pattern: { kind: 'circles', colors: ['#e8dcc0', '#c86a3a', '#2a4a5a', '#e8b04b'] } }),
-  r_boucle: rug({ fabric: 'wool_boucle', metres: 1.2, band: '#1e1a18' }),
-  r_gingham: rug({ fabric: 'gingham_check', metres: 0.8, fringe: '#f0ece0' }),
-  r_indigo: rug({ fabric: 'denim_fabric_04', metres: 0.8, pattern: { kind: 'stripes', colors: ['#e8e4dc', '#d8b04a'] } }),
   r_corduroy: rug({ fabric: 'ribbed_corduroy', metres: 0.8, pattern: { kind: 'arcs', colors: ['#e8d8b0', '#c8643a', '#2a3a2a'] } }),
-  r_terry: rug({ fabric: 'terry_cloth', metres: 0.9, band: '#0e1a3a' }),
-  r_neon_grid: rug({ fabric: 'denim_fabric_04', metres: 0.8, tint: 'rgba(8,4,20,.82)', pattern: { kind: 'grid', colors: ['#ff3aa8', '#3ad8ff'] }, glow: '#ffffff' }),
 };

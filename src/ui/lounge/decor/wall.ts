@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Bag, DecorContext, FACTION_COLOR, ROOM, canvasTexture, flame, glow, loadArt, mesh, modelPiece, rng, std, woodTexture } from './kit';
+import { Bag, DecorContext, FACTION_COLOR, ROOM, canvasTexture, flame, loadArt, mesh, modelPiece, rng, std, woodTexture } from './kit';
 import type { Built } from './tables';
 
 /**
@@ -51,57 +51,6 @@ function artPainting(_ctx: DecorContext, bag: Bag, url: string | undefined, w: n
 }
 
 export const PAINTINGS: Record<string, Make> = {
-  p_map: (_c, bag) => {
-    const map = bag.keep(
-      canvasTexture(1024, 640, (g) => {
-        const r = rng(211);
-        g.fillStyle = '#d8c090';
-        g.fillRect(0, 0, 1024, 640);
-        for (let i = 0; i < 300; i++) {
-          g.fillStyle = `rgba(120,90,40,${r() * 0.08})`;
-          g.fillRect(r() * 1024, r() * 640, 40, 20);
-        }
-        // Islands.
-        for (let k = 0; k < 4; k++) {
-          const cx = 160 + k * 230 + r() * 40;
-          const cy = 200 + r() * 260;
-          g.fillStyle = ['#9ab070', '#b0a070', '#8aa868', '#a8b880'][k];
-          g.strokeStyle = '#5a4020';
-          g.lineWidth = 3;
-          g.beginPath();
-          for (let i = 0; i <= 24; i++) {
-            const a = (i / 24) * Math.PI * 2;
-            const rr = 70 + r() * 50;
-            g.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr * 0.7);
-          }
-          g.closePath();
-          g.fill();
-          g.stroke();
-        }
-        // A compass rose and a dotted route.
-        g.strokeStyle = '#7a2a1a';
-        g.setLineDash([10, 10]);
-        g.lineWidth = 4;
-        g.beginPath();
-        g.moveTo(120, 520);
-        g.bezierCurveTo(380, 300, 640, 560, 900, 160);
-        g.stroke();
-        g.setLineDash([]);
-        g.fillStyle = '#5a4020';
-        g.translate(900, 520);
-        for (let i = 0; i < 4; i++) {
-          g.rotate(Math.PI / 2);
-          g.beginPath();
-          g.moveTo(0, 0);
-          g.lineTo(12, 12);
-          g.lineTo(0, 60);
-          g.lineTo(-12, 12);
-          g.fill();
-        }
-      }),
-    );
-    return { root: framed(bag, 16, 10, woodFrame(bag), std(bag, { map, roughness: 0.9 })) };
-  },
   p_crown: (ctx, bag) => artPainting(ctx, bag, ctx.art('crown'), 17, 10.5, gilt(bag)),
   p_dragon: (ctx, bag) => artPainting(ctx, bag, ctx.art('dragon'), 17, 10.5, gilt(bag)),
   p_battle: (ctx, bag) => artPainting(ctx, bag, ctx.art('battle'), 18, 9, woodFrame(bag)),
@@ -294,21 +243,8 @@ export const LIGHT_SPOTS: { at: THREE.Vector3; face: number }[] = [
 type OneLight = (bag: Bag, seed: number) => { g: THREE.Group; light: THREE.PointLight; base: number; update?: (t: number) => void };
 
 const iron = (bag: Bag) => std(bag, { color: '#3a2a1a', metalness: 0.6, roughness: 0.5 });
-const fire = (bag: Bag) => glow(bag, '#ffb35a');
 
 const LIGHT_LOOKS: Record<string, OneLight> = {
-  l_torch: (bag, seed) => {
-    const g = new THREE.Group();
-    const holder = mesh(new THREE.CylinderGeometry(0.25, 0.15, 2.2, 8), iron(bag), bag, [0, -0.6, 0]);
-    holder.rotation.x = Math.PI / 2;
-    const f = new THREE.Mesh(bag.keep(new THREE.SphereGeometry(0.45, 12, 8)), fire(bag));
-    f.scale.set(1, 1, 1.6);
-    f.position.set(0, -0.6, 1.5);
-    const light = new THREE.PointLight(0xffa64a, 30, 45, 1.6);
-    light.position.set(0, -1.5, 2);
-    g.add(holder, f, light);
-    return { g, light, base: 30, update: (t) => f.scale.set(1, 1, 1.5 + Math.sin(t * 13 + seed) * 0.15) };
-  },
   // Lanterns (Poly Haven, CC0) hanging from an iron bracket on the wall.
   l_lantern: (bag) => hungLantern(bag, 'Lantern_01', 3, 0xffc27a, 26),
   l_wooden_lantern: (bag) => hungLantern(bag, 'wooden_lantern_01', 2.2, 0xffb86a, 26),

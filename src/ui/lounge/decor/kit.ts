@@ -35,6 +35,8 @@ export interface DecorContext {
   art: (key: string) => string | undefined;
   /** The most room the slot gives (width along its wall, depth out of it, height): bigger pieces shrink. */
   limit?: Limit;
+  /** The slot is the mirror of its pair (the table's right side): turns go the other way. */
+  mirror?: boolean;
 }
 
 /** A size in room units: width (x), depth (y), height (z), in the piece's own frame. */

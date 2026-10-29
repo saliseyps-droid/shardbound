@@ -50,7 +50,7 @@ describe('sanitizeRoom', () => {
   it('drops unknown pieces and pieces of the wrong kind', () => {
     const room = sanitizeRoom({ table: 'x_unknown', floor: 't_cinder' }, ['t_cinder']);
     expect(room.table).toBe('t_tavern');
-    expect(room.floor).toBe('f_stone');
+    expect(room.floor).toBe(DEFAULT_ROOM.floor);
   });
 
   it('lets a piece stand in one slot only', () => {
@@ -63,7 +63,7 @@ describe('sanitizeRoom', () => {
     const room = sanitizeRoom({ painting: null, table: null, lights: null });
     expect(room.painting).toBeNull();
     expect(room.table).toBe('t_tavern');
-    expect(room.lights).toBe('l_torch');
+    expect(room.lights).toBe(DEFAULT_ROOM.lights);
   });
 
   it('finds the slot a piece stands in', () => {
