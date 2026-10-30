@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.77.2',
+    date: '2026-10-30',
+    title: 'Turn it sideways',
+    summary: 'The 3D table asks you to turn an upright phone too.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: ['3D table on a phone held upright: it now asks you to turn the phone sideways, as the 2D board does (the table used to cover the request).'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.77.1',
     date: '2026-10-30',
     title: 'Pictures at once',

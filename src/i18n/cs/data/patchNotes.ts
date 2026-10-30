@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.77.2': {
+    title: 'Otoč ho',
+    summary: '3D stůl tě také vyzve, abys otočil telefon držený na výšku.',
+    sections: [['3D stůl na telefonu drženém na výšku: teď tě vyzve, abys telefon otočil, stejně jako 2D deska (stůl tu výzvu dřív zakrýval).']],
+  },
   '0.77.1': {
     title: 'Obrázky hned',
     summary: 'Karty, které si lízneš, ukážou obrázek okamžitě.',
