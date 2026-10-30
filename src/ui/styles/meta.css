@@ -38,7 +38,8 @@ blockquote { margin: var(--space-3) 0; padding-left: var(--space-3); border-left
 .screen a.btn { text-decoration: none; }
 .warden-sigil.large { width: 104px; height: 118px; }
 
-/* The Play hexagon: the one hero moment. Only the gold outline is drawn; the whole hexagon is the click target. */
+/* The Play hexagon: the one hero moment. Only the outline is drawn, in the colour of the crown's crystals behind it
+   (the deck's faction, set as --crystal); the whole hexagon is the click target. */
 .play-shard {
   position: relative;
   width: clamp(180px, 15.3vw, 243px);
@@ -50,18 +51,19 @@ blockquote { margin: var(--space-3) 0; padding-left: var(--space-3); border-left
   place-content: center;
   justify-items: center;
   gap: 4px;
-  color: var(--gold-bright);
+  --crystal: #9ff3ff;
+  color: color-mix(in srgb, var(--crystal) 70%, white);
   background: none;
   pointer-events: none;
-  filter: drop-shadow(0 0 14px rgba(232, 176, 75, 0.45));
+  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--crystal) 45%, transparent));
   transition: transform 0.25s var(--ease-spring), filter 0.25s;
 }
 .play-shard-hex { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.play-hex-hit { fill: transparent; stroke: var(--gold); stroke-width: 2.6; stroke-linejoin: round; pointer-events: all; }
-.play-hex-inner { fill: none; stroke: var(--gold); stroke-width: 0.8; opacity: 0.55; pointer-events: none; }
+.play-hex-hit { fill: transparent; stroke: var(--crystal); stroke-width: 2.6; stroke-linejoin: round; pointer-events: all; }
+.play-hex-inner { fill: none; stroke: var(--crystal); stroke-width: 0.8; opacity: 0.55; pointer-events: none; }
 .play-shard-label { position: relative; pointer-events: none; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7); font: 700 clamp(2.4rem, 3.6vw, 3.4rem) var(--font-display); letter-spacing: 0.02em; }
-.play-shard:hover { transform: translateY(-4px) scale(1.03); filter: drop-shadow(0 0 22px rgba(255, 210, 122, 0.8)); }
-.play-shard:hover .play-hex-hit { stroke: var(--gold-bright); }
+.play-shard:hover { transform: translateY(-4px) scale(1.03); filter: drop-shadow(0 0 22px color-mix(in srgb, var(--crystal) 80%, transparent)); }
+.play-shard:hover .play-hex-hit { stroke: color-mix(in srgb, var(--crystal) 65%, white); }
 .play-shard:active { transform: translateY(0) scale(0.99); }
 .play-shard:focus-visible { outline: none; filter: drop-shadow(0 0 0 var(--cyan)) drop-shadow(0 0 10px var(--cyan)) drop-shadow(0 0 24px var(--cyan)); }
 

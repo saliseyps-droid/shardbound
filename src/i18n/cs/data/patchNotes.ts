@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.76.5': {
+    title: 'Hraj ve svých barvách',
+    summary: 'Tlačítko Hrát na domovské obrazovce má barvu frakce tvého balíčku.',
+    sections: [['Domů: tlačítko Hrát září stejnou barvou jako krystaly koruny za ním: barvou frakce tvého balíčku.']],
+  },
   '0.76.4': {
     title: 'Stoly všech tvarů',
     summary: 'Pět nových stolů do Lounge v nových tvarech.',

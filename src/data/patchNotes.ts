@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.76.5',
+    date: '2026-10-30',
+    title: 'Play in your colours',
+    summary: 'The Play button on Home takes the colour of your deck’s faction.',
+    sections: [
+      {
+        kind: 'improved',
+        items: ['Home: the Play button glows in the same colour as the crystals of the crown behind it: your deck’s faction.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.76.4',
     date: '2026-10-30',
     title: 'Tables of every shape',
