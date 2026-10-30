@@ -33,6 +33,32 @@ export function riseShift(at: { x: number; y: number }, seen: { x: number; y: nu
   return { dx: (seen.x - at.x) * 100, dy: -(seen.y - at.y) * 100 };
 }
 
+/**
+ * How far CSS moves a box (px), from its computed `transform` and `translate`: only the translation
+ * counts (the boxes on the plane are moved, not turned).
+ */
+export function cssMove(transform: string, translate: string) {
+  let x = 0;
+  let y = 0;
+  const m = /^matrix(3d)?\((.+)\)$/.exec(transform.trim());
+  if (m) {
+    const v = m[2].split(',').map(Number);
+    x += m[1] ? v[12] : v[4];
+    y += m[1] ? v[13] : v[5];
+  }
+  if (translate && translate !== 'none') {
+    const [tx, ty] = translate.trim().split(/\s+/).map((s) => parseFloat(s) || 0);
+    x += tx ?? 0;
+    y += ty ?? 0;
+  }
+  return { x, y };
+}
+
+/** The mat point (world units, 100 px each) under a point of the plane (px from its top left). */
+export function planeToMat(px: number, py: number, planeW: number, planeH: number) {
+  return { x: (px - planeW / 2) / 100, y: -(py - planeH / 2) / 100 };
+}
+
 /** An enemy unit: in the enemy's row of the battlefield (or anywhere on the enemy's side). */
 export const isEnemyUnit = (el: Element) => !!el.closest('.board-row.enemy, .enemy-side');
 

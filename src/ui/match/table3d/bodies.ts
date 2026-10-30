@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import type { GameState } from '@/engine/types';
 import { useMatch } from '@/state/matchStore';
 import { HAND, MAT, PLANE, TILT } from './tableCamera';
-import { approach, cardsDrawn, coverUv, energyColors, isEnemyUnit, ownerOf, pileCards, riseShift } from './bodyRules';
+import { approach, cardsDrawn, coverUv, cssMove, energyColors, isEnemyUnit, ownerOf, pileCards, planeToMat, riseShift } from './bodyRules';
 import { arcHeight } from './effectRules';
 import type { Effects } from './effects';
 import { SNUG, numberTexture, sheenTexture, snugGlowTexture, unitFace, type Finish } from './cardFaces';
@@ -498,6 +498,36 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     return toMat(r.left + r.width / 2, r.top + r.height / 2);
   };
 
+  // Where the plane's layout puts a box's centre, on the mat: from its offsets and the CSS moves of it
+  // and its parents, not from the browser measuring it through the 3D transforms. iPhone Safari
+  // measured the Warden's corner (Warden, abilities, crystals) off from where it drew it, so their
+  // bodies stood off their DOM (units measure right there, and keep the measuring for their lunges).
+  let moves = new Map<Element, { x: number; y: number }>();
+  const moveOf = (el: Element) => {
+    let m = moves.get(el);
+    if (!m) {
+      const cs = getComputedStyle(el);
+      m = cssMove(cs.transform, cs.translate);
+      moves.set(el, m);
+    }
+    return m;
+  };
+  const laidAt = (el: HTMLElement, plane: HTMLElement) => {
+    let x = el.offsetWidth / 2;
+    let y = el.offsetHeight / 2;
+    for (let a: HTMLElement | null = el; a && a !== plane; a = a.parentElement) {
+      const m = moveOf(a);
+      x += m.x;
+      y += m.y;
+    }
+    for (let o: HTMLElement | null = el; o && o !== plane; o = o.offsetParent as HTMLElement | null) {
+      x += o.offsetLeft + (o.offsetParent?.clientLeft ?? 0);
+      y += o.offsetTop + (o.offsetParent?.clientTop ?? 0);
+    }
+    const p = planeToMat(x, y, plane.offsetWidth, plane.offsetHeight);
+    return new THREE.Vector3(p.x, p.y, MAT.top);
+  };
+
   // The WAAPI lunge matchStore plays on an attacking unit (CSS animations are CSSAnimation): its progress.
   const lungeProgress = (el: HTMLElement) => {
     const a = el.getAnimations().find((x) => !('animationName' in x));
@@ -508,6 +538,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
 
   return {
     update(plane, toMat, game, t, toScreen) {
+      moves = new Map();
       // The mat point a raised world point appears over: DOM moved there sits on the raised object.
       const seenAt = (v: THREE.Vector3) => {
         const s = toScreen(v);
@@ -672,8 +703,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
         // A purchased frame wraps the Warden (same box): measured and moved itself, as the units are
         // (Safari measured the Warden inside the moved frame off from where it drew it).
         const slot = el.closest<HTMLElement>('.framed-slot') ?? el;
-        const p = centre(slot, toMat);
-        if (!p) return;
+        const p = laidAt(slot, plane);
         heroSeen.add(key);
         const w = el.offsetWidth * PX;
         const h = el.offsetHeight * PX;
@@ -720,8 +750,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
       // Warden abilities: tokens under the DOM icons, lit when usable.
       for (const k of tokens.values()) k.seen = false;
       plane.querySelectorAll<HTMLElement>('.hero-power').forEach((el) => {
-        const p = centre(el, toMat);
-        if (!p) return;
+        const p = laidAt(el, plane);
         const passive = el.classList.contains('is-passive');
         const w = el.offsetWidth * PX;
         let k = tokens.get(el);
@@ -842,8 +871,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
       // Energy crystals, one per DOM crystal, in the owner's faction colours.
       for (const c of crystals.values()) c.seen = false;
       plane.querySelectorAll<HTMLElement>('.energy .crystal').forEach((el, i) => {
-        const p = centre(el, toMat);
-        if (!p) return;
+        const p = laidAt(el, plane);
         let c = crystals.get(el);
         if (!c) {
           c = makeCrystal();

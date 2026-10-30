@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.77.5',
+    date: '2026-10-30',
+    title: 'Right on top',
+    summary: 'On iPhone the Warden’s 3D pieces stand right under its frame and numbers.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: ['3D table on iPhone: the Warden’s plinth, ability tokens and energy crystals are placed from the table’s own layout rather than from where Safari measures the Warden, so its frame and numbers no longer sit above or below them.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.77.4',
     date: '2026-10-30',
     title: 'On the plinth',

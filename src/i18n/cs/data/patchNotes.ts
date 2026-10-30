@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.77.5': {
+    title: 'Přesně navrch',
+    summary: 'Na iPhonu stojí 3D díly Strážce přesně pod jeho rámečkem a čísly.',
+    sections: [['3D stůl na iPhonu: podstavec Strážce, žetony schopností a krystaly energie se teď umisťují podle rozvržení stolu, ne podle toho, kde Strážce změří Safari, takže rámeček a čísla už nejsou nad nimi ani pod nimi.']],
+  },
   '0.77.4': {
     title: 'Na podstavci',
     summary: 'Na iPhonu sedí rámeček a čísla Strážce na svých 3D dílech.',

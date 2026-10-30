@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { coverUv, energyColors, pileCards, riseShift } from '@/ui/match/table3d/bodyRules';
+import { coverUv, cssMove, energyColors, pileCards, planeToMat, riseShift } from '@/ui/match/table3d/bodyRules';
 
 describe('3D table bodies', () => {
   it('crops a wide picture to a tall card around its centre (object-fit: cover)', () => {
@@ -45,5 +45,23 @@ describe('the DOM on a raised card or pile follows it', () => {
   });
   it('stays put when the point is not on the mat', () => {
     expect(riseShift({ x: 1, y: 1 }, null)).toEqual({ dx: 0, dy: 0 });
+  });
+});
+
+describe('the bodies under the Warden follow its layout, not the browser measuring it on the 3D plane', () => {
+  it('reads how far CSS moves a box: its transform translation plus the translate property', () => {
+    expect(cssMove('none', 'none')).toEqual({ x: 0, y: 0 });
+    expect(cssMove('matrix(1, 0, 0, 1, -310, -56.5)', 'none')).toEqual({ x: -310, y: -56.5 });
+    expect(cssMove('none', '0px -4.02px')).toEqual({ x: 0, y: -4.02 });
+    expect(cssMove('matrix(1, 0, 0, 1, 2, 3)', '5px')).toEqual({ x: 7, y: 3 });
+    expect(cssMove('matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 6, 9, 1)', '')).toEqual({ x: 4, y: 6 });
+  });
+  it('turns a point on the plane (px from its top left) into the mat point under it', () => {
+    const p = planeToMat(800, 455.5, 1600, 911);
+    expect(p.x).toBeCloseTo(0);
+    expect(p.y).toBeCloseTo(0);
+    const q = planeToMat(900, 355.5, 1600, 911);
+    expect(q.x).toBeCloseTo(1);
+    expect(q.y).toBeCloseTo(1);
   });
 });
