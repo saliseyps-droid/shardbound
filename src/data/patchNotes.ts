@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.77.6',
+    date: '2026-10-30',
+    title: 'Lined up',
+    summary: 'On iPhone the 3D table’s numbers, frames and icons line up with the pieces under them.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: ['3D table on iPhone: Safari drew everything laid on the table (the Warden’s frame and Health, ability icons, the energy count) a little above the 3D pieces, more when zoomed in. The table is now built at a scale where Safari’s rounding no longer moves it.'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.77.5',
     date: '2026-10-30',
     title: 'Right on top',

@@ -166,3 +166,19 @@ describe('the hand plane registers with its place at the near edge of the table'
     }
   });
 });
+
+describe('the CSS scene is laid out in whole-pixel sizes', () => {
+  // Safari snaps 3D layers to whole px before the perspective enlarges them: in a scene a few px
+  // across (one px per world unit) that put the plane's DOM up to ~17 px off the WebGL mat.
+  const nums = (css: string) => /matrix3d\(([^)]*)\)/.exec(css)![1].split(',').map(Number);
+  it('keeps the plane and the hand at their own px size (not shrunk to world units)', () => {
+    expect(Math.hypot(...nums(planeCss()).slice(0, 3))).toBeCloseTo(1, 6);
+    expect(Math.hypot(...nums(handCss()).slice(0, 3))).toBeGreaterThan(0.4);
+  });
+  it('puts the camera hundreds of px from the table', () => {
+    const cam = new THREE.PerspectiveCamera(32, 16 / 9, 0.1, 600);
+    placeCamera(cam, { width: 1600, height: 900 }, { tilt: 0.62, zoom: 1, panX: 0, panY: 0, bottom: 0.2 });
+    const m = nums(cameraCss(cam, { width: 1600, height: 900 }).transform);
+    expect(Math.hypot(m[12], m[13], m[14])).toBeGreaterThan(500);
+  });
+});

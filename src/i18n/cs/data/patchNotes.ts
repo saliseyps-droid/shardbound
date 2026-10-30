@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.77.6': {
+    title: 'Srovnáno',
+    summary: 'Na iPhonu lícují čísla, rámečky a ikony 3D stolu s díly pod nimi.',
+    sections: [['3D stůl na iPhonu: Safari kreslilo všechno, co leží na stole (rámeček a životy Strážce, ikony schopností, počet energie), kousek nad 3D díly a při přiblížení ještě víc. Stůl je teď postavený v měřítku, se kterým ho zaokrouhlování v Safari už neposouvá.']],
+  },
   '0.77.5': {
     title: 'Přesně navrch',
     summary: 'Na iPhonu stojí 3D díly Strážce přesně pod jeho rámečkem a čísly.',

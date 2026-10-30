@@ -15,6 +15,12 @@ export const PLANE = { w: 1600, h: 911 };
 export const MAT_ART = 1.1;
 export const MAT = { w: 16, h: (16 * 1823) / 3200, top: 0.1 };
 export const FOV = 32;
+/**
+ * CSS px per world unit in the CSS scene (the perspective makes the picture the same at any scale).
+ * Not 1 as in CSS3DRenderer: iPhone Safari snaps 3D layers to whole px before the perspective enlarges
+ * them, and in a scene a few px across that drew the plane's DOM up to ~17 px off the WebGL mat.
+ */
+const CSS_UNIT = 100;
 
 /** A plane pixel (from its top-left) on the mat, in world units. */
 export function planeToWorld(px: number, py: number): { x: number; y: number } {
@@ -100,7 +106,8 @@ const eps = (v: number) => (Math.abs(v) < 1e-10 ? 0 : v);
 export function cameraCss(camera: THREE.PerspectiveCamera, view: { width: number; height: number }): { perspective: string; origin: string; transform: string } {
   const fovPx = camera.projectionMatrix.elements[5] * (view.height / 2);
   const e = camera.matrixWorldInverse.elements;
-  const m = [e[0], -e[1], e[2], e[3], e[4], -e[5], e[6], e[7], e[8], -e[9], e[10], e[11], e[12], -e[13], e[14], e[15]].map(eps).join(',');
+  const u = CSS_UNIT;
+  const m = [e[0], -e[1], e[2], e[3], e[4], -e[5], e[6], e[7], e[8], -e[9], e[10], e[11], e[12] * u, -e[13] * u, e[14] * u, e[15]].map(eps).join(',');
   // The image centre: shifted up when the camera renders with a view offset (see placeCamera).
   const cy = camera.view?.enabled ? camera.view.fullHeight / 2 - camera.view.offsetY : view.height / 2;
   return { perspective: `${fovPx}px`, origin: `${view.width / 2}px ${cy}px`, transform: `translateZ(${fovPx}px) matrix3d(${m}) translate(${view.width / 2}px,${cy}px)` };
@@ -109,8 +116,8 @@ export function cameraCss(camera: THREE.PerspectiveCamera, view: { width: number
 /** The CSS transform of the plane element: PLANE px lying on the mat (scaled into world units). */
 export function planeCss(): string {
   const o = new THREE.Object3D();
-  o.position.set(0, 0, MAT.top + 0.002);
-  o.scale.setScalar(MAT.w / PLANE.w);
+  o.position.set(0, 0, (MAT.top + 0.002) * CSS_UNIT);
+  o.scale.setScalar((MAT.w / PLANE.w) * CSS_UNIT);
   o.updateMatrixWorld();
   const e = o.matrixWorld.elements;
   const m = [e[0], e[1], e[2], e[3], -e[4], -e[5], -e[6], -e[7], e[8], e[9], e[10], e[11], e[12], e[13], e[14], e[15]].map(eps).join(',');
@@ -138,7 +145,7 @@ export function handMatrix(): THREE.Matrix4 {
 
 /** The CSS transform of the hand plane (like planeCss, for the hand's own plane). */
 export function handCss(): string {
-  const e = handMatrix().elements;
+  const e = new THREE.Matrix4().makeScale(CSS_UNIT, CSS_UNIT, CSS_UNIT).multiply(handMatrix()).elements;
   const m = [e[0], e[1], e[2], e[3], -e[4], -e[5], -e[6], -e[7], e[8], e[9], e[10], e[11], e[12], e[13], e[14], e[15]].map((v) => (Math.abs(v) < 1e-10 ? 0 : v)).join(',');
   return `translate(-50%,-50%) matrix3d(${m})`;
 }
