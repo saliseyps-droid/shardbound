@@ -7,6 +7,10 @@ import { Bag, DecorContext, canvasTexture, mesh, plankTexture, rng, roundedRect,
 export interface Built {
   root: THREE.Object3D;
   update?(t: number, dt: number): void;
+  /** Clicked in the Lounge (a pet to stroke, darts to throw…): the point hit, in the room. */
+  click?(at: THREE.Vector3): void;
+  /** The music it plays in the Lounge now (a jukebox), or null. */
+  track?(): string | null;
 }
 
 const TD = 0.7;

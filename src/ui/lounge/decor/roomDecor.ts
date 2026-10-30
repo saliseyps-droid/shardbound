@@ -23,6 +23,11 @@ import { DOORS } from './doors';
 import { ROOFS } from './roofs';
 import { SHAPED_TABLES } from './shapedTables';
 import { NEON_CEILINGS, NEON_LIGHTS, NEON_SIGNS } from './neon';
+import { AMBIENCE } from './ambience';
+import { LIVING } from './living';
+import { WINDOWS } from './views';
+import { HALLOWEEN } from './halloween';
+import { cardFrame } from './cardFrame';
 
 /**
  * The room's decor from a layout: one piece per slot, each in its place. Used around the 3D table and
@@ -30,7 +35,7 @@ import { NEON_CEILINGS, NEON_LIGHTS, NEON_SIGNS } from './neon';
  */
 
 type Make = (ctx: DecorContext, bag: Bag) => Built;
-const BUILDERS: Record<string, Make> = { ...TABLES, ...SHAPED_TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS, ...DOORS, ...ROOFS, ...NEON_SIGNS, ...NEON_LIGHTS, ...NEON_CEILINGS };
+const BUILDERS: Record<string, Make> = { ...TABLES, ...SHAPED_TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS, ...DOORS, ...ROOFS, ...NEON_SIGNS, ...NEON_LIGHTS, ...NEON_CEILINGS, ...AMBIENCE, ...LIVING, ...WINDOWS, ...HALLOWEEN, po_card_frame: cardFrame };
 
 /** Every catalogue id has a builder (checked by a test). */
 export const hasBuilder = (id: string) => id in BUILDERS;
@@ -81,6 +86,7 @@ export const SLOT_ANCHOR: Record<SlotId, THREE.Vector3> = {
   door: new THREE.Vector3(0, -ROOM.y + 1, ROOM.floor + 14),
   ceiling: new THREE.Vector3(0, 0, 19),
   roof: new THREE.Vector3(-16, 12, ROOM.floor + ROOM.wallH - 0.4),
+  ambience: new THREE.Vector3(14, 8, 14),
 };
 
 /** Pictures the paintings and posters may hang. */
@@ -121,10 +127,19 @@ export interface RoomDecor {
   set(slot: SlotId, id: string | null): void;
   /** The objects standing in a slot (for highlighting in the Lounge). */
   objects(slot: SlotId): THREE.Object3D | null;
+  /** The pieces that answer a click (to aim at). */
+  clickable(): THREE.Object3D[];
+  /** A click landed on `obj` at `at`: its piece answers (true) or nothing does. */
+  click(obj: THREE.Object3D, at: THREE.Vector3): boolean;
+  /** The music a piece plays now (the first that plays any), or null. */
+  track(): string | null;
+  /** The owner's faction or info changed (a new framed card…): every piece is built again with it. */
+  setOwner(owner: Pick<DecorContext, 'faction' | 'info'>): void;
   dispose(): void;
 }
 
 export function buildRoomDecor(scene: THREE.Scene, layout: RoomLayout, ctx: DecorContext): RoomDecor {
+  let context = ctx;
   const placed = new Map<SlotId, { built: Built; bag: Bag; id: string }>();
 
   const put = (slot: SlotId, id: string | null) => {
@@ -139,7 +154,7 @@ export function buildRoomDecor(scene: THREE.Scene, layout: RoomLayout, ctx: Deco
     const bag = new Bag();
     let built: Built;
     try {
-      built = make({ ...ctx, limit: SLOT_PLACE[slot]?.limit, mirror: slot === 'tableRight' }, bag);
+      built = make({ ...context, limit: SLOT_PLACE[slot]?.limit, mirror: slot === 'tableRight' }, bag);
     } catch (e) {
       // A piece that fails to build is left out (or the slot's default stands in): never the whole table.
       bag.dispose();
@@ -181,6 +196,29 @@ export function buildRoomDecor(scene: THREE.Scene, layout: RoomLayout, ctx: Deco
       }),
     set: (slot, id) => put(slot, id ?? DEFAULT_ROOM[slot]),
     objects: (slot) => placed.get(slot)?.built.root ?? null,
+    clickable: () => [...placed.values()].filter((p) => p.built.click).map((p) => p.built.root),
+    click: (obj, at) => {
+      for (const p of placed.values()) {
+        if (!p.built.click) continue;
+        for (let o: THREE.Object3D | null = obj; o; o = o.parent)
+          if (o === p.built.root) {
+            p.built.click(at);
+            return true;
+          }
+      }
+      return false;
+    },
+    setOwner: (owner) => {
+      context = { ...context, ...owner };
+      for (const [slot, p] of [...placed]) put(slot, p.id);
+    },
+    track: () => {
+      for (const p of placed.values()) {
+        const t = p.built.track?.();
+        if (t) return t;
+      }
+      return null;
+    },
     dispose: () => {
       placed.forEach((p) => {
         scene.remove(p.built.root);

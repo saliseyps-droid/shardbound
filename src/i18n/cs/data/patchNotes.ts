@@ -1,6 +1,21 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.78.0': {
+    title: 'Místnost, která žije',
+    summary: 'Lounge ožívá: oheň, rybky, kočka, dráče, okna s výhledem, hudba, tvoje trofeje a Halloween.',
+    sections: [
+      [
+        'Živé kusy do Lounge: krb s hořícím ohněm, akvárium s rybkami, kočka spící v křesle, dráče nad svým pokladem, sova a krystal zářící v barvě tvého Strážce.',
+        'Okna místo obrazu: zasněžené městečko, noční přístav, jezero za soumraku, Nebeské ostrovy a údolí Aethry. Výhled se posouvá, jak kolem procházíš.',
+        'Kusy, které jsou tvoje: vitrína s trofejemi, které máš vybojované (výhry, série, turnaje, žebříček…), neonové počítadlo tvých výher a karta v rámu podle tvého výběru s holografickým leskem.',
+        'Hudba v Lounge: gramofon s hospodskými melodiemi a rádio s lofi. Kliknutím pustíš další skladbu nebo ticho.',
+        'Nové místo v místnosti, „Ve vzduchu“: prach ve světle, světlušky, jiskry nebo jiskry v barvě tvého Strážce.',
+        'Na věci v Lounge jde klikat: pohladit kočku, otevřít truhlu s pokladem, házet šipky do terče, zhasnout lampy.',
+        'Halloween, jen do 10. listopadu: dýňová lucerna, svíčka na lebce, dýňový koutek, čarodějnický kotlík, netopýři pod stropem a duchové proplouvající místností.',
+      ],
+    ],
+  },
   '0.77.7': {
     title: 'Nejdřív obrázky',
     summary: 'Zápas počká na obrázky karet v ruce a telefon na výšku tě zase vyzve k otočení.',

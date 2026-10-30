@@ -1,4 +1,4 @@
-import { buyDecor, placeDecor } from '@/domain/lounge';
+import { buyDecor, placeDecor, setLoungeCard } from '@/domain/lounge';
 import type { SlotId } from '@/data/lounge';
 import { createRng, randomSeed } from '@/core/rng';
 import { acknowledgeDungeonResult, pickDungeonOffer, pickDungeonTreasure, recordDungeonMatch, retireDungeon, startDungeon } from '@/domain/dungeon';
@@ -374,6 +374,12 @@ export class GameService {
 
   placeDecor(slot: SlotId, id: string | null): Result<GameSave> {
     const res = placeDecor(this.require(), slot, id);
+    if (res.ok) this.commit(res.value);
+    return res;
+  }
+
+  setLoungeCard(cardId: string): Result<GameSave> {
+    const res = setLoungeCard(this.require(), cardId);
     if (res.ok) this.commit(res.value);
     return res;
   }

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { DECOR, SLOTS, SLOT_KIND, SLOT_NAME, type RoomLayout, type SlotId } from '@/data/lounge';
-import { buildTableScene, type TableScene } from '@/ui/match/table3d/TableScene3D';
+import { buildTableScene, type RoomOwner, type TableScene } from '@/ui/match/table3d/TableScene3D';
+import { audio } from '@/audio/audioService';
 import { ROOM } from './decor/kit';
 import { SLOT_ANCHOR, SLOT_PLACE } from './decor/roomDecor';
 import { createLookControls } from './lookControls';
@@ -13,6 +14,8 @@ interface Props {
   /** The room as shown (the saved one, or with a piece being tried on). */
   room: RoomLayout;
   portraitUrl?: string;
+  /** The owner's faction and what the room shows of them (trophies, the framed card…). */
+  owner?: RoomOwner;
   selected: SlotId | null;
   onPick: (slot: SlotId) => void;
   onUnavailable: () => void;
@@ -26,7 +29,7 @@ const HOME = { pos: new THREE.Vector3(0, -26, 19), target: new THREE.Vector3(0, 
  * The Lounge in 3D: the same room and table as in matches, a free camera to walk and look around
  * (lookControls.ts) and a numbered marker on every slot.
  */
-export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPick, onUnavailable }: Props) {
+export default function LoungeView({ boardUrl, room, portraitUrl, owner, selected, onPick, onUnavailable }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const markerRefs = useRef<Partial<Record<SlotId, HTMLButtonElement | null>>>({});
   const tableRef = useRef<TableScene | null>(null);
@@ -34,7 +37,7 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
   const focusRef = useRef<SlotId | null>(null);
   const failRef = useRef(onUnavailable);
   failRef.current = onUnavailable;
-  const initial = useRef({ room, portraitUrl });
+  const initial = useRef({ room, portraitUrl, owner });
 
   useEffect(() => {
     const root = rootRef.current!;
@@ -61,7 +64,7 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    const table = buildTableScene(boardUrl, '#ffb05a', initial.current.room, initial.current.portraitUrl);
+    const table = buildTableScene(boardUrl, '#ffb05a', initial.current.room, initial.current.portraitUrl, initial.current.owner);
     tableRef.current = table;
     shownRef.current = initial.current.room;
     // The room is seen from further away than in a match: let the fog in later.
@@ -91,14 +94,48 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
       const a = SLOT_ANCHOR[slot];
       if (slot === 'roof') return controls.view(new THREE.Vector3(0, -24, 2), new THREE.Vector3(0, 4, 24), true);
       if (slot === 'ceiling') return controls.view(new THREE.Vector3(0, -22, 4), new THREE.Vector3(0, 0, 16), true);
-      // Pieces in the middle of the room (the table and what is on it, the rug, the floor): the overview.
-      if (Math.hypot(a.x, a.y) < 16) return controls.view(HOME.pos, HOME.target, true);
-      const at = new THREE.Vector3(a.x, a.y, slot.startsWith('furn') ? ROOM.floor + 6 : a.z - 1);
+      // Pieces in the middle of the room (the table and what is on it, the rug, the floor) and what fills its air: the overview.
+      if (slot === 'ambience' || Math.hypot(a.x, a.y) < 16) return controls.view(HOME.pos, HOME.target, true);
+      const at = new THREE.Vector3(a.x, a.y, slot.startsWith('furn') ? ROOM.floor + 10 : a.z - 1);
       const from = at.clone().addScaledVector(new THREE.Vector3(-a.x, -8 - a.y, 0).normalize(), slot.startsWith('furn') ? 22 : 24);
       from.z = at.z + 6;
       controls.view(from, at, true);
     };
     focusRef.current = null;
+
+    // Pieces that answer a click (a pet, darts, a jukebox): a click is a press and release without moving.
+    const ray = new THREE.Raycaster();
+    const aim = (e: PointerEvent) => {
+      const r = canvas.getBoundingClientRect();
+      ray.setFromCamera(new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1), camera);
+      return ray.intersectObjects(table.decor.clickable(), true).find((h) => h.object.visible) ?? null;
+    };
+    let down: { x: number; y: number; t: number } | null = null;
+    const onDown = (e: PointerEvent) => (down = { x: e.clientX, y: e.clientY, t: performance.now() });
+    const onUp = (e: PointerEvent) => {
+      const d = down;
+      down = null;
+      if (!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 6 || performance.now() - d.t > 500) return;
+      const hit = aim(e);
+      if (hit) table.decor.click(hit.object, hit.point);
+    };
+    const onHover = (e: PointerEvent) => {
+      if (e.buttons || e.pointerType !== 'mouse') return;
+      canvas.style.cursor = aim(e) ? 'pointer' : '';
+    };
+    canvas.addEventListener('pointerdown', onDown);
+    canvas.addEventListener('pointerup', onUp);
+    canvas.addEventListener('pointermove', onHover);
+
+    // Music a piece plays (a jukebox): follows the piece's track; stops when it goes.
+    let playing: { url: string; stop: () => void } | null = null;
+    const music = () => {
+      const want = table.decor.track();
+      if (want === (playing?.url ?? null)) return;
+      if (want && !audio.ready) return;
+      playing?.stop();
+      playing = want ? { url: want, stop: audio.playTrack(want, 0, { fadeIn: 1 }) } : null;
+    };
 
     const v = new THREE.Vector3();
     const clock = new THREE.Clock();
@@ -110,6 +147,7 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
       controls.update(dt);
       table.update(time, dt);
       table.decor.cull(camera.position);
+      music();
       renderer.render(table.scene, camera);
       const w = root.clientWidth;
       const h = root.clientHeight;
@@ -133,6 +171,10 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
 
     return () => {
       cancelAnimationFrame(raf);
+      playing?.stop();
+      canvas.removeEventListener('pointerdown', onDown);
+      canvas.removeEventListener('pointerup', onUp);
+      canvas.removeEventListener('pointermove', onHover);
       ro.disconnect();
       root.removeEventListener('lounge-focus', onFocus);
       root.removeEventListener('lounge-home', onHome);
@@ -147,6 +189,17 @@ export default function LoungeView({ boardUrl, room, portraitUrl, selected, onPi
       if (import.meta.env.DEV) delete (window as { __lounge?: unknown }).__lounge;
     };
   }, [boardUrl]);
+
+  // The owner changed (another framed card, another faction): the pieces are built again.
+  const ownerKey = JSON.stringify(owner ?? null);
+  const shownOwner = useRef(ownerKey);
+  useEffect(() => {
+    const table = tableRef.current;
+    if (!table || shownOwner.current === ownerKey) return;
+    shownOwner.current = ownerKey;
+    table.decor.setOwner({ faction: owner?.faction, info: owner?.info });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ownerKey]);
 
   // Pieces changed (placed, bought, tried on): rebuild just those slots.
   useEffect(() => {

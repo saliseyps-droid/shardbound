@@ -6,7 +6,7 @@ import { useMatch } from '@/state/matchStore';
 import { anim, useSettings } from '@/state/settingsStore';
 import { BOARD_FX } from '../boardFx';
 import { BOARD_GLOWS, BOARD_SEA, BOARD_SMOKE } from '../AnimatedBoard';
-import { buildTableScene } from './TableScene3D';
+import { buildTableScene, type RoomOwner } from './TableScene3D';
 import { createBoardLife } from './boardLife';
 import { createFpsWatch } from './fpsWatch';
 import { createBodies } from './bodies';
@@ -25,6 +25,8 @@ interface Props {
   room?: Record<string, string | null> | null;
   /** The room owner's Warden, for a portrait painting. */
   portraitUrl?: string;
+  /** The room owner's faction and what the room shows of them (trophies, the framed card…). */
+  owner?: RoomOwner;
   /** While set (the match intro's id): the camera flies through the room, then onFlybyEnd. */
   flyby?: number | null;
   onFlybyEnd?: () => void;
@@ -49,13 +51,16 @@ const BOTTOM = 0.23;
  * the table, moved up or down tilt it. Space, the camera button or a double click on the table goes
  * back to the usual view.
  */
-export default function TableView({ boardUrl, board, warm = '#ffb05a', room = null, portraitUrl, flyby = null, onFlybyEnd, children, hand: handNode, onUnavailable, onSlow }: Props) {
+export default function TableView({ boardUrl, board, warm = '#ffb05a', room = null, portraitUrl, owner, flyby = null, onFlybyEnd, children, hand: handNode, onUnavailable, onSlow }: Props) {
   // The room rebuilds the table only when its pieces change (a new state object with the same room does not).
   const roomKey = JSON.stringify(room);
   const roomRef = useRef(room);
   roomRef.current = room;
   const portraitRef = useRef(portraitUrl);
   portraitRef.current = portraitUrl;
+  const ownerRef = useRef(owner);
+  ownerRef.current = owner;
+  const ownerKey = JSON.stringify(owner ?? null);
   const flybyRef = useRef(flyby);
   flybyRef.current = flyby;
   const flybyEndRef = useRef(onFlybyEnd);
@@ -114,7 +119,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', room = nu
     fxRenderer.toneMapping = THREE.ACESFilmicToneMapping;
     fxRenderer.toneMappingExposure = 1.45;
     fxRenderer.setClearColor(0x000000, 0);
-    const table = buildTableScene(boardUrl, warm, roomRef.current, portraitRef.current);
+    const table = buildTableScene(boardUrl, warm, roomRef.current, portraitRef.current, ownerRef.current);
     const life = createBoardLife(
       table.scene,
       board ? BOARD_FX[board] : undefined,
@@ -430,7 +435,7 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', room = nu
       fxCanvas.remove();
       if (import.meta.env.DEV) delete (window as { __table3d?: unknown }).__table3d;
     };
-  }, [boardUrl, board, warm, roomKey, portraitUrl]);
+  }, [boardUrl, board, warm, roomKey, portraitUrl, ownerKey]);
 
   return (
     <div className="table3d" ref={rootRef}>

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MAT, MAT_ART } from '@/ui/match/table3d/tableCamera';
+import type { RoomInfo } from '@/domain/lounge';
 
 /**
  * Shared bits for the room's decor (Lounge and the 3D table): the room's size, canvas textures,
@@ -31,6 +32,10 @@ export interface DecorContext {
   tableH: number;
   /** The player's (or host's) Warden portrait, for the portrait painting. */
   portraitUrl?: string;
+  /** The room owner's faction (the Warden's), for pieces that glow in its colour. */
+  faction?: string;
+  /** What the room shows of its owner: wins, trophies, the framed card. */
+  info?: RoomInfo;
   /** Art to hang (a card's, the campaign's…), resolved by the caller. */
   art: (key: string) => string | undefined;
   /** The most room the slot gives (width along its wall, depth out of it, height): bigger pieces shrink. */
@@ -251,6 +256,8 @@ export interface ModelFit {
   max?: Limit;
   /** A change to each of its meshes once loaded (a colour, a material). */
   tweak?: (m: THREE.Mesh) => void;
+  /** The loaded model (glTF's own scene, with its named parts and animations), once placed. */
+  onLoad?: (model: THREE.Object3D, gltf: { animations: THREE.AnimationClip[] }) => void;
 }
 
 /**
@@ -306,7 +313,87 @@ export function modelPiece(bag: Bag, id: string, fit: ModelFit = {}): THREE.Grou
       holder.add(turned);
       holder.scale.setScalar(k);
       root.add(holder);
+      fit.onLoad?.(model, gltf);
     }, undefined, missing),
   ).catch(missing);
   return root;
+}
+
+/** A model that moves by its own animations (glTF clips): `play` picks a clip by (part of) its name. */
+export interface Animated {
+  root: THREE.Group;
+  /** Plays a clip, fading from the one before; `once` plays it through and goes back to the idle clip. */
+  play(name: string, once?: boolean): void;
+  update(dt: number): void;
+  /** The loaded model (null until it arrives). */
+  model(): THREE.Object3D | null;
+}
+
+export function animatedPiece(bag: Bag, id: string, fit: ModelFit, idle: string): Animated {
+  let mixer: THREE.AnimationMixer | null = null;
+  let clips: THREE.AnimationClip[] = [];
+  let current: THREE.AnimationAction | null = null;
+  let loaded: THREE.Object3D | null = null;
+  const find = (name: string) => clips.find((c) => c.name.split('|').pop() === name) ?? clips.find((c) => c.name.includes(name));
+  const play = (name: string, once = false) => {
+    const clip = mixer && find(name);
+    if (!mixer || !clip) return;
+    const next = mixer.clipAction(clip);
+    next.reset();
+    next.setLoop(once ? THREE.LoopOnce : THREE.LoopRepeat, Infinity);
+    next.clampWhenFinished = once;
+    if (current && current !== next) next.crossFadeFrom(current, 0.3, false);
+    next.play();
+    current = next;
+  };
+  const root = modelPiece(bag, id, {
+    ...fit,
+    onLoad: (m, gltf) => {
+      loaded = m;
+      mixer = new THREE.AnimationMixer(m);
+      clips = gltf.animations;
+      // A clip played once goes back to the idle one.
+      mixer.addEventListener('finished', () => play(idle));
+      // Each copy starts at its own point of the clip, so a school of fish does not swim in step.
+      play(idle);
+      if (current) current.time = Math.random() * (current.getClip().duration || 1);
+      fit.onLoad?.(m, gltf);
+    },
+  });
+  bag.keep({ dispose: () => mixer?.stopAllAction() });
+  return { root, play, update: (dt) => mixer?.update(dt), model: () => loaded };
+}
+
+/** The box an object takes in another's frame (e.g. a loaded model inside its piece). */
+export function boxIn(obj: THREE.Object3D, frame: THREE.Object3D): THREE.Box3 {
+  frame.updateWorldMatrix(true, true);
+  const inv = frame.matrixWorld.clone().invert();
+  const box = new THREE.Box3();
+  obj.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh) return;
+    m.geometry.computeBoundingBox();
+    box.union(m.geometry.boundingBox!.clone().applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld)));
+  });
+  return box;
+}
+
+/**
+ * A piece standing on top of a model (a gramophone on a cabinet): `top` is raised to the base's top once
+ * the base has loaded, in the middle of its top, moved `shift` along y (+ towards the wall).
+ */
+export function onTop(bag: Bag, baseId: string, fit: ModelFit, top: THREE.Object3D, shift = 0): THREE.Group {
+  const g = new THREE.Group();
+  top.visible = false;
+  const base = modelPiece(bag, baseId, {
+    ...fit,
+    onLoad: (m, gltf) => {
+      const box = boxIn(base, g);
+      top.position.set((box.min.x + box.max.x) / 2, (box.min.y + box.max.y) / 2 + shift, box.max.z);
+      top.visible = true;
+      fit.onLoad?.(m, gltf);
+    },
+  });
+  g.add(base, top);
+  return g;
 }

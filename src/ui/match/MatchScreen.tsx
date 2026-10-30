@@ -1,3 +1,4 @@
+import type { RoomInfo } from '@/domain/lounge';
 import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type PointerEvent as RPointerEvent } from 'react';
 import { findPuzzle } from '@/domain/puzzles';
 import { findBrawlFight } from '@/domain/brawl';
@@ -226,6 +227,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const roomOwner = game ? game.players[config?.online === 'guest' ? 1 : 0]?.hero : undefined;
   const room = game?.room ?? ownRoom ?? null;
   const roomPortrait = roomOwner ? portraitUrl(roomOwner.faction as Faction, roomOwner.portrait) : undefined;
+  const roomInfo = game?.roomInfo;
+  const roomOwnerInfo = useMemo(() => ({ faction: roomOwner?.faction ?? undefined, info: roomInfo as RoomInfo | undefined }), [roomOwner?.faction, roomInfo]);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [hover, setHover] = useState<{ cardId: string; uid?: number } | null>(null);
@@ -821,7 +824,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           return (
             <>
               <Suspense fallback={null}>
-                <TableView boardUrl={boardBg!.url} board={boardBg!.key} room={room} portraitUrl={roomPortrait} flyby={flying ? intro : null} onFlybyEnd={endFlyby} hand={handNode} onUnavailable={() => setFailed3d(true)} onSlow={() => setSlow3d(true)}>
+                <TableView boardUrl={boardBg!.url} board={boardBg!.key} room={room} portraitUrl={roomPortrait} owner={roomOwnerInfo} flyby={flying ? intro : null} onFlybyEnd={endFlyby} hand={handNode} onUnavailable={() => setFailed3d(true)} onSlow={() => setSlow3d(true)}>
                   {/* The mat's glow, lights, mist and smoke lie on the table; its particles are 3D there (boardLife.ts). */}
                   {boardBg?.key && (
                     <div className="table3d-board-fx" aria-hidden>

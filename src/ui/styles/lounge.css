@@ -109,3 +109,21 @@
 }
 /* Touch: markers big enough to tap. */
 html[data-input='touch'] .lounge-marker b { width: 28px; height: 28px; font-size: 14px; }
+
+/* DEV: one piece of decor full screen (#/decor/<id>). */
+.decor-preview { position: fixed; inset: 0; z-index: 900; background: #0c0910; }
+.decor-preview .lounge-view { position: absolute; inset: 0; }
+.decor-preview .lounge-markers { display: none; }
+.decor-preview-caption { position: absolute; left: 16px; top: 16px; display: grid; gap: 4px; max-width: 360px; padding: 12px 16px; }
+
+/* The card frame's card. */
+.lounge-card-picker { display: grid; gap: 8px; margin: 4px 0 12px; }
+.lounge-card-picker h4 { margin: 0; }
+.lounge-card-picker ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 6px; max-height: 260px; overflow-y: auto; }
+.lounge-card-pick { display: grid; gap: 3px; width: 100%; padding: 3px; border: 2px solid transparent; border-radius: 8px; background: rgba(255, 255, 255, 0.04); color: inherit; font-size: 11px; line-height: 1.15; cursor: pointer; text-align: center; }
+.lounge-card-pick img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 5px; }
+.lounge-card-pick span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lounge-card-pick.rarity-legendary img { box-shadow: 0 0 0 1px #f0b030; }
+.lounge-card-pick.rarity-epic img { box-shadow: 0 0 0 1px #b060f0; }
+.lounge-card-pick.is-current { border-color: var(--cyan, #3ad8ff); }
+.lounge-season { background: #ff7a1a33; color: #ffb070; }

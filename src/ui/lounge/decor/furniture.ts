@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { Bag, DecorContext, marbleTexture, mesh, modelPiece, std, type ModelFit } from './kit';
 import type { Built } from './tables';
+import { approach } from '@/ui/match/table3d/bodyRules';
+import { audio } from '@/audio/audioService';
 
 /**
  * Furniture: models at their real size against the table (all CC0: Poly Haven, Quaternius' Fantasy
@@ -36,8 +38,47 @@ const onPlinth = (id: string, fit: ModelFit, plinthH = 9): Make => (_c, bag) => 
   return { root: g };
 };
 
+/** The treasure chest: a click opens its lid on a golden glow, another closes it. */
+const chest: Make = (ctx, bag) => {
+  const g = new THREE.Group();
+  let lid: THREE.Object3D | null = null;
+  let open = false;
+  let angle = 0;
+  const glow = new THREE.PointLight(0xffc040, 0, 14, 1.4);
+  glow.position.set(0, -3, 5.5);
+  g.add(glow);
+  // The gold inside, heaped up to the rim.
+  const gold = modelPiece(bag, 'qk/Coin_Pile_2', { max: { w: 8.5, d: 4.4, h: 3.2 }, scale: 3 });
+  gold.position.set(0, -3.1, 1.6);
+  g.add(gold);
+  g.add(
+    modelPiece(bag, 'treasure_chest', {
+      anchor: 'back',
+      max: ctx.limit,
+      onLoad: (m) => {
+        lid = m.getObjectByName('treasure_chest_lid') ?? null;
+        // The lock hangs on the lid's front: it opens with it.
+        const lock = m.getObjectByName('treasure_chest_lock');
+        if (lid && lock) lid.attach(lock);
+      },
+    }),
+  );
+  return {
+    root: g,
+    click: () => {
+      open = !open;
+      audio.play(open ? 'coin' : 'click');
+    },
+    update: (t, dt) => {
+      angle = approach(angle, open ? 1 : 0, dt, 5);
+      if (lid) lid.rotation.x = -angle * 1.75;
+      glow.intensity = angle * (40 + Math.sin(t * 9) * 4);
+    },
+  };
+};
+
 export const FURNITURE: Record<string, Make> = {
-  fu_chest: model('treasure_chest'),
+  fu_chest: chest,
   fu_barrels: (_c, bag) => {
     // Three barrels: two side by side, one on top of them, against the wall.
     const g = new THREE.Group();

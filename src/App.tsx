@@ -48,6 +48,7 @@ const FriendsScreen = lazyWithReload(() => import('@/ui/screens/FriendsScreen'))
 const DebugScreen = import.meta.env.DEV ? lazyWithReload(() => import('@/ui/screens/DebugScreen')) : null;
 const FramePreview = import.meta.env.DEV ? lazyWithReload(() => import('@/ui/screens/FramePreview')) : null;
 const BoardPreview = import.meta.env.DEV ? lazyWithReload(() => import('@/ui/screens/BoardPreview')) : null;
+const DecorPreview = import.meta.env.DEV ? lazyWithReload(() => import('@/ui/screens/DecorPreview')) : null;
 
 function Shell() {
   const location = useLocation();
@@ -94,6 +95,7 @@ function Shell() {
               {DebugScreen && <Route path="/debug" element={<DebugScreen />} />}
               {FramePreview && <Route path="/frames" element={<FramePreview />} />}
               {BoardPreview && <Route path="/boards/:id?" element={<BoardPreview />} />}
+              {DecorPreview && <Route path="/decor/:id" element={<DecorPreview />} />}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>

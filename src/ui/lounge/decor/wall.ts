@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { Bag, DecorContext, ROOM, flame, loadArt, mesh, modelPiece, std, woodTexture } from './kit';
 import type { Built } from './tables';
+import { approach } from '@/ui/match/table3d/bodyRules';
+import { audio } from '@/audio/audioService';
 
 /**
  * What hangs on the walls: the big painting (back wall), posters and banners (side walls), and the
@@ -88,11 +90,78 @@ function brightBottles(m: THREE.Mesh) {
 /** A model hung on the wall: its back to the wall, centred on the slot, no bigger than the slot allows. */
 const onWall = (id: string, fit: { scale?: number; turn?: number; tweak?: (m: THREE.Mesh) => void }): Make => (ctx, bag) => ({ root: modelPiece(bag, id, { ...fit, mount: 'wall', max: ctx.limit }) });
 
+/** A dart: steel tip, brass barrel, a shaft and four flights, pointing along +z. */
+function dart(bag: Bag, color: string) {
+  const g = new THREE.Group();
+  const steel = std(bag, { color: '#c8ccd2', metalness: 0.5, roughness: 0.3 });
+  const brass = std(bag, { color: '#c9a24a', metalness: 0.5, roughness: 0.35 });
+  const flight = std(bag, { color, roughness: 0.6, side: THREE.DoubleSide });
+  const along = (geo: THREE.BufferGeometry, mat: THREE.Material, y: number) => {
+    const m = mesh(geo.rotateX(-Math.PI / 2), mat, bag, [0, y, 0]);
+    g.add(m);
+  };
+  along(new THREE.ConeGeometry(0.05, 0.6, 8), steel, 0.3);
+  along(new THREE.CylinderGeometry(0.09, 0.07, 0.8, 10), brass, -0.4);
+  along(new THREE.CylinderGeometry(0.035, 0.035, 0.7, 6), steel, -1.15);
+  for (let i = 0; i < 4; i++) {
+    const f = mesh(new THREE.PlaneGeometry(0.3, 0.55), flight, bag, [0, -1.35, 0]);
+    f.rotation.set(Math.PI / 2, (i * Math.PI) / 2, 0);
+    f.geometry.translate(0.15, 0, 0);
+    g.add(f);
+  }
+  // Turned to lie along +z, the way lookAt aims an object.
+  g.rotation.x = Math.PI / 2;
+  const aim = new THREE.Group();
+  aim.add(g);
+  return aim;
+}
+
+/** The dartboard (Poly Haven): each click throws a dart at the point clicked; three stick, the fourth clears them. */
+const dartboard: Make = (ctx, bag) => {
+  const g = new THREE.Group();
+  g.add(modelPiece(bag, 'dartboard', { scale: 1.6, mount: 'wall', max: ctx.limit }));
+  const stuck: THREE.Object3D[] = [];
+  const flying: { d: THREE.Object3D; from: THREE.Vector3; to: THREE.Vector3; t: number }[] = [];
+  const colors = ['#e8202a', '#2a8ae8', '#f2c230'];
+  return {
+    root: g,
+    click: (at) => {
+      if (stuck.length >= 3) {
+        stuck.splice(0).forEach((d) => g.remove(d));
+        return;
+      }
+      const to = g.worldToLocal(at.clone());
+      to.y = Math.min(to.y, -0.2);
+      const d = dart(bag, colors[stuck.length % 3]);
+      // The throw: from the room, slightly off line, landing tip first.
+      const from = new THREE.Vector3(to.x + (Math.random() - 0.5) * 3, to.y - 18, to.z - 2);
+      d.position.copy(from);
+      g.add(d);
+      stuck.push(d);
+      flying.push({ d, from, to: to.clone().add(new THREE.Vector3(0, -0.45, 0)), t: 0 });
+      audio.play('draw');
+    },
+    update: (_t, dt) => {
+      for (let i = flying.length - 1; i >= 0; i--) {
+        const f = flying[i];
+        f.t = Math.min(1, f.t + dt / 0.28);
+        f.d.position.lerpVectors(f.from, f.to, f.t);
+        f.d.position.z += Math.sin(f.t * Math.PI) * 1.2;
+        f.d.lookAt(g.localToWorld(f.to.clone().add(new THREE.Vector3(0, 1, 0))));
+        if (f.t >= 1) {
+          flying.splice(i, 1);
+          audio.play('hit');
+        }
+      }
+    },
+  };
+};
+
 export const POSTERS: Record<string, Make> = {
   po_abandoneer: (ctx, bag) => artPainting(ctx, bag, ctx.art('abandoneer'), 7, 9.8, woodFrame(bag)),
   // Wall pieces from Poly Haven (CC0): a knight's shield, hunting trophies, a mirror.
   po_shield: onWall('kite_shield', { scale: 1 }),
-  po_dartboard: onWall('dartboard', { scale: 1.6 }),
+  po_dartboard: dartboard,
   po_estoc: onWall('antique_estoc', { scale: 0.75 }),
   po_mace: onWall('ornate_medieval_mace', { scale: 1.5 }),
   // Fantasy (Quaternius).
@@ -165,13 +234,20 @@ export const LIGHTS: Record<string, Make> = Object.fromEntries(
         root.add(l.g);
         return { ...l, flick: flame(l.light, l.base, i) };
       });
+      // A click puts the lights out (in the Lounge), another lights them again: they fade either way.
+      let on = true;
+      let level = 1;
       return {
         root,
-        update: (t) =>
+        click: () => (on = !on),
+        update: (t, dt) => {
+          level = approach(level, on ? 1 : 0, dt, 4);
           parts.forEach((p) => {
             p.flick(t);
             p.update?.(t);
-          }),
+            p.light.intensity *= level;
+          });
+        },
       };
     },
   ]),

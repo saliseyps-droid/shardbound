@@ -4,8 +4,8 @@
  * the 3D table (against the AI the player's own, online the host's).
  */
 
-export type DecorKind = 'table' | 'trinket' | 'rug' | 'floor' | 'walls' | 'painting' | 'poster' | 'lights' | 'furniture' | 'ceiling' | 'door' | 'roof';
-export type DecorStyle = 'base' | 'general' | 'fantasy' | 'faction' | 'arcade' | 'modern' | 'neon';
+export type DecorKind = 'table' | 'trinket' | 'rug' | 'floor' | 'walls' | 'painting' | 'poster' | 'lights' | 'furniture' | 'ceiling' | 'door' | 'roof' | 'ambience';
+export type DecorStyle = 'base' | 'general' | 'fantasy' | 'faction' | 'arcade' | 'modern' | 'neon' | 'halloween';
 
 export const SLOTS = [
   'table',
@@ -25,6 +25,7 @@ export const SLOTS = [
   'ceiling',
   'door',
   'roof',
+  'ambience',
 ] as const;
 export type SlotId = (typeof SLOTS)[number];
 
@@ -46,6 +47,7 @@ export const SLOT_KIND: Record<SlotId, DecorKind> = {
   ceiling: 'ceiling',
   door: 'door',
   roof: 'roof',
+  ambience: 'ambience',
 };
 
 export const SLOT_NAME: Record<SlotId, string> = {
@@ -66,6 +68,7 @@ export const SLOT_NAME: Record<SlotId, string> = {
   ceiling: 'Ceiling light',
   door: 'Door',
   roof: 'Ceiling',
+  ambience: 'In the air',
 };
 
 export interface DecorItem {
@@ -76,7 +79,12 @@ export interface DecorItem {
   style: DecorStyle;
   /** Gold; 0 = a free default everyone owns. */
   price: number;
+  /** Sold only in this part of the year ('MM-DD', both days included); once bought it stays. */
+  season?: { from: string; to: string };
 }
+
+/** Halloween's season: mid-October to the first days of November. */
+const HALLOWEEN = { from: '10-15', to: '11-10' };
 
 const item = (kind: DecorKind, style: DecorStyle, price: number) => (id: string, name: string, description: string): DecorItem => ({ id, kind, name, description, style, price });
 
@@ -154,7 +162,7 @@ export const DECOR: DecorItem[] = [
 
   // On the walls.
   item('poster', 'general', 300)('po_shield_wood', 'Wooden Shield', 'A round wooden shield.'),
-  item('poster', 'general', 300)('po_dartboard', 'Dartboard', 'A worn dartboard.'),
+  item('poster', 'general', 300)('po_dartboard', 'Dartboard', 'A worn dartboard. Click it to throw darts.'),
   item('poster', 'fantasy', 600)('po_estoc', 'Antique Sword', 'A long antique sword on the wall.'),
   item('poster', 'fantasy', 500)('po_mace', 'Ornate Mace', 'A decorated mace on the wall.'),
   item('poster', 'general', 300)('po_sword', 'Bronze Sword', 'A bronze sword hung on the wall.'),
@@ -238,6 +246,39 @@ export const DECOR: DecorItem[] = [
   item('roof', 'fantasy', 1100)('rf_nebula', 'Nebula', 'Glowing clouds of violet and blue among the stars.'),
   item('roof', 'fantasy', 1200)('rf_aurora', 'Aurora', 'Green and violet lights rippling across the night.'),
   item('roof', 'fantasy', 1400)('rf_planets', 'Planets', 'A ringed giant, a red world and a moon among the stars.'),
+  // In the air.
+  item('ambience', 'general', 400)('a_dust', 'Dust in the Light', 'Specks of dust drifting through the lamplight.'),
+  item('ambience', 'fantasy', 700)('a_fireflies', 'Fireflies', 'Little lights blinking as they wander the room.'),
+  item('ambience', 'fantasy', 600)('a_embers', 'Embers', 'Sparks rising slowly from below.'),
+  item('ambience', 'faction', 900)('a_sparks', 'Warden’s Sparks', 'Sparks in your Warden’s colour, circling the table.'),
+  // Of the player: their wins, their best card.
+  item('poster', 'neon', 900)('po_neon_wins', 'Neon Win Counter', 'Your wins, counted in orange neon.'),
+  item('poster', 'fantasy', 800)('po_card_frame', 'Framed Card', 'A card of yours in a gilt frame, with a holographic sheen.'),
+  item('furniture', 'general', 1500)('fu_trophies', 'Trophy Cabinet', 'A glazed cabinet with the trophies you have won.'),
+  // With some life in them.
+  item('furniture', 'fantasy', 1400)('fu_fireplace', 'Fireplace', 'A stone hearth with a crackling fire.'),
+  item('furniture', 'general', 1300)('fu_aquarium', 'Aquarium', 'A tank of bright fish on an old cabinet.'),
+  item('furniture', 'general', 900)('fu_cat', 'Sleeping Cat', 'A cat asleep in the armchair. Stroke it.'),
+  item('furniture', 'fantasy', 1600)('fu_dragon', 'Dragon Whelp', 'A little dragon hovering over its hoard.'),
+  item('furniture', 'fantasy', 1000)('fu_owl', 'Owl', 'A great horned owl watching from a carved cabinet.'),
+  item('furniture', 'faction', 1200)('fu_crystal', 'Warden’s Crystal', 'A crystal floating over a carved nightstand, glowing in your Warden’s colour.'),
+  item('furniture', 'general', 900)('fu_gramophone', 'Gramophone', 'Tavern tunes in the Lounge. Click for the next one.'),
+  item('trinket', 'modern', 500)('tr_radio', 'Radio', 'A little radio playing lofi in the Lounge.'),
+  // Windows (in the painting's place): views that move as you do.
+  item('painting', 'general', 900)('p_window_snow', 'Window: Snowy Town', 'A little town under snow, its lights still on.'),
+  item('painting', 'modern', 900)('p_window_harbour', 'Window: Harbour at Night', 'City lights over still water.'),
+  item('painting', 'general', 800)('p_window_lake', 'Window: Lake at Dusk', 'A quiet lake as the light goes.'),
+  item('painting', 'fantasy', 1100)('p_window_isles', 'Window: Sky Isles', 'Islands floating in the clouds of the Heavens.'),
+  item('painting', 'fantasy', 1100)('p_window_valley', 'Window: Aethra Valley', 'The green valley of Aethra.'),
+  // Halloween: on sale from mid-October into November only.
+  ...[
+    item('trinket', 'halloween', 300)('tr_jackolantern', 'Jack-o’-Lantern', 'A carved pumpkin with a candle inside.'),
+    item('trinket', 'halloween', 300)('tr_skull_candle', 'Skull Candle', 'A candle burning down on a skull.'),
+    item('furniture', 'halloween', 700)('fu_pumpkins', 'Pumpkin Patch', 'Carved pumpkins and candles heaped in the corner.'),
+    item('furniture', 'halloween', 1000)('fu_cauldron', 'Witch’s Cauldron', 'A green brew bubbling away.'),
+    item('ceiling', 'halloween', 900)('c_bats', 'Bats', 'Bats wheeling under the ceiling.'),
+    item('ambience', 'halloween', 1100)('a_ghosts', 'Ghosts', 'Two little ghosts drifting through the room.'),
+  ].map((d): DecorItem => ({ ...d, season: HALLOWEEN })),
 ];
 
 export const DECOR_BY_ID: Record<string, DecorItem> = Object.fromEntries(DECOR.map((d) => [d.id, d]));
@@ -263,10 +304,11 @@ export const DEFAULT_ROOM: RoomLayout = {
   ceiling: null,
   door: 'd_walnut',
   roof: 'rf_black',
+  ambience: null,
 };
 
 /** Slots that can be left empty (the others always hold a piece: a room needs a table, a floor…). */
-export const OPTIONAL_KINDS: ReadonlySet<DecorKind> = new Set(['trinket', 'rug', 'painting', 'poster', 'furniture', 'ceiling']);
+export const OPTIONAL_KINDS: ReadonlySet<DecorKind> = new Set(['trinket', 'rug', 'painting', 'poster', 'furniture', 'ceiling', 'ambience']);
 
 export const decorFor = (slot: SlotId) => DECOR.filter((d) => d.kind === SLOT_KIND[slot]);
 
@@ -298,3 +340,11 @@ export function sanitizeRoom(raw: unknown, owned?: readonly string[]): RoomLayou
 
 /** The slot a piece already stands in, if any (a piece stands in one slot at a time). */
 export const slotOf = (room: RoomLayout, id: string): SlotId | null => SLOTS.find((s) => room[s] === id) ?? null;
+
+/** Whether a seasonal piece is on sale on this day (pieces without a season always are). */
+export function inSeason(d: Pick<DecorItem, 'season'>, now: Date): boolean {
+  if (!d.season) return true;
+  const day = `${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const { from, to } = d.season;
+  return from <= to ? day >= from && day <= to : day >= from || day <= to;
+}

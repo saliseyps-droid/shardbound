@@ -19,6 +19,27 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.78.0',
+    date: '2026-10-30',
+    title: 'A room that lives',
+    summary: 'The Lounge comes alive: a fire, fish, a cat, a dragon whelp, windows with a view, music, your trophies — and Halloween.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Living pieces for the Lounge: a fireplace with a burning fire, an aquarium of fish, a cat asleep in the armchair, a dragon whelp over its hoard, an owl, and a crystal glowing in your Warden’s colour.',
+          'Windows in place of the painting: a snowy town, a harbour at night, a lake at dusk, the Sky Isles and Aethra Valley. The view moves as you walk past.',
+          'Pieces that are yours: a trophy cabinet with the trophies you have earned (wins, streaks, tournaments, the ladder…), a neon counter of your wins, and a framed card of your choice with a holographic sheen.',
+          'Music in the Lounge: a gramophone with tavern tunes and a radio with lofi. Click them for the next track or silence.',
+          'A new place in the room, “In the air”: dust in the light, fireflies, embers or sparks in your Warden’s colour.',
+          'Click things in the Lounge: stroke the cat, open the treasure chest, throw darts at the dartboard, put out the lamps.',
+          'Halloween, until 10 November only: a jack-o’-lantern, a skull candle, a pumpkin patch, a witch’s cauldron, bats under the ceiling and ghosts drifting through the room.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.77.7',
     date: '2026-10-30',
     title: 'Pictures first',
