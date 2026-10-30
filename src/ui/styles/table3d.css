@@ -34,12 +34,15 @@
 .table3d-plane > .battlefield { grid-area: auto; min-height: 0; }
 .table3d-plane .enemy-side { padding-top: 0; }
 .table3d-plane .self-side { justify-content: center; }
-.table3d-plane .hero-area { top: 50%; transform: translate(-50%, -50%); }
+/* Placed without a transform and as tall as its Warden (the 2D rules left your side's box 0 px tall,
+   its content spilling out): iPhone Safari put what sits in it off from where the 3D bodies under it
+   were measured, so the frame, the ability numbers and the energy count floated above them. */
+.table3d-plane .hero-area { left: 0; right: 0; bottom: auto; margin-inline: auto; transform: none; }
 /* Side columns that never grow past their half: the bigger 3D crystals overflow to the side instead
    of pushing the Warden off the centre as the energy rises. */
 .table3d-plane .hero-area { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
 /* The opponent's Warden a little further back, clear of the walls of a Guard unit in front of it. */
-.table3d-plane .enemy-side .hero-area { top: calc(50% - 12px); }
+.table3d-plane .enemy-side .hero-area { top: calc(50% - 68.5px); }
 /* Your Warden a little further up the table, clear of the hand. */
 .table3d-plane .self-side .hero-area { top: 34%; }
 .table3d-plane .hero { width: 150px; }

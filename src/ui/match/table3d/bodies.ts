@@ -382,7 +382,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
 
   // ---- Wardens: a raised gold hexagon with the portrait on top (the DOM keeps Health, frame effects
   // and the hit target, moved up onto it).
-  interface HeroBody { plinth: THREE.Mesh; face: THREE.Mesh<THREE.ShapeGeometry, THREE.MeshPhysicalMaterial>; w: number; h: number; art: string; shift: { dx: number; dy: number } }
+  interface HeroBody { plinth: THREE.Mesh; face: THREE.Mesh<THREE.ShapeGeometry, THREE.MeshPhysicalMaterial>; w: number; h: number; art: string; shift: { dx: number; dy: number }; moved: HTMLElement | null }
   const heroes = new Map<string, HeroBody>();
   const HERO_D = 0.07; // a thin gold frame lying on the table, as in the mockup
   const dropHero = (b: HeroBody) => {
@@ -402,7 +402,7 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
     for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / (w * 0.985) + 0.5, pos.getY(i) / (h * 0.985) + 0.5);
     const face = new THREE.Mesh(geo, satin({ color: 0x2a2244 }));
     scene.add(plinth, face);
-    return { plinth, face, w, h, art: '', shift: { dx: 0, dy: 0 } };
+    return { plinth, face, w, h, art: '', shift: { dx: 0, dy: 0 }, moved: null };
   };
 
   // ---- Warden abilities: gold-rimmed tokens (hexagonal when active, round when passive).
@@ -669,7 +669,10 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
       const heroSeen = new Set<string>();
       plane.querySelectorAll<HTMLElement>('[data-entity^="h:"]').forEach((el) => {
         const key = el.dataset.entity!;
-        const p = centre(el, toMat);
+        // A purchased frame wraps the Warden (same box): measured and moved itself, as the units are
+        // (Safari measured the Warden inside the moved frame off from where it drew it).
+        const slot = el.closest<HTMLElement>('.framed-slot') ?? el;
+        const p = centre(slot, toMat);
         if (!p) return;
         heroSeen.add(key);
         const w = el.offsetWidth * PX;
@@ -695,8 +698,13 @@ export function createBodies(scene: THREE.Scene, effects: Effects, env?: THREE.T
           b.face.material.color.set(0xffffff);
           b.face.material.needsUpdate = true;
         }
-        // A purchased frame wraps the Warden: it rises with it.
-        b.shift = raise(el.closest<HTMLElement>('.framed-slot') ?? el, p, HERO_D + 0.035, b.shift);
+        // A new element to move (a frame put on, the DOM remade): the old one drops its move.
+        if (b.moved !== slot) {
+          if (b.moved) b.moved.style.translate = '';
+          b.moved = slot;
+          b.shift = { dx: 0, dy: 0 };
+        }
+        b.shift = raise(slot, p, HERO_D + 0.035, b.shift);
         b.plinth.position.set(p.x, p.y, MAT.top);
         b.face.position.set(p.x, p.y, MAT.top + HERO_D + 0.032);
         // The Final Blow shatters the Warden's portrait: its plinth goes with it.
