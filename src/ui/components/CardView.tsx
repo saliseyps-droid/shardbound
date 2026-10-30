@@ -1,4 +1,4 @@
-import { memo, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type PointerEvent } from 'react';
+import { createContext, memo, useContext, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type PointerEvent } from 'react';
 import { getCardSafe } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import type { CardDefinition, Variant } from '@/game/types';
@@ -62,7 +62,14 @@ export function CardBack({ width = CARD_WIDTH.md, className = '', style, design 
  * retried once with a cache-busting query; if that fails too the generated artwork is shown,
  * so a card never ends up with an empty picture.
  */
+/**
+ * Card pictures load at once inside (the match): lazy loading waits for the browser to see the card
+ * on screen, and Safari did not see the cards on the tilted 3D hand, so they stayed empty a while.
+ */
+export const EagerCardArt = createContext(false);
+
 function CardArtImage({ card }: { card: CardDefinition }) {
+  const eager = useContext(EagerCardArt);
   const external = card.artwork && /^(\/|https?:|data:)/.test(card.artwork) ? card.artwork : null;
   const [failures, setFailures] = useState(0);
   const primary = external ?? cardArtUri(card);
@@ -75,7 +82,7 @@ function CardArtImage({ card }: { card: CardDefinition }) {
       src={src}
       style={external && failures === 0 ? undefined : { objectPosition: cardArtPosition(card), transformOrigin: cardArtOrigin(card) }}
       alt=""
-      loading="lazy"
+      loading={eager ? 'eager' : 'lazy'}
       decoding="async"
       draggable={false}
       onError={() => setFailures((n) => Math.min(2, n + 1))}

@@ -1,4 +1,4 @@
-import { useEffect, type CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { FACTIONS } from '@/data/factions';
 import type { Faction } from '@/game/types';
 import type { HeroState } from '@/engine/types';
@@ -48,17 +48,22 @@ const Versus = () => (
 /**
  * Before the first card: the two Wardens meet on a banner across the board, with the kind of match.
  * Click to skip. `hold`: not yet (the 3D fly-through comes first); its time starts when released.
+ * `ready`: false while the hand's card pictures are still loading; the banner stays up until they are.
  */
-export function MatchIntro({ hold = false }: { hold?: boolean }) {
+export function MatchIntro({ hold = false, ready = true }: { hold?: boolean; ready?: boolean }) {
   const intro = useMatch((s) => s.intro);
   const game = useMatch((s) => s.game);
   const config = useMatch((s) => s.config);
   const watching = useMatch((s) => s.watching);
+  const [shownFor, setShownFor] = useState<number | null>(null);
   useEffect(() => {
     if (intro === null || hold) return;
-    const id = setTimeout(() => useMatch.setState({ intro: null }), anim(INTRO_MS));
+    const id = setTimeout(() => setShownFor(intro), anim(INTRO_MS));
     return () => clearTimeout(id);
   }, [intro, hold]);
+  useEffect(() => {
+    if (intro !== null && shownFor === intro && ready) useMatch.setState({ intro: null });
+  }, [intro, shownFor, ready]);
   if (intro === null || hold || !game) return null;
   const [a, b] = game.players;
   // A spectator sees which kind of match they are watching.
@@ -80,7 +85,7 @@ export function MatchIntro({ hold = false }: { hold?: boolean }) {
         <Versus />
         <Duelist hero={b.hero} side="right" />
       </div>
-      <div className="intro-skip">{usingTouch() ? t('Tap to skip') : t('Click to skip')}</div>
+      <div className="intro-skip">{shownFor === intro && !ready ? t('Loading the cards…') : usingTouch() ? t('Tap to skip') : t('Click to skip')}</div>
     </div>
   );
 }

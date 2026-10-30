@@ -11,7 +11,6 @@ import { createBoardLife } from './boardLife';
 import { createFpsWatch } from './fpsWatch';
 import { createBodies } from './bodies';
 import { createEffects } from './effects';
-import { createDebug3d, debug3dOn } from './debug3d';
 import { ZOOM, clampRoomPan, isEmptyTable, orbitTo, pinchZoom, twistTo, zoomsTable } from './tableInput';
 import { isPhone } from './table3dRules';
 import { HAND, MAT, PLANE, TILT, cameraCss, handCss, placeCamera, planeCss, type CameraState } from './tableCamera';
@@ -328,7 +327,6 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', room = nu
     const clock = new THREE.Clock();
     let flight: { id: number; t: number; dur: number; done: boolean } | null = null;
     const fps = createFpsWatch();
-    const debug = debug3dOn() ? createDebug3d(table.scene, planeRef.current!) : null;
     let frame = 0;
     let idle = 0;
     const tick = () => {
@@ -393,7 +391,6 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', room = nu
       const m = useMatch.getState();
       bodies.update(planeRef.current!, matPoint, m.game, clock.elapsedTime, toScreen);
       effects.update(planeRef.current!, matPoint, m.fx, dt, bodies.lastAt);
-      debug?.update(clock.elapsedTime, toScreen);
       table.update(clock.elapsedTime, dt);
       table.decor.cull(camera.position);
       life.update(clock.elapsedTime, dt);
@@ -417,7 +414,6 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', room = nu
       match.removeEventListener('click', onClick, true);
       match.removeEventListener('contextmenu', onMenu);
       match.classList.remove('is-moving-view');
-      debug?.dispose();
       bodies.dispose();
       env.dispose();
       life.dispose();

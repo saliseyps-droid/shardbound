@@ -37,6 +37,34 @@ export function preloadCardArt(cardIds: readonly string[]): number {
 }
 
 /**
+ * Resolves once the painted art of these cards has arrived (fetched, or failed), or after `maxMs`
+ * whatever is still on its way: a match waits for the cards in hand before it begins.
+ */
+export function whenCardArtLoaded(cardIds: readonly string[], maxMs: number): Promise<void> {
+  preloadCardArt(cardIds);
+  const waits: Promise<unknown>[] = [];
+  for (const id of cardIds) {
+    const card = getCard(id);
+    const img = card && preloaded.get(paintedArtUrl(card) ?? '');
+    if (!img || img.complete) continue;
+    waits.push(
+      new Promise((done) => {
+        img.addEventListener('load', done, { once: true });
+        img.addEventListener('error', done, { once: true });
+      }),
+    );
+  }
+  if (!waits.length) return Promise.resolve();
+  return new Promise((done) => {
+    const id = setTimeout(done, maxMs);
+    void Promise.all(waits).then(() => {
+      clearTimeout(id);
+      done();
+    });
+  });
+}
+
+/**
  * object-position for painted art: the Y focus matters in the landscape card frame, the X focus in
  * the narrower full-art Gilded card and the board token.
  */

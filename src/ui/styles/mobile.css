@@ -15,10 +15,9 @@ body .rotate-hint { display: none; }
   }
   body .rotate-hint svg { animation: rotate-hint 2.2s ease-in-out infinite; }
   body .rotate-hint strong { font-family: var(--font-display); font-size: var(--t-xl); color: var(--parchment); }
-  /* The 3D table held upright: it is hidden, and the hint lifted onto a layer of its own (Safari draws
-     3D-transformed layers over anything else, whatever its z-index, so the table covered the hint). */
-  body .match.is-3d .table3d { visibility: hidden; }
-  body .rotate-hint { transform: translate3d(0, 0, 0); }
+  /* The 3D table held upright: taken out altogether (Safari draws 3D-transformed layers over anything
+     else, whatever its z-index, so the table covered the hint; hidden, its parts could still show). */
+  body .match.is-3d .table3d { display: none; }
 }
 @keyframes rotate-hint { 0%, 30% { transform: rotate(0); } 60%, 100% { transform: rotate(90deg); } }
 

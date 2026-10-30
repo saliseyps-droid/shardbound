@@ -10,7 +10,7 @@ import { useMatch, HUMAN, AI, parseEntity, ALLY } from '@/state/matchStore';
 import { useMatchLaunch } from '@/state/matchLaunch';
 import { useSettings } from '@/state/settingsStore';
 import { toast, useUi } from '@/state/uiStore';
-import { CardBack, CardView } from '@/ui/components/CardView';
+import { CardBack, CardView, EagerCardArt } from '@/ui/components/CardView';
 import { confirmDialog, Spinner } from '@/ui/components/common';
 import { audio } from '@/audio/audioService';
 import { usingTouch } from '@/ui/inputMode';
@@ -39,7 +39,7 @@ import '@/ui/styles/board.css';
 import { table3dAllowed, table3dEnv } from './table3d/table3dRules';
 import { TableFallback } from './table3d/TableFallback';
 import { FloatingPreview } from './table3d/FloatingPreview';
-import { preloadCardArt } from '@/ui/components/cardArt';
+import { preloadCardArt, whenCardArtLoaded } from '@/ui/components/cardArt';
 
 /** The 3D table (Three.js) loads only when it is turned on; until then, and if it fails, the board is 2D. */
 const TableView = lazy(() => import('./table3d/TableView').catch(() => ({ default: TableFallback as unknown as typeof import('./table3d/TableView').default })));
@@ -62,6 +62,8 @@ let mountedBoards = 0;
 /** Hand card width: from the viewport height; much smaller on phones held sideways. */
 /** The card width the 3D table's mat is laid out for: its own fixed px, whatever the window. */
 const TABLE_CARD_W = 130;
+/** The longest the opening banner waits for the pictures of the cards in hand. */
+const ART_WAIT_MS = 8000;
 const cardWidthFor = (h: number) => (h <= 520 ? Math.round(Math.max(54, h * 0.17)) : Math.round(Math.min(150, Math.max(104, h * 0.14))));
 
 /** Footer label for the match's mode ("Ranked vs Skolky"). */
@@ -162,7 +164,12 @@ export default function MatchScreen() {
         <Spinner label={t('Preparing the battlefield')} />
       </div>
     );
-  return <Board game={game} phase={phase} />;
+  // Card pictures in the match load at once (see EagerCardArt).
+  return (
+    <EagerCardArt.Provider value>
+      <Board game={game} phase={phase} />
+    </EagerCardArt.Provider>
+  );
 }
 
 function Board({ game, phase }: { game: GameState; phase: string }) {
@@ -197,12 +204,22 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   const boardCampaign = config?.mode === 'PVE' && config.encounterId ? campaignOf(config.encounterId).id : null;
   const boardBg = useMemo(() => pickBoardBackground({ campaign: boardCampaign }), [startedAt, boardCampaign]);
   // Your deck's pictures start loading as the match begins, so cards you draw show theirs at once
-  // (a phone's network would otherwise make each new card in hand wait for its picture).
+  // (a phone's network would otherwise make each new card in hand wait for its picture); the opening
+  // banner waits for the hand's (up to ART_WAIT_MS), so the match begins with them shown.
   // (The match is set up after it starts: wait for its game. Each picture is fetched only once.)
   const gameReady = useMatch((s) => !!s.game);
+  const [artReady, setArtReady] = useState(false);
   useEffect(() => {
     const me = useMatch.getState().game?.players[HUMAN];
-    if (me) preloadCardArt([...me.hand, ...me.deck].map((c) => c.cardId));
+    if (!me) return;
+    let live = true;
+    setArtReady(false);
+    // The hand first, then the rest of the deck behind it.
+    void whenCardArtLoaded(me.hand.map((c) => c.cardId), ART_WAIT_MS).then(() => live && setArtReady(true));
+    preloadCardArt(me.deck.map((c) => c.cardId));
+    return () => {
+      live = false;
+    };
   }, [startedAt, gameReady]);
   // The room around the 3D table: the match's (online the host's), or this player's own (puzzles).
   const ownRoom = useAccount((s) => s.save?.profile.room);
@@ -927,7 +944,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           <span>{usingTouch() ? t('Tap to skip') : t('Click to skip')}</span>
         </button>
       )}
-      <MatchIntro hold={flying} />
+      <MatchIntro hold={flying} ready={artReady} />
       <SpellFlourish />
       <FinalBlow />
       <Ascension />

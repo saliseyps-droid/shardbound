@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.77.7': {
+    title: 'Nejdřív obrázky',
+    summary: 'Zápas počká na obrázky karet v ruce a telefon na výšku tě zase vyzve k otočení.',
+    sections: [
+      [
+        'Obrázky karet se v zápase načítají hned: na iPhonu zůstávaly karty ve 3D ruce chvíli prázdné (Safari jejich obrázky zdržovalo, jako by nebyly na obrazovce).',
+        'Úvodní banner počká na obrázky karet v ruce (nejvýš 8 sekund, „Načítám karty…“), takže zápas začne s nimi.',
+        'Telefon držený na výšku tě se zapnutým 3D stolem zase vyzve k otočení (Safari přes výzvu mohlo dál kreslit části stolu).',
+      ],
+    ],
+  },
   '0.77.6': {
     title: 'Srovnáno',
     summary: 'Na iPhonu lícují čísla, rámečky a ikony 3D stolu s díly pod nimi.',

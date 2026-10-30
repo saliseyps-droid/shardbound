@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.77.7',
+    date: '2026-10-30',
+    title: 'Pictures first',
+    summary: 'A match waits for your hand’s card pictures, and an upright phone is asked to turn again.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: [
+          'Card pictures in a match load at once: on iPhone the cards in your 3D hand stayed empty for a while (Safari held their pictures back as if they were off screen).',
+          'The opening banner waits for the pictures of your hand (up to 8 seconds, “Loading the cards…”), so the match begins with them shown.',
+          'A phone held upright asks you to turn it sideways again with the 3D table on (Safari could still draw parts of the table over the request).',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.77.6',
     date: '2026-10-30',
     title: 'Lined up',
