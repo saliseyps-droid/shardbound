@@ -7,6 +7,10 @@
      would slide the DOM plane off the WebGL mat. */
   overflow: clip;
   pointer-events: none;
+  /* iPhone Safari enlarges the text of blocks wider than the screen (the plane is far wider) when the
+     phone is sideways: the Warden's numbers and frame moved off their 3D bodies. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 .table3d-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .table3d-view { position: absolute; inset: 0; overflow: clip; pointer-events: none; }

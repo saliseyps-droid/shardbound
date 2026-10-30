@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.77.3': {
+    title: 'Zpátky na místě',
+    summary: '3D stůl na iPhonu drží čísla tvého Strážce tam, kam patří.',
+    sections: [['3D stůl na iPhonu drženém na šířku: rámeček tvého Strážce a čísla u jeho schopností a energie už nejsou posunutá nahoru (Safari jim zvětšovalo písmo).']],
+  },
   '0.77.2': {
     title: 'Otoč ho',
     summary: '3D stůl tě také vyzve, abys otočil telefon držený na výšku.',

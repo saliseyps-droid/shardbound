@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.77.3',
+    date: '2026-10-30',
+    title: 'Back in place',
+    summary: 'On iPhone the 3D table keeps your Warden’s numbers where they belong.',
+    sections: [
+      {
+        kind: 'fixed',
+        items: ['3D table on iPhone held sideways: your Warden’s frame and the numbers on its abilities and energy no longer sit too high (Safari enlarged their text).'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.77.2',
     date: '2026-10-30',
     title: 'Turn it sideways',
