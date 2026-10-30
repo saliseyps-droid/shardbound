@@ -59,6 +59,8 @@ const DRAG_THRESHOLD = 8;
 let mountedBoards = 0;
 
 /** Hand card width: from the viewport height; much smaller on phones held sideways. */
+/** The card width the 3D table's mat is laid out for: its own fixed px, whatever the window. */
+const TABLE_CARD_W = 130;
 const cardWidthFor = (h: number) => (h <= 520 ? Math.round(Math.max(54, h * 0.17)) : Math.round(Math.min(150, Math.max(104, h * 0.14))));
 
 /** Footer label for the match's mode ("Ranked vs Skolky"). */
@@ -499,6 +501,9 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
 
   const handCount = me.hand.length;
   const show3d = want3d && !failed3d && !!boardBg?.url;
+  // On the 3D table the decks and your Warden's place on the mat keep the mat's own sizes (a phone's
+  // smaller cards would shrink the decks and squeeze your Warden under the hand).
+  const tableCardW = show3d ? TABLE_CARD_W : cardW;
   // Before the Wardens' banner, a 3D match opens with the camera flying through the room.
   const flying = show3d && intro !== null && intro !== flownFor && !reducedMotion;
   const endFlyby = () => {
@@ -635,7 +640,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           </div>
         </div>
         <div className="draw-pile-anchor">
-          <DrawPile count={opp.deck.length} label="the opponent's deck" player={AI} width={Math.round(cardW * 0.83)} design={opp.hero.cardBack} />
+          <DrawPile count={opp.deck.length} label="the opponent's deck" player={AI} width={Math.round(tableCardW * 0.83)} design={opp.hero.cardBack} />
         </div>
       </section>
 
@@ -682,7 +687,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
           </div>
         </div>
         <div className="draw-pile-anchor">
-          <DrawPile count={me.deck.length} label="your deck" player={HUMAN} width={Math.round(cardW * 1.24)} design={me.hero.cardBack} />
+          <DrawPile count={me.deck.length} label="your deck" player={HUMAN} width={Math.round(tableCardW * 1.24)} design={me.hero.cardBack} />
         </div>
           </>
         );
@@ -799,7 +804,7 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
                   )}
                   {enemySide}
                   {battlefield}
-                  <section className="side self-side" aria-label={t('You')} style={selfStyle}>
+                  <section className="side self-side" aria-label={t('You')} style={{ '--card-w': `${tableCardW}px` } as CSSProperties}>
                     {selfTable}
                   </section>
                 </TableView>
@@ -909,8 +914,8 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
       <CastPreview />
       <LegendaryEntrance />
       {flying && (
-        <button className="flyby-skip" onClick={endFlyby} aria-label={t('Click to skip')}>
-          <span>{t('Click to skip')}</span>
+        <button className="flyby-skip" onClick={endFlyby} aria-label={usingTouch() ? t('Tap to skip') : t('Click to skip')}>
+          <span>{usingTouch() ? t('Tap to skip') : t('Click to skip')}</span>
         </button>
       )}
       <MatchIntro hold={flying} />

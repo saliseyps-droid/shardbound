@@ -59,7 +59,12 @@ export function createLookControls(el: HTMLElement, camera: THREE.PerspectiveCam
 
   const down = (e: PointerEvent) => {
     if (e.pointerType === 'mouse' && e.button !== 0 && e.button !== 2) return;
-    el.setPointerCapture(e.pointerId);
+    // A pointer the browser no longer tracks (it ended as this ran) cannot be captured: still move.
+    try {
+      el.setPointerCapture(e.pointerId);
+    } catch {
+      /* no capture */
+    }
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     goal = null;
     if (e.pointerType === 'mouse') mode = e.button === 2 || e.shiftKey ? 'look' : 'move';

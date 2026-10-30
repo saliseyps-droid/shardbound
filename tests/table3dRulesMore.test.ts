@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 import { approach, cardsDrawn, isEnemyUnit, ownerOf } from '@/ui/match/table3d/bodyRules';
-import { ROOM, ZOOM, clampRoomPan, isEmptyTable, orbitTo, pinchZoom, zoomsTable } from '@/ui/match/table3d/tableInput';
+import { ROOM, ZOOM, clampRoomPan, isEmptyTable, orbitTo, pinchZoom, twistTo, zoomsTable } from '@/ui/match/table3d/tableInput';
 
 const dom = (html: string) => {
   document.body.innerHTML = html;
@@ -75,6 +75,15 @@ describe('dragging on the table', () => {
     expect(orbitTo({ yaw: 0, tilt: 0.62 }, 10000, 0).yaw).toBe(-1.2);
     expect(orbitTo({ yaw: 0, tilt: 0.62 }, 0, 10000).tilt).toBe(1.25);
     expect(orbitTo({ yaw: 0, tilt: 0.62 }, 0, -10000).tilt).toBe(0.12);
+  });
+
+  it('turns the view with two fingers: twisting them turns round the table, moving them up or down tilts', () => {
+    // Fingers turned anticlockwise on screen turn the table anticlockwise with them.
+    expect(twistTo({ yaw: 0, tilt: 0.62 }, 0.5, 0)).toEqual({ yaw: -0.5, tilt: 0.62 });
+    expect(twistTo({ yaw: 0, tilt: 0.62 }, 0, 200).tilt).toBeCloseTo(1.02);
+    expect(twistTo({ yaw: 0, tilt: 0.62 }, 5, 0).yaw).toBe(-1.2);
+    expect(twistTo({ yaw: 0, tilt: 0.62 }, -5, 0).yaw).toBe(1.2);
+    expect(twistTo({ yaw: 0, tilt: 0.62 }, 0, -10000).tilt).toBe(0.12);
   });
 
   it('moves around the room, not only over the board, at any zoom', () => {

@@ -7,6 +7,7 @@ import { anim } from '@/state/settingsStore';
 import { WardenPortrait } from '@/ui/components/WardenPortrait';
 import { introSubtitle, modeLabel } from './matchLabels';
 import { t } from '@/i18n';
+import { usingTouch } from '@/ui/inputMode';
 import type { MatchConfig } from '@/state/matchLaunch';
 import '@/ui/styles/intro.css';
 
@@ -79,7 +80,7 @@ export function MatchIntro({ hold = false }: { hold?: boolean }) {
         <Versus />
         <Duelist hero={b.hero} side="right" />
       </div>
-      <div className="intro-skip">{t('Click to skip')}</div>
+      <div className="intro-skip">{usingTouch() ? t('Tap to skip') : t('Click to skip')}</div>
     </div>
   );
 }

@@ -11,7 +11,8 @@ import { createBoardLife } from './boardLife';
 import { createFpsWatch } from './fpsWatch';
 import { createBodies } from './bodies';
 import { createEffects } from './effects';
-import { ZOOM, clampRoomPan, isEmptyTable, orbitTo, pinchZoom, zoomsTable } from './tableInput';
+import { ZOOM, clampRoomPan, isEmptyTable, orbitTo, pinchZoom, twistTo, zoomsTable } from './tableInput';
+import { isPhone } from './table3dRules';
 import { HAND, MAT, PLANE, TILT, cameraCss, handCss, placeCamera, planeCss, type CameraState } from './tableCamera';
 import '@/ui/styles/table3d.css';
 
@@ -44,8 +45,9 @@ const BOTTOM = 0.23;
  * same camera, so drag, drop and clicks keep working on the tilted board. As in the mockup: dragging
  * bare table (or the room) moves around the room, the right button (or Shift) turns and tilts the
  * view; the middle button moves too. Wheel or pinch zooms towards the
- * pointer, from the usual view in to 3× or out to 0.4× to see the room; Space, the camera button
- * or a double click on the table goes back to the usual view.
+ * pointer, from the usual view in to 3× or out to 0.4× to see the room; two fingers twisted turn round
+ * the table, moved up or down tilt it. Space, the camera button or a double click on the table goes
+ * back to the usual view.
  */
 export default function TableView({ boardUrl, board, warm = '#ffb05a', room = null, portraitUrl, flyby = null, onFlybyEnd, children, hand: handNode, onUnavailable, onSlow }: Props) {
   // The room rebuilds the table only when its pieces change (a new state object with the same room does not).
@@ -100,7 +102,8 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', room = nu
     };
     canvas.addEventListener('webglcontextlost', lost);
     fxCanvas.addEventListener('webglcontextlost', lost);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Phones: fewer pixels to fill (their screens are small and their GPUs weaker).
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isPhone() ? 1.5 : 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.45;
@@ -212,19 +215,20 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', room = nu
       drag = { mode, x: e.clientX, y: e.clientY, px: target.panX, py: target.panY, yaw: target.yaw ?? 0, tilt: target.tilt, shift: e.shiftKey };
       dragged = false;
     };
-    // Two fingers on the table pinch-zoom (one still drags cards).
+    // Two fingers on the table pinch-zoom, twist to turn and move up or down to tilt (one still drags cards).
     const touches = new Map<number, { x: number; y: number }>();
-    let pinch: { dist: number; zoom: number } | null = null;
-    const spread = () => {
+    let pinch: { dist: number; zoom: number; angle: number; midY: number; yaw: number; tilt: number } | null = null;
+    const fingers = () => {
       const [a, b] = [...touches.values()];
-      return Math.hypot(a.x - b.x, a.y - b.y);
+      return { dist: Math.hypot(a.x - b.x, a.y - b.y), angle: Math.atan2(b.y - a.y, b.x - a.x), midX: (a.x + b.x) / 2, midY: (a.y + b.y) / 2 };
     };
     const onDown = (e: PointerEvent) => {
       const el = e.target as Element;
       if (e.pointerType === 'touch' && zoomsTable(el, match)) {
         touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
         if (touches.size === 2) {
-          pinch = { dist: spread(), zoom: target.zoom };
+          const f = fingers();
+          pinch = { dist: f.dist, zoom: target.zoom, angle: f.angle, midY: f.midY, yaw: target.yaw ?? 0, tilt: target.tilt };
           drag = null;
           e.preventDefault();
           e.stopPropagation();
@@ -245,8 +249,15 @@ export default function TableView({ boardUrl, board, warm = '#ffb05a', room = nu
       if (touches.has(e.pointerId)) {
         touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
         if (pinch && touches.size === 2) {
-          const [a, b] = [...touches.values()];
-          zoomAt(pinchZoom(pinch.dist, spread(), pinch.zoom), (a.x + b.x) / 2, (a.y + b.y) / 2);
+          const f = fingers();
+          zoomAt(pinchZoom(pinch.dist, f.dist, pinch.zoom), f.midX, f.midY);
+          // Screen angles grow clockwise (y points down): turning the fingers anticlockwise is negative.
+          let twist = pinch.angle - f.angle;
+          twist = Math.atan2(Math.sin(twist), Math.cos(twist));
+          const o = twistTo(pinch, twist, f.midY - pinch.midY);
+          target.yaw = o.yaw;
+          target.tilt = o.tilt;
+          match.classList.add('is-moving-view');
         }
       }
       if (!drag || pinch) return;

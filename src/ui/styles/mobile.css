@@ -65,28 +65,28 @@ body .rotate-hint { display: none; }
   }
   body .match-sidebar { display: none; }
   body .match::before { width: min(70vw, 600px); }
-  body .battlefield { padding: 0 var(--space-2); }
+  body :where(.match:not(.is-3d)) .battlefield { padding: 0 var(--space-2); }
 
-  body .hero { width: 52px; }
-  body .hero-health { min-width: 22px; height: 24px; font-size: 0.8rem; }
-  body .hero-armor { min-width: 20px; height: 22px; font-size: 0.75rem; }
-  body .hero-name { font-size: var(--t-xs); }
-  body .hero-area { gap: 8px; width: min(560px, 88%); }
-  body .hero-side-info { gap: 6px; }
-  body .hero-power { width: 32px; height: 35px; }
-  body .hero-power svg { width: 15px; height: 15px; }
-  body .hero-power-cost { top: 1px; right: 5px; font-size: 0.6rem; }
-  body .hero-power.is-passive { width: 28px; height: 28px; }
-  body .energy-crystals { display: none; }
-  body .energy-count { min-width: 0; font-size: var(--t-sm); }
-  body .permanent { width: 30px; height: 34px; }
-  body .permanent.location { width: 40px; }
+  body :where(.match:not(.is-3d)) .hero { width: 52px; }
+  body :where(.match:not(.is-3d)) .hero-health { min-width: 22px; height: 24px; font-size: 0.8rem; }
+  body :where(.match:not(.is-3d)) .hero-armor { min-width: 20px; height: 22px; font-size: 0.75rem; }
+  body :where(.match:not(.is-3d)) .hero-name { font-size: var(--t-xs); }
+  body :where(.match:not(.is-3d)) .hero-area { gap: 8px; width: min(560px, 88%); }
+  body :where(.match:not(.is-3d)) .hero-side-info { gap: 6px; }
+  body :where(.match:not(.is-3d)) .hero-power { width: 32px; height: 35px; }
+  body :where(.match:not(.is-3d)) .hero-power svg { width: 15px; height: 15px; }
+  body :where(.match:not(.is-3d)) .hero-power-cost { top: 1px; right: 5px; font-size: 0.6rem; }
+  body :where(.match:not(.is-3d)) .hero-power.is-passive { width: 28px; height: 28px; }
+  body :where(.match:not(.is-3d)) .energy-crystals { display: none; }
+  body :where(.match:not(.is-3d)) .energy-count { min-width: 0; font-size: var(--t-sm); }
+  body :where(.match:not(.is-3d)) .permanent { width: 30px; height: 34px; }
+  body :where(.match:not(.is-3d)) .permanent.location { width: 40px; }
 
-  body .enemy-hand { transform: scale(0.55); transform-origin: 50% 0; }
-  body .draw-pile-anchor { left: 8px; }
-  body .self-side > .draw-pile-anchor { bottom: 38%; }
-  body .enemy-side > .draw-pile-anchor { top: 6px; }
-  body .draw-pile-count { min-width: 26px; padding: 0 6px; font-size: var(--t-xs); }
+  body :where(.match:not(.is-3d)) .enemy-hand { transform: scale(0.55); transform-origin: 50% 0; }
+  body :where(.match:not(.is-3d)) .draw-pile-anchor { left: 8px; }
+  body :where(.match:not(.is-3d)) .self-side > .draw-pile-anchor { bottom: 38%; }
+  body :where(.match:not(.is-3d)) .enemy-side > .draw-pile-anchor { top: 6px; }
+  body :where(.match:not(.is-3d)) .draw-pile-count { min-width: 26px; padding: 0 6px; font-size: var(--t-xs); }
 
   body .turn-controls { right: 8px; bottom: 40%; gap: 4px; }
   body .end-turn { min-width: 84px; height: 38px; padding: 0 12px; font-size: 0.95rem; }
@@ -97,7 +97,7 @@ body .rotate-hint { display: none; }
   body .hand-card:hover, body .hand-card:focus-within, body .hand-card.is-selected { transform: translateX(calc(-50% + var(--o) * var(--spread))) scale(2.1); }
   body .fleeting-tag { font-size: 0.55rem; }
 
-  body .unit-stat { transform: scale(0.8); }
+  body :where(.match:not(.is-3d)) .unit-stat { transform: scale(0.8); }
   body .fx { font-size: 1.1rem; }
 
   body .mulligan-card .card { --card-w: clamp(84px, 30vh, 150px) !important; }
@@ -209,17 +209,17 @@ body .hand-card.is-peek .card { filter: drop-shadow(0 0 6px var(--gold-bright)) 
    so the battlefield in the middle stays clear. */
 @media (max-height: 520px) {
   body .match { grid-template-rows: minmax(34px, 9vh) minmax(0, 1fr) minmax(0, 23vh); }
-  body .hero-area { width: auto; gap: 6px; grid-template-columns: auto auto auto; transform: none; }
-  body .hero-self-area { left: 8px; right: auto; bottom: 6px; }
-  body .hero-enemy-area { left: auto; right: 8px; top: 4px; bottom: auto; z-index: 15; }
-  body .hero-area .hero-name { display: none; }
-  body .hero-col-left:empty { display: none; }
-  body .self-side > .draw-pile-anchor { bottom: auto; top: -150%; }
-  body .enemy-side > .draw-pile-anchor { top: 4px; }
+  body :where(.match:not(.is-3d)) .hero-area { width: auto; gap: 6px; grid-template-columns: auto auto auto; transform: none; }
+  body :where(.match:not(.is-3d)) .hero-self-area { left: 8px; right: auto; bottom: 6px; }
+  body :where(.match:not(.is-3d)) .hero-enemy-area { left: auto; right: 8px; top: 4px; bottom: auto; z-index: 15; }
+  body :where(.match:not(.is-3d)) .hero-area .hero-name { display: none; }
+  body :where(.match:not(.is-3d)) .hero-col-left:empty { display: none; }
+  body :where(.match:not(.is-3d)) .self-side > .draw-pile-anchor { bottom: auto; top: -150%; }
+  body :where(.match:not(.is-3d)) .enemy-side > .draw-pile-anchor { top: 4px; }
   body .turn-controls { bottom: 12px; }
 }
 @media (max-height: 520px) {
-  body .enemy-side > .draw-pile-anchor { left: 48px; }
+  body :where(.match:not(.is-3d)) .enemy-side > .draw-pile-anchor { left: 48px; }
   body .match { --unit-w: clamp(46px, 15vh, 84px); }
 }
 
@@ -276,14 +276,16 @@ body .audio-toggles { left: calc(10px + var(--safe-left)); bottom: calc(10px + v
   /* Sideways your Warden sits in the corner, so the switches go between your deck and the board. */
   body .audio-toggles { left: calc(14px + 26vh + var(--safe-left)); bottom: calc(23vh + 2px); gap: 4px; }
   body .audio-toggle { width: 36px; height: 36px; }
+  /* On the 3D table your Warden sits on the mat, not in the corner: the switches go back to the corner, off the table. */
+  body .match.is-3d .audio-toggles { left: calc(8px + var(--safe-left)); bottom: calc(8px + var(--safe-bottom)); }
 }
 
 /* The opponent's hand is shrunk on phones: keep its card count readable. */
 @media (max-height: 520px) {
-  body .enemy-hand .hand-count { scale: 1.8; transform-origin: 50% 0; }
+  body :where(.match:not(.is-3d)) .enemy-hand .hand-count { scale: 1.8; transform-origin: 50% 0; }
   /* Sideways: the cards peek out by half (easier to see and tap) and a badge always shows how many. */
-  body .enemy-hand { top: -14px; }
-  body .enemy-hand-n {
+  body :where(.match:not(.is-3d)) .enemy-hand { top: -14px; }
+  body :where(.match:not(.is-3d)) .enemy-hand-n {
     display: grid; place-items: center; position: absolute; top: 46px; left: calc(var(--n) * 18px + 20px);
     min-width: 46px; height: 46px; padding: 0 10px; border-radius: 999px;
     background: rgba(10, 8, 24, 0.9); border: 2px solid rgba(232, 184, 78, 0.7);
@@ -471,8 +473,8 @@ body:has(.match-overlay.results) .toast-host { top: calc(10px + var(--safe-top))
    Warden hold the left). */
 @media (max-height: 520px) {
   body .match.is-coop { --unit-w: clamp(34px, 12.5vh, 60px); }
-  body .battlefield.is-coop { padding-bottom: 0; row-gap: 0; }
-  body .battlefield.is-coop .board-row { min-height: calc(var(--unit-h) + 4px); margin: 1px 0; padding: 2px 8px; }
+  body :where(.match:not(.is-3d)) .battlefield.is-coop { padding-bottom: 0; row-gap: 0; }
+  body :where(.match:not(.is-3d)) .battlefield.is-coop .board-row { min-height: calc(var(--unit-h) + 4px); margin: 1px 0; padding: 2px 8px; }
   body .ally-zone > .ally-hero { left: auto; right: 4px; padding: 2px 6px; gap: 4px; }
   body .ally-hero .hero { width: clamp(40px, 11vh, 56px); }
   body .ally-hero .hero-health { min-width: 20px; height: 22px; font-size: 0.8rem; }

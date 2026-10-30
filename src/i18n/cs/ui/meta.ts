@@ -598,7 +598,6 @@ const d: Record<string, string> = {
   'Matches stay 2D in performance mode and with reduced motion.': 'V úsporném režimu a s omezenými animacemi zůstávají zápasy ve 2D.',
   'Plays matches on a 3D table.': 'Zápasy se hrají na 3D stole.',
   'This device has no 3D graphics (WebGL), so matches stay 2D.': 'Tohle zařízení nemá 3D grafiku (WebGL), zápasy proto zůstávají ve 2D.',
-  'On phones matches stay 2D: the 3D table needs a larger screen.': 'Na telefonech zůstávají zápasy ve 2D: 3D stůl potřebuje větší obrazovku.',
   'Disables blur and animated foil effects.': 'Vypne rozostření a animované foil efekty.',
   Fullscreen: 'Celá obrazovka',
   Language: 'Jazyk',

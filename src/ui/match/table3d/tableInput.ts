@@ -31,3 +31,15 @@ export function orbitTo(start: { yaw: number; tilt: number }, dx: number, dy: nu
 export const ROOM = { x: 14, y: 11 };
 
 export const clampRoomPan = (x: number, y: number) => ({ x: Math.max(-ROOM.x, Math.min(ROOM.x, x)), y: Math.max(-ROOM.y, Math.min(ROOM.y, y)) });
+
+/**
+ * The view after two fingers turned by `twist` rad (anticlockwise on screen) and their midpoint moved
+ * `dy` px down from `start`: the table turns with the fingers, and moving them up or down tilts as a
+ * one-finger turn does. The same limits as orbitTo.
+ */
+export function twistTo(start: { yaw: number; tilt: number }, twist: number, dy: number) {
+  return {
+    yaw: Math.max(-1.2, Math.min(1.2, start.yaw - twist)),
+    tilt: orbitTo(start, 0, dy).tilt,
+  };
+}

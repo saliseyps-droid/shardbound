@@ -95,3 +95,17 @@
   .screen.lounge-screen { grid-template-columns: 1fr; grid-template-rows: minmax(260px, 55%) minmax(0, 1fr); }
   .lounge-panel { padding: var(--space-4) 16px; }
 }
+/* Phones held sideways: the room and a narrower panel side by side, both the full height (stacked,
+   the room would be a thin strip). Bigger markers for fingers, a tighter panel. */
+@media (max-height: 520px) {
+  .screen.lounge-screen { grid-template-columns: minmax(0, 1fr) clamp(240px, 36vw, 320px); grid-template-rows: minmax(0, 1fr); min-height: 0; }
+  .lounge-panel { padding: var(--space-3) 12px calc(var(--space-3) + var(--safe-bottom, 0px)); padding-right: max(12px, var(--safe-right, 0px)); gap: var(--space-2); }
+  .lounge-panel-head h2 { font-size: 1.3rem; margin: 0; }
+  .lounge-panel-head p { display: none; }
+  .lounge-slot { padding: 6px 8px; }
+  .lounge-item { padding: 8px 10px; gap: 8px; }
+  .lounge-item-text .faint { font-size: 11px; }
+  .lounge-hud { left: max(var(--space-3), var(--safe-left, 0px)); right: var(--space-3); bottom: var(--space-3); }
+}
+/* Touch: markers big enough to tap. */
+html[data-input='touch'] .lounge-marker b { width: 28px; height: 28px; font-size: 14px; }

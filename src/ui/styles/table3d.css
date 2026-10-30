@@ -89,7 +89,7 @@
 .table3d-plane .draw-pile.is-empty .draw-pile-count { left: 50%; top: 50%; bottom: auto; transform: translate(calc(-50% + var(--pile-side, 0px)), calc(-50% - var(--pile-rise, 0px))); }
 .table3d-plane .draw-pile-card,
 .table3d-plane .draw-pile-slot { visibility: hidden; }
-.table3d-plane .energy-crystals { gap: 4px 6px; display: flex; flex-wrap: wrap; width: calc(30px * 5 + 6px * 4); flex: none; }
+.table3d-plane .energy-crystals { gap: 4px 6px; display: flex; flex-wrap: wrap; width: calc(30px * 5 + 6px * 4); max-width: none; flex: none; }
 .table3d-plane .crystal { visibility: hidden; width: 30px; height: 40px; }
 
 /* From 0.68.0 the effects are drawn in 3D (effects.ts): sparks, flashes and the numbers floating up

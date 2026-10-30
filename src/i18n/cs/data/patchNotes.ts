@@ -1,6 +1,21 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.77.0': {
+    title: '3D do kapsy',
+    summary: '3D stůl a Lounge na telefonech.',
+    sections: [
+      [
+        'I na telefonu můžeš hrát u 3D stolu: zápasy dál začínají na 2D desce a přepneš tlačítkem 3D v zápase (nebo v Nastavení).',
+        '3D stůl na dotyk: tažením po volném stole se pohybuješ, roztažením prstů přibližuješ a otočením dvou prstů obcházíš stůl, posunem nahoru a dolů ho nakláníš.',
+      ],
+      [
+        'Na telefonu je 3D stůl rozložený jako na počítači: tvůj Strážce nad rukou, krystaly energie vedle něj a balíčky na okraji desky; přepínače zvuku a 3D jsou v rohu mimo stůl.',
+        'Lounge na telefonu na šířku: místnost a panel vybavení vedle sebe přes celou výšku obrazovky, s většími očíslovanými značkami k ťuknutí.',
+        'Na dotykových obrazovkách úvod zápasu i průlet kamery píšou „Ťuknutím přeskočíš“.',
+      ],
+    ],
+  },
   '0.76.5': {
     title: 'Hraj ve svých barvách',
     summary: 'Tlačítko Hrát na domovské obrazovce má barvu frakce tvého balíčku.',

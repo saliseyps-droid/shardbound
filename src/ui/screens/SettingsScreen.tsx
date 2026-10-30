@@ -116,7 +116,6 @@ export default function SettingsScreen() {
               const why = table3dBlocker(s, table3dEnv());
               if (why === 'settings') return t('Matches stay 2D in performance mode and with reduced motion.');
               if (why === 'webgl') return t('This device has no 3D graphics (WebGL), so matches stay 2D.');
-              if (why === 'phone') return t('On phones matches stay 2D: the 3D table needs a larger screen.');
               return t('Plays matches on a 3D table.');
             })()}
             checked={s.table3d}

@@ -7,11 +7,11 @@ const ok = { table3d: true, performanceMode: false, reducedMotion: false };
 const env = { webgl: true, phone: false };
 
 describe('when the 3D table may show', () => {
-  it('only when turned on, with WebGL, not on phones, not in performance mode or with reduced motion', () => {
+  it('only when turned on, with WebGL, not in performance mode or with reduced motion (phones too: they start 2D, the player may switch)', () => {
     expect(table3dAllowed(ok, env)).toBe(true);
     expect(table3dAllowed({ ...ok, table3d: false }, env)).toBe(false);
     expect(table3dAllowed(ok, { ...env, webgl: false })).toBe(false);
-    expect(table3dAllowed(ok, { ...env, phone: true })).toBe(false);
+    expect(table3dAllowed(ok, { ...env, phone: true })).toBe(true);
     expect(table3dAllowed({ ...ok, performanceMode: true }, env)).toBe(false);
     expect(table3dAllowed({ ...ok, reducedMotion: true }, env)).toBe(false);
   });
@@ -108,7 +108,7 @@ describe('why the 3D table cannot show', () => {
     expect(table3dBlocker({ ...ok, performanceMode: true }, env)).toBe('settings');
     expect(table3dBlocker({ ...ok, reducedMotion: true }, env)).toBe('settings');
     expect(table3dBlocker(ok, { ...env, webgl: false })).toBe('webgl');
-    expect(table3dBlocker(ok, { ...env, phone: true })).toBe('phone');
+    expect(table3dBlocker(ok, { ...env, phone: true })).toBeNull();
   });
 });
 

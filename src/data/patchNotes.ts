@@ -19,6 +19,30 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.77.0',
+    date: '2026-10-30',
+    title: '3D in your pocket',
+    summary: 'The 3D table and the Lounge on phones.',
+    sections: [
+      {
+        kind: 'new',
+        items: [
+          'Phones can play on the 3D table too: matches still start on the 2D board, and the 3D button in a match (or Settings) switches.',
+          '3D table on touch: drag bare table to move around, pinch to zoom, and twist two fingers to turn round the table or move them up and down to tilt it.',
+        ],
+      },
+      {
+        kind: 'improved',
+        items: [
+          'On a phone the 3D table is laid out as on a computer: your Warden above your hand, the energy crystals beside it and the decks at the edge of the mat; the sound and 3D switches sit in the corner, off the table.',
+          'Lounge on phones held sideways: the room and the furnishing panel side by side, the full height of the screen, with bigger numbered markers to tap.',
+          'On touch screens the match intro and the fly-through say “Tap to skip”.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.76.5',
     date: '2026-10-30',
     title: 'Play in your colours',
