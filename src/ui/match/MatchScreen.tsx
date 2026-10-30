@@ -39,6 +39,7 @@ import '@/ui/styles/board.css';
 import { table3dAllowed, table3dEnv } from './table3d/table3dRules';
 import { TableFallback } from './table3d/TableFallback';
 import { FloatingPreview } from './table3d/FloatingPreview';
+import { preloadCardArt } from '@/ui/components/cardArt';
 
 /** The 3D table (Three.js) loads only when it is turned on; until then, and if it fails, the board is 2D. */
 const TableView = lazy(() => import('./table3d/TableView').catch(() => ({ default: TableFallback as unknown as typeof import('./table3d/TableView').default })));
@@ -195,6 +196,14 @@ function Board({ game, phase }: { game: GameState; phase: string }) {
   // Campaign fights pick from that campaign's mats (src/ui/match/boardBackgrounds.ts).
   const boardCampaign = config?.mode === 'PVE' && config.encounterId ? campaignOf(config.encounterId).id : null;
   const boardBg = useMemo(() => pickBoardBackground({ campaign: boardCampaign }), [startedAt, boardCampaign]);
+  // Your deck's pictures start loading as the match begins, so cards you draw show theirs at once
+  // (a phone's network would otherwise make each new card in hand wait for its picture).
+  // (The match is set up after it starts: wait for its game. Each picture is fetched only once.)
+  const gameReady = useMatch((s) => !!s.game);
+  useEffect(() => {
+    const me = useMatch.getState().game?.players[HUMAN];
+    if (me) preloadCardArt([...me.hand, ...me.deck].map((c) => c.cardId));
+  }, [startedAt, gameReady]);
   // The room around the 3D table: the match's (online the host's), or this player's own (puzzles).
   const ownRoom = useAccount((s) => s.save?.profile.room);
   const roomOwner = game ? game.players[config?.online === 'guest' ? 1 : 0]?.hero : undefined;

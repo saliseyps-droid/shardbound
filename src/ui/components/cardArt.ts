@@ -1,4 +1,5 @@
 import { createRng, hashString, nextFloat, nextInt } from '@/core/rng';
+import { getCard } from '@/data/cards';
 import { FACTIONS } from '@/data/factions';
 import type { CardDefinition } from '@/game/types';
 import { GLYPHS } from './Icons';
@@ -10,6 +11,29 @@ const PAINTED = import.meta.glob('../../assets/cards/*.webp', { eager: true, que
 
 export function paintedArtUrl(card: CardDefinition): string | undefined {
   return PAINTED[`../../assets/cards/${card.id}.webp`];
+}
+
+/** Pictures already asked for (kept, so the browser holds them decoded for the match). */
+const preloaded = new Map<string, HTMLImageElement>();
+
+/**
+ * Starts fetching the painted art of these cards (a match's deck), so a card drawn later shows its
+ * picture at once instead of loading it then (slow on a phone's network). Returns how many it started.
+ */
+export function preloadCardArt(cardIds: readonly string[]): number {
+  if (typeof Image === 'undefined') return 0;
+  let started = 0;
+  for (const id of cardIds) {
+    const card = getCard(id);
+    const url = card && paintedArtUrl(card);
+    if (!url || preloaded.has(url)) continue;
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = url;
+    preloaded.set(url, img);
+    started++;
+  }
+  return started;
 }
 
 /**

@@ -1,6 +1,11 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.77.1': {
+    title: 'Obrázky hned',
+    summary: 'Karty, které si lízneš, ukážou obrázek okamžitě.',
+    sections: [['Obrázky karet tvého balíčku se začnou načítat už se začátkem zápasu, takže líznutá karta ukáže obrázek hned (na mobilní síti se na něj dřív čekalo).']],
+  },
   '0.77.0': {
     title: '3D do kapsy',
     summary: '3D stůl a Lounge na telefonech.',

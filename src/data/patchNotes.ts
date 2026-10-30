@@ -19,6 +19,19 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.77.1',
+    date: '2026-10-30',
+    title: 'Pictures at once',
+    summary: 'Cards you draw show their pictures straight away.',
+    sections: [
+      {
+        kind: 'improved',
+        items: ['The pictures of your deck’s cards start loading as the match begins, so a card you draw shows its picture at once (on a phone’s network it used to wait for it).'],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.77.0',
     date: '2026-10-30',
     title: '3D in your pocket',
