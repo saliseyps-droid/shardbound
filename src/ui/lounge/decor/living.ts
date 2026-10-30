@@ -64,10 +64,10 @@ function flames(bag: Bag, w: number, h: number) {
 
 /** The fireplace's materials: stones, the dark mortar behind them, the wooden mantel and frame, the hearth. */
 const FIREPLACE_SKIN: Record<string, Skin> = {
-  mat15: { tex: 'castle_wall_slates', metres: 1.4, tint: '#d8d4cc' },
-  mat16: { tex: 'castle_wall_slates', metres: 1.4, tint: '#4a4644', roughness: 1.6 },
-  mat17: { tex: 'castle_wall_slates', metres: 1.4, tint: '#2a2624', roughness: 1.6 },
-  mat22: { tex: 'slate_floor_02', metres: 1.5, tint: '#8a8680' },
+  mat15: { tex: 'medieval_red_brick', metres: 1.6, tint: '#c4a89c' },
+  mat16: { tex: 'medieval_red_brick', metres: 1.6, tint: '#5a4440', roughness: 1.6 },
+  mat17: { tex: 'medieval_red_brick', metres: 1.6, tint: '#302624', roughness: 1.6 },
+  mat22: { tex: 'smoked_walnut_veneer', metres: 1.2, tint: '#9a8070' },
   mat19: { tex: 'dark_wooden_planks', metres: 1.2, tint: '#e8c8a0' },
   mat18: { tex: 'weathered_brown_planks', metres: 1.2, tint: '#f0d8b8' },
   mat20: { tex: 'dark_wooden_planks', metres: 1.2, tint: '#8a7a6a' },
@@ -247,7 +247,12 @@ const aquarium: Make = (ctx, bag) => {
 const catInChair: Make = (ctx, bag) => {
   const g = new THREE.Group();
   const cat = new THREE.Group();
-  const body = modelPiece(bag, ext('cat_dingus'), { height: 2.9, turn: 0.3 });
+  // Fur is matte: the model's own material shines like plastic.
+  const body = modelPiece(bag, ext('cat_dingus'), {
+    height: 2.9,
+    turn: 0.3,
+    tweak: (m) => Object.assign(m.material as THREE.MeshStandardMaterial, { roughness: 1, metalness: 0, roughnessMap: null, metalnessMap: null }),
+  });
   cat.add(body);
   cat.visible = false;
   const chair = modelPiece(bag, 'ArmChair_01', {

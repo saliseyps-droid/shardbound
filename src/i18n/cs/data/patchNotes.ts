@@ -1,6 +1,17 @@
 import type { PatchNotesOverlay } from '../../overlayTypes';
 
 const notes: PatchNotesOverlay = {
+  '0.78.1': {
+    title: 'Cihly a srst',
+    summary: 'Cihlový krb, kočka, která se už neleskne, a větší pohovka.',
+    sections: [
+      [
+        'Krb je teď z cihel a jeho ohniště z tmavého dřeva.',
+        'Srst spící kočky je matná: už se ve světle neleskne jako plast.',
+        'Kožená pohovka je větší, aby se k místnosti hodila.',
+      ],
+    ],
+  },
   '0.78.0': {
     title: 'Místnost, která žije',
     summary: 'Lounge ožívá: oheň, rybky, kočka, sova, okna do krajin hry, hudba a dýně na Halloween.',

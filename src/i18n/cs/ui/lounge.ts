@@ -596,7 +596,7 @@ const d: Record<string, string> = {
   'Neon Win Counter': 'Neonové počítadlo výher',
   'Your wins, counted in orange neon.': 'Tvoje výhry, sečtené v oranžovém neonu.',
   'Fireplace': 'Krb',
-  'A stone hearth with a crackling fire.': 'Kamenný krb s praskajícím ohněm.',
+  'A brick hearth with a crackling fire.': 'Cihlový krb s praskajícím ohněm.',
   'Aquarium': 'Akvárium',
   'A tank of bright fish on a carved console.': 'Nádrž s barevnými rybkami na vyřezávaném stolku.',
   'Sleeping Cat': 'Spící kočka',

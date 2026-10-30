@@ -64,6 +64,7 @@ export const FURNITURE: Record<string, Make> = {
   fu_candelabra: lit('qk/CandleStick_Stand', {}, 0xffc27a, 12, [0, -4, 16]),
   // Modern (Poly Haven).
   fu_modern_chair: model('modern_arm_chair_01'),
-  fu_sofa: model('sofa_02', { scale: 1.15 }),
+  // Bigger than life (the room is seen from afar), and allowed a little past its slot's width.
+  fu_sofa: (ctx, bag) => ({ root: modelPiece(bag, 'sofa_02', { scale: 1.45, anchor: 'back', max: ctx.limit && { ...ctx.limit, w: ctx.limit.w + 8 } }) }),
   fu_steel_shelf: model('steel_frame_shelves_02'),
 };

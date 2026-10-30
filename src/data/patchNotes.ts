@@ -19,6 +19,23 @@ export interface PatchNote {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.78.1',
+    date: '2026-10-30',
+    title: 'Brick and fur',
+    summary: 'A brick fireplace, a cat that no longer shines, and a bigger sofa.',
+    sections: [
+      {
+        kind: 'improved',
+        items: [
+          'The fireplace is built of brick now, its hearth of dark wood.',
+          'The sleeping cat’s fur is matte: it no longer gleams in the light like plastic.',
+          'The leather sofa is bigger, to match the room.',
+        ],
+      },
+    ],
+    commits: [],
+  },
+  {
     version: '0.78.0',
     date: '2026-10-30',
     title: 'A room that lives',
