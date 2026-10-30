@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import { audio } from '@/audio/audioService';
 import { energyColors } from '@/ui/match/table3d/bodyRules';
-import type { Trophy } from '@/domain/lounge';
 import { Bag, DecorContext, animatedPiece, boxIn, mesh, modelPiece, onTop, std, type ModelFit } from './kit';
 import type { Built } from './tables';
+import { skin, type Skin } from './textured';
 
 /**
- * Pieces with some life in them: a fire in the hearth, fish in a tank, a cat asleep in the armchair, a
- * dragon whelp over its hoard, an owl, a crystal in the Warden's colour, the player's trophies, music.
+ * Pieces with some life in them: a fire in the hearth, fish in a tank, a cat asleep in the armchair, an
+ * owl, a crystal in the Warden's colour, music.
  * All models are free ones (see public/decor/CREDITS.txt); each stands with its back to its wall.
  */
 
@@ -61,11 +61,31 @@ function flames(bag: Bag, w: number, h: number) {
   return { mesh: m, update: (t: number) => (uniforms.frame.value = t * 24) };
 }
 
+/** The fireplace's materials: stones, the dark mortar behind them, the wooden mantel and frame, the hearth. */
+const FIREPLACE_SKIN: Record<string, Skin> = {
+  mat15: { tex: 'castle_wall_slates', metres: 1.4, tint: '#d8d4cc' },
+  mat16: { tex: 'castle_wall_slates', metres: 1.4, tint: '#4a4644', roughness: 1.6 },
+  mat17: { tex: 'castle_wall_slates', metres: 1.4, tint: '#2a2624', roughness: 1.6 },
+  mat22: { tex: 'slate_floor_02', metres: 1.5, tint: '#8a8680' },
+  mat19: { tex: 'dark_wooden_planks', metres: 1.2, tint: '#e8c8a0' },
+  mat18: { tex: 'weathered_brown_planks', metres: 1.2, tint: '#f0d8b8' },
+  mat20: { tex: 'dark_wooden_planks', metres: 1.2, tint: '#8a7a6a' },
+};
+
 /** The hearth: Nick Slough's stone fireplace (CC-BY 3.0), a fire in it and its warm, flickering light. */
 const fireplace: Make = (ctx, bag) => {
   const g = new THREE.Group();
   // Its own fire is carved still (the yellow flames): an animated one burns in its place.
-  g.add(modelPiece(bag, ext('fireplace'), { height: 24, anchor: 'back', max: ctx.limit, tweak: (m) => (m.visible = (m.material as THREE.Material).name !== 'mat12') }));
+  // Scanned stone and wood (Poly Haven) in place of its plain colours.
+  g.add(
+    modelPiece(bag, ext('fireplace'), {
+      height: 24,
+      anchor: 'back',
+      max: ctx.limit,
+      tweak: (m) => (m.visible = (m.material as THREE.Material).name !== 'mat12'),
+      onLoad: (m) => skin(bag, m, FIREPLACE_SKIN),
+    }),
+  );
   const fire = flames(bag, 6.5, 6.5);
   fire.mesh.position.set(-0.3, -4.4, 3.9);
   g.add(fire.mesh);
@@ -177,35 +197,6 @@ const catInChair: Make = (ctx, bag) => {
   };
 };
 
-/** A dragon whelp (Quaternius, CC0) hovering over a heap of gold; a click makes it nod. */
-const dragon: Make = (ctx, bag) => {
-  const g = new THREE.Group();
-  const hoard = modelPiece(bag, 'qk/Coin_Pile_2', { scale: 2.6, anchor: 'back' });
-  hoard.position.y = -3;
-  g.add(hoard);
-  const whelp = animatedPiece(bag, ext('dragon'), { height: 9, turn: 0 }, 'Flying_Idle');
-  const fly = new THREE.Group();
-  fly.add(whelp.root);
-  fly.position.set(0, -6, 6);
-  g.add(fly);
-  const glow = new THREE.PointLight(0xffb040, 6, 14, 1.7);
-  glow.position.set(0, -6, 3);
-  g.add(glow);
-  void ctx;
-  return {
-    root: g,
-    click: () => {
-      whelp.play('Yes', true);
-      audio.play('spell');
-    },
-    update: (t, dt) => {
-      fly.position.z = 7 + Math.sin(t * 1.4) * 0.8;
-      fly.rotation.z = Math.sin(t * 0.4) * 0.35;
-      whelp.update(dt);
-    },
-  };
-};
-
 /** A great horned owl on its branch (Poly by Google, CC-BY 3.0) atop a gothic cabinet; it looks about now and then. */
 const owl: Make = (ctx, bag) => {
   const bird = new THREE.Group();
@@ -276,48 +267,11 @@ const crystal: Make = (ctx, bag) => {
   };
 };
 
-// ---------- Trophies ----------
-
-const TIER_COLOR: Record<Trophy['tier'], string> = { 1: '#b5713a', 2: '#c8ccd4', 3: '#f2c240' };
-/** Which cup stands for which trophy. */
-const TROPHY_MODEL: Record<Trophy['id'], string> = { wins: 'trophy', streak: 'trophy', tournament: 'chalice', ladder: 'crown', achievements: 'trophy', packs: 'chalice' };
-
-/** The player's trophies (CreativeTrio's cup, Quaternius' chalice and crown, CC0) on a glazed cabinet (Poly Haven). */
-const trophies: Make = (ctx, bag) => {
-  const shelf = new THREE.Group();
-  const won = ctx.info?.trophies ?? [];
-  won.slice(0, 6).forEach((tr, i) => {
-    const metal = std(bag, { color: TIER_COLOR[tr.tier], metalness: 0.5, roughness: 0.25 });
-    const cup = modelPiece(bag, ext(TROPHY_MODEL[tr.id]), { height: tr.id === 'ladder' ? 1.6 : 2.6 + tr.tier * 0.3, tweak: (m) => (m.material = metal) });
-    const n = Math.min(6, won.length);
-    cup.position.x = (i - (n - 1) / 2) * 2.4;
-    shelf.add(cup);
-  });
-  // A small lamp over the counter, so the metal shines.
-  const lamp = new THREE.PointLight(0xfff0d0, 7, 14, 1.6);
-  lamp.position.set(0, -3, 5);
-  shelf.add(lamp);
-  const root = onTop(bag, 'vintage_cabinet_01', { anchor: 'back', max: ctx.limit }, shelf);
-  // The cups stand on the counter in front of the glazed top, not on the very top.
-  let placed = false;
-  return {
-    root,
-    update: () => {
-      if (placed || !shelf.visible) return;
-      placed = true;
-      const box = boxIn(root.children[0], root);
-      shelf.position.z = box.min.z + (box.max.z - box.min.z) * 0.415;
-      shelf.position.y = box.min.y + 1.6;
-    },
-  };
-};
-
 // ---------- Music ----------
 
 const music = (name: string) => `${import.meta.env.BASE_URL}music/${name}`;
-/** Tavern tunes (RandomMind, yd: CC0) and a lofi loop (omfgdude, edit qubodup: CC0). */
+/** Tavern tunes (RandomMind, yd: CC0). */
 const TAVERN = [music('tavern_old_tower_inn_randommind.mp3'), music('tavern_bards_tale_randommind.mp3'), music('tavern_yd.ogg')];
-const LOFI = [music('lofi_chill_loop_omfgdude_qubodup.ogg')];
 
 /** A player of tunes: plays the first when placed; each click the next, and after the last, silence. */
 function player(tracks: string[]) {
@@ -338,20 +292,11 @@ const gramophone: Make = (ctx, bag) => {
   return { root, ...player(TAVERN) };
 };
 
-/** A little radio (Quaternius, CC0) for the table: a lofi loop. */
-const radio: Make = (ctx, bag) => {
-  const turn = 0.5 * (ctx.mirror ? -1 : 1);
-  return { root: modelPiece(bag, ext('radio'), { height: 2.6, turn, max: ctx.limit }), ...player(LOFI) };
-};
-
 export const LIVING: Record<string, Make> = {
   fu_fireplace: fireplace,
   fu_aquarium: aquarium,
   fu_cat: catInChair,
-  fu_dragon: dragon,
   fu_owl: owl,
   fu_crystal: crystal,
-  fu_trophies: trophies,
   fu_gramophone: gramophone,
-  tr_radio: radio,
 };

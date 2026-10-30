@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { Bag, DecorContext, ROOM, flame, loadArt, mesh, modelPiece, std, woodTexture } from './kit';
 import type { Built } from './tables';
-import { approach } from '@/ui/match/table3d/bodyRules';
 import { audio } from '@/audio/audioService';
 
 /**
@@ -234,20 +233,13 @@ export const LIGHTS: Record<string, Make> = Object.fromEntries(
         root.add(l.g);
         return { ...l, flick: flame(l.light, l.base, i) };
       });
-      // A click puts the lights out (in the Lounge), another lights them again: they fade either way.
-      let on = true;
-      let level = 1;
       return {
         root,
-        click: () => (on = !on),
-        update: (t, dt) => {
-          level = approach(level, on ? 1 : 0, dt, 4);
+        update: (t) =>
           parts.forEach((p) => {
             p.flick(t);
             p.update?.(t);
-            p.light.intensity *= level;
-          });
-        },
+          }),
       };
     },
   ]),

@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DECOR_BY_ID, DEFAULT_ROOM, SLOTS, SLOT_KIND, type SlotId } from '@/data/lounge';
-import { TROPHY_TIERS, activeRoom, roomInfoOf, type Trophy } from '@/domain/lounge';
+import { activeRoom, roomInfoOf } from '@/domain/lounge';
 import { useAccount } from '@/state/accountStore';
 import { pickBoardBackground } from '@/ui/match/boardBackgrounds';
 import { portraitUrl } from '@/ui/components/WardenPortrait';
@@ -41,14 +41,9 @@ export default function DecorPreview() {
     return next;
   }, [save, slot, id]);
   const faction = save?.decks[0]?.heroFaction;
-  // ?demo: a well-won room (every trophy, a few hundred wins), to show the pieces that count them.
+  // ?demo: a well-won room (a few hundred wins), to show the pieces that count them.
   const demo = params.has('demo');
-  const owner = useMemo(() => {
-    const info = save ? roomInfoOf(save) : undefined;
-    if (!demo) return { faction: faction ?? undefined, info };
-    const trophies = (Object.keys(TROPHY_TIERS) as Trophy['id'][]).map((id, i) => ({ id, tier: (3 - (i % 3)) as Trophy['tier'] }));
-    return { faction: faction ?? undefined, info: { wins: 247, trophies, cardId: info?.cardId } };
-  }, [save, faction, demo]);
+  const owner = useMemo(() => ({ faction: faction ?? undefined, info: demo ? { wins: 247 } : save ? roomInfoOf(save) : undefined }), [save, faction, demo]);
   if (!item || !slot) return <p className="screen">Unknown decor: {id}</p>;
   const portrait = faction ? portraitUrl(faction as Faction, save?.profile.factionPortraits?.[faction as keyof typeof save.profile.factionPortraits]) : undefined;
   return (

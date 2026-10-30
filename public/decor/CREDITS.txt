@@ -5,18 +5,15 @@ Models in qk/ are from Quaternius' Fantasy Props (CC0).
 
 ext/ (all from poly.pizza unless noted):
 CC0 1.0 (no attribution needed, credited with thanks):
-- Fish (goldfish, clownfish, tang, koi, yellow tang, butterfly fish), rocks, dragon, bat, crystal, chalice, crown, radio, windows: Quaternius
-- crystal_cluster: iPoly3D; trophy: CreativeTrio; seaweed: Mohabins; coral set: MiniPoly
-- jackolantern, skull_candle: Kay Lousberg (KayKit); cauldron: Armory_3D
-- kenney/: Kenney, Graveyard Kit (kenney.nl)
-- fx/fire_*.png: para, "Animated particle effects #2" (opengameart.org)
+- Fish (goldfish, clownfish, tang, koi, yellow tang, butterfly fish), rocks, window_arched: Quaternius
+- crystal_cluster: iPoly3D; seaweed: Mohabins; coral set: MiniPoly
+- jackolantern: Kay Lousberg (KayKit)
+- fx/fire_01.png: para, "Animated particle effects #2" (opengameart.org)
 CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/):
 - fireplace.glb: "Fireplace" by Nick Slough (poly.pizza/m/uVogFlDES1)
 - cat_dingus.glb: "Dingus the cat" by alwayshasbean (poly.pizza/m/4dXgbKLHD9)
 - owl.glb: "Great horned owl" by Poly by Google (poly.pizza/m/fNkq9CwSG6d)
 - gramophone.glb: "Gramophone" by Don Carson (poly.pizza/m/9MZ0sCt1REv)
 
-views/: crops of Poly Haven HDRIs (CC0): blaubeuren_church_square, golden_bay, lakeside_night.
-
 Music in public/music (CC0, opengameart.org): "The Old Tower Inn" and "The Bard's Tale" by RandomMind,
-"Tavern" by yd, "Chill lofi inspired" by omfgdude (loop edit by qubodup).
+"Tavern" by yd.

@@ -82,8 +82,6 @@ export interface PlayerProfile {
   ownedDecor?: string[];
   /** The Lounge room: a piece (or nothing) per slot. */
   room?: RoomLayout;
-  /** The card hung in the Lounge's card frame (missing: the best card the player owns). */
-  loungeCard?: string | null;
 }
 
 export type VariantCounts = Record<Variant, number>;

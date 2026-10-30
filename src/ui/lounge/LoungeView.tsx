@@ -94,8 +94,8 @@ export default function LoungeView({ boardUrl, room, portraitUrl, owner, selecte
       const a = SLOT_ANCHOR[slot];
       if (slot === 'roof') return controls.view(new THREE.Vector3(0, -24, 2), new THREE.Vector3(0, 4, 24), true);
       if (slot === 'ceiling') return controls.view(new THREE.Vector3(0, -22, 4), new THREE.Vector3(0, 0, 16), true);
-      // Pieces in the middle of the room (the table and what is on it, the rug, the floor) and what fills its air: the overview.
-      if (slot === 'ambience' || Math.hypot(a.x, a.y) < 16) return controls.view(HOME.pos, HOME.target, true);
+      // Pieces in the middle of the room (the table and what is on it, the rug, the floor): the overview.
+      if (Math.hypot(a.x, a.y) < 16) return controls.view(HOME.pos, HOME.target, true);
       const at = new THREE.Vector3(a.x, a.y, slot.startsWith('furn') ? ROOM.floor + 10 : a.z - 1);
       const from = at.clone().addScaledVector(new THREE.Vector3(-a.x, -8 - a.y, 0).normalize(), slot.startsWith('furn') ? 22 : 24);
       from.z = at.z + 6;

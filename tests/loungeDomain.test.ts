@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_ROOM, inSeason } from '@/data/lounge';
-import { activeRoom, buyDecor, earnedTrophies, placeDecor, roomInfoOf, setLoungeCard } from '@/domain/lounge';
+import { activeRoom, buyDecor, placeDecor, roomInfoOf } from '@/domain/lounge';
 import { createNewSave } from '@/domain/newAccount';
 import { migrateSave } from '@/persistence/migrations';
 
@@ -91,34 +91,15 @@ describe('Lounge seasons', () => {
   });
 
   it('refuses to sell out of season', () => {
-    expect(buyDecor(rich(), 'fu_pumpkins', new Date(2026, 5, 1).getTime()).ok).toBe(false);
-    expect(buyDecor(rich(), 'fu_pumpkins', new Date(2026, 9, 30).getTime()).ok).toBe(true);
+    expect(buyDecor(rich(), 'tr_jackolantern', new Date(2026, 5, 1).getTime()).ok).toBe(false);
+    expect(buyDecor(rich(), 'tr_jackolantern', new Date(2026, 9, 30).getTime()).ok).toBe(true);
   });
 });
 
 describe('what the room shows of its owner', () => {
-  it('earns trophies by tier', () => {
-    const p = { ...rich().profile, wins: 120, bestWinStreak: 4, tournamentsWon: 1, packsOpened: 600 };
-    expect(earnedTrophies(p)).toEqual([
-      { id: 'wins', tier: 2 },
-      { id: 'tournament', tier: 1 },
-      { id: 'packs', tier: 3 },
-    ]);
-  });
-
-  it('frames the rarest card owned until one is chosen', () => {
+  it('counts the wins for the neon counter', () => {
     const s = rich();
-    const info = roomInfoOf(s);
-    expect(info.cardId).toBeDefined();
-    const owned = Object.keys(s.collection.cards).find((id) => id !== info.cardId)!;
-    const chosen = unwrap(setLoungeCard(s, owned));
-    expect(roomInfoOf(chosen).cardId).toBe(owned);
-    expect(setLoungeCard(s, 'not_a_card').ok).toBe(false);
-  });
-
-  it('drops a framed card that no longer exists on load', () => {
-    const s = rich();
-    (s.profile as { loungeCard?: string }).loungeCard = 'gone_card';
-    expect(migrateSave(JSON.parse(JSON.stringify(s))).save.profile.loungeCard).toBeUndefined();
+    s.profile.wins = 42;
+    expect(roomInfoOf(s)).toEqual({ wins: 42 });
   });
 });

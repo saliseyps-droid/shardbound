@@ -140,7 +140,6 @@ export function migrateSave(input: Raw): MigrationReport {
   p.wardenFrame = isFrameId(p.wardenFrame) ? p.wardenFrame : null;
   p.ownedDecor = Array.isArray(p.ownedDecor) ? [...new Set(p.ownedDecor.filter((id: unknown) => typeof id === 'string' && !!DECOR_BY_ID[id]))] : [];
   p.room = sanitizeRoom(p.room, p.ownedDecor);
-  if (p.loungeCard !== undefined && (typeof p.loungeCard !== 'string' || !hasCard(p.loungeCard))) delete p.loungeCard;
   // Deck statistics: repaired, or rebuilt from the match history the first time.
   p.deckStats = p.deckStats === undefined ? deckStatsFromHistory(Array.isArray(raw.matchHistory) ? raw.matchHistory.filter((m: unknown) => m && typeof m === 'object' && typeof (m as { deckId?: unknown }).deckId === 'string') : []) : repairDeckStats(p.deckStats);
   for (const k of ['winStreak', 'bestWinStreak', 'tournamentsWon'] as const) p[k] = Math.floor(num(p[k], 0));

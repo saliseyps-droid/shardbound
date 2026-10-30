@@ -170,8 +170,8 @@ export interface GameState {
   log: GameEvent[];
   /** The room around the 3D table (Lounge slot → piece): the local player's, online the host's. Cosmetic only. */
   room?: Record<string, string | null>;
-  /** What the room shows of its owner (wins, trophies, the framed card): see src/domain/lounge.ts RoomInfo. Cosmetic only. */
-  roomInfo?: { wins: number; trophies: { id: string; tier: number }[]; cardId?: string };
+  /** What the room shows of its owner (their wins): see src/domain/lounge.ts RoomInfo. Cosmetic only. */
+  roomInfo?: { wins: number };
 }
 
 // ---------------------------------------------------------------------------

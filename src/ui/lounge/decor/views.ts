@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Bag, boxIn, loadArt, modelPiece, type DecorContext } from './kit';
 import type { Built } from './tables';
+import { skin, type Skin } from './textured';
 import skyIsles from '@/assets/cinematics/hv_sky_isles.webp';
 import valley from '@/assets/cinematics/aethra_valley.webp';
 
@@ -69,6 +70,12 @@ export function viewPane(bag: Bag, url: string | undefined, w: number, h: number
   return pane;
 }
 
+const WINDOW_SKIN: Record<string, Skin> = {
+  Wood: { tex: 'weathered_brown_planks', metres: 1, tint: '#b89a80' },
+  Wood_Light: { tex: 'weathered_brown_planks', metres: 1, tint: '#e8d0b0' },
+  Stone: { tex: 'slate_floor_02', metres: 1, tint: '#a8a49c' },
+};
+
 /**
  * A window on the back wall (Quaternius' frames, CC0): its glass made clear, and behind it a view that
  * seems far away (viewPane). The pane takes the frame's size once the frame has loaded.
@@ -88,7 +95,9 @@ export function windowPiece(frameId: string, viewUrl: (ctx: DecorContext) => str
         // The glass: a faint sheen over the view.
         m.material = bag.keep(new THREE.MeshStandardMaterial({ color: '#dfefff', roughness: 0.05, metalness: 0, transparent: true, opacity: 0.08, depthWrite: false }));
       },
-      onLoad: () => {
+      onLoad: (m) => {
+        // Scanned wood and stone (Poly Haven) in place of the frame's plain colours.
+        skin(bag, m, WINDOW_SKIN);
         const box = boxIn(frame, g);
         const w = (box.max.x - box.min.x) * 0.92;
         const h = (box.max.z - box.min.z) * 0.94;
@@ -102,15 +111,10 @@ export function windowPiece(frameId: string, viewUrl: (ctx: DecorContext) => str
   };
 }
 
-const view = (name: string) => () => `${import.meta.env.BASE_URL}decor/views/${name}.jpg`;
 const arched = 'ext/window_arched.glb';
-const modern = 'ext/window_modern.glb';
 
-/** Views: photos (Poly Haven, CC0) and two of the game's own lands. */
+/** Views of two of the game's own lands. */
 export const WINDOWS = {
-  p_window_snow: windowPiece(arched, view('snow_town'), { height: 17, arched: true }),
-  p_window_harbour: windowPiece(modern, view('harbour'), { height: 14 }),
-  p_window_lake: windowPiece(arched, view('lake'), { height: 17, brightness: 1.3, arched: true }),
   p_window_isles: windowPiece(arched, () => skyIsles, { height: 17, arched: true }),
   p_window_valley: windowPiece(arched, () => valley, { height: 17, arched: true }),
 };

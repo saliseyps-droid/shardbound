@@ -23,11 +23,9 @@ import { DOORS } from './doors';
 import { ROOFS } from './roofs';
 import { SHAPED_TABLES } from './shapedTables';
 import { NEON_CEILINGS, NEON_LIGHTS, NEON_SIGNS } from './neon';
-import { AMBIENCE } from './ambience';
 import { LIVING } from './living';
 import { WINDOWS } from './views';
 import { HALLOWEEN } from './halloween';
-import { cardFrame } from './cardFrame';
 
 /**
  * The room's decor from a layout: one piece per slot, each in its place. Used around the 3D table and
@@ -35,7 +33,7 @@ import { cardFrame } from './cardFrame';
  */
 
 type Make = (ctx: DecorContext, bag: Bag) => Built;
-const BUILDERS: Record<string, Make> = { ...TABLES, ...SHAPED_TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS, ...DOORS, ...ROOFS, ...NEON_SIGNS, ...NEON_LIGHTS, ...NEON_CEILINGS, ...AMBIENCE, ...LIVING, ...WINDOWS, ...HALLOWEEN, po_card_frame: cardFrame };
+const BUILDERS: Record<string, Make> = { ...TABLES, ...SHAPED_TABLES, ...FLOORS, ...WALLS, ...RUGS, ...PAINTINGS, ...POSTERS, ...LIGHTS, ...FURNITURE, ...CEILINGS, ...TRINKETS, ...DOORS, ...ROOFS, ...NEON_SIGNS, ...NEON_LIGHTS, ...NEON_CEILINGS, ...LIVING, ...WINDOWS, ...HALLOWEEN };
 
 /** Every catalogue id has a builder (checked by a test). */
 export const hasBuilder = (id: string) => id in BUILDERS;
@@ -86,7 +84,6 @@ export const SLOT_ANCHOR: Record<SlotId, THREE.Vector3> = {
   door: new THREE.Vector3(0, -ROOM.y + 1, ROOM.floor + 14),
   ceiling: new THREE.Vector3(0, 0, 19),
   roof: new THREE.Vector3(-16, 12, ROOM.floor + ROOM.wallH - 0.4),
-  ambience: new THREE.Vector3(14, 8, 14),
 };
 
 /** Pictures the paintings and posters may hang. */

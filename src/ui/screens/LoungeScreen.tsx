@@ -4,9 +4,6 @@ import { activeRoom, roomInfoOf } from '@/domain/lounge';
 import { gameService, useAccount } from '@/state/accountStore';
 import { toast } from '@/state/uiStore';
 import { audio } from '@/audio/audioService';
-import { getCard } from '@/data/cards';
-import { RARITIES } from '@/game/types';
-import { cardArtUri } from '@/ui/components/cardArt';
 import { confirmDialog, Gold, Spinner } from '@/ui/components/common';
 import { GoldIcon } from '@/ui/components/Icons';
 import { pickBoardBackground } from '@/ui/match/boardBackgrounds';
@@ -180,7 +177,6 @@ function SlotPanel({
         </button>
         <h3>{t(SLOT_NAME[slot])}</h3>
       </div>
-      {saved[slot] === 'po_card_frame' && <FramedCardPicker />}
       <ul className="lounge-items">
         {optional && (
           <li className={`lounge-item ${saved[slot] === null ? 'is-placed' : ''}`}>
@@ -234,41 +230,4 @@ function SlotPanel({
 function seasonEnd(mmdd: string) {
   const [m, d] = mmdd.split('-').map(Number);
   return new Date(2000, m - 1, d).toLocaleDateString(currentLocale(), { day: 'numeric', month: 'long' });
-}
-
-/** The card in the card frame: any card the player owns, rarest first, found by name. */
-function FramedCardPicker() {
-  const save = useAccount((s) => s.save);
-  const [query, setQuery] = useState('');
-  const current = save ? roomInfoOf(save).cardId : undefined;
-  const cards = useMemo(() => {
-    const owned = Object.entries(save?.collection.cards ?? {})
-      .filter(([, c]) => Object.values(c ?? {}).some((n) => (n ?? 0) > 0))
-      .map(([id]) => getCard(id))
-      .filter((c): c is NonNullable<typeof c> => !!c && c.collectible);
-    return owned.sort((a, b) => RARITIES.indexOf(b.rarity) - RARITIES.indexOf(a.rarity) || t(a.name).localeCompare(t(b.name)));
-  }, [save?.collection]);
-  const q = query.trim().toLowerCase();
-  const shown = (q ? cards.filter((c) => t(c.name).toLowerCase().includes(q)) : cards).slice(0, 60);
-  const pick = (id: string) => {
-    const res = gameService.setLoungeCard(id);
-    if (!res.ok) return toast(t(res.error), 'error');
-    audio.play('click');
-  };
-  return (
-    <section className="lounge-card-picker">
-      <h4>{t('Card in the frame')}</h4>
-      <input className="input" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('Search your cards')} aria-label={t('Search your cards')} />
-      <ul>
-        {shown.map((c) => (
-          <li key={c.id}>
-            <button className={`lounge-card-pick rarity-${c.rarity.toLowerCase()} ${c.id === current ? 'is-current' : ''}`} onClick={() => pick(c.id)} aria-pressed={c.id === current} title={t(c.name)}>
-              <img src={cardArtUri(c)} alt="" loading="lazy" />
-              <span>{t(c.name)}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
 }

@@ -34,7 +34,7 @@ export interface DecorContext {
   portraitUrl?: string;
   /** The room owner's faction (the Warden's), for pieces that glow in its colour. */
   faction?: string;
-  /** What the room shows of its owner: wins, trophies, the framed card. */
+  /** What the room shows of its owner: their wins. */
   info?: RoomInfo;
   /** Art to hang (a card's, the campaign's…), resolved by the caller. */
   art: (key: string) => string | undefined;
