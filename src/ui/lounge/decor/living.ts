@@ -4,6 +4,7 @@ import { energyColors } from '@/ui/match/table3d/bodyRules';
 import { Bag, DecorContext, animatedPiece, boxIn, mesh, modelPiece, onTop, std, type ModelFit } from './kit';
 import type { Built } from './tables';
 import { skin, type Skin } from './textured';
+import { scanned } from './surfaces';
 
 /**
  * Pieces with some life in them: a fire in the hearth, fish in a tank, a cat asleep in the armchair, an
@@ -106,58 +107,136 @@ const fireplace: Make = (ctx, bag) => {
 
 const FISH = ['goldfish', 'clownfish', 'tang', 'koi', 'yellow_tang', 'butterfly_fish'];
 
+/** The tank's back: deep water fading to dark at the bottom, so the tank glows from inside. */
+let deepTex: THREE.Texture | null = null;
+const deepWater = () =>
+  (deepTex ??= (() => {
+    const c = document.createElement('canvas');
+    c.width = 4;
+    c.height = 256;
+    const g = c.getContext('2d')!;
+    const r = g.createLinearGradient(0, 0, 0, 256);
+    r.addColorStop(0, '#2a9ad8');
+    r.addColorStop(0.55, '#0c4a80');
+    r.addColorStop(1, '#04182c');
+    g.fillStyle = r;
+    g.fillRect(0, 0, 4, 256);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  })());
+
+/** A bubble: a bright ring with a clear middle. */
+let bubbleTex: THREE.Texture | null = null;
+const bubbleTexture = () =>
+  (bubbleTex ??= (() => {
+    const c = document.createElement('canvas');
+    c.width = c.height = 64;
+    const g = c.getContext('2d')!;
+    const r = g.createRadialGradient(32, 32, 10, 32, 32, 30);
+    r.addColorStop(0, 'rgba(255,255,255,0.15)');
+    r.addColorStop(0.8, 'rgba(255,255,255,0.9)');
+    r.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = r;
+    g.beginPath();
+    g.arc(32, 32, 30, 0, Math.PI * 2);
+    g.fill();
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  })());
+
+/**
+ * The aquarium on a carved console (Poly Haven): coral gravel, rocks, weed and corals, an air stone
+ * sending up bubbles, a lit lid, and fish (Quaternius, CC0) on their own loops, with a little school
+ * of tetras among them.
+ */
 const aquarium: Make = (ctx, bag) => {
   const tank = new THREE.Group();
   const W = 13;
   const D = 5.6;
   const H = 7.5;
-  const glass = std(bag, { color: '#cfe8ff', roughness: 0.05, transparent: true, opacity: 0.12, depthWrite: false });
-  const water = std(bag, { color: '#3aa0d8', roughness: 0.2, transparent: true, opacity: 0.16, depthWrite: false, emissive: '#0a3a5a' });
-  const rim = std(bag, { color: '#16130f', roughness: 0.5, metalness: 0.3 });
-  const sand = std(bag, { color: '#9a875f', roughness: 1 });
+  const glass = std(bag, { color: '#d8f0ff', roughness: 0.03, transparent: true, opacity: 0.1, depthWrite: false });
+  const water = std(bag, { color: '#4ab8f0', roughness: 0.1, transparent: true, opacity: 0.1, depthWrite: false, emissive: '#06304a' });
+  const rim = std(bag, { color: '#14110e', roughness: 0.45, metalness: 0.35 });
+  const gravel = scanned(bag, 'coral_gravel', 2.5, 1.1, { roughness: 1 }, '#d8ccb8');
   tank.add(mesh(new THREE.BoxGeometry(W, D, H), glass, bag, [0, 0, H / 2]));
   const vol = mesh(new THREE.BoxGeometry(W - 0.2, D - 0.2, H - 0.9), water, bag, [0, 0, (H - 0.9) / 2]);
   vol.castShadow = false;
   tank.add(vol);
-  tank.add(mesh(new THREE.BoxGeometry(W - 0.2, D - 0.2, 0.7), sand, bag, [0, 0, 0.35]));
-  tank.add(mesh(new THREE.BoxGeometry(W + 0.3, D + 0.3, 0.35), rim, bag, [0, 0, H + 0.17]));
-  tank.add(mesh(new THREE.BoxGeometry(W + 0.3, D + 0.3, 0.35), rim, bag, [0, 0, 0.17]));
-  // The bottom: rocks, a strand or two of weed, corals.
+  const back = new THREE.Mesh(bag.keep(new THREE.PlaneGeometry(W - 0.3, H - 0.6)), bag.keep(new THREE.MeshBasicMaterial({ map: deepWater(), toneMapped: false })));
+  back.rotation.x = Math.PI / 2;
+  back.position.set(0, D / 2 - 0.15, (H - 0.6) / 2);
+  tank.add(back);
+  tank.add(mesh(new THREE.BoxGeometry(W - 0.2, D - 0.2, 0.8), gravel, bag, [0, 0, 0.4]));
+  // A dark frame: lid, base and the four corner posts.
+  tank.add(mesh(new THREE.BoxGeometry(W + 0.3, D + 0.3, 0.45), rim, bag, [0, 0, H + 0.22]));
+  tank.add(mesh(new THREE.BoxGeometry(W + 0.3, D + 0.3, 0.3), rim, bag, [0, 0, 0.15]));
+  for (const [x, y] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) tank.add(mesh(new THREE.BoxGeometry(0.22, 0.22, H), rim, bag, [(x * W) / 2, (y * D) / 2, H / 2]));
+  // The bottom: rocks, weed and corals.
   const put = (id: string, fit: ModelFit, x: number, y: number) => {
     const p = modelPiece(bag, id, fit);
-    p.position.set(x, y, 0.7);
+    p.position.set(x, y, 0.8);
     tank.add(p);
   };
-  put(ext('rock_a_quaternius'), { height: 1.8 }, -4, 1);
-  put(ext('rock_b_quaternius'), { height: 1.3, turn: 1 }, 3.6, 0.8);
-  put(ext('seaweed_mohabins'), { height: 5.5 }, -2.2, 1.3);
-  put(ext('seaweed_mohabins'), { height: 4.2, turn: 2 }, 5, 1.4);
-  put(ext('coral_reef_set_minipoly'), { height: 1.4, max: { w: 7, d: 2, h: 1.4 } }, 0.6, 1.4);
-  // A light in the lid.
-  const lamp = new THREE.PointLight(0x7ad0ff, 8, 16, 1.6);
-  lamp.position.set(0, -1, H + 1);
+  put(ext('rock_a_quaternius'), { height: 2.2 }, -4.2, 1.2);
+  put(ext('rock_b_quaternius'), { height: 1.6, turn: 1 }, 3.4, 1);
+  put(ext('rock_a_quaternius'), { height: 1.1, turn: 2.4 }, 0.8, -1.4);
+  put(ext('seaweed_mohabins'), { height: 6 }, -2.6, 1.6);
+  put(ext('seaweed_mohabins'), { height: 4.6, turn: 2 }, 5.2, 1.5);
+  put(ext('seaweed_mohabins'), { height: 3.4, turn: 4 }, -5.4, 0.2);
+  put(ext('seaweed_mohabins'), { height: 5, turn: 1 }, 1.8, 1.9);
+  put(ext('coral_reef_set_minipoly'), { height: 2.2, max: { w: 9, d: 2.4, h: 2.2 } }, 0.4, 1.2);
+  // Bubbles from an air stone in the corner, wobbling as they rise.
+  const n = 26;
+  const pos = new Float32Array(n * 3);
+  const bgeo = bag.keep(new THREE.BufferGeometry());
+  bgeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const bubbles = new THREE.Points(bgeo, bag.keep(new THREE.PointsMaterial({ map: bubbleTexture(), color: '#e8f8ff', size: 0.4, transparent: true, opacity: 0.85, depthWrite: false })));
+  bubbles.frustumCulled = false;
+  tank.add(bubbles);
+  // The lid's light, and a cool glow out of the front.
+  const lamp = new THREE.PointLight(0x9ae0ff, 14, 16, 1.4);
+  lamp.position.set(0, -0.5, H - 0.5);
   tank.add(lamp);
+  const spill = new THREE.PointLight(0x3aa8ff, 6, 14, 1.8);
+  spill.position.set(0, -D, H / 2);
+  tank.add(spill);
   // The fish, each on its own loop through the water.
   const fish = FISH.map((id, i) => {
     const a = animatedPiece(bag, ext(id), { height: 1.2 + (i % 3) * 0.25 }, 'Swimming_Normal');
     const holder = new THREE.Group();
     holder.add(a.root);
     tank.add(holder);
-    return { a, holder, speed: 0.25 + (i % 4) * 0.07, phase: i * 1.7, z: 2 + (i % 3) * 1.6, ry: (i % 2 ? 0.8 : -0.8) };
+    return { a, holder, speed: 0.25 + (i % 4) * 0.07, phase: i * 1.7, z: 2.2 + (i % 3) * 1.5, ry: i % 2 ? 0.8 : -0.8, rx: 1, small: false };
   });
-  const root = onTop(bag, 'painted_wooden_cabinet', { anchor: 'back', max: ctx.limit, scale: 0.85 }, tank);
+  // A school of tetras, close together, on a quicker loop of their own.
+  for (let i = 0; i < 7; i++) {
+    const a = animatedPiece(bag, ext('tetra'), { height: 0.55 }, 'Swimming_Fast');
+    const holder = new THREE.Group();
+    holder.add(a.root);
+    tank.add(holder);
+    fish.push({ a, holder, speed: 0.55, phase: 2 + i * 0.09, z: 4.4 + (i % 3) * 0.35, ry: ((i % 4) - 1.5) * 0.35, rx: 0.8, small: true });
+  }
+  const root = onTop(bag, 'ClassicConsole_01', { anchor: 'back', max: ctx.limit, height: 10 }, tank);
   return {
     root,
     update: (t, dt) => {
       for (const f of fish) {
         // An oval through the tank; the fish faces where it swims (a model faces -y once stood up).
         const k = t * f.speed + f.phase;
-        const x = Math.cos(k) * (W / 2 - 1.6);
-        const y = Math.sin(k) * (D / 2 - 1.1) * 0.8 + f.ry * 0.3;
-        f.holder.position.set(x, y, f.z + Math.sin(k * 2.3) * 0.5);
-        f.holder.rotation.z = Math.atan2(Math.cos(k) * (D / 2 - 1.1) * 0.8, -Math.sin(k) * (W / 2 - 1.6)) + Math.PI / 2;
+        const ax = (W / 2 - 1.6) * f.rx;
+        const ay = (D / 2 - 1.1) * 0.8;
+        f.holder.position.set(Math.cos(k) * ax, Math.sin(k) * ay + f.ry * 0.3, f.z + Math.sin(k * 2.3) * (f.small ? 0.2 : 0.5));
+        f.holder.rotation.z = Math.atan2(Math.cos(k) * ay, -Math.sin(k) * ax) + Math.PI / 2;
         f.a.update(dt);
       }
+      for (let i = 0; i < n; i++) {
+        const k = (t * 0.45 + i / n) % 1;
+        pos.set([W / 2 - 1.2 + Math.sin(t * 5 + i * 2.1) * 0.15, D / 2 - 1 + Math.cos(t * 4 + i) * 0.12, 0.9 + k * (H - 1.4)], i * 3);
+      }
+      bgeo.attributes.position.needsUpdate = true;
+      lamp.intensity = 14 * (0.95 + Math.sin(t * 1.7) * 0.05);
     },
   };
 };
@@ -168,7 +247,7 @@ const aquarium: Make = (ctx, bag) => {
 const catInChair: Make = (ctx, bag) => {
   const g = new THREE.Group();
   const cat = new THREE.Group();
-  const body = modelPiece(bag, ext('cat_dingus'), { height: 2.6, turn: -0.5 });
+  const body = modelPiece(bag, ext('cat_dingus'), { height: 2.9, turn: 0.3 });
   cat.add(body);
   cat.visible = false;
   const chair = modelPiece(bag, 'ArmChair_01', {
@@ -285,10 +364,10 @@ function player(tracks: string[]) {
   };
 }
 
-/** A brass gramophone (Don Carson, CC-BY 3.0) on a painted cabinet (Poly Haven). */
+/** A brass gramophone (Don Carson, CC-BY 3.0) on a tall round side table (Poly Haven). */
 const gramophone: Make = (ctx, bag) => {
-  const horn = modelPiece(bag, ext('gramophone'), { height: 8, turn: 0.5 });
-  const root = onTop(bag, 'painted_wooden_cabinet', { anchor: 'back', max: ctx.limit, scale: 0.85 }, horn);
+  const horn = modelPiece(bag, ext('gramophone'), { height: 6, turn: 0.5 });
+  const root = onTop(bag, 'side_table_tall_01', { anchor: 'back', max: ctx.limit }, horn);
   return { root, ...player(TAVERN) };
 };
 

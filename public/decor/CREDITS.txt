@@ -6,6 +6,7 @@ Models in qk/ are from Quaternius' Fantasy Props (CC0).
 ext/ (all from poly.pizza unless noted):
 CC0 1.0 (no attribution needed, credited with thanks):
 - Fish (goldfish, clownfish, tang, koi, yellow tang, butterfly fish), rocks, window_arched: Quaternius
+- Fish incl. tetra: Quaternius
 - crystal_cluster: iPoly3D; seaweed: Mohabins; coral set: MiniPoly
 - jackolantern: Kay Lousberg (KayKit)
 - fx/fire_01.png: para, "Animated particle effects #2" (opengameart.org)
@@ -17,3 +18,4 @@ CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/):
 
 Music in public/music (CC0, opengameart.org): "The Old Tower Inn" and "The Bard's Tale" by RandomMind,
 "Tavern" by yd.
+Gravel in the aquarium: Poly Haven texture coral_gravel (CC0, tex/coral_gravel).

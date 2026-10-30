@@ -247,7 +247,7 @@ export const DECOR: DecorItem[] = [
   item('poster', 'neon', 900)('po_neon_wins', 'Neon Win Counter', 'Your wins, counted in orange neon.'),
   // With some life in them.
   item('furniture', 'fantasy', 1400)('fu_fireplace', 'Fireplace', 'A stone hearth with a crackling fire.'),
-  item('furniture', 'general', 1300)('fu_aquarium', 'Aquarium', 'A tank of bright fish on an old cabinet.'),
+  item('furniture', 'general', 1300)('fu_aquarium', 'Aquarium', 'A tank of bright fish on a carved console.'),
   item('furniture', 'general', 900)('fu_cat', 'Sleeping Cat', 'A cat asleep in the armchair. Stroke it.'),
   item('furniture', 'fantasy', 1000)('fu_owl', 'Owl', 'A great horned owl watching from a carved cabinet.'),
   item('furniture', 'faction', 1200)('fu_crystal', 'Warden’s Crystal', 'A crystal floating over a carved nightstand, glowing in your Warden’s colour.'),

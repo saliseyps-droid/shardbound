@@ -598,7 +598,7 @@ const d: Record<string, string> = {
   'Fireplace': 'Krb',
   'A stone hearth with a crackling fire.': 'Kamenný krb s praskajícím ohněm.',
   'Aquarium': 'Akvárium',
-  'A tank of bright fish on an old cabinet.': 'Nádrž s barevnými rybkami na staré skříňce.',
+  'A tank of bright fish on a carved console.': 'Nádrž s barevnými rybkami na vyřezávaném stolku.',
   'Sleeping Cat': 'Spící kočka',
   'A cat asleep in the armchair. Stroke it.': 'Kočka spí v křesle. Pohlaď ji.',
   'Owl': 'Sova',
