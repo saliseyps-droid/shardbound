@@ -153,9 +153,9 @@ const bubbleTexture = () =>
  */
 const aquarium: Make = (ctx, bag) => {
   const tank = new THREE.Group();
-  const W = 13;
-  const D = 5.6;
-  const H = 7.5;
+  const W = 12;
+  const D = 4;
+  const H = 7;
   const glass = std(bag, { color: '#d8f0ff', roughness: 0.03, transparent: true, opacity: 0.1, depthWrite: false });
   const water = std(bag, { color: '#4ab8f0', roughness: 0.1, transparent: true, opacity: 0.1, depthWrite: false, emissive: '#06304a' });
   const rim = std(bag, { color: '#14110e', roughness: 0.45, metalness: 0.35 });
@@ -179,14 +179,14 @@ const aquarium: Make = (ctx, bag) => {
     p.position.set(x, y, 0.8);
     tank.add(p);
   };
-  put(ext('rock_a_quaternius'), { height: 2.2 }, -4.2, 1.2);
-  put(ext('rock_b_quaternius'), { height: 1.6, turn: 1 }, 3.4, 1);
-  put(ext('rock_a_quaternius'), { height: 1.1, turn: 2.4 }, 0.8, -1.4);
-  put(ext('seaweed_mohabins'), { height: 6 }, -2.6, 1.6);
-  put(ext('seaweed_mohabins'), { height: 4.6, turn: 2 }, 5.2, 1.5);
-  put(ext('seaweed_mohabins'), { height: 3.4, turn: 4 }, -5.4, 0.2);
-  put(ext('seaweed_mohabins'), { height: 5, turn: 1 }, 1.8, 1.9);
-  put(ext('coral_reef_set_minipoly'), { height: 2.2, max: { w: 9, d: 2.4, h: 2.2 } }, 0.4, 1.2);
+  put(ext('rock_a_quaternius'), { height: 2 }, -3.8, 0.8);
+  put(ext('rock_b_quaternius'), { height: 1.5, turn: 1 }, 3.2, 0.7);
+  put(ext('rock_a_quaternius'), { height: 1, turn: 2.4 }, 0.8, -1);
+  put(ext('seaweed_mohabins'), { height: 5.6 }, -2.4, 1.1);
+  put(ext('seaweed_mohabins'), { height: 4.4, turn: 2 }, 4.8, 1.1);
+  put(ext('seaweed_mohabins'), { height: 3.2, turn: 4 }, -4.9, 0);
+  put(ext('seaweed_mohabins'), { height: 4.8, turn: 1 }, 1.8, 1.2);
+  put(ext('coral_reef_set_minipoly'), { height: 2, max: { w: 8, d: 1.6, h: 2 } }, 0.4, 0.8);
   // Bubbles from an air stone in the corner, wobbling as they rise.
   const n = 26;
   const pos = new Float32Array(n * 3);
